@@ -1,4 +1,4 @@
-package service;
+package service.supplier;
 
 public interface SupplierAdapter {
 }
