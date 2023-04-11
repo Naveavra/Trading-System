@@ -1,4 +1,6 @@
-package domain.store;
+package domain.store.storeManagement;
+
+import domain.store.storeManagement.Store;
 
 import java.util.concurrent.ConcurrentHashMap;
 

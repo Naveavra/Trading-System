@@ -2,7 +2,7 @@ package domain.user;
 
 import domain.states.Buyer;
 import domain.states.UserState;
-import domain.store.Store;
+import domain.store.storeManagement.Store;
 
 import java.util.HashMap;
 //TODO: change all the void functions to return a value in case of success/failure
