@@ -29,6 +29,5 @@ public enum Action {
     viewQuestions, // manager, owner, creator
     answerQuestions, // manager, owner, creator
     seeStoreHistory, // manager, owner, creator
-
 }
 
