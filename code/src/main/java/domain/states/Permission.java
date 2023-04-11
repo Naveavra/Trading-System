@@ -2,7 +2,6 @@ package domain.states;
 
 import utils.Action;
 
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Permission {

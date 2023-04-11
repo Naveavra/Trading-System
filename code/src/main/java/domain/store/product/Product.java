@@ -1,4 +1,4 @@
-package domain.store;
+package domain.store.product;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 

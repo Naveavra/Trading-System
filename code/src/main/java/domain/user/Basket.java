@@ -1,6 +1,6 @@
 package domain.user;
 
-import domain.store.Product;
+import domain.store.product.Product;
 
 import java.util.LinkedList;
 import java.util.List;
