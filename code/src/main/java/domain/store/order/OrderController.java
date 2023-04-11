@@ -1,4 +1,6 @@
-package domain.store;
+package domain.store.order;
+
+import domain.store.order.Order;
 
 import java.util.concurrent.ConcurrentHashMap;
 

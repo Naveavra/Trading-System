@@ -1,4 +1,4 @@
-package domain.user;
+package domain.store;
 
 import utils.Role;
 
@@ -8,9 +8,10 @@ import java.util.List;
 public class AppHistory {
 
     public List<AppHistory> appointed;
+    public AppHistory appointedMe;
     public Role role;
     public int appointedUserId;
-    public AppHistory(int appointedUserId, Role role){
+    public AppHistory(AppHistory appointedMe, int appointedUserId, Role role){
         this.appointedUserId = appointedUserId;
         this.role = role;
         appointed = new LinkedList<>();
