@@ -1,5 +1,6 @@
-package domain.store;
+package domain.store.storeManagement;
 
+import domain.store.storeManagement.AppHistory;
 import utils.Role;
 
 public class Store {
