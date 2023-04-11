@@ -7,7 +7,8 @@ import domain.store.Store;
 import java.util.HashMap;
 //TODO: change all the void functions to return a value in case of success/failure
 public class Member {
-    private Guest guest; //the user's information he had as guest
+    //private Guest guest; //the user's information he had as guest
+    ShoppingCart cart;
     private int id;
     private String name;
     private String birthday;
@@ -38,6 +39,12 @@ public class Member {
 
     public UserState getRole(int storeId){
         return roles.get(storeId);
+    }
+
+
+    public void getGuestInfo(Guest g){
+        cart = g.getCart();
+
     }
 
 
