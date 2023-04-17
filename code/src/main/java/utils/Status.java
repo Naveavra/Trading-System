@@ -2,7 +2,7 @@ package utils;
 
 public enum Status {
     pending,
-    submit,
+    submitted,
     delivered,
-    cancel
+    canceled
 }
