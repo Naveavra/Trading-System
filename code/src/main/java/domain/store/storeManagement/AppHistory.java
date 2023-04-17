@@ -11,10 +11,13 @@ public class AppHistory {
     public static class Node{
         Pair<Integer, Role> data; //userid and role
         ArrayList<Node> children; //list of all the users this user appoint in this store
+
+        ArrayList<Integer> dismissed;
         public Node(Pair<Integer, Role> appointment){
             //Assign data to the new node, set left and right children to null
             this.data = appointment;
             this.children = new ArrayList<Node>();
+            this.dismissed = new ArrayList<Integer>();
         }
         private Node findNode(Integer userId)
         {
@@ -39,18 +42,16 @@ public class AppHistory {
         }
 
         //remove the node and all of his descendants
-        private ArrayList<Integer> deleteNode(Pair<Integer, Role> child)
-        {
-            ArrayList<Integer> dismissed = new ArrayList<>();
-            Node childNode = findNode(child.getFirst());
-            if (childNode == null) {
-                return null; // child not found
+        private ArrayList<Integer> deleteNode(Pair<Integer, Role> nodeData) {
+            Node node = findNode(nodeData.getFirst());
+            if (node == null) {
+                return null; // node not found
             }
-            children.remove(childNode);
-            for (Node grandchild : childNode.children) {
-                dismissed.add(grandchild.data.getFirst());
-                childNode.deleteNode(grandchild.data);
+            dismissed.add(node.data.getFirst());
+            for (Node child : node.children) {
+                dismissed.addAll(deleteNode(child.data));
             }
+            children.remove(node);
             return dismissed;
         }
     }
@@ -81,6 +82,12 @@ public class AppHistory {
        {
            throw new Exception("user isn't part of the store");
        }
+       this.root.dismissed.clear();
        return root.deleteNode(childNode.data);
+    }
+
+    public Node getNode(Integer userId)
+    {
+        return root.findNode(userId);
     }
 }

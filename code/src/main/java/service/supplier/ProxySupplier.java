@@ -10,5 +10,6 @@ public class ProxySupplier implements SupplierAdapter {
         if(real == null)
             real = supplierAdapter;
     }
+    public void orderSupplies(){}
 
 }
