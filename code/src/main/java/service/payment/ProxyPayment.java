@@ -9,4 +9,6 @@ public class ProxyPayment implements PaymentAdapter {
         if(real == null)
             real = paymentAdapter;
     }
+
+    public void pay(){}
 }
