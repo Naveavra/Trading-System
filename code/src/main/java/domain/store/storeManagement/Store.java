@@ -1,6 +1,6 @@
 package domain.store.storeManagement;
 
-import domain.store.storeManagement.AppHistory;
+import datastructres.Pair;
 import utils.Role;
 
 public class Store {
@@ -11,6 +11,7 @@ public class Store {
     private AppHistory appHistory; //first one is always the store creator
 
     public Store(){
-        appHistory = new AppHistory(null, creatorId, Role.Creator);
+        Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
+        appHistory = new AppHistory(creatorNode);
     }
 }
