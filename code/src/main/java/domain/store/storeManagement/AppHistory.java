@@ -62,7 +62,7 @@ public class AppHistory {
 
         root = new Node(creatorNode);
     }
-    public void addNode(Integer father, Pair<Integer, Role> child) throws Exception {
+    public boolean addNode(Integer father, Pair<Integer, Role> child) throws Exception {
         Node childNode = root.findNode(child.getFirst());
         Node fatherNode = root.findNode(father);
         if (childNode != null)
@@ -74,6 +74,7 @@ public class AppHistory {
             throw new Exception("User cant appoint other users in the store");
         }
         fatherNode.addChild(child);
+        return true;
     }
 
     public ArrayList<Integer> removeChild(Integer userId) throws Exception {
@@ -84,6 +85,11 @@ public class AppHistory {
        }
        this.root.dismissed.clear();
        return root.deleteNode(childNode.data);
+    }
+
+    public boolean isChild(Integer father, Integer child)
+    {
+        return getNode(father).children.contains(getNode(child));
     }
 
     public Node getNode(Integer userId)
