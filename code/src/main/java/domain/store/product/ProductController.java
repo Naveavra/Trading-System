@@ -19,8 +19,29 @@ public class ProductController {
             productList.put(id,new Product(id, name, description));
         }
     }
-    
-    public Product getProduct(int productID){
+    public void setDescription(int prodID, String desc){
+        Product p = getProduct(prodID);
+        if(p != null){
+            p.setDescription(desc);
+        }
+    }
+    public void setPrice(int prodID, int price) throws Exception {
+        Product p = getProduct(prodID);
+        if(p != null){
+            p.setPrice(price);
+            return;
+        }
+        throw new Exception("product doesnt exist");
+    }
+
+    public void addQuantity(int prodID,int quantity){
+        Product p = getProduct(prodID);
+        if(p != null){
+            p.setQuantity(quantity);
+        }
+    }
+
+    public Product getProduct(Integer productID){
         if(productList.contains(productID)){
             return productList.get(productID);
         }

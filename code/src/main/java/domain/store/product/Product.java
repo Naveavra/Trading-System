@@ -8,7 +8,6 @@ public class Product {
     private List<String> categories;
     public String name;
     public String description;
-    public int quantity; //maybe not neccessary here
     public int price; //for one product
     //private ConcurrentLinkedDeque<String> categories;
     //private double discount;  no need for discount here, the discount is calculated by the policy

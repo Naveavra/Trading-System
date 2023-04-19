@@ -1,7 +1,9 @@
 package domain.store.storeManagement;
 
-import datastructres.Pair;
+import utils.Pair;
+import domain.store.order.Order;
 import domain.store.product.Product;
+import domain.store.product.ProductController;
 import utils.Role;
 
 import java.util.ArrayList;
@@ -16,14 +18,23 @@ public class Store {
     private final int creatorId;
     private String storeDescription;
     private final AppHistory appHistory; //first one is always the store creator
-    private final ConcurrentHashMap<Product,AtomicInteger> inventory; //<productID,<product, quantity>>
+    private final ProductController inventory; //<productID,<product, quantity>>
+
+    private final ConcurrentHashMap<Integer, Order> storeorders;    //orederid, order
+
+    private final ConcurrentHashMap<Product, ArrayList<String>> productreviews;
+
+    private final ConcurrentHashMap<Order, Pair<Integer, String>> purchasereviews; //<order, <number of stars, review>>
     public Store(int id, String description, int creatorId){
         Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
         appHistory = new AppHistory(creatorNode);
         this.storeid = id;
         this.storeDescription = description;
         this.creatorId = creatorId;
-        this.inventory = new ConcurrentHashMap<>();
+        this.inventory = new ProductController();
+        this.purchasereviews = new ConcurrentHashMap<>();
+        this.storeorders = new ConcurrentHashMap<>();
+        this.productreviews = new ConcurrentHashMap<>();
     }
 
     public int getStoreid()
@@ -34,6 +45,28 @@ public class Store {
     public int getCreatorId() {
         return creatorId;
     }
+
+    public ConcurrentHashMap<Order, Pair<Integer, String>> getPurchaseReviews() {
+        return this.purchasereviews;
+    }
+    public ConcurrentHashMap<Integer, Order> getOrdersHistory() {
+        return this.storeorders;
+    }
+
+    /**
+     * gets all reviews written about that product
+     * @return Arraylist of all the reviews if there is none return null
+     */
+    public ArrayList<String> getProductreviews(Product product)
+    {
+        if (productreviews.containsKey(product))
+        {
+            return productreviews.get(product);
+        }
+        return null;
+    }
+
+
 
     public boolean isActive() {
         return isActive;
@@ -63,6 +96,15 @@ public class Store {
         return appHistory.addNode(userinchargeid, node);
     }
 
+    public void addReview(Order order, int stars, String review) throws Exception {
+        if (storeorders.containsKey(order.getOrderId()))
+        {
+            purchasereviews.put(order, new Pair<Integer, String>(stars, review));
+            return;
+        }
+        throw new Exception("order doesnt exist");
+    }
+
     /**
      * fire user from the store appointment tree
      * @param userinchrageid the user who wants to fire another user
@@ -79,47 +121,58 @@ public class Store {
         return new HashSet<>(appHistory.removeChild(joblessuser));
     }
 
-    public ConcurrentHashMap<Product,AtomicInteger> getInventory()
+    public ProductController getInventory()
     {
         return inventory;
     }
 
     /**
-     * update product and quantity in the store inventory
-     * @param p product that needed to be updated
-     * @param quantity hew much we need to add
+     * creates a new product for this inventory
+     * @param name new name of the product
+     * @param pid product id
      */
-    public void addProduct(Product p, int quantity)
+    public void addNewProduct(String name, String description, AtomicInteger pid)
     {
-//        if (inventory.containsKey(p.))
-//        {
-//            inventory.replace(p,new AtomicInteger(inventory.get(p).getAndAdd(quantity)));
-//        }
-//        else
-//        {
-//            AtomicInteger newProductQuantity =  new AtomicInteger(quantity);
-//            inventory.put(p, newProductQuantity);
-//        }
+        inventory.addProduct(name, description, pid);
     }
 
     /**
-     * getter
-     * @param p product
-     * @return null if the product doesn't exist otherwise return the product quantity
+     * adds the quantity to the product previous quantity
+     * @param pid product quantity
      */
-    public AtomicInteger getQuantityOfProduct(Product p)
+    public void setProductQuantity(int pid, int quantity)
     {
-        return inventory.getOrDefault(p, null);
+       inventory.addQuantity(pid, quantity);
     }
 
-    public ArrayList<Product> searchProductByCategory(ArrayList<String> categories)
-    {
-        //        for (Product p: inventory.keySet()) {
-//            if (p.getCategories().contains())
-//
-//        }
-        return new ArrayList<>();
+    /**
+     * this function meant for the store owner only to change description of product p
+     * @param pid product id
+     */
+    public void setDescription(int pid, String description) throws Exception {
+        if (inventory.getProduct(pid)!= null)
+        {
+            inventory.setDescription(pid, description);
+            return;
+        }
+        throw new Exception("product isn't available at this store");
     }
+
+    /**
+     * this function meant for the store owner only to change the price of product p
+     * @param pid product id
+     * @param newprice new price should be a positive integer
+     */
+    public void setPrice(int pid, int newprice) throws Exception  {
+       inventory.setPrice(pid, newprice);
+    }
+
+
+    public int getQuantityOfProduct(int pid) throws Exception {
+        return inventory.getQuantity(pid);
+    }
+
+
 
 
 

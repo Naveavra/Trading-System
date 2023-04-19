@@ -1,10 +1,12 @@
 package domain.store.storeManagement;
 
-import datastructres.Pair;
+import utils.Pair;
 import utils.Role;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 public class AppHistory {
@@ -12,12 +14,12 @@ public class AppHistory {
         Pair<Integer, Role> data; //userid and role
         ArrayList<Node> children; //list of all the users this user appoint in this store
 
-        ArrayList<Integer> dismissed;
+        Set<Integer> dismissed;
         public Node(Pair<Integer, Role> appointment){
             //Assign data to the new node, set left and right children to null
             this.data = appointment;
             this.children = new ArrayList<Node>();
-            this.dismissed = new ArrayList<Integer>();
+            this.dismissed = new HashSet<>();
         }
         private Node findNode(Integer userId)
         {
@@ -42,14 +44,14 @@ public class AppHistory {
         }
 
         //remove the node and all of his descendants
-        private ArrayList<Integer> deleteNode(Pair<Integer, Role> nodeData) {
+        private Set<Integer>  deleteNode(Pair<Integer, Role> nodeData) {
             Node node = findNode(nodeData.getFirst());
             if (node == null) {
                 return null; // node not found
             }
             dismissed.add(node.data.getFirst());
             for (Node child : node.children) {
-                dismissed.addAll(deleteNode(child.data));
+                dismissed.addAll(Objects.requireNonNull(deleteNode(child.data)));
             }
             children.remove(node);
             return dismissed;
@@ -77,7 +79,7 @@ public class AppHistory {
         return true;
     }
 
-    public ArrayList<Integer> removeChild(Integer userId) throws Exception {
+    public Set<Integer> removeChild(Integer userId) throws Exception {
        Node childNode = root.findNode(userId);
        if (childNode == null)
        {

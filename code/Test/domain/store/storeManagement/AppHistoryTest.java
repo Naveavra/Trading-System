@@ -1,13 +1,13 @@
 package domain.store.storeManagement;
 
-import datastructres.Pair;
+import utils.Pair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import utils.Role;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,7 +78,7 @@ class AppHistoryTest {
         root.addNode(node0.getFirst(), node1);
         root.addNode(node1.getFirst(), node2);
         root.addNode(node2.getFirst(), node3);
-        ArrayList<Integer> dismissed = root.removeChild(node1.getFirst());
+        HashSet<Integer> dismissed = (HashSet<Integer>) root.removeChild(node1.getFirst());
         assertTrue(dismissed.contains(node2.getFirst()));
         assertTrue(dismissed.contains(node3.getFirst()));
         dismissed.clear();
@@ -86,7 +86,7 @@ class AppHistoryTest {
     @Test
     void removeLeafNode() throws Exception {
         root.addNode(node0.getFirst(), node3);
-        ArrayList<Integer> dismissed = root.removeChild(node3.getFirst());
+        HashSet<Integer> dismissed = (HashSet<Integer>) root.removeChild(node3.getFirst());
         assertTrue(dismissed.contains(3));
     }
     @AfterAll
