@@ -91,15 +91,15 @@ public class Store {
      */
     public void addProduct(Product p, int quantity)
     {
-        if (inventory.containsKey(p.))
-        {
-            inventory.replace(p,new AtomicInteger(inventory.get(p).getAndAdd(quantity)));
-        }
-        else
-        {
-            AtomicInteger newProductQuantity =  new AtomicInteger(quantity);
-            inventory.put(p, newProductQuantity);
-        }
+//        if (inventory.containsKey(p.))
+//        {
+//            inventory.replace(p,new AtomicInteger(inventory.get(p).getAndAdd(quantity)));
+//        }
+//        else
+//        {
+//            AtomicInteger newProductQuantity =  new AtomicInteger(quantity);
+//            inventory.put(p, newProductQuantity);
+//        }
     }
 
     /**
@@ -114,11 +114,11 @@ public class Store {
 
     public ArrayList<Product> searchProductByCategory(ArrayList<String> categories)
     {
-        ArrayList<Product> products;
-        for (Product p: inventory.keySet()) {
-            if (p.getCategories().contains())
-
-        }
+        //        for (Product p: inventory.keySet()) {
+//            if (p.getCategories().contains())
+//
+//        }
+        return new ArrayList<>();
     }
 
 
