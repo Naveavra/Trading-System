@@ -1,7 +1,6 @@
 package domain.store.product;
 
-import domain.store.product.Product;
-
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,6 +17,15 @@ public class ProductController {
             int id = prod_id.getAndIncrement();
             productList.put(id,new Product(id, name, description));
         }
+    }
+
+    /**
+     * gets product id and return list of the grading the product got by buyers
+     */
+    public ArrayList<Integer> getProductReviews(int productID) throws Exception {
+        Product p = getProduct(productID);
+        if (p != null){return productgrading.get(p);}
+        throw new Exception("product doesnt exist G");
     }
     public void setDescription(int prodID, String desc){
         Product p = getProduct(prodID);
@@ -42,7 +50,7 @@ public class ProductController {
     }
 
     public Product getProduct(Integer productID){
-        if(productList.contains(productID)){
+        if(productList.containsKey(productID)){
             return productList.get(productID);
         }
         return null;

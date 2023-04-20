@@ -1,48 +1,96 @@
 package domain.store.product;
 
+import domain.store.product.Product;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
 
 public class ProductTest {
 
     @Test
-    public void testAddCategory() {
-        Product p = new Product(1, "Test Product", "A test product");
-        p.addCategory("Category 1");
-        p.addCategory("Category 2");
-        List<String> categories = p.getCategories();
-        assertEquals(categories.size(), 2);
-        assertTrue(categories.contains("Category 1"));
-        assertTrue(categories.contains("Category 2"));
+    public void testProductCreation() {
+        // Arrange
+        int id = 1;
+        String name = "Product 1";
+        String desc = "Description of product 1";
+
+        // Act
+        Product product = new Product(id, name, desc);
+
+        // Assert
+        assertNotNull(product);
+        assertEquals(id, product.getID());
+        assertEquals(name, product.name);
+        assertEquals(desc, product.description);
+        assertEquals(0, product.price);
+        assertEquals(0, product.getQuantity());
     }
 
     @Test
-    public void testSetPrice() {
-        Product p = new Product(1, "Test Product", "A test product");
-        p.setPrice(10);
-        assertEquals(p.price, 10);
+    public void testProductQuantity() {
+        // Arrange
+        Product product = new Product(1, "Product 1", "Description of product 1");
+
+        // Act
+        product.setQuantity(10);
+        int quantity = product.getQuantity();
+
+        // Assert
+        assertEquals(10, quantity);
     }
 
     @Test
-    public void testClone() {
-        Product p = new Product(1, "Test Product", "A test product");
-        p.addCategory("Category 1");
-        p.setPrice(10);
-        Product clone = p.clone();
-        assertEquals(clone.id, p.id);
-        assertEquals(clone.name, p.name);
-        assertEquals(clone.description, p.description);
-        assertEquals(clone.price, p.price);
-        List<String> cloneCategories = clone.getCategories();
-        List<String> pCategories = p.getCategories();
-        assertEquals(cloneCategories.size(), pCategories.size());
-        for (int i = 0; i < cloneCategories.size(); i++) {
-            assertEquals(cloneCategories.get(i), pCategories.get(i));
-        }
+    public void testProductPrice() {
+        // Arrange
+        Product product = new Product(1, "Product 1", "Description of product 1");
+
+        // Act
+        product.setPrice(50);
+        int price = product.price;
+
+        // Assert
+        assertEquals(50, price);
     }
 
+    @Test
+    public void testProductClone() {
+        // Arrange
+        Product product1 = new Product(1, "Product 1", "Description of product 1");
+        product1.setPrice(50);
+        product1.setQuantity(10);
+
+        // Act
+        Product product2 = product1.clone();
+
+        // Assert
+        assertNotNull(product2);
+        assertNotSame(product1, product2);
+        assertEquals(product1.getID(), product2.getID());
+        assertEquals(product1.name, product2.name);
+        assertEquals(product1.description, product2.description);
+        assertEquals(product1.price, product2.price);
+        assertEquals(0, product2.getQuantity()); //while cloning quantity should be 0
+    }
+
+    @Test
+    public void testProductNegativePrice() {
+        // Arrange
+        Product product = new Product(1, "Product 1", "Description of product 1");
+
+        // Act
+        product.setPrice(-50);
+
+        // Assert
+        assertEquals(0, product.price);
+    }
+    @Test
+    public void testProductNegativeQuantity() {
+        // Arrange
+        Product product = new Product(1, "Product 1", "Description of product 1");
+
+        // Act
+        product.setQuantity(-10);
+
+        // Assert
+        assertEquals(0, product.getQuantity());
+    }
 }

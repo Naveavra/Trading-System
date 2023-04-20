@@ -6,6 +6,7 @@ import domain.store.product.Product;
 import domain.store.product.ProductController;
 import utils.Role;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class Store {
 
     private final ConcurrentHashMap<Integer, Order> storeorders;    //orederid, order
 
-    private final ConcurrentHashMap<Product, ArrayList<String>> productreviews;
+    //private final ConcurrentHashMap<Product, ArrayList<String>> productreviews;
 
     private final ConcurrentHashMap<Order, Pair<Integer, String>> purchasereviews; //<order, <number of stars, review>>
     public Store(int id, String description, int creatorId){
@@ -34,7 +35,7 @@ public class Store {
         this.inventory = new ProductController();
         this.purchasereviews = new ConcurrentHashMap<>();
         this.storeorders = new ConcurrentHashMap<>();
-        this.productreviews = new ConcurrentHashMap<>();
+        //this.productreviews = new ConcurrentHashMap<>();
     }
 
     public int getStoreid()
@@ -57,14 +58,14 @@ public class Store {
      * gets all reviews written about that product
      * @return Arraylist of all the reviews if there is none return null
      */
-    public ArrayList<String> getProductreviews(Product product)
-    {
-        if (productreviews.containsKey(product))
-        {
-            return productreviews.get(product);
-        }
-        return null;
-    }
+//    public ArrayList<String> getProductreviews(Product product)
+//    {
+//        if (productreviews.containsKey(product))
+//        {
+//            return productreviews.get(product);
+//        }
+//        return null;
+//    }
 
 
 
@@ -170,6 +171,10 @@ public class Store {
 
     public int getQuantityOfProduct(int pid) throws Exception {
         return inventory.getQuantity(pid);
+    }
+
+    public ArrayList<Product> getProductByCategories(ArrayList<String> categories) {
+        return inventory.getProductByCategories(categories);
     }
 
 

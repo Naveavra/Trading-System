@@ -39,6 +39,17 @@ class AppHistoryTest {
     }
 
     @Test
+    void testGetNode() throws Exception {
+        AppHistory appHistory = new AppHistory(new Pair<>(1, Role.Owner));
+        appHistory.addNode(1, new Pair<>(2, Role.Manager));
+        AppHistory.Node node = appHistory.getNode(2);
+        assertNotNull(node);
+        assertEquals(node.data.getFirst(), 2);
+        assertEquals(node.data.getSecond(), Role.Manager);
+    }
+
+
+    @Test
     void getNodeNotExists()
     {
         Assertions.assertNull(root.getNode(2));
@@ -82,6 +93,22 @@ class AppHistoryTest {
         assertTrue(dismissed.contains(node2.getFirst()));
         assertTrue(dismissed.contains(node3.getFirst()));
         dismissed.clear();
+    }
+
+    @Test
+    void testRemoveChild() throws Exception {
+        AppHistory appHistory = new AppHistory(new Pair<>(1, Role.Owner));
+        appHistory.addNode(1, new Pair<>(2, Role.Manager));
+        appHistory.removeChild(2);
+        assertFalse(appHistory.isChild(1, 2));
+    }
+
+    @Test
+    void testIsChild() throws Exception {
+        AppHistory appHistory = new AppHistory(new Pair<>(1, Role.Owner));
+        appHistory.addNode(1, new Pair<>(2, Role.Manager));
+        assertTrue(appHistory.isChild(1, 2));
+        assertFalse(appHistory.isChild(2, 1));
     }
     @Test
     void removeLeafNode() throws Exception {
