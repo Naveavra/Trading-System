@@ -10,5 +10,8 @@ public class ProxyPayment implements PaymentAdapter {
             real = paymentAdapter;
     }
 
-    public void pay(){}
+    @Override
+    public void pay() {
+
+    }
 }

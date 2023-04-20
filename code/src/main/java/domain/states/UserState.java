@@ -7,6 +7,6 @@ public abstract class UserState {
     protected Permission permission; //saves all the permission a user has for a store.
     protected Role role;
     public boolean checkPermission(Action a){
-        return false;
+        return permission.checkPermission(a);
     }
 }
