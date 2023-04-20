@@ -129,9 +129,9 @@ public class Store {
      * @param name new name of the product
      * @param pid product id
      */
-    public void addNewProduct(String name, String description, AtomicInteger pid)
+    public Product addNewProduct(String name, String description, AtomicInteger pid)
     {
-        inventory.addProduct(name, description, pid);
+        return inventory.addProduct(name, description, pid);
     }
 
     /**

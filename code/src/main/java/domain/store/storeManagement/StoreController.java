@@ -14,10 +14,57 @@ public class StoreController {
 
     public ConcurrentHashMap<Integer, Store> storeList; //storeid, Store
     AtomicInteger storescounter;
+    AtomicInteger productIDs = new AtomicInteger(0);
+    ArrayList<Product> products; //for fast access
 
     public StoreController() {
         storeList = new ConcurrentHashMap<>();
         storescounter = new AtomicInteger(0);
+        products = new ArrayList<>();
+
+    }
+    public synchronized void addProduct(int storeid, String name, String desc, AtomicInteger productIDs){
+        Store st;
+        if((st = getStore(storeid))!=null){
+            Product p = st.addNewProduct(name,desc,productIDs).clone();
+            addToProducts(p);
+        }
+    }
+
+    public int checkPurchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart){
+        int totalprice = 0;
+        for (Integer storeid : shoppingcart.keySet())
+        {
+            Store store = storeList.get(storeid);
+            try {
+                totalprice += store.checkPurchaseProducts(shoppingcart.get(storeid));
+            } catch (Exception e) {
+                return  -1;
+            }
+        }
+        return totalprice;
+    }
+
+    public boolean PurchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart){
+
+        for (Integer storeid : shoppingcart.keySet())
+        {
+            Store store = storeList.get(storeid);
+            if (!(store.PurchaseProducts(shoppingcart.get(storeid))))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    private synchronized boolean addToProducts(Product prod){
+        for(Product p : products){
+            if(p.getID() == prod.getID()){
+                return false;
+            }
+        }
+        products.add(prod);
+        return true;
     }
 
     public Store getStore(int storeid)

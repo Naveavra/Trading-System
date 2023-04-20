@@ -3,6 +3,8 @@ package domain.store.product;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProductController {
 
@@ -23,13 +25,15 @@ public class ProductController {
      * @param description String
      * @param prod_id AtomicInteger
      */
-    public void addProduct(String name,String description,AtomicInteger prod_id){
+    public Product addProduct(String name,String description,AtomicInteger prod_id){
+        Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
-            Product p = new Product(id,name,description);
+            p = new Product(id,name,description);
             productList.put(id,p);
 //            categories.put(p,new ArrayList<>());
         }
+        return p;
     }
 
     /**
@@ -68,23 +72,8 @@ public class ProductController {
         }
         return null;
     }
-//    public void addCategory(Integer prodID,String category){
-//        category = category.toLowerCase();
-//        Product p = getProduct(prodID);
-//        if(p!=null && !categories.get(p).contains(category)){
-//            categories.get(p).add(category);
-//        }
-//    }
+
     public ArrayList<String> getAllCategories(){
-//        ArrayList<String> res = new ArrayList<>();
-//        for(Product p: categories.keySet()){
-//            for(String cat : categories.get(p)){
-//                if(!res.contains(cat)){
-//                    res.add(cat);
-//                }
-//            }
-//        }
-//        return  res;
         return new ArrayList<>(categories.keySet());
     }
 
@@ -119,26 +108,25 @@ public class ProductController {
         return matchingProducts;
     }
 
-    public ArrayList<Product> getProductByDescription(ArrayList<String> keywords) {
-        ArrayList<Product> matchingProducts = new ArrayList<>();
+    public ArrayList<Product> getProductByKeywords(ArrayList<String> keywords) {
+        Set<Product> temp = new HashSet<>();
         Map<Product, Integer> productToNumMatches = new HashMap<>();
-        for(Integer p : productList.keySet())
-//        for (Map.Entry<Integer, Product> entry : productList.entrySet()) {
-//            Product product = entry.getValue();
-//            int numMatches = 0;
-//            String description = product.getDescription().toLowerCase();
-//
-//            for (String searchString : keywords) {
-//                if (description.contains(searchString.toLowerCase())) {
-//                    numMatches++;
-//                }
-//            }
-//
-//            if (numMatches > 0) {
-//                matchingProducts.add(product);
-//                productToNumMatches.put(product, numMatches);
-//            }
-//        }
+        for(String word : keywords) {
+            String regex = "\\b" + Pattern.quote(word) + "\\b";
+            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            for (Product p : productList.values()) {
+                Matcher matcher = pattern.matcher(p.getDescription());
+                if(matcher.find()){
+                    if(temp.add(p)){
+                        productToNumMatches.put(p,1);
+                    }
+                    else{
+                        productToNumMatches.put(p,productToNumMatches.get(p)+1);
+                    }
+                }
+            }
+        }
+        ArrayList<Product> matchingProducts = new ArrayList<>(temp);
 
         matchingProducts.sort((p1, p2) -> {
             int numMatches1 = productToNumMatches.get(p1);
@@ -150,13 +138,17 @@ public class ProductController {
     }
 
     public ArrayList<Product> getAllFromCategory(String category){
-        ArrayList<Product> prodForCategory = new ArrayList<>();
-        for(Product p : categories.keySet()){
-            if(categories.get(p).contains(category)){
-                prodForCategory.add(p);
+        ArrayList<Product> result = new ArrayList<>();
+        ArrayList<Integer> prod_ids = categories.get(category);
+        if(prod_ids!= null){
+            for(Integer id : prod_ids){
+                Product p = getProduct(id);
+                if(p!=null){
+                    result.add(p);
+                }
             }
         }
-        return prodForCategory;
+        return result;
     }
 
     /**
@@ -170,13 +162,7 @@ public class ProductController {
         }
         throw new Exception("Boy that product doesn't exist");
     }
-//    public List<String> getCategories(Integer prodID){
-//        Product p = getProduct(prodID);
-//        if(p != null){
-//            return categories.get(p);
-//        }
-//        return null;
-//    }
+
     public Product getProductByName(String name){
         for(Product p : productList.values()){
             if(Objects.equals(p.name, name)){
