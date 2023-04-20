@@ -1,11 +1,15 @@
 package domain.user;
 
 import domain.states.Buyer;
+import domain.states.StoreOwner;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import utils.Action;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 //TODO: change all the void functions to return a value in case of success/failure
 public class Member {
 
@@ -17,7 +21,7 @@ public class Member {
     private String password;
 
     private HashMap<Integer, UserState> roles; //connection between registered to the shops
-    private HashMap<Integer, Store> stores; //saves all the stores it has a job at
+    private List<Store> stores; //saves all the stores it has a job at
     private UserState currentState;
 
     private UserHistory userHistory;
@@ -25,14 +29,14 @@ public class Member {
 
     private boolean isConnected;
 
-    public Member(int id, String name, String email, String password, String birthday){
+    public Member(int id, String email, String password, String birthday){
         this.id = id;
-        this.name = name;
+        this.name = email;
         this.email = email;
         this.password = password;
         this.birthday = birthday;
         roles = new HashMap<>();
-        stores = new HashMap<>();
+        stores = new LinkedList<>();
         currentState = new Buyer();
         currentStoreId = -1;
         userHistory = new UserHistory();
@@ -112,5 +116,13 @@ public class Member {
 
     public HashMap<Integer, HashMap<Integer, Integer>> getCartContent() {
         return g.getCartContent();
+    }
+
+    public void openStore(Store store) {
+        UserState owner = new StoreOwner();
+        stores.add(store);
+        roles.put(store.getId(), owner);
+
+
     }
 }

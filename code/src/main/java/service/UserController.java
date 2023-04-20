@@ -1,5 +1,6 @@
 package service;
 
+import domain.store.storeManagement.Store;
 import domain.user.Guest;
 import domain.user.Member;
 
@@ -37,53 +38,53 @@ public class UserController {
         guestList.remove(id);
     }
 
-    public synchronized void register(String name, String email, String password, String birthday) throws RuntimeException{
+    public synchronized void register(String email, String password, String birthday) throws Exception{
         if(!checkEmail(email))
-            throw new RuntimeException("invalid email");
+            throw new Exception("invalid email");
         for (Member m : memberList.values())
             if(m.getEmail().equals(email))
-                throw new RuntimeException("the email is already taken");
+                throw new Exception("the email is already taken");
         if(!checkPassword(password))
-            throw new RuntimeException("password not meeting requirements");
+            throw new Exception("password not meeting requirements");
         if(!checkBirthday(birthday))
-            throw new RuntimeException("birthday not legal");
+            throw new Exception("birthday not legal");
 
-        Member m = new Member(memberIds, name, email, password, birthday);
+        Member m = new Member(memberIds, email, password, birthday);
         memberList.put(email, m);
         idToEmail.put(memberIds, email);
         memberIds+=2;
     }
 
 
-    public synchronized int login(String email, String password) throws RuntimeException{
+    public synchronized int login(String email, String password) throws Exception{
         if(!checkEmail(email))
-            throw new RuntimeException("invalid email");
+            throw new Exception("invalid email");
         if(!checkPassword(password))
-            throw new RuntimeException("invalid password");
+            throw new Exception("invalid password");
         Member m = memberList.get(email);
         if(m == null)
-            throw new RuntimeException("no such email");
+            throw new Exception("no such email");
         try {
             if(m.login(password))
                 return m.getId();
         }
         catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            throw new Exception(e.getMessage());
         }
         return -1;
     }
 
     //when logging out returns to main menu as guest
-    public synchronized int logout(int memberId) throws RuntimeException{
+    public synchronized int logout(int memberId) throws Exception{
         String email = idToEmail.get(memberId);
         if(email != null){
             return logout(email);
         }
         else
-            throw new RuntimeException("no such id for a member");
+            throw new Exception("no such id for a member");
     }
 
-    public synchronized int logout(String email) throws RuntimeException{
+    public synchronized int logout(String email) throws Exception{
         Member m = memberList.get(email);
         if (m != null) {
             if (m.getIsConnected()) {
@@ -91,15 +92,15 @@ public class UserController {
                 return enterGuest();
             }
             else
-                throw new RuntimeException("member is disconnected already");
+                throw new Exception("member is disconnected already");
         }
         else
-            throw new RuntimeException("member not found");
+            throw new Exception("member not found");
 
     }
 
     //adding the productId to the user's cart with the given quantity
-    public synchronized void addProductToCart(int userId, int storeId, int productId, int quantity) throws RuntimeException{
+    public synchronized void addProductToCart(int userId, int storeId, int productId, int quantity) throws Exception{
         if(userId % 2 == 0) {
             Guest g = guestList.get(userId);
             g.addProductToCart(storeId, productId, quantity);
@@ -109,97 +110,128 @@ public class UserController {
             if (email != null)
                 addProductToCart(email, storeId, productId, quantity);
             else
-                throw new RuntimeException("no such member exists");
+                throw new Exception("no such member exists");
         }
 
     }
 
-    public synchronized void addProductToCart(String email, int storeId, int productId, int quantity) throws RuntimeException{
+    public synchronized void addProductToCart(String email, int storeId, int productId, int quantity) throws Exception{
         Member m = memberList.get(email);
         if(m != null)
             m.addProductToCart(storeId, productId, quantity);
         else
-            throw new RuntimeException("no such member exists");
+            throw new Exception("no such member exists");
     }
 
     //removing the productId from the user's cart
-    public synchronized void removeProductFromCart(int userId, int storeId, int productId) throws RuntimeException{
+    public synchronized void removeProductFromCart(int userId, int storeId, int productId) throws Exception{
         if(userId % 2 == 0) {
             Guest g = guestList.get(userId);
             if(g != null)
                 g.removeProductFromCart(storeId, productId);
             else
-                throw new RuntimeException("no such guest exists");
+                throw new Exception("no such guest exists");
         }
         else {
             String email = idToEmail.get(userId);
             if (email != null)
                 removeProductFromCart(email, storeId, productId);
             else
-                throw new RuntimeException("no such member exists");
+                throw new Exception("no such member exists");
         }
     }
 
-    public synchronized void removeProductFromCart(String email, int storeId, int productId) throws RuntimeException{
+    public synchronized void removeProductFromCart(String email, int storeId, int productId) throws Exception{
         Member m = memberList.get(email);
         if(m != null)
             m.removeProductFromCart(storeId, productId);
         else
-            throw new RuntimeException("no such member exists");
+            throw new Exception("no such member exists");
     }
 
 
     //adding the change quantity to the product's quantity in the user's cart
-    public void changeQuantityInCart(int userId, int storeId, int productId, int change) throws RuntimeException{
+    public void changeQuantityInCart(int userId, int storeId, int productId, int change) throws Exception{
         if(userId % 2 == 0) {
             Guest g = guestList.get(userId);
             if(g != null)
                 g.changeQuantityInCart(storeId, productId, change);
             else
-                throw new RuntimeException("no such guest exists");
+                throw new Exception("no such guest exists");
         }
         else {
             String email = idToEmail.get(userId);
             if (email != null)
                 changeQuantityInCart(email, storeId, productId, change);
             else
-                throw new RuntimeException("no such member exists");
+                throw new Exception("no such member exists");
         }
     }
-    public synchronized void changeQuantityInCart(String email, int storeId, int productId, int change) throws RuntimeException{
+    public synchronized void changeQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
         Member m = memberList.get(email);
         if(m != null)
             m.changeQuantityInCart(storeId, productId, change);
         else
-            throw new RuntimeException("no such member exists");
+            throw new Exception("no such member exists");
     }
 
     //the return of the function is a hashmap between storeId to hashmap of productId to quantity. meaning that it displays the
     //product and quantity for each store.
-    public synchronized HashMap<Integer, HashMap<Integer, Integer>> getUserCart(int userId) throws RuntimeException{
+    public synchronized HashMap<Integer, HashMap<Integer, Integer>> getUserCart(int userId) throws Exception{
         if(userId % 2 == 0) {
             Guest g = guestList.get(userId);
             if(g != null)
                 return  g.getCartContent();
             else
-                throw new RuntimeException("no such guest exists");
+                throw new Exception("no such guest exists");
         }
         else {
             String email = idToEmail.get(userId);
             if (email != null)
                 return getUserCart(email);
             else
-                throw new RuntimeException("no such member exists");
+                throw new Exception("no such member exists");
         }
     }
 
-    public synchronized HashMap<Integer, HashMap<Integer, Integer>> getUserCart(String email) throws RuntimeException{
+    public synchronized HashMap<Integer, HashMap<Integer, Integer>> getUserCart(String email) throws Exception{
         Member m = memberList.get(email);
         if(m != null)
             return m.getCartContent();
         else
-            throw new RuntimeException("no such member exists");
+            throw new Exception("no such member exists");
     }
+
+    //opening a new store in the market
+
+    public synchronized boolean canOpenStore(int userId){
+
+        String email = idToEmail.get(userId);
+        if(email == null)
+            return false;
+        return memberList.get(email) != null;
+    }
+    public synchronized void openStore(int userId, Store store) throws Exception{
+        if(userId % 2 == 0){
+            throw new Exception("a guest can't open a store");
+        }
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                openStore(email, store);
+            else
+                throw new Exception("the id does not match any member");
+        }
+    }
+
+    public synchronized void openStore(String email, Store store) throws Exception{
+        Member m = memberList.get(email);
+        if(m != null)
+            m.openStore(store);
+        else
+            throw new Exception("the member does not exist");
+    }
+
 
 
 

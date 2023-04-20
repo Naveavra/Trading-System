@@ -10,14 +10,12 @@ public class Guest {
     private int id;
     private ShoppingCart cart;
 
-    private UserState currentState;
 
 
 
     public Guest(int id){
         this.id = id;
         cart = new ShoppingCart();
-        currentState = new Buyer();
     }
 
     public int getId(){
@@ -25,10 +23,7 @@ public class Guest {
     }
 
     public void addProductToCart(int storeId, int productId, int quantity) throws RuntimeException{
-        if(currentState.checkPermission(Action.buyProduct))
             cart.addProductToCart(storeId, productId, quantity);
-        else
-            throw new RuntimeException("not allowed to buy");
     }
 
 
