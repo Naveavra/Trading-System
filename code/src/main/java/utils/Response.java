@@ -1,8 +1,10 @@
 package utils;
 
-public class Response {
+public class Response<T> {
     private String errorMessage;
-    public Response(){}
+
+    private T value;
+    public Response(T res){value = res;}
 
     public Response(String errorMessage){
         this.errorMessage = errorMessage;
@@ -16,4 +18,7 @@ public class Response {
         return errorMessage;
     }
 
+    public T getValue() {
+        return value;
+    }
 }

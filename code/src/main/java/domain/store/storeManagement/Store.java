@@ -4,6 +4,7 @@ import utils.Pair;
 import domain.store.order.Order;
 import domain.store.product.Product;
 import domain.store.product.ProductController;
+import utils.Review;
 import utils.Role;
 
 import java.security.PublicKey;
@@ -25,7 +26,7 @@ public class Store {
 
     //private final ConcurrentHashMap<Product, ArrayList<String>> productreviews;
 
-    private final ConcurrentHashMap<Order, Pair<Integer, String>> purchasereviews; //<order, <number of stars, review>>
+    private final ConcurrentHashMap<Integer, Review> purchasereviews; //<orderid, review>
     public Store(int id, String description, int creatorId){
         Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
         appHistory = new AppHistory(creatorNode);
@@ -47,7 +48,7 @@ public class Store {
         return creatorId;
     }
 
-    public ConcurrentHashMap<Order, Pair<Integer, String>> getPurchaseReviews() {
+    public ConcurrentHashMap<Integer,Review> getPurchaseReviews() {
         return this.purchasereviews;
     }
     public ConcurrentHashMap<Integer, Order> getOrdersHistory() {
@@ -97,8 +98,8 @@ public class Store {
         return appHistory.addNode(userinchargeid, node);
     }
 
-    public void addReview(Order order, int stars, String review) throws Exception {
-        if (storeorders.containsKey(order.getOrderId()))
+    public void addReview(int orderId, Review review) throws Exception {
+        if (storeorders.containsKey(orderId))
         {
             purchasereviews.put(order, new Pair<Integer, String>(stars, review));
             return;
@@ -108,17 +109,12 @@ public class Store {
 
     /**
      * fire user from the store appointment tree
-     * @param userinchrageid the user who wants to fire another user
      * @param joblessuser the user we want to fire
      * @return set aff all the other users who lost their role in our store
      * @throws Exception if the action isn't valid will throw exception
      */
-    public Set<Integer> fireUser(int userinchrageid, int joblessuser) throws Exception
+    public Set<Integer> fireUser(int joblessuser) throws Exception
     {
-        if (!appHistory.isChild(userinchrageid, joblessuser))
-        {
-            throw new Exception("user cant fire the other user");
-        }
         return new HashSet<>(appHistory.removeChild(joblessuser));
     }
 

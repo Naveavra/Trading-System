@@ -121,7 +121,7 @@ public class Member {
     public void openStore(Store store) {
         UserState owner = new StoreOwner();
         stores.add(store);
-        roles.put(store.getId(), owner);
+        roles.put(store.getStoreid(), creator);
 
 
     }
