@@ -2,6 +2,8 @@ package domain.states;
 
 import utils.Action;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Permission {
@@ -16,7 +18,7 @@ public class Permission {
         return actions.contains(a);
     }
 
-    public void addActions(ConcurrentLinkedDeque<Action> actions){
+    public void addActions(List<Action> actions){
 
     }
 

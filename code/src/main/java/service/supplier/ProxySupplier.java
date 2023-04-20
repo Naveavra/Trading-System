@@ -11,4 +11,8 @@ public class ProxySupplier implements SupplierAdapter {
             real = supplierAdapter;
     }
 
+    @Override
+    public void orderSupplies() {
+
+    }
 }

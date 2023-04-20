@@ -3,16 +3,18 @@ package domain.user;
 import domain.states.Buyer;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
+import utils.Action;
 
 import java.util.HashMap;
 //TODO: change all the void functions to return a value in case of success/failure
 public class Member {
-    //private Guest guest; //the user's information he had as guest
-    ShoppingCart cart;
+
+    private Guest g;
     private int id;
     private String name;
     private String birthday;
     private String email;
+    private String password;
 
     private HashMap<Integer, UserState> roles; //connection between registered to the shops
     private HashMap<Integer, Store> stores; //saves all the stores it has a job at
@@ -21,6 +23,34 @@ public class Member {
     private UserHistory userHistory;
     private int currentStoreId;
 
+    private boolean isConnected;
+
+    public Member(int id, String name, String email, String password, String birthday){
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.birthday = birthday;
+        roles = new HashMap<>();
+        stores = new HashMap<>();
+        currentState = new Buyer();
+        currentStoreId = -1;
+        userHistory = new UserHistory();
+        g = new Guest(id);
+    }
+
+
+    public boolean getIsConnected(){
+        return isConnected;
+    }
+
+    public void connect(){
+        isConnected = true;
+    }
+
+    public void disconnect(){
+        isConnected = false;
+    }
 
     public void changeState(int storeId){ // if the user is not a specific store(such as main page) storeId == -1
         if(roles.containsKey(storeId))
@@ -37,15 +67,50 @@ public class Member {
     public void addActionToStore(int storeId){
     }
 
-    public UserState getRole(int storeId){
-        return roles.get(storeId);
+    public String getEmail(){
+        return email;
+    }
+
+    public String getName(){
+        return name;
     }
 
 
-    public void getGuestInfo(Guest g){
-        cart = g.getCart();
-
+    public int getId(){
+        return id;
     }
 
 
+    public boolean login(String password) throws RuntimeException{
+        if (password.equals(password)) {
+            if (!getIsConnected()) {
+                connect();
+                return true;
+            }
+            else
+                throw new RuntimeException("member is connected already");
+        }
+        else
+            throw new RuntimeException("wrong password");
+    }
+
+
+    public void addProductToCart(int storeId, int productId, int quantity) throws RuntimeException{
+        if(currentState.checkPermission(Action.buyProduct))
+            g.addProductToCart(storeId, productId, quantity);
+        else
+            throw new RuntimeException("not allowed to buy");
+    }
+
+    public void removeProductFromCart(int storeId, int productId) {
+        g.removeProductFromCart(storeId, productId);
+    }
+
+    public void changeQuantityInCart(int storeId, int productId, int change) throws RuntimeException{
+        g.changeQuantityInCart(storeId, productId, change);
+    }
+
+    public HashMap<Integer, HashMap<Integer, Integer>> getCartContent() {
+        return g.getCartContent();
+    }
 }

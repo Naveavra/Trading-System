@@ -11,6 +11,6 @@ public class Store {
     private AppHistory appHistory; //first one is always the store creator
 
     public Store(){
-        appHistory = new AppHistory(null, creatorId, Role.Creator);
+        //appHistory = new AppHistory(null, creatorId, Role.Creator);
     }
 }

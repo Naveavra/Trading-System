@@ -11,4 +11,9 @@ public class ProxySecurity implements SecurityAdapter {
         if(real == null)
             real = securityAdapter;
     }
+
+    @Override
+    public void checkUser() {
+
+    }
 }
