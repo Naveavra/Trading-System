@@ -3,6 +3,8 @@ package domain.states;
 import utils.Action;
 import utils.Role;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class StoreCreator extends UserState {
@@ -10,7 +12,7 @@ public class StoreCreator extends UserState {
     public StoreCreator() {
         role = Role.Creator;
         permission = new Permission();
-        ConcurrentLinkedDeque<Action> actions = new ConcurrentLinkedDeque<>();
+        List<Action> actions = new LinkedList<>();
 
         actions.add(Action.buyProduct);
         actions.add(Action.createStore);

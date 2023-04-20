@@ -175,8 +175,13 @@ public class UserController {
             throw new Exception("no such member exists");
     }
 
-    //the return of the function is a hashmap between storeId to hashmap of productId to quantity. meaning that it displays the
-    //product and quantity for each store.
+    /**
+     * the return of the function is a hashmap between storeId to hashmap of productId to quantity. meaning that it displays the
+     * product and quantity for each store.
+     * @param userId
+     * @return
+     * @throws Exception
+     */
     public synchronized HashMap<Integer, HashMap<Integer, Integer>> getUserCart(int userId) throws Exception{
         if(userId % 2 == 0) {
             Guest g = guestList.get(userId);
@@ -230,6 +235,30 @@ public class UserController {
             m.openStore(store);
         else
             throw new Exception("the member does not exist");
+    }
+
+    //writeReview
+    public Review writeReview(String content, int grading, int userId){
+        String bestSong = "This was a triumph.\n" +
+                "I'm making a note here:\n" +
+                "huge success.\n" +
+                "It's hard to overstate\n" +
+                "My satisfaction.\n" +
+                "Aperture Science.\n" +
+                "We do what we must\n" +
+                "Because we can.\n" +
+                "For the good of all of us.\n" +
+                "Except the ones who are dead.\n" +
+                "\n" +
+                "But there's no sense crying\n" +
+                "Over every mistake.\n" +
+                "You just keep on trying\n" +
+                "Till you run out of cake.\n" +
+                "And the Science gets done.\n" +
+                "And you make a neat gun.\n" +
+                "For the people who are\n" +
+                "Still alive." ;
+        //TODO For Eli <3
     }
 
 

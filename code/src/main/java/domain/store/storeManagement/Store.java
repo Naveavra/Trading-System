@@ -1,18 +1,18 @@
 package domain.store.storeManagement;
 
+import utils.Message;
 import utils.Pair;
 import domain.store.order.Order;
 import domain.store.product.Product;
 import domain.store.product.ProductController;
-import utils.Review;
 import utils.Role;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Store {
@@ -27,7 +27,7 @@ public class Store {
 
     //private final ConcurrentHashMap<Product, ArrayList<String>> productreviews;
 
-    private final ConcurrentHashMap<Integer, Review> purchasereviews; //<orderid, review>
+    private final ConcurrentLinkedDeque<Message> messages; //<orderid, review>
     public Store(int id, String description, int creatorId){
         Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
         appHistory = new AppHistory(creatorNode);
@@ -35,7 +35,7 @@ public class Store {
         this.storeDescription = description;
         this.creatorId = creatorId;
         this.inventory = new ProductController();
-        this.purchasereviews = new ConcurrentHashMap<>();
+        this.messages = new ConcurrentLinkedDeque<>();
         this.storeorders = new ConcurrentHashMap<>();
         //this.productreviews = new ConcurrentHashMap<>();
     }
@@ -49,8 +49,8 @@ public class Store {
         return creatorId;
     }
 
-    public ConcurrentHashMap<Integer,Review> getPurchaseReviews() {
-        return this.purchasereviews;
+    public ConcurrentLinkedDeque<Message> getMessages() {
+        return this.messages;
     }
     public ConcurrentHashMap<Integer, Order> getOrdersHistory() {
         return this.storeorders;
@@ -99,10 +99,10 @@ public class Store {
         return appHistory.addNode(userinchargeid, node);
     }
 
-    public void addReview(int orderId, Review review) throws Exception {
+    public void addReview(int orderId, Message review) throws Exception {
         if (storeorders.containsKey(orderId))
         {
-            purchasereviews.put(order, new Pair<Integer, String>(stars, review));
+            messages.add(review);
             return;
         }
         throw new Exception("order doesnt exist");

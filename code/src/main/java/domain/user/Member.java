@@ -1,14 +1,17 @@
 package domain.user;
 
 import domain.states.Buyer;
-import domain.states.StoreOwner;
+import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import utils.Action;
+import utils.Message;
+import utils.Notification;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 //TODO: change all the void functions to return a value in case of success/failure
 public class Member {
@@ -22,6 +25,7 @@ public class Member {
 
     private HashMap<Integer, UserState> roles; //connection between registered to the shops
     private List<Store> stores; //saves all the stores it has a job at
+    private ConcurrentLinkedDeque<Notification> notifications;
     private UserState currentState;
 
     private UserHistory userHistory;
@@ -41,6 +45,7 @@ public class Member {
         currentStoreId = -1;
         userHistory = new UserHistory();
         g = new Guest(id);
+        notifications = new ConcurrentLinkedDeque<>();
     }
 
 
@@ -119,10 +124,21 @@ public class Member {
     }
 
     public void openStore(Store store) {
-        UserState owner = new StoreOwner();
+        UserState creator = new StoreCreator();
         stores.add(store);
         roles.put(store.getStoreid(), creator);
 
 
+    }
+
+    /**
+     * creates a review and sends it to the store
+     * @param content
+     * @param grading
+     * @param orderId
+     * @return
+     */
+    public Message writeReview(String content, int grading, int orderId){
+        if()
     }
 }
