@@ -9,6 +9,7 @@ import utils.Role;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -171,6 +172,47 @@ public class Store {
 
     public ArrayList<Product> getProductByCategories(ArrayList<String> categories) {
         return inventory.getProductByCategories(categories);
+    }
+
+    /**
+     * function that gets the basket user wants to buy from the store
+     * @param basket built from productid and quantity
+     * @return the basket's price
+     * @throws Exception if the quantity is higher than the quantity in the inventory of product doesn't exit
+     */
+    public int checkPurchaseProducts(HashMap<Integer, Integer> basket) throws Exception {
+        int purchaseingprice = 0;
+        for (Integer productid : basket.keySet())
+        {
+            Product p = inventory.getProduct(productid);
+            if (p != null && basket.get(productid) >= p.getQuantity())
+            {
+                purchaseingprice += p.price * basket.get(productid);
+            }
+            else throw new Exception("product isn't available");
+        }
+        return purchaseingprice;
+    }
+
+    /**
+     * purchasing confirmed so this function adjust the quantity in the store inventory
+     * @return true if success else false
+     */
+    public boolean PurchaseProducts(HashMap<Integer, Integer> basket){
+        for (Integer productid : basket.keySet())
+        {
+            Product p = inventory.getProduct(productid);
+            if (!(p != null && basket.get(productid) >= p.getQuantity()))
+            {
+                return false;
+            }
+            inventory.getProduct(productid).setQuantity(basket.get(productid) * (-1));
+        }
+        return true;
+    }
+
+    public ArrayList<Product> getProductByKeywords(ArrayList<String> keywords){
+        return inventory.getProductByKeywords(keywords);
     }
 
 

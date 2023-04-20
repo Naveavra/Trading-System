@@ -3,8 +3,10 @@ package domain.store.storeManagement;
 import domain.store.product.Product;
 import domain.store.product.ProductController;
 import domain.store.storeManagement.Store;
+import utils.Message;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,6 +39,15 @@ public class StoreController {
         for (Store store:
              storeList.values()) {
                 products.addAll(store.getProductByCategories(categories));
+        }
+        return products;
+    }
+
+    public ArrayList<Product> getProductByKeyWords(ArrayList<String> keywords){
+        ArrayList<Product> products = new ArrayList<>();
+        for (Store store:
+                storeList.values()) {
+            products.addAll(store.getProductByKeywords(keywords));
         }
         return products;
     }
