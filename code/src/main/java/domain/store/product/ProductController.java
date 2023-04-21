@@ -25,7 +25,7 @@ public class ProductController {
      * @param description String
      * @param prod_id AtomicInteger
      */
-    public Product addProduct(String name,String description,AtomicInteger prod_id){
+    public synchronized Product addProduct(String name,String description,AtomicInteger prod_id){
         Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
@@ -35,7 +35,10 @@ public class ProductController {
         }
         return p;
     }
-
+    public synchronized Product addProduct(Product p){
+        if(!productList.containsValue(p)) productList.put(p.getID(), p);
+        return p;
+    }
     /**
      * gets product id and return list of the grading the product got by buyers
      */

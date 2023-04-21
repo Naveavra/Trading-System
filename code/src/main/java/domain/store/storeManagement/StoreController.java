@@ -15,17 +15,22 @@ public class StoreController {
     public ConcurrentHashMap<Integer, Store> storeList; //storeid, Store
     AtomicInteger storescounter;
     AtomicInteger productIDs = new AtomicInteger(0);
-    ArrayList<Product> products; //for fast access
+    ConcurrentHashMap<Integer,Product> products; //for fast access
 
     public StoreController() {
         storeList = new ConcurrentHashMap<>();
         storescounter = new AtomicInteger(0);
-        products = new ArrayList<>();
-
+        products = new ConcurrentHashMap<>();
     }
     public synchronized void addProduct(int storeid, String name, String desc, AtomicInteger productIDs){
         Store st;
-        if((st = getStore(storeid))!=null){
+        Product prod;
+        if((st = getStore(storeid))!=null && (prod = getExistingProductByName(name))!=null){
+            Product prod_ = prod.clone();
+            prod_.setDescription(desc);
+            st.addNewProduct(prod_);
+        }
+        else if((st = getStore(storeid))!=null){
             Product p = st.addNewProduct(name,desc,productIDs).clone();
             addToProducts(p);
         }
@@ -94,12 +99,8 @@ public class StoreController {
         return true;
     }
     private synchronized boolean addToProducts(Product prod){
-        for(Product p : products){
-            if(p.getID() == prod.getID()){
-                return false;
-            }
-        }
-        products.add(prod);
+        if(products.containsKey(prod.getID())) {return false;}
+        products.put(prod.getID(),prod);
         return true;
     }
 

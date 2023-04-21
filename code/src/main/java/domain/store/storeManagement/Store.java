@@ -121,11 +121,13 @@ public class Store {
      * @param name new name of the product
      * @param pid product id
      */
-    public Product addNewProduct(String name, String description, AtomicInteger pid)
+    public synchronized Product addNewProduct(String name, String description, AtomicInteger pid)
     {
         return inventory.addProduct(name, description, pid);
     }
-
+    public synchronized Product addNewProduct(Product p){
+        return inventory.addProduct(p);
+    }
     /**
      * adds the quantity to the product previous quantity
      * @param pid product quantity
