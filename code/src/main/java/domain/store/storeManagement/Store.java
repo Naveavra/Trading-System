@@ -223,14 +223,25 @@ public class Store {
     }
 
 
+    public String getProductName(int productId) throws Exception{
+        Product p = inventory.getProduct(productId);
+        if (p!= null)
+        {
+            return p.getName();
+        }
+        throw new Exception("product doesnt exist");
+    }
 
+    public ArrayList<String> checkMessages() {
+        ArrayList<String> messagesToRead = new ArrayList<>();
+        for (Message m : messages.values()){
+            if (!m.getSeen())
+            {
+                messagesToRead.add(m.toString());
+                m.markAsRead();
+            }
+        }
+        return messagesToRead;
 
-
-
-
-
-
-
-
-
+    }
 }

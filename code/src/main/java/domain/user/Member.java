@@ -194,4 +194,22 @@ public class Member {
         else
             throw new Exception("can't write a review for an order that didn't occur");
     }
+
+    public synchronized void addNotification(Notification notification){
+        notifications.add(notification);
+    }
+
+    public List<String> displayNotifications(){
+        List<String> display = new LinkedList<>();
+        for (Notification notification : notifications)
+            display.add(notification.toString());
+        notifications = new ConcurrentLinkedDeque<>();
+        return display;
+    }
+
+    public boolean canCheckMessages(int storeId) {
+        UserState us = roles.get(storeId);
+        return us.checkPermission(Action.viewMessages);
+    }
+
 }

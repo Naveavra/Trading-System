@@ -296,7 +296,38 @@ public class UserController {
 
     }
 
-    public Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId){
+    /**
+     * write a review for a product in a store.
+     * @param orderId
+     * @param storeId
+     * @param productId
+     * @param comment
+     * @param grading
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public synchronized Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId) throws Exception {
+        if (userId % 2 == 0)
+            throw new Exception("a guest can't write reviews");
+        else {
+            String email = idToEmail.get(userId);
+            if (email != null)
+                return writeReviewForProduct(orderId, storeId, productId, comment, grading, email);
+            else
+                throw new Exception("no member has such id");
+        }
+    }
+
+    public synchronized Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, String email) throws Exception{
+        Member m = memberList.get(email);
+        if(m != null) {
+            int tmp = messageIds;
+            messageIds+=2;
+            return m.writeReview(tmp, storeId, productId, orderId, comment, grading);
+        }
+        else
+            throw new Exception("no member has this email");
     }
 
 

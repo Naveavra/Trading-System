@@ -7,6 +7,8 @@ import utils.Message;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -84,19 +86,21 @@ public class StoreController {
     /**
      * performs the purchasing
      * @param shoppingcart the client shopping cart
-     * @return if successful return true else false
+     * @return if successful returs the store owners ids else null
      */
-    public boolean PurchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart){
-
+    public Set<Integer> PurchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart){
+        Set<Integer> storeOwnersIDS = new HashSet<>();
         for (Integer storeid : shoppingcart.keySet())
         {
             Store store = storeList.get(storeid);
             if (!(store.PurchaseProducts(shoppingcart.get(storeid))))
             {
-                return false;
+                return null;
             }
+            storeOwnersIDS.add(store.getCreatorId());
+
         }
-        return true;
+        return storeOwnersIDS;
     }
     private synchronized boolean addToProducts(Product prod){
         if(products.containsKey(prod.getID())) {return false;}
@@ -136,4 +140,22 @@ public class StoreController {
         return products;
     }
 
+    public String getProductName(int storeId, int productId) throws Exception {
+        Store store = storeList.get(storeId);
+        if (store == null)
+        {
+            throw new Exception("store doesnt exist");
+        }
+        return store.getProductName(productId);
+    }
+
+    public ArrayList<String> checkMessages(int storeID) throws Exception{
+        Store store = storeList.get(storeID);
+        if (store != null && store.isActive())
+        {
+            return store.checkMessages();
+        }
+        throw new Exception("store doesnt Exist or Open");
+
+    }
 }
