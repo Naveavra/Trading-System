@@ -7,7 +7,6 @@ public class Logger {
     public enum logStatus{ //maybe should be moved to a designated class
         Success,
         Fail,
-        Error
     }
     private static Logger instance;
     private HashMap<logStatus,List<String>> logMap;
@@ -15,7 +14,6 @@ public class Logger {
     private Logger() {
         logMap.put(logStatus.Success, new ArrayList<>());
         logMap.put(logStatus.Fail, new ArrayList<>());
-        logMap.put(logStatus.Error, new ArrayList<>());
     }
     
     public static synchronized Logger getInstance() {

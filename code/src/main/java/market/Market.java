@@ -1,7 +1,11 @@
 package market;
 
+import service.UserController;
+import utils.Logger;
 import utils.Response;
-
+import com.google.gson.Gson;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -13,6 +17,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 //TODO: getCartContent(int userId), purchaseCart(int userId), openStore(int userId),
 public class Market implements MarketInterface{
     private ConcurrentLinkedDeque<Admin> admins;
+    private UserController uc = new UserController();
+    private MarketController mc = new MarketController();
+    private Logger logger = Logger.getInstance();
     public Market (Admin admin){
         admins = new ConcurrentLinkedDeque<>();
         admins.add(admin);
@@ -20,33 +27,81 @@ public class Market implements MarketInterface{
 
 
     @Override
-    public Response<String> register(String name, String mail, String pass, String birthday) {
-        return null;
+    public Response<String> register(String name, String email, String pass, String birthday) {
+        try {
+            uc.register(email, pass, birthday);
+            logger.log(Logger.logStatus.Success, "user :" + email + " has successfully register on " + LocalDateTime.now());
+            return new Response<String>("user register successfully",null,null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail,"user cant register because " +e.getMessage() + "on "+ LocalDateTime.now());
+            return new Response<>(null,"register failed",e.getMessage());
+        }
     }
 
     @Override
-    public Response<String> addProductToCart(int storeId, int productId, int quantity) {
-        return null;
+    public Response<String> addProductToCart(int userId,int storeId, int productId, int quantity) {
+        try{
+            uc.addProductToCart(userId, storeId,productId,quantity);
+            string name = uc.getUserName(userId);
+            String productName = mc.getProductName(storeId , productId);
+            logger.log(Logger.logStatus.Success,"user " + name + "add " + quantity +" "+ productName +" to shopping cart on " + LocalDateTime.now());
+            return new Response<String>("user add to cart successfully",null,null);
+          } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail,"user cant add product To Cart because " +e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"add product to cart failed" ,e.getMessage());
+         }
     }
 
     @Override
-    public Response<String> removeProductFromCart(int storeId, int productId) {
-        return null;
+    public Response<String> removeProductFromCart(int userId ,int storeId, int productId) {
+        try{
+            uc.removeProductFromCart(userId, storeId,productId);
+            string name = uc.getUserName(userId);
+            String productName = mc.getProductName(storeId , productId);
+            logger.log(Logger.logStatus.Success,"user " + name + "remove "+ productName +" from shopping cart on " + LocalDateTime.now());
+            return new Response<String>("user remove "+ productName +" from cart successfully",null,null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail,"user cant remove product from Cart because " +e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"remove product from cart failed" , e.getMessage());
+        }
     }
 
     @Override
-    public Response<String> changeQuantityInCart(int storeId, int productId, int change) {
-        return null;
+    public Response<String> changeQuantityInCart(int userId,int storeId, int productId, int change) {
+        try{
+            uc.changeQuantityInCart(userId, storeId,productId,change);
+            string name = uc.getUserName(userId);
+            String productName = mc.getProductName(storeId , productId);
+            logger.log(Logger.logStatus.Success,"user " + name + " change quantity to "+ change +" on shopping cart on " + LocalDateTime.now());
+            return new Response<String>("user change Quantity of "+productName+" In Cart to "+change +" successfully ",null,null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail,"user cant remove change quantity in cart because " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"remove product from cart failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> getCart(int userId) {
-        return null;
+        try{
+            Gson gson = new Gson();
+            String cart = gson.toJson(uc.getUserCart(userId));
+            string name = uc.getUserName(userId);
+            logger.log(Logger.logStatus.Success,"user" + name + "ask for his cart on "+ LocalDateTime.now());
+            return new Response<String>(cart,null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"user cant get his cart because " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"get cart failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> buy(int userId) {
-        return null;
+        try {
+            HashMap<Integer, HashMap<Integer, Integer>> cart = uc.getUserCart(userId);
+            mc.purchase(userId,cart);
+        } catch (Exception e) {
+
+        }
     }
 
     @Override

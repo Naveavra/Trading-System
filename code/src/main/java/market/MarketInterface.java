@@ -19,9 +19,9 @@ public interface MarketInterface {
 
     //guest methods
     public Response<String> register(String name,String mail ,String pass ,String birthday );
-    public Response<String> addProductToCart(int storeId ,int productId, int quantity);
-    public Response<String> removeProductFromCart(int storeId, int productId);
-    public Response<String> changeQuantityInCart(int storeId, int productId, int change);
+    public Response<String> addProductToCart(int userId,int storeId ,int productId, int quantity);
+    public Response<String> removeProductFromCart(int userId,int storeId, int productId);
+    public Response<String> changeQuantityInCart(int userId,int storeId, int productId, int change);
     public Response<String> getCart(int userId);
     public Response<String> buy(int userId);
 
