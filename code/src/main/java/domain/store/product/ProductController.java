@@ -36,7 +36,7 @@ public class ProductController {
         return p;
     }
     public synchronized Product addProduct(Product p){
-        if(!productList.containsValue(p)) productList.put(p.getID(), p);
+        if(getProductByName(p.name) != null) productList.put(p.getID(), p);
         return p;
     }
     /**

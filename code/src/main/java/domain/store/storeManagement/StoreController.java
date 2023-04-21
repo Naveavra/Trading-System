@@ -24,17 +24,30 @@ public class StoreController {
         storescounter = new AtomicInteger(0);
         products = new ConcurrentHashMap<>();
     }
-    public synchronized void addProduct(int storeid, String name, String desc, AtomicInteger productIDs){
+
+    /**
+     * adds a new product to a store.
+     * @param storeid
+     * @param name
+     * @param desc
+     * @param price
+     * @param quantity
+     */
+    public synchronized void addProduct(int storeid, String name, String desc, int price,int quantity){
         Store st;
         Product prod;
         if((st = getStore(storeid))!=null && (prod = getExistingProductByName(name))!=null){
             Product prod_ = prod.clone();
             prod_.setDescription(desc);
+            prod_.setPrice(price);
+            prod_.setQuantity(quantity);
             st.addNewProduct(prod_);
         }
         else if((st = getStore(storeid))!=null){
-            Product p = st.addNewProduct(name,desc,productIDs).clone();
-            addToProducts(p);
+            Product p = st.addNewProduct(name,desc,productIDs);
+            p.setPrice(price);
+            p.setQuantity(quantity);
+            addToProducts(p.clone());
         }
     }
     private Product getExistingProductByName(String prodName){
@@ -102,6 +115,12 @@ public class StoreController {
         }
         return storeOwnersIDS;
     }
+
+    /**
+     * adds the product to the store controller to view which products exists in the market and create
+     * @param prod
+     * @return
+     */
     private synchronized boolean addToProducts(Product prod){
         if(products.containsKey(prod.getID())) {return false;}
         products.put(prod.getID(),prod);
