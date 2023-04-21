@@ -30,7 +30,38 @@ public class StoreController {
             addToProducts(p);
         }
     }
+    private Product getExistingProductByName(String prodName){
+        for(Product p : products.values()){
+            if(p.getName().equalsIgnoreCase(prodName)){
+                return p;
+            }
+        }
+        return null;
+    }
+    /**
+     * @return the store creator id if the store or order doesn't exist return -1
+     */
+    public int writeReviewForStore(Message message){
+        Store store = storeList.get(message.getStoreId());
+        if (store != null)
+        {
+            try {
+                return store.addReview(message.getOrderId(), message);
+            }
+            catch (Exception e)
+            {
+                return -1;
+            }
+        }
+        return -1;
+    }
 
+
+    /**
+     * checks if the purchasing is possible
+     * @param shoppingcart the client shopping cart
+     * @return if the purchasing is possible returns the total price else return -1
+     */
     public int checkPurchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart){
         int totalprice = 0;
         for (Integer storeid : shoppingcart.keySet())
@@ -45,6 +76,11 @@ public class StoreController {
         return totalprice;
     }
 
+    /**
+     * performs the purchasing
+     * @param shoppingcart the client shopping cart
+     * @return if successful return true else false
+     */
     public boolean PurchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart){
 
         for (Integer storeid : shoppingcart.keySet())
@@ -98,8 +134,5 @@ public class StoreController {
         }
         return products;
     }
-
-
-
 
 }

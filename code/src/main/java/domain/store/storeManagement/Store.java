@@ -24,10 +24,7 @@ public class Store {
     private final ProductController inventory; //<productID,<product, quantity>>
 
     private final ConcurrentHashMap<Integer, Order> storeorders;    //orederid, order
-
-    //private final ConcurrentHashMap<Product, ArrayList<String>> productreviews;
-
-    private final ConcurrentLinkedDeque<Message> messages; //<orderid, review>
+    private final ConcurrentHashMap<Integer, Message> messages; //<messageid, message>
     public Store(int id, String description, int creatorId){
         Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
         appHistory = new AppHistory(creatorNode);
@@ -56,18 +53,6 @@ public class Store {
         return this.storeorders;
     }
 
-    /**
-     * gets all reviews written about that product
-     * @return Arraylist of all the reviews if there is none return null
-     */
-//    public ArrayList<String> getProductreviews(Product product)
-//    {
-//        if (productreviews.containsKey(product))
-//        {
-//            return productreviews.get(product);
-//        }
-//        return null;
-//    }
 
 
 
@@ -99,13 +84,20 @@ public class Store {
         return appHistory.addNode(userinchargeid, node);
     }
 
-    public void addReview(int orderId, Message review) throws Exception {
+    public int addReview(int orderId, Message review) throws Exception {
         if (storeorders.containsKey(orderId))
         {
-            messages.add(review);
-            return;
+            messages.put(review.getMessageId(), review);
+            return creatorId;
         }
         throw new Exception("order doesnt exist");
+    }
+
+    /**
+     * @return the users that has a role in the store
+     */
+    public Set<Integer> getUsersInStore(){
+        return appHistory.getUsers();
     }
 
     /**
@@ -172,6 +164,19 @@ public class Store {
 
     public ArrayList<Product> getProductByCategories(ArrayList<String> categories) {
         return inventory.getProductByCategories(categories);
+    }
+
+    /**
+     * @param userID creator id
+     * @return all the users that have a role in this store
+     * @throws Exception if the user isn't the store creator
+     */
+    public Set<Integer> closeStoreTemporary(int userID) throws Exception {
+        if (creatorId == userID){
+            isActive = false;
+            return appHistory.getUsers();
+        }
+        throw new Exception("user isn't authorized to close this store");
     }
 
     /**

@@ -17,6 +17,26 @@ public class Message {
         orderId = -1;
     }
 
+    public int getRating() {
+        return rating;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public Member getReviewer() {
+        return reviewer;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
     public void addOrderId(int orderId){
         this.orderId = orderId;
     }

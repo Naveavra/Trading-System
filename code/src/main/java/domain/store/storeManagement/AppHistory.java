@@ -60,6 +60,8 @@ public class AppHistory {
     //Represent the root of binary tree
     public Node root;
 
+    public Set<Integer> usersInStore;
+
     public AppHistory(Pair<Integer, Role> creatorNode){
 
         root = new Node(creatorNode);
@@ -76,6 +78,7 @@ public class AppHistory {
             throw new Exception("User cant appoint other users in the store");
         }
         fatherNode.addChild(child);
+        usersInStore.add(child.getFirst());
         return true;
     }
 
@@ -86,7 +89,16 @@ public class AppHistory {
            throw new Exception("user isn't part of the store");
        }
        this.root.dismissed.clear();
-       return root.deleteNode(childNode.data);
+        Set<Integer> dismissedes = new HashSet<>();
+        dismissedes.add(userId);
+        dismissedes.addAll(Objects.requireNonNull(root.deleteNode(childNode.data)));
+        usersInStore.removeAll(dismissedes);
+        return dismissedes;
+    }
+
+    public Set<Integer> getUsers()
+    {
+        return usersInStore;
     }
 
     public boolean isChild(Integer father, Integer child)
