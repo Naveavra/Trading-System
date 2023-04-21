@@ -1,6 +1,11 @@
 package market;
 
+import service.MarketController;
+import service.UserController;
+import utils.Logger;
 import utils.Response;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +19,10 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 //TODO: getCartContent(int userId), purchaseCart(int userId), openStore(int userId),
 public class Market implements MarketInterface{
     private ConcurrentLinkedDeque<Admin> admins;
+    private UserController uc = new UserController();
+    private MarketController mc = new MarketController();
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private Logger log = Logger.getInstance();
     public Market (Admin admin){
         admins = new ConcurrentLinkedDeque<>();
         admins.add(admin);
@@ -21,8 +30,12 @@ public class Market implements MarketInterface{
 
 
     @Override
-    public Response<String> register(String name, String mail, String pass, String birthday) {
-        return null;
+    public Response<String> register(String email, String pass, String birthday) {
+        try {
+            register(email,pass,birthday);
+            log.log(Logger.logStatus.Success,"user :"+ email +" has succesfuley register on"+LocalDateTime.now());
+            return Response<String>("");
+        }catch ()
     }
 
     @Override
