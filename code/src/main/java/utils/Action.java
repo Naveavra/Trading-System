@@ -19,6 +19,7 @@ public enum Action {
     changePurchasePolicy, // manager, owner, creator
     changeDiscountPolicy, // manager, owner, creator
     addPurchaseConstraint, // manager, owner, creator
+    addDiscountConstraint, // manager, owner, creator
     fireManager, // manager, owner, creator
     addOwner, // owner, creator
     fireOwner, // owner, creator

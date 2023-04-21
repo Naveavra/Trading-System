@@ -37,6 +37,7 @@ public class StoreManager extends UserState {
         actions.add(Action.answerQuestions);
         actions.add(Action.seeStoreHistory);
         actions.add(Action.addProduct);
+        actions.add(Action.addDiscountConstraint);
 
         permission.addActions(actions);
     }

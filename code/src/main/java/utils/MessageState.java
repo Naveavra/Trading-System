@@ -1,7 +1,8 @@
 package utils;
 
 public enum MessageState {
-    review,
+    reviewStore,
+    reviewProduct,
     complaint,
     question
 }

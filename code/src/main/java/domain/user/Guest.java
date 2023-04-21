@@ -38,4 +38,8 @@ public class Guest {
     public HashMap<Integer, HashMap<Integer, Integer>> getCartContent() {
         return cart.getContent();
     }
+
+    public void emptyCart() {
+        cart.emptyCart();
+    }
 }

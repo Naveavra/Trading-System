@@ -32,7 +32,7 @@ public class Store {
         this.storeDescription = description;
         this.creatorId = creatorId;
         this.inventory = new ProductController();
-        this.messages = new ConcurrentLinkedDeque<>();
+        this.messages = new ConcurrentHashMap<>();
         this.storeorders = new ConcurrentHashMap<>();
         //this.productreviews = new ConcurrentHashMap<>();
     }
@@ -46,7 +46,7 @@ public class Store {
         return creatorId;
     }
 
-    public ConcurrentLinkedDeque<Message> getMessages() {
+    public ConcurrentHashMap<Integer, Message> getMessages() {
         return this.messages;
     }
     public ConcurrentHashMap<Integer, Order> getOrdersHistory() {

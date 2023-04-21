@@ -53,4 +53,8 @@ public class ShoppingCart {
         return cartContent;
 
     }
+
+    public void emptyCart() {
+        baskets = new HashMap<>();
+    }
 }

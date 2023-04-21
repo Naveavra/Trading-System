@@ -3,6 +3,7 @@ package service;
 import domain.store.storeManagement.Store;
 import domain.user.Guest;
 import domain.user.Member;
+import utils.Message;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,6 +16,7 @@ public class UserController {
     ConcurrentHashMap<String, Member> memberList;
     ConcurrentHashMap<Integer, String> idToEmail;
     int memberIds;
+    int messageIds;
 
 
     public UserController(){
@@ -23,6 +25,7 @@ public class UserController {
         memberList = new ConcurrentHashMap<>();
         idToEmail = new ConcurrentHashMap<>();
         memberIds = 1;
+        messageIds = 0;
     }
 
 
@@ -151,7 +154,7 @@ public class UserController {
 
 
     //adding the change quantity to the product's quantity in the user's cart
-    public void changeQuantityInCart(int userId, int storeId, int productId, int change) throws Exception{
+    public synchronized void changeQuantityInCart(int userId, int storeId, int productId, int change) throws Exception{
         if(userId % 2 == 0) {
             Guest g = guestList.get(userId);
             if(g != null)
@@ -207,8 +210,30 @@ public class UserController {
             throw new Exception("no such member exists");
     }
 
-    //opening a new store in the market
+    public synchronized void purchaseMade(int orderId, int userId) throws Exception{
+        if (userId % 2 == 1) {
+            String email = idToEmail.get(userId);
+            if(email != null)
+                purchaseMade(orderId, email);
+            else
+                throw new Exception("no member has such id");
+        }
+    }
 
+    public synchronized void purchaseMade(int orderId, String email) throws Exception{
+        Member m = memberList.get(email);
+        if(m != null)
+            m.purchaseMade(orderId);
+        else
+            throw new Exception("no member has that email");
+    }
+
+
+    /**
+     * opening a new store in the market
+     * @param userId
+     * @return
+     */
     public synchronized boolean canOpenStore(int userId){
 
         String email = idToEmail.get(userId);
@@ -237,28 +262,41 @@ public class UserController {
             throw new Exception("the member does not exist");
     }
 
-    //writeReview
-    public Review writeReview(String content, int grading, int userId){
-        String bestSong = "This was a triumph.\n" +
-                "I'm making a note here:\n" +
-                "huge success.\n" +
-                "It's hard to overstate\n" +
-                "My satisfaction.\n" +
-                "Aperture Science.\n" +
-                "We do what we must\n" +
-                "Because we can.\n" +
-                "For the good of all of us.\n" +
-                "Except the ones who are dead.\n" +
-                "\n" +
-                "But there's no sense crying\n" +
-                "Over every mistake.\n" +
-                "You just keep on trying\n" +
-                "Till you run out of cake.\n" +
-                "And the Science gets done.\n" +
-                "And you make a neat gun.\n" +
-                "For the people who are\n" +
-                "Still alive." ;
-        //TODO For Eli <3
+
+    /**
+     * write a review for a store (can be part of a bigger order).
+     * @param content
+     * @param grading
+     * @param userId
+     * @return
+     */
+
+    public synchronized Message writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
+        if(userId % 2 == 0)
+            throw new Exception("a guest can't write reviews");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                return writeReviewForStore(orderId, storeId, content, grading, email);
+            else
+                throw new Exception("no member has such id");
+        }
+
+    }
+
+    public synchronized Message writeReviewForStore(int orderId, int storeId, String content, int grading, String email) throws Exception{
+        Member m = memberList.get(email);
+        if(m != null) {
+            int tmp = memberIds;
+            messageIds+=2;
+            return m.writeReview(tmp, storeId, orderId, content, grading);
+        }
+        else
+            throw new Exception("no member has this email");
+
+    }
+
+    public Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId){
     }
 
 
