@@ -2,6 +2,7 @@ package market;
 
 import utils.Response;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -46,6 +47,8 @@ public class Market implements MarketInterface{
 
     @Override
     public Response<String> buy(int userId) {
+        pair<info, cart> = uc.getUserCart(userId);
+        String recipt = mc.purchase(info, cart);
         return null;
     }
 

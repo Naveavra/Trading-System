@@ -27,7 +27,7 @@ public enum Action {
     closeStore, // creator
     reopenStore, // creator
     checkWorkersStatus, // manager, owner, creator
-    viewQuestions, // manager, owner, creator
+    viewMessages, // manager, owner, creator
     answerQuestions, // manager, owner, creator
     seeStoreHistory, // manager, owner, creator
 }

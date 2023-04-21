@@ -1,8 +1,22 @@
 package utils;
 
-import java.util.List;
 
-public class Notification <T>{
-    private List<T> notifications;
+public class Notification<T>{
+    private T notification;
+
+
+    public Notification(T notification){
+        this.notification =  notification;
+    }
+
+    public T getNotification(){
+        return notification;
+    }
+
+    public String toString() {
+        return "the value of the notification is: " + notification.toString();
+    }
+
+
 
 }

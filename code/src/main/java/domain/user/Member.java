@@ -158,7 +158,8 @@ public class Member {
     public Message writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
         if(userHistory.checkOrderOccurred(orderId)) {
             if (userHistory.checkOrderContainsStore(orderId, storeId)) {
-                Message message = new Message(messageId, content, grading, this, orderId, storeId, MessageState.reviewStore);
+                Message message = new Message(messageId, content, this, orderId, storeId, MessageState.reviewStore);
+                message.addRating(grading);
                 return message;
             }
             else
@@ -183,6 +184,25 @@ public class Member {
             if(userHistory.checkOrderContainsStore(orderId, storeId)){
                 if(userHistory.checkOrderContainsProduct(orderId, storeId, productId)){
                     Message m = new Message(messageId, content, grading, this, orderId, storeId, MessageState.reviewProduct);
+                    m.addProductToReview(productId);
+                    return m;
+                }
+                else
+                    throw new Exception("the product isn't part of the order so you can't write a review about him");
+            }
+            else
+                throw new Exception("can't write a review because the store wasn't part of the order");
+        }
+        else
+            throw new Exception("can't write a review for an order that didn't occur");
+    }
+
+    public Message writeComplaint(int orderId, int storeId, int productId, String comment) {
+        if(userHistory.checkOrderOccurred(orderId)){
+            if(userHistory.checkOrderContainsStore(orderId, storeId)){
+                if(userHistory.checkOrderContainsProduct(orderId, storeId, productId)){
+                    Message m = new Message(messageId, content, this, orderId, storeId, MessageState.complaint);
+                    m.addProductToReview(productId);
                     return m;
                 }
                 else
