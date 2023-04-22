@@ -5,6 +5,13 @@ import utils.Logger;
 import utils.Response;
 import com.google.gson.Gson;
 import java.time.LocalDateTime;
+
+import service.MarketController;
+import service.UserController;
+import utils.Logger;
+import utils.Response;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -20,6 +27,9 @@ public class Market implements MarketInterface{
     private UserController uc = new UserController();
     private MarketController mc = new MarketController();
     private Logger logger = Logger.getInstance();
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private Logger log = Logger.getInstance();
+    
     public Market (Admin admin){
         admins = new ConcurrentLinkedDeque<>();
         admins.add(admin);
@@ -36,6 +46,12 @@ public class Market implements MarketInterface{
             logger.log(Logger.logStatus.Fail,"user cant register because " +e.getMessage() + "on "+ LocalDateTime.now());
             return new Response<>(null,"register failed",e.getMessage());
         }
+    public Response<String> register(String email, String pass, String birthday) {
+        try {
+            register(email,pass,birthday);
+            log.log(Logger.logStatus.Success,"user :"+ email +" has succesfuley register on"+LocalDateTime.now());
+            return Response<String>("");
+        }catch ()
     }
 
     @Override
@@ -102,6 +118,9 @@ public class Market implements MarketInterface{
         } catch (Exception e) {
 
         }
+        pair<info, cart> = uc.getUserCart(userId);
+        String recipt = mc.purchase(info, cart);
+        return null;
     }
 
     @Override

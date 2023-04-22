@@ -4,9 +4,12 @@ import domain.store.storeManagement.Store;
 import domain.user.Guest;
 import domain.user.Member;
 import utils.Message;
+import utils.Notification;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class UserController {
@@ -265,12 +268,14 @@ public class UserController {
 
     /**
      * write a review for a store (can be part of a bigger order).
+     * @param orderId
+     * @param storeId
      * @param content
      * @param grading
      * @param userId
      * @return
+     * @throws Exception
      */
-
     public synchronized Message writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
         if(userId % 2 == 0)
             throw new Exception("a guest can't write reviews");
@@ -296,8 +301,146 @@ public class UserController {
 
     }
 
-    public Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId){
+    /**
+     * write a review for a product in a store.
+     * @param orderId
+     * @param storeId
+     * @param productId
+     * @param comment
+     * @param grading
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public synchronized Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId) throws Exception {
+        if (userId % 2 == 0)
+            throw new Exception("a guest can't write reviews");
+        else {
+            String email = idToEmail.get(userId);
+            if (email != null)
+                return writeReviewForProduct(orderId, storeId, productId, comment, grading, email);
+            else
+                throw new Exception("no member has such id");
+        }
     }
+
+    public synchronized Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, String email) throws Exception{
+        Member m = memberList.get(email);
+        if(m != null) {
+            int tmp = messageIds;
+            messageIds+=2;
+            return m.writeReview(tmp, storeId, productId, orderId, comment, grading);
+        }
+        else
+            throw new Exception("no member has this email");
+    }
+
+    public synchronized boolean canCheckMessages(int userId, int storeId) throws Exception{
+        if(userId % 2 == 0)
+            return false;
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                return canCheckMessages(email, storeId);
+            else
+                throw new Exception("no member has this id");
+
+        }
+    }
+
+
+    public synchronized boolean canCheckMessages(String email, int storeId) throws Exception {
+        Member m = memberList.get(email);
+        if(m != null)
+            return m.canCheckMessages(storeId);
+        else
+            throw new Exception("no member has this email");
+
+    }
+
+    /**
+     * write a complaint to a store after a purchase
+     * @param orderId
+     * @param storeId
+     * @param productId
+     * @param comment
+     * @param userId
+     * @return
+     */
+    public synchronized Message writeComplaintToStore(int orderId, int storeId, int productId, String comment,int userId)throws Exception{
+        if(userId % 2 == 0)
+            throw new Exception("guest can't write complaints");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                return writeComplaintToStore(orderId, storeId, productId, comment, email);
+            else
+                throw new Exception("no member has this id");
+        }
+    }
+
+    public synchronized Message writeComplaintToStore(int orderId, int storeId, int productId, String comment,String email) throws Exception{
+        Member m = memberList.get(email);
+        if(m != null)
+            return m.writeComplaint(orderId, storeId, productId, comment);
+        else
+            throw new Exception("no member has this email");
+    }
+    /**
+     * add notification for a user.
+     * @param userId
+     * @param notification
+     * @throws Exception
+     */
+    public synchronized void addNotification(int userId, Notification notification) throws Exception{
+        if(userId % 2 == 0)
+            throw new Exception("guest can't get Notification");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                addNotification(email, notification);
+            else
+                throw new Exception("no member has this id");
+        }
+    }
+
+    public synchronized void addNotification(String email, Notification notification) throws Exception{
+        Member m = memberList.get(email);
+        if(m != null)
+            m.addNotification(notification);
+        else
+            throw new Exception("no member has this email");
+    }
+
+
+    /**
+     * displayes the user's notifications
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public synchronized List<String> displayNotifications(int userId) throws Exception{
+        if(userId % 2 == 0)
+            throw new Exception("guest doesn't have notifications");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null){
+                return displayNotifications(email);
+            }
+            else
+                throw new Exception("no member has this id");
+        }
+    }
+
+    public synchronized List<String> displayNotifications(String email) throws Exception{
+        Member m = memberList.get(email);
+        if(m != null){
+            return m.displayNotifications();
+        }
+        else
+            throw new Exception("no member has such email");
+    }
+
 
 
 

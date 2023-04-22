@@ -32,7 +32,7 @@ public class StoreOwner extends UserState {
         actions.add(Action.addPurchaseConstraint);
         actions.add(Action.fireManager);
         actions.add(Action.checkWorkersStatus);
-        actions.add(Action.viewQuestions);
+        actions.add(Action.viewMessages);
         actions.add(Action.answerQuestions);
         actions.add(Action.seeStoreHistory);
         actions.add(Action.addProduct);

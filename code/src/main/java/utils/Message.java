@@ -12,18 +12,25 @@ public class Message {
     private int orderId; //if it is a review then orderId > -1 else orderId == -1
     private int storeId;
     private int productId;
+    private boolean gotFeedback;
+    private boolean seen;
 
-    public Message(int messageId, String content, int rating, Member reviewer, int orderId, int storeId, MessageState ms){
+    public Message(int messageId, String content, Member reviewer, int orderId, int storeId, MessageState ms){
         this.messageId = messageId;
         this.content = content;
-        this.rating = rating;
+        this.rating = -1;
         this.reviewer = reviewer;
         this.orderId = orderId;
         this.storeId = storeId;
         this.state = ms;
         productId = -1;
+        gotFeedback = false;
+        seen = false;
     }
 
+    public void addRating(int rating){
+        this.rating = rating;
+    }
     public int getRating() {
         return rating;
     }
@@ -48,16 +55,22 @@ public class Message {
         this.orderId = orderId;
     }
 
-    public void sendFeedback(String feedback){
-        reviewer.addNotification(feedback);
+    public void sendFeedback(String feedback) throws Exception{
+        if(!gotFeedback) {
+            Notification<String> notification = new Notification<>(feedback);
+            reviewer.addNotification(notification);
+            sendEmail();
+        }
+        else
+            throw new Exception("the message already got an answer");
     }
 
     public MessageState getState(){
         return state;
     }
 
-    //sending an email to the owner that a message was added to the store
-    public void sendEmail(){
+    //TODO:needs to check how to email the reviewer
+    private void sendEmail(){
 
     }
 
@@ -70,6 +83,13 @@ public class Message {
             this.productId = productId;
         else
             throw new Exception("the message isn't a review for a product");
+    }
 
+    public void markAsRead(){
+        seen = true;
+    }
+
+    public boolean getSeen(){
+        return seen;
     }
 }
