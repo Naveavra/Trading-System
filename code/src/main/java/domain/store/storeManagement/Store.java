@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
+
 public class Store {
     private final int storeid;
     private boolean isActive;
@@ -25,6 +26,7 @@ public class Store {
 
     private final ConcurrentHashMap<Integer, Order> storeorders;    //orederid, order
     private final ConcurrentHashMap<Integer, Message> messages; //<messageid, message>
+
     public Store(int id, String description, int creatorId){
         Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
         appHistory = new AppHistory(creatorNode);

@@ -40,6 +40,8 @@ public class UserController {
         return g.getId();
     }
 
+
+
     public synchronized void exitGuest(int id){
         guestList.remove(id);
     }

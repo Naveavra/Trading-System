@@ -12,8 +12,6 @@ public class ProxySupplier implements SupplierAdapter {
     }
     public void orderSupplies(){}
 
-    @Override
-    public void orderSupplies() {
 
-    }
+
 }

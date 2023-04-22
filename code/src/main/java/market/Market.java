@@ -7,11 +7,8 @@ import com.google.gson.Gson;
 import java.time.LocalDateTime;
 
 import service.MarketController;
-import service.UserController;
-import utils.Logger;
-import utils.Response;
+
 import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -22,15 +19,15 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 //TODO: addProduct(int userId, int storeId, int productId, int quantity), changeQuantity(int userId, int storeId, int productId, int quantity),
 //TODO: gettingInformationOnProduct(int storeId, int productId), removeFromCart(int userId, int storeId, int productId),
 //TODO: getCartContent(int userId), purchaseCart(int userId), openStore(int userId),
-public class Market implements MarketInterface{
+public class Market implements MarketInterface {
     private ConcurrentLinkedDeque<Admin> admins;
     private UserController uc = new UserController();
     private MarketController mc = new MarketController();
     private Logger logger = Logger.getInstance();
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     private Logger log = Logger.getInstance();
-    
-    public Market (Admin admin){
+
+    public Market(Admin admin) {
         admins = new ConcurrentLinkedDeque<>();
         admins.add(admin);
     }
@@ -41,24 +38,31 @@ public class Market implements MarketInterface{
         try {
             uc.register(email, pass, birthday);
             logger.log(Logger.logStatus.Success, "user :" + email + " has successfully register on " + LocalDateTime.now());
-            return new Response<String>("user register successfully",null,null);
+            return new Response<String>("user register successfully", null, null);
         } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail,"user cant register because " +e.getMessage() + "on "+ LocalDateTime.now());
-            return new Response<>(null,"register failed",e.getMessage());
+            logger.log(Logger.logStatus.Fail, "user cant register because " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "register failed", e.getMessage());
         }
-    public Response<String> register(String email, String pass, String birthday) {
-        try {
-            register(email,pass,birthday);
-            log.log(Logger.logStatus.Success,"user :"+ email +" has succesfuley register on"+LocalDateTime.now());
-            return Response<String>("");
-        }catch ()
     }
 
     @Override
-    public Response<String> addProductToCart(int userId,int storeId, int productId, int quantity) {
+    public Response<String> addProductToCart(int userId, int storeId, int productId, int quantity) {
+        return null;
+    }
+//    public Response<String> register(String email, String pass, String birthday) {
+//        try {
+//            register(email,pass,birthday);
+//            log.log(Logger.logStatus.Success,"user :"+ email +" has succesfuley register on"+LocalDateTime.now());
+//            return Response<String>("");
+//        }catch (Exception e)
+//    }
+
+
+    @Override
+    public Response<String> addProductToCart(int userId, String name, int storeId, int productId, int quantity) {
         try{
             uc.addProductToCart(userId, storeId,productId,quantity);
-            string name = uc.getUserName(userId);
+            //String name = uc.getUserName(userId);
             String productName = mc.getProductName(storeId , productId);
             logger.log(Logger.logStatus.Success,"user " + name + "add " + quantity +" "+ productName +" to shopping cart on " + LocalDateTime.now());
             return new Response<String>("user add to cart successfully",null,null);
@@ -69,12 +73,11 @@ public class Market implements MarketInterface{
     }
 
     @Override
-    public Response<String> removeProductFromCart(int userId ,int storeId, int productId) {
+    public Response<String> removeProductFromCart(int userId ,String userName, int storeId, int productId) {
         try{
             uc.removeProductFromCart(userId, storeId,productId);
-            string name = uc.getUserName(userId);
             String productName = mc.getProductName(storeId , productId);
-            logger.log(Logger.logStatus.Success,"user " + name + "remove "+ productName +" from shopping cart on " + LocalDateTime.now());
+            logger.log(Logger.logStatus.Success,"user " + userName + "remove "+ productName +" from shopping cart on " + LocalDateTime.now());
             return new Response<String>("user remove "+ productName +" from cart successfully",null,null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail,"user cant remove product from Cart because " +e.getMessage()+ "on "+ LocalDateTime.now());
@@ -83,12 +86,11 @@ public class Market implements MarketInterface{
     }
 
     @Override
-    public Response<String> changeQuantityInCart(int userId,int storeId, int productId, int change) {
+    public Response<String> changeQuantityInCart(int userId,String userName, int storeId, int productId, int change) {
         try{
             uc.changeQuantityInCart(userId, storeId,productId,change);
-            string name = uc.getUserName(userId);
             String productName = mc.getProductName(storeId , productId);
-            logger.log(Logger.logStatus.Success,"user " + name + " change quantity to "+ change +" on shopping cart on " + LocalDateTime.now());
+            logger.log(Logger.logStatus.Success,"user " + userName + " change quantity to "+ change +" on shopping cart on " + LocalDateTime.now());
             return new Response<String>("user change Quantity of "+productName+" In Cart to "+change +" successfully ",null,null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail,"user cant remove change quantity in cart because " + e.getMessage()+ "on "+ LocalDateTime.now());
@@ -97,12 +99,31 @@ public class Market implements MarketInterface{
     }
 
     @Override
-    public Response<String> getCart(int userId) {
+    public Response<String> register(String email, String pass, String birthday) {
+        return null;
+    }
+
+    @Override
+    public Response<String> addProductToCart(int storeId, int productId, int quantity) {
+        return null;
+    }
+
+    @Override
+    public Response<String> removeProductFromCart(int storeId, int productId) {
+        return null;
+    }
+
+    @Override
+    public Response<String> changeQuantityInCart(int storeId, int productId, int change) {
+        return null;
+    }
+
+    @Override
+    public Response<String> getCart(int userId, String userName) {
         try{
             Gson gson = new Gson();
             String cart = gson.toJson(uc.getUserCart(userId));
-            string name = uc.getUserName(userId);
-            logger.log(Logger.logStatus.Success,"user" + name + "ask for his cart on "+ LocalDateTime.now());
+            logger.log(Logger.logStatus.Success,"user" + userName + "ask for his cart on "+ LocalDateTime.now());
             return new Response<String>(cart,null,null);
         }catch (Exception e){
             logger.log(Logger.logStatus.Fail,"user cant get his cart because " + e.getMessage()+ "on "+ LocalDateTime.now());
@@ -112,14 +133,15 @@ public class Market implements MarketInterface{
 
     @Override
     public Response<String> buy(int userId) {
-        try {
-            HashMap<Integer, HashMap<Integer, Integer>> cart = uc.getUserCart(userId);
-            mc.purchase(userId,cart);
-        } catch (Exception e) {
-
-        }
-        pair<info, cart> = uc.getUserCart(userId);
-        String recipt = mc.purchase(info, cart);
+//        try {
+//            HashMap<Integer, HashMap<Integer, Integer>> cart = uc.getUserCart(userId);
+//            mc.purchase(userId,cart);
+//        } catch (Exception e) {
+//
+//        }
+//        pair<info, cart> = uc.getUserCart(userId);
+//        String recipt = mc.purchase(info, cart);
+//        return null;
         return null;
     }
 

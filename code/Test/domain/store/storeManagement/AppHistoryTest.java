@@ -1,10 +1,7 @@
 package domain.store.storeManagement;
 
+import org.junit.jupiter.api.*;
 import utils.Pair;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import utils.Role;
 
 import java.util.HashSet;
@@ -19,8 +16,8 @@ class AppHistoryTest {
     static Pair<Integer, Role> node4;
     static Pair<Integer, Role> node5;
     static AppHistory root;
-    @BeforeAll
-    public static void setup()
+    @BeforeEach
+    public void setup()
     {
         node0 = new Pair<>(0, Role.Creator);
         node1 = new Pair<>(1, Role.Owner);
@@ -65,6 +62,8 @@ class AppHistoryTest {
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
+
+
     @Test
     void addChildToNonExistentNode() throws Exception {
         Exception exception = assertThrows(Exception.class, () -> {
@@ -116,10 +115,61 @@ class AppHistoryTest {
         HashSet<Integer> dismissed = (HashSet<Integer>) root.removeChild(node3.getFirst());
         assertTrue(dismissed.contains(3));
     }
-    @AfterAll
-    static void tearDown() {
 
-        root = null;
+    @Test
+    void testRemoveNonLeafNode() throws Exception {
+        root.addNode(node0.getFirst(), node1);
+        root.addNode(node1.getFirst(), node2);
+        root.addNode(node2.getFirst(), node3);
+        assertTrue(root.isChild(node0.getFirst(), node1.getFirst()));
+        assertTrue(root.isChild(node1.getFirst(), node2.getFirst()));
+        assertTrue(root.isChild(node2.getFirst(), node3.getFirst()));
+        HashSet<Integer> dismissed = (HashSet<Integer>) root.removeChild(node1.getFirst());
+        assertTrue(dismissed.contains(node1.getFirst()));
+        assertTrue(dismissed.contains(node2.getFirst()));
+        assertTrue(dismissed.contains(node3.getFirst()));
+        assertFalse(root.isChild(node0.getFirst(), node1.getFirst()));
+        assertFalse(root.isChild(node1.getFirst(), node2.getFirst()));
+        assertFalse(root.isChild(node2.getFirst(), node3.getFirst()));
     }
+    @Test
+    void testRemoveRootNode() {
+        Exception exception = assertThrows(Exception.class, () -> {
+            root.removeChild(node0.getFirst());
+        });
+        String expectedMessage = "Cannot remove store creator";
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+//    @Test
+//    void testAddNodeToLeafNode() throws Exception {
+//        root.addNode(node0.getFirst(), node1);
+//        root.addNode(node1.getFirst(), node2);
+//        Exception exception = assertThrows(Exception.class, () -> {
+//            root.addNode(node2.getFirst(), node3);
+//        });
+//        String expectedMessage = "Cannot add child to a leaf node";
+//        String actualMessage = exception.getMessage();
+//        assertTrue(actualMessage.contains(expectedMessage));
+//    }
+
+    @Test
+    void testRemoveNodeWithNoChildren() throws Exception {
+        root.addNode(node0.getFirst(), node1);
+        assertTrue(root.isChild(node0.getFirst(), node1.getFirst()));
+        HashSet<Integer> dismissed = (HashSet<Integer>) root.removeChild(node1.getFirst());
+        assertTrue(dismissed.contains(node1.getFirst()));
+        assertFalse(root.isChild(node0.getFirst(), node1.getFirst()));
+    }
+
+    @Test
+    void testAddMultipleNodesToParent() throws Exception {
+        root.addNode(node0.getFirst(), node1);
+        root.addNode(node0.getFirst(), node2);
+        assertTrue(root.isChild(node0.getFirst(), node1.getFirst()));
+        assertTrue(root.isChild(node0.getFirst(), node2.getFirst()));
+    }
+
 
 }

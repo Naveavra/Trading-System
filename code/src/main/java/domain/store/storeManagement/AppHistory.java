@@ -65,6 +65,7 @@ public class AppHistory {
     public AppHistory(Pair<Integer, Role> creatorNode){
 
         root = new Node(creatorNode);
+        usersInStore = new HashSet<>();
     }
     public boolean addNode(Integer father, Pair<Integer, Role> child) throws Exception {
         Node childNode = root.findNode(child.getFirst());
@@ -88,6 +89,10 @@ public class AppHistory {
        {
            throw new Exception("user isn't part of the store");
        }
+       if (Objects.equals(childNode.data.getFirst(), root.data.getFirst()))
+       {
+           throw new Exception("Cannot remove store creator");
+       }
        this.root.dismissed.clear();
         Set<Integer> dismissedes = new HashSet<>();
         dismissedes.add(userId);
@@ -103,7 +108,11 @@ public class AppHistory {
 
     public boolean isChild(Integer father, Integer child)
     {
-        return getNode(father).children.contains(getNode(child));
+        Node node = getNode(father);
+        if (node != null) {
+            return getNode(father).children.contains(getNode(child));
+        }
+        return false;
     }
 
     public Node getNode(Integer userId)
