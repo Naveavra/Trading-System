@@ -16,30 +16,30 @@ public interface MarketInterface {
     //assumption :
         // guest will be recognized by id
         // member will be recognized by email & id
-
+        //for each function of guest there will be 2 function , owns get an id and the other gets userName
     //guest methods
-    public Response<String> register(String name,String mail ,String pass ,String birthday );
-    public Response<String> addProductToCart(int userId,int storeId ,int productId, int quantity);
-
-    Response<String> addProductToCart(int userId, String name, int storeId, int productId, int quantity);
-
-    public Response<String> removeProductFromCart(int userId,String username,  int storeId, int productId);
-    public Response<String> changeQuantityInCart(int userId, String userName, int storeId, int productId, int change);
-
     public Response<String> register(String email ,String pass ,String birthday );
-    public Response<String> addProductToCart(int storeId ,int productId, int quantity);
-    public Response<String> removeProductFromCart(int storeId, int productId);
-    public Response<String> changeQuantityInCart(int storeId, int productId, int change);
+    public Response<String> addProductToCart(int userId,int storeId ,int productId, int quantity);
+    public Response<String> addProductToCart(String name, int storeId, int productId, int quantity);
 
-    public Response<String> getCart(int userId, String userName);
+    public Response<String> removeProductFromCart(int userId,  int storeId, int productId);
+    public Response<String> removeProductFromCart(String userName,  int storeId, int productId);
+    public Response<String> changeQuantityInCart(int userId, int storeId, int productId, int change);
+    public Response<String> changeQuantityInCart(String userName, int storeId, int productId, int change);
+
+//    public Response<String> removeProductFromCart(int storeId, int productId);
+//    public Response<String> changeQuantityInCart(int storeId, int productId, int change);
+    public Response<String> getCart(int id);
+    public Response<String> getCart(String userName);
     public Response<String> buy(int userId);
+    public Response<String> buy(String userName);
 
     //member methods
     public Response<String> login(String email , String pass);
     public Response<String> logout(int userId);
     public Response<String> changeDetails(int userId,String name ,String email , String birthday );
     public Response<String> changePassword(int userId,String oldPass ,String newPass);
-    public Response<String> openStore(int userId);
+    public Response<String> openStore(int userId,String storeDescription);
     public Response<String> getMember(int userId);
     public Response<String> getUserOrders(int userId);
     public Response<String> writeReviewToStore(int orderId, int storeId, String content, int grading, int userId);
@@ -93,7 +93,6 @@ public interface MarketInterface {
     public Response<String> getStores();
     public Response<String> addAdmin(int userId, String name , String pass);
     public Response<String> removeAdmin(int userId , int adminId);
-
-
+    public Response<String> getUsers(int userId);
 
 }
