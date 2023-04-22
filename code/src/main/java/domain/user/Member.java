@@ -36,7 +36,8 @@ public class Member {
 
     public Member(int id, String email, String password, String birthday){
         this.id = id;
-        this.name = email;
+        String[] emailParts = email.split("@");
+        this.name = emailParts[0];
         this.email = email;
         this.password = password;
         this.birthday = birthday;
@@ -133,8 +134,8 @@ public class Member {
      * if the purchase was successful then add it to history
      * @param orderId
      */
-    public void purchaseMade(int orderId){
-        userHistory.addPurchaseMade(orderId, g.getCartContent());
+    public void purchaseMade(int orderId, int totalPrice){
+        userHistory.addPurchaseMade(orderId, totalPrice, g.getCartContent());
         g.emptyCart();
 
     }
@@ -183,7 +184,8 @@ public class Member {
         if(userHistory.checkOrderOccurred(orderId)){
             if(userHistory.checkOrderContainsStore(orderId, storeId)){
                 if(userHistory.checkOrderContainsProduct(orderId, storeId, productId)){
-                    Message m = new Message(messageId, content, grading, this, orderId, storeId, MessageState.reviewProduct);
+                    Message m = new Message(messageId, content, this, orderId, storeId, MessageState.reviewProduct);
+                    m.addRating(grading);
                     m.addProductToReview(productId);
                     return m;
                 }
@@ -197,22 +199,22 @@ public class Member {
             throw new Exception("can't write a review for an order that didn't occur");
     }
 
-    public Message writeComplaint(int orderId, int storeId, int productId, String comment) {
+    public Message writeComplaint(int messageId, int orderId, int storeId, String comment) throws Exception {
         if(userHistory.checkOrderOccurred(orderId)){
             if(userHistory.checkOrderContainsStore(orderId, storeId)){
-                if(userHistory.checkOrderContainsProduct(orderId, storeId, productId)){
-                    Message m = new Message(messageId, content, this, orderId, storeId, MessageState.complaint);
-                    m.addProductToReview(productId);
-                    return m;
-                }
-                else
-                    throw new Exception("the product isn't part of the order so you can't write a review about him");
+                Message m = new Message(messageId, comment, this, orderId, storeId, MessageState.complaint);
+                return m;
             }
             else
                 throw new Exception("can't write a review because the store wasn't part of the order");
         }
         else
             throw new Exception("can't write a review for an order that didn't occur");
+    }
+
+    public Message sendQuestion(int messageId, int storeId, String question) {
+        Message message = new Message(messageId, question, this, -1, storeId, MessageState.question);
+        return message;
     }
 
     public synchronized void addNotification(Notification notification){
@@ -227,9 +229,29 @@ public class Member {
         return display;
     }
 
+
+    /**
+     * checks if a member can see messages of a store
+     * @param storeId
+     * @return
+     */
     public boolean canCheckMessages(int storeId) {
         UserState us = roles.get(storeId);
         return us.checkPermission(Action.viewMessages);
     }
 
+
+    /**
+     * checks if the member can answer messages
+     * @param storeId
+     * @return
+     */
+    public boolean canGiveFeedback(int storeId) {
+        UserState us = roles.get(storeId);
+        return us.checkPermission(Action.answerMessage);
+    }
+
+    public String getUserPurchaseHistory() {
+        return userHistory.getUserPurchaseHistory(name);
+    }
 }

@@ -1,7 +1,5 @@
 package utils;
 
-import java.util.concurrent.ConcurrentLinkedDeque;
-
 public enum Action {
     buyProduct, //buyer, seller, manager, owner, creator
     sellProduct, //seller, manager, owner, creator
@@ -28,7 +26,7 @@ public enum Action {
     reopenStore, // creator
     checkWorkersStatus, // manager, owner, creator
     viewMessages, // manager, owner, creator
-    answerQuestions, // manager, owner, creator
+    answerMessage, // manager, owner, creator
     seeStoreHistory, // manager, owner, creator
 }
 

@@ -69,7 +69,7 @@ public class Message {
         return state;
     }
 
-    //TODO:needs to check how to email the reviewer
+    //TODO:needs to check how to email the reviewer and the owner(using owner email)
     private void sendEmail(){
 
     }
