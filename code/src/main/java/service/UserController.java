@@ -213,20 +213,20 @@ public class UserController {
             throw new Exception("no such member exists");
     }
 
-    public synchronized void purchaseMade(int orderId, int userId) throws Exception{
+    public synchronized void purchaseMade(int orderId, int userId, int totalPrice) throws Exception{
         if (userId % 2 == 1) {
             String email = idToEmail.get(userId);
             if(email != null)
-                purchaseMade(orderId, email);
+                purchaseMade(orderId, email, totalPrice);
             else
                 throw new Exception("no member has such id");
         }
     }
 
-    public synchronized void purchaseMade(int orderId, String email) throws Exception{
+    public synchronized void purchaseMade(int orderId, String email, int totalPrice) throws Exception{
         Member m = memberList.get(email);
         if(m != null)
-            m.purchaseMade(orderId);
+            m.purchaseMade(orderId, totalPrice);
         else
             throw new Exception("no member has that email");
     }
@@ -335,6 +335,73 @@ public class UserController {
             throw new Exception("no member has this email");
     }
 
+
+    /**
+     * write a complaint to a store after a purchase
+     * @param orderId
+     * @param storeId
+     * @param comment
+     * @param userId
+     * @return
+     */
+    public synchronized Message writeComplaintToStore(int orderId, int storeId, String comment,int userId)throws Exception{
+        if(userId % 2 == 0)
+            throw new Exception("guest can't write complaints");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                return writeComplaintToStore(orderId, storeId, comment, email);
+            else
+                throw new Exception("no member has this id");
+        }
+    }
+
+
+    //TODO:remember to add the storeCreator's email to the message (either later or in a function here)
+    public synchronized Message writeComplaintToStore(int orderId, int storeId, String comment,String email) throws Exception{
+        Member m = memberList.get(email);
+        if(m != null) {
+            int tmp = messageIds;
+            messageIds+=2;
+            return m.writeComplaint(tmp, orderId, storeId, comment);
+        }
+        else
+            throw new Exception("no member has this email");
+    }
+
+
+    public Message sendQuestionToStore(int storeId, String question, int userId) throws Exception {
+        if(userId % 2 == 0)
+            throw new Exception("guest can't write a question to a store");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                return sendQuestionToStore(storeId, question, email);
+            else
+                throw new Exception("no member has this id");
+        }
+    }
+
+
+    //TODO:need to check before that the storeId is legal
+    public Message sendQuestionToStore(int storeId, String question, String email) throws Exception {
+        Member m = memberList.get(email);
+        if(m != null) {
+            int tmp = messageIds;
+            messageIds += 2;
+            return m.sendQuestion(tmp, storeId, question);
+        }
+        else
+            throw new Exception("no member has this email");
+    }
+
+    /**
+     * functions to check the permissions of the user
+     * @param userId
+     * @param storeId
+     * @return
+     * @throws Exception
+     */
     public synchronized boolean canCheckMessages(int userId, int storeId) throws Exception{
         if(userId % 2 == 0)
             return false;
@@ -358,31 +425,23 @@ public class UserController {
 
     }
 
-    /**
-     * write a complaint to a store after a purchase
-     * @param orderId
-     * @param storeId
-     * @param productId
-     * @param comment
-     * @param userId
-     * @return
-     */
-    public synchronized Message writeComplaintToStore(int orderId, int storeId, int productId, String comment,int userId)throws Exception{
+    public synchronized boolean canGiveFeedback(int userId, int storeId) throws Exception {
         if(userId % 2 == 0)
-            throw new Exception("guest can't write complaints");
+            return false;
         else{
             String email = idToEmail.get(userId);
             if(email != null)
-                return writeComplaintToStore(orderId, storeId, productId, comment, email);
+                return canGiveFeedback(email, storeId);
             else
                 throw new Exception("no member has this id");
+
         }
     }
 
-    public synchronized Message writeComplaintToStore(int orderId, int storeId, int productId, String comment,String email) throws Exception{
+    public synchronized boolean canGiveFeedback(String email, int storeId) throws Exception {
         Member m = memberList.get(email);
         if(m != null)
-            return m.writeComplaint(orderId, storeId, productId, comment);
+            return m.canGiveFeedback(storeId);
         else
             throw new Exception("no member has this email");
     }
@@ -439,6 +498,28 @@ public class UserController {
         }
         else
             throw new Exception("no member has such email");
+    }
+
+
+    public synchronized String getUserPurchaseHistory(int userId) throws Exception {
+        if(userId % 2 ==0)
+            throw new Exception("guest can't access the user history");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                return getUserPurchaseHistory(email);
+            else
+                throw new Exception("no member has this id");
+
+        }
+    }
+
+    public synchronized String getUserPurchaseHistory(String email) throws Exception{
+        Member m = memberList.get(email);
+        if(m!= null)
+            return m.getUserPurchaseHistory();
+        else
+            throw new Exception("no member has this email");
     }
 
 

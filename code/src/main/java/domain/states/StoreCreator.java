@@ -5,7 +5,6 @@ import utils.Role;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class StoreCreator extends UserState {
 
@@ -33,7 +32,7 @@ public class StoreCreator extends UserState {
         actions.add(Action.fireManager);
         actions.add(Action.checkWorkersStatus);
         actions.add(Action.viewMessages);
-        actions.add(Action.answerQuestions);
+        actions.add(Action.answerMessage);
         actions.add(Action.seeStoreHistory);
         actions.add(Action.addProduct);
         actions.add(Action.addDiscountConstraint);
