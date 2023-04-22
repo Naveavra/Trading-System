@@ -244,4 +244,16 @@ public class Store {
         return messagesToRead;
 
     }
+
+    public void giveFeedback(int messageID, String feedback) throws Exception {
+        if (messages.get(messageID) != null)
+        {
+            messages.get(messageID).sendFeedback(feedback);
+        }
+        else
+        {
+            throw new Exception("message id is not correct;");
+        }
+
+    }
 }

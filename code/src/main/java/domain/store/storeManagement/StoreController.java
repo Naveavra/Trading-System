@@ -27,11 +27,6 @@ public class StoreController {
 
     /**
      * adds a new product to a store.
-     * @param storeid
-     * @param name
-     * @param desc
-     * @param price
-     * @param quantity
      */
     public synchronized void addProduct(int storeid, String name, String desc, int price,int quantity){
         Store st;
@@ -63,7 +58,7 @@ public class StoreController {
      */
     public int writeReviewForStore(Message message){
         Store store = storeList.get(message.getStoreId());
-        if (store != null)
+        if (store != null && store.isActive())
         {
             try {
                 return store.addReview(message.getOrderId(), message);
@@ -161,11 +156,13 @@ public class StoreController {
 
     public String getProductName(int storeId, int productId) throws Exception {
         Store store = storeList.get(storeId);
-        if (store == null)
+        if (store != null && store.isActive())
         {
-            throw new Exception("store doesnt exist");
+            return store.getProductName(productId);
         }
-        return store.getProductName(productId);
+        else {
+            throw new Exception("store doesnt Exist or Open");
+        }
     }
 
     public ArrayList<String> checkMessages(int storeID) throws Exception{
@@ -174,7 +171,25 @@ public class StoreController {
         {
             return store.checkMessages();
         }
-        throw new Exception("store doesnt Exist or Open");
+        else
+        {
+            throw new Exception("store doesnt Exist or Open");
+        }
+    }
 
+    /**
+     * the store owner replies to the reviews on his store
+
+     */
+    public void giveFeedback(int storeID, int messageID, String feedback) throws Exception {
+        Store store = storeList.get(storeID);
+        if (store != null && store.isActive())
+        {
+            store.giveFeedback(messageID, feedback);
+        }
+        else
+        {
+            throw new Exception("store doesnt Exist or Open");
+        }
     }
 }

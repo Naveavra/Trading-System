@@ -35,8 +35,10 @@ public class MarketController {
 
         return storectrl.checkMessages(storeID);
     }
-    //TODO NAVE  givefeedback(storeid, messageid, feedback)
-
+    public void givFeedback(int storeID, int messageID, String feedback ) throws Exception
+    {
+        storectrl.giveFeedback(storeID, messageID, feedback);
+    }
 
 
 

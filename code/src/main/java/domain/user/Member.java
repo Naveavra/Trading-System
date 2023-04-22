@@ -179,11 +179,13 @@ public class Member {
      * @param grading
      * @return
      */
+    //NAVE
     public Message writeReview(int messageId, int storeId, int productId, int orderId, String content, int grading) throws Exception{
         if(userHistory.checkOrderOccurred(orderId)){
             if(userHistory.checkOrderContainsStore(orderId, storeId)){
                 if(userHistory.checkOrderContainsProduct(orderId, storeId, productId)){
-                    Message m = new Message(messageId, content, grading, this, orderId, storeId, MessageState.reviewProduct);
+                    Message m = new Message(messageId, content, this, orderId, orderId, MessageState.reviewProduct);
+                    m.addRating(grading);
                     m.addProductToReview(productId);
                     return m;
                 }
