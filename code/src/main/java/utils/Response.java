@@ -1,18 +1,24 @@
 package utils;
 
 public class Response<T> {
+    private T value;
+    private String errorTitle;
     private String errorMessage;
 
-    private T value;
-    public Response(T res){value = res;}
-
-    public Response(String errorMessage){
-        this.errorMessage = errorMessage;
+    public Response(T res ,String errorTi , String errorMsg){
+        value = res;
+        errorTitle = errorTi;
+        errorMessage = errorMsg;
     }
+
     public boolean errorOccurred(){
         return errorMessage != null;
     }
 
+
+    public String getErrorTitle() {
+        return errorTitle;
+    }
 
     public String getErrorMessage() {
         return errorMessage;
