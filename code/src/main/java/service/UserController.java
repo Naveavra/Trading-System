@@ -9,7 +9,6 @@ import utils.Notification;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class UserController {
@@ -63,8 +62,8 @@ public class UserController {
         memberIds+=2;
     }
 
-
-    public synchronized int login(String email, String password) throws Exception{
+    //the answers given are for the security questions, if there are no security questions then put an empty list
+    public synchronized int login(String email, String password, List<String> answers) throws Exception{
         if(!checkEmail(email))
             throw new Exception("invalid email");
         if(!checkPassword(password))
@@ -73,7 +72,7 @@ public class UserController {
         if(m == null)
             throw new Exception("no such email");
         try {
-            if(m.login(password))
+            if(m.login(password, answers))
                 return m.getId();
         }
         catch (Exception e){
@@ -524,7 +523,130 @@ public class UserController {
             throw new Exception("no member has this email");
     }
 
+    //TODO:remember to add into login the option to answer the security questions(if needed)
 
+    /**
+     * returns all of the user's information
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public synchronized String getUserInformation(int userId) throws Exception {
+        if(userId % 2 == 0)
+            throw new Exception("guest does not have an email");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                return email;
+            else
+                throw new Exception("no member has this id");
+        }
+
+    }
+
+    public synchronized String getUserInformation(String email) throws Exception {
+        Member m = memberList.get(email);
+        if(m != null){
+            return m.getInformation();
+        }
+        else
+            throw new Exception("no member has this email");
+
+    }
+
+    /**
+     * function to change the user's email
+     * @param userId
+     * @param newEmail
+     */
+    public synchronized void changeUserEmail(int userId, String newEmail) throws Exception {
+        if(userId % 2 == 0)
+            throw new Exception("guest does not have an email");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                changeUserEmail(email, newEmail);
+            else
+                throw new Exception("no member has this id");
+        }
+    }
+    public synchronized void changeUserEmail(String email, String newEmail) throws Exception {
+        Member m = memberList.get(email);
+        if(m != null)
+            m.setNewEmail(newEmail);
+        else
+            throw new Exception("no member has this email");
+    }
+
+    /**
+     * function to change the user's name
+     * @param userId
+     * @param newName
+     */
+    public synchronized void changeUserName(int userId, String newName) throws Exception {
+        if(userId % 2 == 0)
+            throw new Exception("guest does not have a name");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                changeUserName(email, newName);
+            else
+                throw new Exception("no member has this id");
+        }
+    }
+    public synchronized void changeUserName(String email, String newName) throws Exception {
+        Member m = memberList.get(email);
+        if(m != null)
+            m.setNewName(newName);
+        else
+            throw new Exception("no member has this email");
+    }
+
+
+    /**
+     * function to change the user's password
+     * @param userId
+     * @param oldPassword
+     * @param newPassword
+     */
+    public synchronized void changeUserPassword(int userId, String oldPassword, String newPassword) throws Exception {
+        if(userId % 2 == 0)
+            throw new Exception("guest does not have a name");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                changeUserPassword(email, oldPassword, newPassword);
+            else
+                throw new Exception("no member has this id");
+        }
+    }
+    public synchronized void changeUserPassword(String email, String oldPassword, String newPassword) throws Exception {
+        Member m = memberList.get(email);
+        if(m != null)
+            m.setNewPassword(oldPassword, newPassword);
+        else
+            throw new Exception("no member has this email");
+    }
+
+    public synchronized void addSecurityQuestion(int userId, String question, String answer) throws Exception {
+        if(userId % 2 == 0)
+            throw new Exception("guest does not login");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                addSecurityQuestion(email, question, answer);
+            else
+                throw new Exception("no member has this email");
+        }
+    }
+
+    public synchronized void addSecurityQuestion(String email, String question, String answer) throws Exception{
+        Member m = memberList.get(email);
+        if(m != null){
+            m.addQuestionForLogin(question, answer);
+        }
+
+    }
 
 
 
