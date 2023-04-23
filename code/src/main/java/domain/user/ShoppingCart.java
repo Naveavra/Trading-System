@@ -19,7 +19,7 @@ public class ShoppingCart {
         baskets.get(storeId).addProductToCart(productId, quantity);
     }
 
-    public void removeProductFromCart(int storeId, int productId) {
+    public void removeProductFromCart(int storeId, int productId) throws Exception {
         Basket basket = baskets.get(storeId);
         if(basket != null) {
             boolean check = basket.removeProductFromCart(productId);
@@ -27,11 +27,11 @@ public class ShoppingCart {
                 baskets.remove(storeId);
         }
         else
-            throw new RuntimeException("the product isn't in the cart");
+            throw new Exception("the product isn't in the cart");
 
     }
 
-    public void changeQuantityInCart(int storeId, int productId, int change) throws RuntimeException{
+    public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
         if(baskets.containsKey(storeId)) {
             boolean check = baskets.get(storeId).changeQuantityInCart(productId, change);
             if(!check)
@@ -39,7 +39,7 @@ public class ShoppingCart {
 
         }
         else
-            throw new RuntimeException("the user's cart does not contain the store");
+            throw new Exception("the user's cart does not contain the store");
 
 
     }
