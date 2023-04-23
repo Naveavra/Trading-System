@@ -60,6 +60,7 @@ public class Message {
             Notification<String> notification = new Notification<>(feedback);
             reviewer.addNotification(notification);
             sendEmail();
+            gotFeedback = true; //NAVE
         }
         else
             throw new Exception("the message already got an answer");
@@ -85,6 +86,8 @@ public class Message {
         else
             throw new Exception("the message isn't a review for a product");
     }
+
+    public boolean gotFeedback(){return gotFeedback;}
 
     public void markAsRead(){
         seen = true;
