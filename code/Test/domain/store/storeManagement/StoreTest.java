@@ -83,7 +83,17 @@ class StoreTest {
         Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.reviewStore);
         Order order = store.getOrdersHistory().get(0);
         store.addReview(order.getOrderId(), msg);
+        Assertions.assertEquals(0, store.getOrdersHistory().get(0).getOrderId());
+        Assertions.assertEquals("what a shitty store", store.checkMessages().get(0));
 
+    }
+
+    @Test
+    void giveFeedback() throws Exception
+    {
+        Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.reviewStore);
+        Order order = store.getOrdersHistory().get(0);
+        store.addReview(order.getOrderId(), msg);
     }
 
 //    @Test

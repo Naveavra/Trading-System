@@ -147,7 +147,7 @@ public class Member {
             throw new Exception("not allowed to buy");
     }
 
-    public void removeProductFromCart(int storeId, int productId) {
+    public void removeProductFromCart(int storeId, int productId) throws Exception {
         g.removeProductFromCart(storeId, productId);
     }
 

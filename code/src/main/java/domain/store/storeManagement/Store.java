@@ -241,7 +241,7 @@ public class Store {
         for (Message m : messages.values()){
             if (!m.getSeen())
             {
-                messagesToRead.add(m.toString());
+                messagesToRead.add(m.getContent());
                 m.markAsRead();
             }
         }

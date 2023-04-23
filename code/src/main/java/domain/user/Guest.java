@@ -27,7 +27,7 @@ public class Guest {
     }
 
 
-    public void removeProductFromCart(int storeId, int productId) {
+    public void removeProductFromCart(int storeId, int productId) throws Exception{
         cart.removeProductFromCart(storeId, productId);
     }
 

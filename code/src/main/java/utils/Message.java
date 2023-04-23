@@ -74,6 +74,7 @@ public class Message {
 
     }
 
+
     public Integer getMessageId() {
         return messageId;
     }
