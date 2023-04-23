@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import service.MarketController;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -124,21 +125,6 @@ public class Market implements MarketInterface {
     }
 
 
-//    @Override
-//    public Response<String> addProductToCart(int storeId, int productId, int quantity) {
-//        return null;
-//    }
-
-//    @Override
-//    public Response<String> removeProductFromCart(int storeId, int productId) {
-//        return null;
-//    }
-//
-//    @Override
-//    public Response<String> changeQuantityInCart(int storeId, int productId, int change) {
-//        return null;
-//    }
-
     public Response<String> getCart( int id) {
         try{
             Gson gson = new Gson();
@@ -189,7 +175,7 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> login(String email, String pass) {
         try{
-            uc.login(email,pass);
+            uc.login(email,pass,new ArrayList<String>());
             logger.log(Logger.logStatus.Success,"user" + email + "logged in successfully on "+ LocalDateTime.now());
             return new Response<String>(" u logged successfully",null,null);
         }catch (Exception e){

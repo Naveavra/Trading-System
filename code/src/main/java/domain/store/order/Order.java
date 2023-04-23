@@ -19,25 +19,25 @@ public class Order {
         status = Status.pending;
         productsInStores = products; 
     }
-    public int getTotalPrice(){
+    public synchronized int getTotalPrice(){
         return totalPrice;
     }
-    public void setTotalPrice(int price){
+    public synchronized void setTotalPrice(int price){
         totalPrice = price;
     }
-    public int getOrderId() {
+    public synchronized int getOrderId() {
         return orderId;
     }
-    public Status getStatus() {
+    public synchronized Status getStatus() {
         return status;
     }
-    public void setStatus(Status stat){
+    public synchronized void setStatus(Status stat){
         this.status = stat;
     }
-    public int getUserId() {
+    public synchronized int getUserId() {
         return userId;
     }
-    public HashMap<Integer, HashMap<Integer, Integer>> getProductsInStores() {
+    public synchronized HashMap<Integer, HashMap<Integer, Integer>> getProductsInStores() {
         return productsInStores;
     }
     /**
@@ -49,7 +49,7 @@ public class Order {
      * @param storeID int
      * @param products HashMap<productID,quantity>
      */
-    public void addProductsToOrder(int storeID,HashMap<Integer, Integer> products) {
+    public synchronized void addProductsToOrder(int storeID,HashMap<Integer, Integer> products) {
         HashMap<Integer,Integer> prod4Store = products;
         if(this.productsInStores.containsKey(storeID)){
             prod4Store = this.productsInStores.get(storeID);
@@ -70,7 +70,7 @@ public class Order {
      * @param storeID int
      * @param products HashMap<productID,quantity>
      */
-    public void replaceProductsInOrder(int storeID,HashMap<Integer, Integer> products){
+    public synchronized void replaceProductsInOrder(int storeID,HashMap<Integer, Integer> products){
         this.productsInStores.put(storeID,products);
     }
     

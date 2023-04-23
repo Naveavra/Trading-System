@@ -54,7 +54,7 @@ public class MarketController {
 
         return storectrl.checkMessages(storeID);
     }
-    public void givFeedback(int storeID, int messageID, String feedback ) throws Exception
+    public void giveFeedback(int storeID, int messageID, String feedback ) throws Exception
     {
         storectrl.giveFeedback(storeID, messageID, feedback);
     }
