@@ -31,6 +31,21 @@ public class UserHistory {
         ordersAndPrices.put(orderId, totalPrice);
     }
 
+    public void addName(String name){
+        names.add(name);
+    }
+
+    public void addPassword(String password){
+        passwords.add(password);
+    }
+    public void addEmail(String email){
+        emails.add(email);
+    }
+
+    public void addQuestion(Pair<String, String> question){
+        securityQuestions.add(question);
+    }
+
     public boolean checkOrderOccurred(int orderId){
         return purchaseHistory.containsKey(orderId);
     }
@@ -63,5 +78,28 @@ public class UserHistory {
             purchases = purchases + "  the total price was: " + ordersAndPrices.get(orderId) + "\n";
         }
        return purchases;
+    }
+
+    public String getInformation() {
+        String ans = "the current name is: " + names.get(names.size()-1) + ".\n";
+        ans = ans + " list of all names that were used:\n";
+        for(String name : names)
+            ans = ans + "  " + name + "\n";
+        ans = ans + "the current email is: "+emails.get(emails.size()-1) + ".\n";
+        ans = ans + " list of all emails that were used:\n";
+        for(String email: emails)
+            ans = ans + "  " + email + "\n";
+        ans = ans + "the current password is: " + passwords.get(passwords.size()-1) + ".\n";
+        ans = ans + " list of all passwords that were used:\n";
+        for(String password: passwords)
+            ans = ans + "  " + password + "\n";
+        return ans;
+
+    }
+
+    public void changeAnswerForQuestion(String question, String newAnswer) {
+        for(Pair<String, String> secQuestion : securityQuestions)
+            if(secQuestion.getFirst().equals(question))
+                secQuestion.setSecond(newAnswer);
     }
 }

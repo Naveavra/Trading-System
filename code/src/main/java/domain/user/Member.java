@@ -4,17 +4,16 @@ import domain.states.Buyer;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
-import utils.Action;
-import utils.Message;
-import utils.MessageState;
-import utils.Notification;
+import utils.*;
 
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 //TODO: change all the void functions to return a value in case of success/failure
+//TODO: need to add to functions an addToUserHistory so that it will save all the information
 public class Member {
 
     private Guest g;
@@ -34,6 +33,8 @@ public class Member {
 
     private boolean isConnected;
 
+    private List<Pair<String, String>> securityQuestions;
+    //new Member(1, "eliben123@gmail.com", "aBc123", "24/02/2002")
     public Member(int id, String email, String password, String birthday){
         this.id = id;
         String[] emailParts = email.split("@");
@@ -46,8 +47,12 @@ public class Member {
         currentState = new Buyer();
         currentStoreId = -1;
         userHistory = new UserHistory();
+        userHistory.addEmail(this.email);
+        userHistory.addName(this.name);
+        userHistory.addPassword(this.password);
         g = new Guest(id);
         notifications = new ConcurrentLinkedDeque<>();
+        securityQuestions = new LinkedList<>();
     }
 
 
@@ -75,8 +80,6 @@ public class Member {
         roles.put(storeId, userState);
     }
 
-    public void addActionToStore(int storeId){
-    }
 
     public String getEmail(){
         return email;
@@ -86,38 +89,69 @@ public class Member {
         return name;
     }
 
+    public void setNewEmail(String  newEmail){
+        email = newEmail;
+        userHistory.addEmail(email);
+    }
+    public void setNewName(String  newName){
+        name = newName;
+        userHistory.addName(name);
+    }
+
+    public void setNewPassword(String oldPassword, String newPassword) throws Exception {
+        if(password.equals(oldPassword)){
+            password = newPassword;
+            userHistory.addPassword(password);
+        }
+        else
+            throw new Exception("wrong password entered, can't change to a new password");
+    }
+
 
     public int getId(){
         return id;
     }
 
 
-    public boolean login(String password) throws RuntimeException{
-        if (password.equals(password)) {
+    public boolean login(String password, List<String> answers) throws Exception{
+        if (this.password.equals(password)) {
             if (!getIsConnected()) {
-                connect();
-                return true;
+                if(checkSecurityAnswers(answers)) {
+                    connect();
+                    return true;
+                }
+                else
+                    throw new Exception("the wrong answers were given");
             }
             else
-                throw new RuntimeException("member is connected already");
+                throw new Exception("member is connected already");
         }
         else
-            throw new RuntimeException("wrong password");
+            throw new Exception("wrong password");
+    }
+
+    private boolean checkSecurityAnswers(List<String> answers) {
+        if(answers.size() != securityQuestions.size())
+            return false;
+        for(int i = 0; i<securityQuestions.size(); i++)
+            if(!answers.get(i).equals(securityQuestions.get(i).getSecond()))
+                return false;
+        return true;
     }
 
 
-    public void addProductToCart(int storeId, int productId, int quantity) throws RuntimeException{
+    public void addProductToCart(int storeId, int productId, int quantity) throws Exception{
         if(currentState.checkPermission(Action.buyProduct))
             g.addProductToCart(storeId, productId, quantity);
         else
-            throw new RuntimeException("not allowed to buy");
+            throw new Exception("not allowed to buy");
     }
 
     public void removeProductFromCart(int storeId, int productId) {
         g.removeProductFromCart(storeId, productId);
     }
 
-    public void changeQuantityInCart(int storeId, int productId, int change) throws RuntimeException{
+    public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
         g.changeQuantityInCart(storeId, productId, change);
     }
 
@@ -253,5 +287,38 @@ public class Member {
 
     public String getUserPurchaseHistory() {
         return userHistory.getUserPurchaseHistory(name);
+    }
+
+    public String getInformation() {
+        return userHistory.getInformation();
+    }
+
+    /**
+     * set security questions
+     * @param question
+     * @param answer
+     */
+    public void addQuestionForLogin(String question, String answer) throws Exception {
+        for(Pair<String, String> secQuestion : securityQuestions){
+            if(question.equals(secQuestion.getFirst()))
+                throw new Exception("you already added this question");
+        }
+
+        Pair<String, String> secQuestion = new Pair<>(question, answer);
+        securityQuestions.add(secQuestion);
+        userHistory.addQuestion(secQuestion);
+    }
+
+    public void changeAnswerForQuestion(String question, String newAnswer) throws Exception {
+        boolean check = false;
+        for(Pair<String, String> secQuestion : securityQuestions){
+            if(question.equals(secQuestion.getFirst())) {
+                check = true;
+                secQuestion.setSecond(newAnswer);
+                userHistory.changeAnswerForQuestion(question, newAnswer);
+            }
+        }
+        if(!check)
+            throw new Exception("the question you gave is not part of your security questions");
     }
 }

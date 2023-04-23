@@ -22,7 +22,7 @@ public class Guest {
         return id;
     }
 
-    public void addProductToCart(int storeId, int productId, int quantity) throws RuntimeException{
+    public void addProductToCart(int storeId, int productId, int quantity) throws Exception{
             cart.addProductToCart(storeId, productId, quantity);
     }
 
@@ -31,7 +31,7 @@ public class Guest {
         cart.removeProductFromCart(storeId, productId);
     }
 
-    public void changeQuantityInCart(int storeId, int productId, int change) throws RuntimeException{
+    public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
         cart.changeQuantityInCart(storeId, productId, change);
     }
 
