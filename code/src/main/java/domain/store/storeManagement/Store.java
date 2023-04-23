@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -185,13 +184,21 @@ public class Store {
         throw new Exception("user isn't authorized to close this store");
     }
 
+    public Set<Integer> reopenStore(int userID) throws Exception{
+        if (creatorId == userID){
+            isActive = true;
+            return appHistory.getUsers();
+        }
+        throw new Exception("user isn't authorized to reopen this store");
+    }
+
     /**
      * function that gets the basket user wants to buy from the store
      * @param basket built from productid and quantity
      * @return the basket's price
      * @throws Exception if the quantity is higher than the quantity in the inventory of product doesn't exit
      */
-    public int checkPurchaseProducts(HashMap<Integer, Integer> basket) throws Exception {
+    public int createOrder(HashMap<Integer, Integer> basket) throws Exception {
         int purchaseingprice = 0;
         for (Integer productid : basket.keySet())
         {
@@ -209,7 +216,7 @@ public class Store {
      * purchasing confirmed so this function adjust the quantity in the store inventory
      * @return true if success else false
      */
-    public boolean PurchaseProducts(HashMap<Integer, Integer> basket){
+    public boolean makeOrder(HashMap<Integer, Integer> basket){
         for (Integer productid : basket.keySet())
         {
             Product p = inventory.getProduct(productid);
@@ -235,6 +242,7 @@ public class Store {
         }
         throw new Exception("product doesnt exist");
     }
+
 
     public ArrayList<String> checkMessages() {
         ArrayList<String> messagesToRead = new ArrayList<>();

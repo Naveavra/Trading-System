@@ -6,6 +6,8 @@ import domain.user.Member;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.MarketController;
+import service.UserController;
 import utils.Message;
 import utils.MessageState;
 import utils.Pair;
@@ -21,13 +23,17 @@ class StoreTest {
     private Store store;
 
     Member user1;
-
+    Member user2;
+    MarketController marketCtrl;
+    StoreController storeCtrl;
+    UserController userCtrl;
     @BeforeEach
     void setUp() throws Exception {
         int storeId = 1;
         int creatorId = 1;
         String storeDescription = "This is a test store.";
         store = new Store(storeId, storeDescription, creatorId);
+        userCtrl = new UserController();
         AtomicInteger pid = new AtomicInteger(0);
         store.addNewProduct("testproduct1", "test", pid);
         store.addNewProduct("testproduct2", "test", pid);
@@ -43,6 +49,9 @@ class StoreTest {
         Order order1 = new Order(0, 0, productinOrder1);
         store.addOrder(order1);
         user1 = new Member(1, "eliben123@gmail.com", "aBc123", "24/02/2002");
+        storeCtrl = new StoreController();
+        userCtrl.register("elliben123@gmail.com", "aBc1234", "21/02/2002");
+        // marketCtrl.openStore(1, "another shitty store");
     }
 
     @Test
@@ -98,6 +107,23 @@ class StoreTest {
         store.giveFeedback(0, "fuck you cuz");
         Assertions.assertTrue(msg.gotFeedback());
     }
+
+    @Test
+    void getMessagesEmpty() throws Exception
+    {
+        Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.reviewStore);
+        Order order = store.getOrdersHistory().get(0);
+        store.addReview(order.getOrderId(), msg);
+        store.checkMessages();
+        Assertions.assertTrue(store.checkMessages().isEmpty());
+    }
+
+//    @Test
+//    void closeStoreTemporary() throws Exception {
+//        Store store2 = storeCtrl.storeList.get(1);
+//        Assertions.assertTrue(store2.closeStoreTemporary(1).contains(2));
+//    }
+
 
 //    @Test
 //    void testAddNewProduct() {

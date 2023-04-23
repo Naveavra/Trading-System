@@ -1,8 +1,6 @@
 package domain.store.storeManagement;
 
 import domain.store.product.Product;
-import domain.store.product.ProductController;
-import domain.store.storeManagement.Store;
 import utils.Message;
 
 import java.util.ArrayList;
@@ -53,6 +51,13 @@ public class StoreController {
         }
         return null;
     }
+
+    public Store openStore(String desc, int userID)
+    {
+        Store store = new Store(storescounter.getAndIncrement(), desc, userID);
+        storeList.put(store.getStoreid(), store);
+        return store;
+    }
     /**
      * @return the store creator id if the store or order doesn't exist return -1
      */
@@ -77,13 +82,13 @@ public class StoreController {
      * @param shoppingcart the client shopping cart
      * @return if the purchasing is possible returns the total price else return -1
      */
-    public int checkPurchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart){
+    public int createOrder(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart){
         int totalprice = 0;
         for (Integer storeid : shoppingcart.keySet())
         {
             Store store = storeList.get(storeid);
             try {
-                totalprice += store.checkPurchaseProducts(shoppingcart.get(storeid));
+                totalprice += store.createOrder(shoppingcart.get(storeid));
             } catch (Exception e) {
                 return  -1;
             }
@@ -101,7 +106,7 @@ public class StoreController {
         for (Integer storeid : shoppingcart.keySet())
         {
             Store store = storeList.get(storeid);
-            if (!(store.PurchaseProducts(shoppingcart.get(storeid))))
+            if (!(store.makeOrder(shoppingcart.get(storeid))))
             {
                 return null;
             }

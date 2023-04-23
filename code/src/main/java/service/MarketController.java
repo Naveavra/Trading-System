@@ -15,16 +15,32 @@ public class MarketController {
     StoreController storectrl;
     //ProductController productctrl;
     OrderController orderctrl;
-
+    UserController userCtrl;
     public MarketController()
     {
         storectrl = new StoreController();
         orderctrl = new OrderController();
+        userCtrl = new UserController();
     }
 
     public void PurchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart, Member user)
     {
         int totalPrice = storectrl.checkPurchaseProducts(shoppingcart);
+    }
+
+    /**
+     * @param userID creator id
+     * @param description store description
+     */
+    public void openStore(int userID, String description) throws Exception
+    {
+        if (!userCtrl.canOpenStore(userID))
+        {
+            throw new Exception("user cant open a store");
+        }
+        Store store = storectrl.openStore(description, userID);
+        userCtrl.openStore(userID, store);
+
     }
 
     public String getProductName(int storeId ,int  productId) throws Exception {

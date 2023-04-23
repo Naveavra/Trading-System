@@ -245,6 +245,7 @@ public class UserController {
             return false;
         return memberList.get(email) != null;
     }
+
     public synchronized void openStore(int userId, Store store) throws Exception{
         if(userId % 2 == 0){
             throw new Exception("a guest can't open a store");
