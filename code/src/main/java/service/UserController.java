@@ -713,4 +713,26 @@ public class UserController {
 
         return true;
     }
+
+    public String getUserName(int id) throws Exception
+    {
+        if (id%2==0 && guestList.containsKey(id))
+        {
+            if (guestList.containsKey(id))
+            {
+                return String.valueOf(guestList.get(id).getId());
+            }
+            throw new Exception("guest doesn't exist");
+        }
+        else {
+            String email = idToEmail.get(id);
+            if (email != null)
+            {
+                return memberList.get(email).getName();
+            }
+            throw new Exception("user doesnt exist");
+
+        }
+
+    }
 }
