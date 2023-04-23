@@ -55,7 +55,7 @@ public class Store {
         return this.storeorders;
     }
 
-
+    //TODO reopen store
 
 
     public boolean isActive() {
@@ -95,6 +95,8 @@ public class Store {
         throw new Exception("order doesnt exist");
     }
 
+    public void addOrder(Order order){ storeorders.put(order.getOrderId(), order);}
+
     /**
      * @return the users that has a role in the store
      */
@@ -127,7 +129,7 @@ public class Store {
     {
         return inventory.addProduct(name, description, pid);
     }
-    public synchronized Product addNewProduct(Product p){
+    public synchronized Product addNewExistingProduct(Product p){
         return inventory.addProduct(p);
     }
     /**

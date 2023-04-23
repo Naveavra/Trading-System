@@ -36,7 +36,7 @@ public class StoreController {
             prod_.setDescription(desc);
             prod_.setPrice(price);
             prod_.setQuantity(quantity);
-            st.addNewProduct(prod_);
+            st.addNewExistingProduct(prod_);
         }
         else if((st = getStore(storeid))!=null){
             Product p = st.addNewProduct(name,desc,productIDs);

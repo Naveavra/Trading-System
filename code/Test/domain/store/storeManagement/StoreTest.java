@@ -1,14 +1,18 @@
 package domain.store.storeManagement;
 
+import domain.store.order.Order;
 import domain.store.product.Product;
+import domain.user.Member;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.Message;
+import utils.MessageState;
 import utils.Pair;
 import utils.Role;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,32 +20,90 @@ import java.util.concurrent.atomic.AtomicInteger;
 class StoreTest {
     private Store store;
 
+    Member user1;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         int storeId = 1;
         int creatorId = 1;
         String storeDescription = "This is a test store.";
         store = new Store(storeId, storeDescription, creatorId);
+        AtomicInteger pid = new AtomicInteger(0);
+        store.addNewProduct("testproduct1", "test", pid);
+        store.addNewProduct("testproduct2", "test", pid);
+        store.setProductQuantity(0, 50);
+        store.setProductQuantity(1, 50);
+        store.setPrice(0, 10);
+        store.setPrice(1, 5);
+        HashMap<Integer,Integer> products1 = new HashMap<>();
+        products1.put(0, 10); //pid, quantity
+        products1.put(1, 5);
+        HashMap<Integer, HashMap<Integer,Integer>> productinOrder1 = new HashMap<>(); //storeid, products
+        productinOrder1.put(0, products1);
+        Order order1 = new Order(0, 0, productinOrder1);
+        store.addOrder(order1);
+        user1 = new Member(1, "eliben123@gmail.com", "aBc123", "24/02/2002");
     }
 
     @Test
-    void testAddNewProduct() {
-        // Test adding a new product to the inventory
-        String name = "Test Product";
-        String description = "This is a test product.";
-        AtomicInteger pid = new AtomicInteger(0);
-        Product product = store.addNewProduct(name, description, pid);
-        Assertions.assertEquals(product.getName(), name);
-        Assertions.assertEquals(product.getDescription(), description);
-        //        Assertions.assertEquals(product.getID(), pid.get());
-
-        // Test adding a new product with a Product object
-        Product newProduct = new Product(5, "test product", "BLAH BLAH");
-        Product addedProduct = store.addNewProduct(newProduct);
-        Assertions.assertEquals(addedProduct.getName(), newProduct.getName());
-        Assertions.assertEquals(addedProduct.getDescription(), newProduct.getDescription());
-        Assertions.assertEquals(addedProduct.getID(), newProduct.getID());
+    void SetWrongPrice()
+    {
+        Assertions.assertThrows(Exception.class, () -> {
+            store.setPrice(0, -5);
+        });
     }
+
+    @Test
+    void SetNewPrice () throws Exception
+    {
+        store.setPrice(0, 1);
+        store.setPrice(1, 1);
+        Assertions.assertEquals(1, store.getInventory().getProduct(0).price);
+        Assertions.assertEquals(1, store.getInventory().getProduct(1).price);
+    }
+
+    @Test
+    void getProductNotInStore() throws Exception
+    {
+        Assertions.assertNull(store.getInventory().getProduct(3));
+        Assertions.assertNull(store.getInventory().getProduct(2));
+    }
+
+    @Test
+    void getProduct()
+    {
+        Assertions.assertEquals(0, store.getInventory().getProduct(0).id);
+        Assertions.assertEquals(1, store.getInventory().getProduct(1).id);
+
+    }
+
+    @Test
+    void addReview() throws Exception
+    {
+        Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.reviewStore);
+        Order order = store.getOrdersHistory().get(0);
+        store.addReview(order.getOrderId(), msg);
+
+    }
+
+//    @Test
+//    void testAddNewProduct() {
+//        // Test adding a new product to the inventory
+//        String name = "Test Product";
+//        String description = "This is a test product.";
+//        AtomicInteger pid = new AtomicInteger(0);
+//        Product product = store.addNewProduct(name, description, pid);
+//        Assertions.assertEquals(product.getName(), name);
+//        Assertions.assertEquals(product.getDescription(), description);
+//        //        Assertions.assertEquals(product.getID(), pid.get());
+//
+//        // Test adding a new product with a Product object
+//        Product newProduct = new Product(5, "test product", "BLAH BLAH");
+//        Product addedProduct = store.addNewProduct(newProduct);
+//        Assertions.assertEquals(addedProduct.getName(), newProduct.getName());
+//        Assertions.assertEquals(addedProduct.getDescription(), newProduct.getDescription());
+//        Assertions.assertEquals(addedProduct.getID(), newProduct.getID());
+//    }
 
     @Test
     void testSetProductQuantity() throws Exception {

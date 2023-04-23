@@ -1,5 +1,7 @@
 package domain.store.product;
 
+import domain.store.order.Order;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,6 +14,7 @@ public class ProductController {
 //    ConcurrentHashMap<Product, ArrayList<String>> categories;
     ConcurrentHashMap<String,ArrayList<Integer>> categories; // <Category String,<List<ProductID>>
     ConcurrentHashMap<Product, ArrayList<Integer>> productgrading;
+
 //    AtomicInteger prod_id = new AtomicInteger();
     public ProductController(){
         productList = new ConcurrentHashMap<>();
@@ -54,8 +57,12 @@ public class ProductController {
         }
     }
     public void setPrice(int prodID, int price) throws Exception {
+        if (price <= 0)
+        {
+            throw new Exception("price must be positive");
+        }
         Product p = getProduct(prodID);
-        if(p != null){
+        if(p != null ){
             p.setPrice(price);
             return;
         }
