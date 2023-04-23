@@ -39,7 +39,7 @@ public class ProductController {
         return p;
     }
     public synchronized Product addProduct(Product p){
-        if(getProductByName(p.name) != null) productList.put(p.getID(), p);
+        if(getProductByName(p.name) == null) productList.put(p.getID(), p);
         return p;
     }
     /**
@@ -180,5 +180,13 @@ public class ProductController {
             }
         }
         return null;
+    }
+
+    public synchronized HashMap<Integer, Integer> getPrices() {
+        HashMap<Integer,Integer> prices = new HashMap<>();
+        for(Product p : this.productList.values()){
+            prices.put(p.getID(),p.getQuantity());
+        }
+        return prices;
     }
 }

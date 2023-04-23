@@ -10,7 +10,8 @@ public class Order {
     private int orderId;
     private Status status;
     private int userId;
-    private HashMap<Integer, HashMap<Integer,Integer>> productsInStores; 
+    private HashMap<Integer, HashMap<Integer,Integer>> productsInStores;
+    private int totalPrice = 0;
     //<storeID,<productID, quantity>> 
     public Order(int id, int user_id,HashMap<Integer,HashMap<Integer,Integer>> products){
         orderId = id;
@@ -18,7 +19,12 @@ public class Order {
         status = Status.pending;
         productsInStores = products; 
     }
-
+    public int getTotalPrice(){
+        return totalPrice;
+    }
+    public void setTotalPrice(int price){
+        totalPrice = price;
+    }
     public int getOrderId() {
         return orderId;
     }

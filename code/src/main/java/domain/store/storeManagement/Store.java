@@ -1,5 +1,6 @@
 package domain.store.storeManagement;
 
+import domain.store.discount.DiscountPolicy;
 import utils.Message;
 import utils.Pair;
 import domain.store.order.Order;
@@ -22,9 +23,9 @@ public class Store {
     private String storeDescription;
     private final AppHistory appHistory; //first one is always the store creator
     private final ProductController inventory; //<productID,<product, quantity>>
-
     private final ConcurrentHashMap<Integer, Order> storeorders;    //orederid, order
     private final ConcurrentHashMap<Integer, Message> messages; //<messageid, message>
+    private DiscountPolicy discountPolicy;
 
     public Store(int id, String description, int creatorId){
         Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
@@ -35,6 +36,7 @@ public class Store {
         this.inventory = new ProductController();
         this.messages = new ConcurrentHashMap<>();
         this.storeorders = new ConcurrentHashMap<>();
+        this.discountPolicy = new DiscountPolicy();
         //this.productreviews = new ConcurrentHashMap<>();
     }
 
@@ -203,14 +205,17 @@ public class Store {
         for (Integer productid : basket.keySet())
         {
             Product p = inventory.getProduct(productid);
-            if (p != null && basket.get(productid) >= p.getQuantity())
+            if (p != null && basket.get(productid) <= p.getQuantity())
             {
-                purchaseingprice += p.price * basket.get(productid);
+                int discount = discountPolicy.handleDiscounts(basket,inventory.getPrices());
+                purchaseingprice += p.price * basket.get(productid) -  discount;
+//                p.setQuantity(p.getQuantity()-basket.get(productid));
             }
             else throw new Exception("product isn't available");
         }
         return purchaseingprice;
     }
+
 
     /**
      * purchasing confirmed so this function adjust the quantity in the store inventory
