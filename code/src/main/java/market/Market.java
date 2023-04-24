@@ -3,6 +3,7 @@ package market;
 import org.json.simple.JSONArray;
 import service.UserController;
 import utils.Logger;
+import utils.Message;
 import utils.Response;
 import com.google.gson.Gson;
 import java.time.LocalDateTime;
@@ -280,12 +281,29 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> writeReviewToStore(int orderId, int storeId, String content, int grading, int userId) {
-        return null;}
+    public Response<Message> writeReviewToStore(int orderId, int storeId, String content, int grading, int userId) {
+        try{
+            Message m = userController.writeReviewForStore(orderId,storeId,content,grading,userId);
+            marketController.addReviewToStore(storeId, orderId, m);
+            logger.log(Logger.logStatus.Success,"user write review on store successfully on "+ LocalDateTime.now());
+            return new Response<Message>(m,null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant write review on store because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"write review failed" , e.getMessage());
+        }
+    }
 
     @Override
-    public Response<String> writeReviewToProduct(int orderId, int storeId, int productId, String content, int grading, int userId) {
-        return null;
+    public Response<Message> writeReviewToProduct(int orderId, int storeId, int productId, String content, int grading, int userId) {
+        try{
+            Message m = userController.writeReviewForProduct(orderId,storeId,productId,content,grading,userId);
+            //todo : implement marketController.addReviewToProduct(m)
+            logger.log(Logger.logStatus.Success,"user write review on product successfully on "+ LocalDateTime.now());
+            return new Response<Message>(m,null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant write review to product because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"write review failed" , e.getMessage());
+        }
     }
 
     @Override
@@ -309,12 +327,12 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> sendQuestion(int userId, int storeId, String msg) {
+    public Response<Message> sendQuestion(int userId, int storeId, String msg) {
         return null;
     }
 
     @Override
-    public Response<String> sendComplaint(int userId, int storeId, String msg) {
+    public Response<Message> sendComplaint(int userId, int storeId, String msg) {
         return null;
     }
 

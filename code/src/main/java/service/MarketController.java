@@ -9,6 +9,8 @@ import domain.user.Member;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.google.gson.Gson;
+import utils.Message;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MarketController {
@@ -59,6 +61,15 @@ public class MarketController {
     }
 
 
-
-
+    public void addReviewToStore(int storeId, int orderId, Message m) throws Exception {
+        Store store = this.storectrl.getStore(storeId);
+        if (store != null && store.isActive())
+        {
+            store.addReview(orderId, m);
+        }
+        else
+        {
+            throw new Exception("store doesn't not exist or is doesn't active");
+        }
+    }
 }
