@@ -13,6 +13,7 @@ public class Seller extends UserState {
         role = Role.Seller;
         permission = new Permission();
         List<Action> actions = new LinkedList<>();
+        /*
         actions.add(Action.buyProduct);
         actions.add(Action.createStore);
         actions.add(Action.getProductInformation);
@@ -23,6 +24,8 @@ public class Seller extends UserState {
         actions.add(Action.sendQuestion);
         actions.add(Action.sendComplaint);
         actions.add(Action.sellProduct);
+
+         */
         permission.addActions(actions);
     }
 }

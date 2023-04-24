@@ -2,11 +2,12 @@ package domain.user;
 
 import domain.states.Buyer;
 import domain.states.StoreCreator;
+import domain.states.StoreManager;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import utils.*;
 
-import java.util.EmptyStackException;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,13 +25,10 @@ public class Member {
     private String password;
 
     private HashMap<Integer, UserState> roles; //connection between registered to the shops
-    private List<Store> stores; //saves all the stores it has a job at
+    private HashMap<Integer, Store> stores; //saves all the stores it has a job at
     private ConcurrentLinkedDeque<Notification> notifications;
-    private UserState currentState;
 
     private UserHistory userHistory;
-    private int currentStoreId;
-
     private boolean isConnected;
 
     private List<Pair<String, String>> securityQuestions;
@@ -43,9 +41,7 @@ public class Member {
         this.password = password;
         this.birthday = birthday;
         roles = new HashMap<>();
-        stores = new LinkedList<>();
-        currentState = new Buyer();
-        currentStoreId = -1;
+        stores = new HashMap<>();
         userHistory = new UserHistory();
         userHistory.addEmail(this.email);
         userHistory.addName(this.name);
@@ -68,16 +64,9 @@ public class Member {
         isConnected = false;
     }
 
-    public void changeState(int storeId){ // if the user is not a specific store(such as main page) storeId == -1
-        if(roles.containsKey(storeId))
-            currentState = roles.get(storeId);
-        else
-            currentState = new Buyer();
-        currentStoreId = storeId;
-    }
-
-    public void changeRoleInStore(int storeId, UserState userState){
+    public void changeRoleInStore(int storeId, UserState userState, Store store){
         roles.put(storeId, userState);
+        stores.put(storeId, store);
     }
 
 
@@ -141,13 +130,10 @@ public class Member {
 
 
     public void addProductToCart(int storeId, int productId, int quantity) throws Exception{
-        if(currentState.checkPermission(Action.buyProduct))
             g.addProductToCart(storeId, productId, quantity);
-        else
-            throw new Exception("not allowed to buy");
     }
 
-    public void removeProductFromCart(int storeId, int productId) {
+    public void removeProductFromCart(int storeId, int productId) throws Exception{
         g.removeProductFromCart(storeId, productId);
     }
 
@@ -176,7 +162,7 @@ public class Member {
 
     public void openStore(Store store) {
         UserState creator = new StoreCreator();
-        stores.add(store);
+        stores.put(store.getStoreid(), store);
         roles.put(store.getStoreid(), creator);
 
 
@@ -320,5 +306,33 @@ public class Member {
         }
         if(!check)
             throw new Exception("the question you gave is not part of your security questions");
+    }
+
+    public Store appointToManager(int appointedId, int storeId) throws Exception {
+        UserState storeState = roles.get(storeId);
+        if(storeState != null){
+            if(storeState.checkPermission(Action.appointManager)){
+                stores.get(storeId).appointUser(id, appointedId, Role.Manager);
+                return stores.get(storeId);
+            }
+            else
+                throw new Exception("the member does not have permission to appoint a manager in this store: " + storeId);
+        }
+        else
+            throw new Exception("the member does not have a role in this store: " + storeId);
+    }
+
+    public Store appointToOwner(int appointedId, int storeId) throws Exception {
+        UserState storeState = roles.get(storeId);
+        if(storeState != null){
+            if(storeState.checkPermission(Action.appointOwner)){
+                stores.get(storeId).appointUser(id, appointedId, Role.Owner);
+                return stores.get(storeId);
+            }
+            else
+                throw new Exception("the member does not have permission to appoint a manager in this store: " + storeId);
+        }
+        else
+            throw new Exception("the member does not have a role in this store: " + storeId);
     }
 }
