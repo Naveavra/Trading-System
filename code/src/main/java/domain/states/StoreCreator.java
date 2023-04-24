@@ -13,6 +13,7 @@ public class StoreCreator extends UserState {
         permission = new Permission();
         List<Action> actions = new LinkedList<>();
 
+        /*
         actions.add(Action.buyProduct);
         actions.add(Action.createStore);
         actions.add(Action.getProductInformation);
@@ -23,6 +24,7 @@ public class StoreCreator extends UserState {
         actions.add(Action.sendQuestion);
         actions.add(Action.sendComplaint);
         actions.add(Action.sellProduct);
+         */
 
         actions.add(Action.appointManager);
         actions.add(Action.changeStoreDescription);
