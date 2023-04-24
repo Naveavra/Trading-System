@@ -35,14 +35,12 @@ public class MarketController {
      * @param userID creator id
      * @param description store description
      */
-    public void openStore(int userID, String description) throws Exception
+    public Store openStore(int userID, String description) throws Exception
     {
-        if (!userCtrl.canOpenStore(userID))
-        {
-            throw new Exception("user cant open a store");
-        }
+
         Store store = storectrl.openStore(description, userID);
-        userCtrl.openStore(userID, store);
+       return store;
+
 
     }
 

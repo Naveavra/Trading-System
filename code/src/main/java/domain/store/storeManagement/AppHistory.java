@@ -72,7 +72,7 @@ public class AppHistory {
         Node fatherNode = root.findNode(father);
         if (childNode != null)
         {
-            throw new Exception("user already have a role in the store");
+            appointToNewRole(father, child);
         }
         if (fatherNode == null)
         {
@@ -118,5 +118,27 @@ public class AppHistory {
     public Node getNode(Integer userId)
     {
         return root.findNode(userId);
+    }
+
+    public void appointToNewRole(Integer fatherid, Pair<Integer, Role> child) throws Exception {
+        Node childNode = root.findNode(child.getFirst());
+        if (childNode == null) {
+            throw new Exception("child node not found");
+        }
+        Node fatherNode = root.findNode(fatherid);
+        if (fatherNode == null) {
+            throw new Exception("father node not found");
+        }
+        if (childNode == root) {
+            throw new Exception("Cannot move the root node");
+        }
+        if (isChild(child.getFirst(), fatherid)) {
+            throw new Exception("Cannot move a node to its own child");
+        }
+        childNode.data.setSecond(child.getSecond());
+        Set<Integer> dismissedes = new HashSet<>(Objects.requireNonNull(root.deleteNode(childNode.data)));
+        fatherNode.addChild(childNode.data);
+        dismissedes.remove(child.getFirst());
+        usersInStore.removeAll(dismissedes);
     }
 }

@@ -900,6 +900,5 @@ public class UserController {
             throw new Exception("user doesnt exist");
 
         }
-
     }
 }

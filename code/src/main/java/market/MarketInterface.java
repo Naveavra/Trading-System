@@ -37,11 +37,14 @@ public interface MarketInterface {
     //member methods
     public Response<String> login(String email , String pass);
     public Response<String> logout(int userId);
-    public Response<String> changeDetails(int userId,String name ,String email , String birthday );
     public Response<String> changePassword(int userId,String oldPass ,String newPass);
+
+    public Response<String> changeName(int userId, String newUserName);
+    public Response<String> changeEmail(int userId, String newEmail);
+
     public Response<String> openStore(int userId,String storeDescription);
-    public Response<String> getMember(int userId);
-    public Response<String> getUserOrders(int userId);
+    public Response<String> getMemberInformation(int userId);
+    public Response<String> getUserPurchaseHistory(int userId);
     public Response<String> writeReviewToStore(int orderId, int storeId, String content, int grading, int userId);
     public Response<String> writeReviewToProduct(int orderId, int storeId,int productId, String content, int grading, int userId);
     public Response<String> getProductInformation(int userId,int storeId , int producId);

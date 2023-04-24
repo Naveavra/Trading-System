@@ -43,6 +43,19 @@ public class StoreController {
             addToProducts(p.clone());
         }
     }
+
+    private Set<Integer> closeStorePermanetly(int storeId) throws Exception
+    {
+        Store store = storeList.get(storeId);
+        if (store != null)
+        {
+            storeList.remove(storeId);
+            return store.closeStoreTemporary(store.getCreatorId());
+        }
+        else {
+            throw new Exception("store doesnt exist");
+        }
+    }
     private Product getExistingProductByName(String prodName){
         for(Product p : products.values()){
             if(p.getName().equalsIgnoreCase(prodName)){
