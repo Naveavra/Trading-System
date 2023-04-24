@@ -3,6 +3,7 @@ package domain.store.storeManagement;
 import com.google.gson.Gson;
 import domain.store.discount.DiscountPolicy;
 import utils.Message;
+import utils.MessageState;
 import utils.Pair;
 import domain.store.order.Order;
 import domain.store.product.Product;
@@ -26,6 +27,8 @@ public class Store {
     private final ProductController inventory; //<productID,<product, quantity>>
     private final ConcurrentHashMap<Integer, Order> storeorders;    //orederid, order
     private final ConcurrentHashMap<Integer, Message> messages; //<messageid, message>
+
+    private final ConcurrentHashMap<Integer, Message> questions;
     private DiscountPolicy discountPolicy;
 
     private final ConcurrentHashMap<Integer, Message> productReviews;
@@ -41,6 +44,7 @@ public class Store {
         this.storeorders = new ConcurrentHashMap<>();
         this.discountPolicy = new DiscountPolicy();
         this.productReviews = new ConcurrentHashMap<>();
+        this.questions = new ConcurrentHashMap<>();
     }
 
     public Message getProductReview(int productId) throws Exception
@@ -51,6 +55,19 @@ public class Store {
             return review;
         }
         throw new Exception("no reviews for this product");
+    }
+
+    public void addQuestion(Message m)
+    {
+        questions.put(m.getMessageId(), m);
+    }
+
+    public void answerQuestion(int messageID, String answer) throws Exception {
+        Message msg = questions.get(messageID);
+        if (msg != null && msg.getState() == MessageState.question)
+        {
+            msg.sendFeedback(answer);
+        }
     }
 
     public void addProductReview(Message m) throws Exception
