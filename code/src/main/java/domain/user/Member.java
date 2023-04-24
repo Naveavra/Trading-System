@@ -17,21 +17,21 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 //TODO: need to add to functions an addToUserHistory so that it will save all the information
 public class Member {
 
-    private Guest g;
+    private transient Guest g;
     private int id;
     private String name;
     private String birthday;
     private String email;
-    private String password;
+    private transient String password;
 
     private HashMap<Integer, UserState> roles; //connection between registered to the shops
     private HashMap<Integer, Store> stores; //saves all the stores it has a job at
-    private ConcurrentLinkedDeque<Notification> notifications;
+    private transient ConcurrentLinkedDeque<Notification> notifications;
 
     private UserHistory userHistory;
     private boolean isConnected;
 
-    private List<Pair<String, String>> securityQuestions;
+    private transient List<Pair<String, String>> securityQuestions;
     //new Member(1, "eliben123@gmail.com", "aBc123", "24/02/2002")
     public Member(int id, String email, String password, String birthday){
         this.id = id;
@@ -55,6 +55,7 @@ public class Member {
     public boolean getIsConnected(){
         return isConnected;
     }
+
 
     public void connect(){
         isConnected = true;
@@ -167,6 +168,7 @@ public class Member {
 
 
     }
+
 
     /**
      * creates a review about the store and sends it to the store

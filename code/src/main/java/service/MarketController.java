@@ -8,6 +8,7 @@ import domain.store.storeManagement.StoreController;
 import domain.user.Member;
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.google.gson.Gson;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MarketController {

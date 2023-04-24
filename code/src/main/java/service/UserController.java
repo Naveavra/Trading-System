@@ -1,18 +1,25 @@
 package service;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
 import domain.store.storeManagement.Store;
 import domain.user.Guest;
 import domain.user.Member;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import utils.Message;
 import utils.Notification;
 import utils.Role;
+
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+
 
 public class UserController {
 
@@ -107,6 +114,23 @@ public class UserController {
         else
             throw new Exception("member not found");
 
+    }
+
+    /**
+     * @return list off all the usernames in our system
+     */
+    public synchronized String getUsersInfo()
+    {
+        Gson gson = new Gson();
+        return gson.toJson(memberList);
+//
+//        for (Member obj : memberList.values()) {
+//            JSONObject jsonObj = new JSONObject();
+//            jsonObj.put("name", ((Member)obj).getName());
+//            jsonArray.add(jsonObj);
+//        }
+
+ //       return jsonArray;
     }
 
     //adding the productId to the user's cart with the given quantity
@@ -204,11 +228,12 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    public synchronized HashMap<Integer, HashMap<Integer, Integer>> getUserCart(int userId) throws Exception{
+    public synchronized String getUserCart(int userId) throws Exception{
+        Gson gson = new Gson();
         if(userId % 2 == 0) {
             Guest g = guestList.get(userId);
             if(g != null)
-                return  g.getCartContent();
+                return  gson.toJson(g.getCartContent());
             else
                 throw new Exception("no such guest exists");
         }
@@ -221,11 +246,12 @@ public class UserController {
         }
     }
 
-    public synchronized HashMap<Integer, HashMap<Integer, Integer>> getUserCart(String email) throws Exception{
+    public synchronized String getUserCart(String email) throws Exception{
         Member m = memberList.get(email);
+        Gson gson = new Gson();
         if(m != null) {
             if(m.getIsConnected())
-                return m.getCartContent();
+                return gson.toJson(m.getCartContent());
             else
                 throw new Exception("the member is not connected");
         }
@@ -268,6 +294,7 @@ public class UserController {
             return false;
         return memberList.get(email) != null;
     }
+
 
     public synchronized void openStore(int userId, Store store) throws Exception{
         if(userId % 2 == 0){
@@ -574,6 +601,10 @@ public class UserController {
         }
     }
 
+    /**
+     * @param email
+     * @return returns json
+     */
     public synchronized String getUserPurchaseHistory(String email) throws Exception{
         Member m = memberList.get(email);
         if(m!= null)
@@ -738,7 +769,7 @@ public class UserController {
      * @param storeId
      * @throws Exception
      */
-    public void appointOwner(int ownerId, int appointedId, int storeId) throws Exception {
+    public synchronized void appointOwner(int ownerId, int appointedId, int storeId) throws Exception {
         if(ownerId % 2 == 0)
             throw new Exception("guest cannot appoint people to a role in a store");
         else{
@@ -756,7 +787,7 @@ public class UserController {
         }
     }
 
-    public void appointOwner(String ownerEmail, String appointedEmail, int storeId) throws Exception{
+    public synchronized void appointOwner(String ownerEmail, String appointedEmail, int storeId) throws Exception{
         Member owner = memberList.get(ownerEmail);
         Member appointed = memberList.get(appointedEmail);
         if(owner != null){
@@ -788,7 +819,7 @@ public class UserController {
      * @param storeId
      * @throws Exception
      */
-    public void fireOwner(int ownerId, int appointedId, int storeId) throws Exception {
+    public synchronized void fireOwner(int ownerId, int appointedId, int storeId) throws Exception {
         if(ownerId % 2 == 0)
             throw new Exception("guest cannot fire people from a role in a store");
         else{
@@ -806,7 +837,7 @@ public class UserController {
         }
     }
 
-    public void fireOwner(String ownerEmail, String appointedEmail, int storeId) throws Exception {
+    public synchronized void fireOwner(String ownerEmail, String appointedEmail, int storeId) throws Exception {
         Member owner = memberList.get(ownerEmail);
         Member appointed = memberList.get(appointedEmail);
         if(owner != null){
@@ -838,7 +869,7 @@ public class UserController {
      * @param storeId
      * @throws Exception
      */
-    public void appointManager(int ownerId, int appointedId, int storeId) throws Exception {
+    public synchronized void appointManager(int ownerId, int appointedId, int storeId) throws Exception {
         if(ownerId % 2 == 0)
             throw new Exception("guest cannot appoint people to a role in a store");
         else{
@@ -857,7 +888,7 @@ public class UserController {
 
     }
 
-    public void appointManager(String ownerEmail, String appointedEmail, int storeId) throws Exception{
+    public synchronized void appointManager(String ownerEmail, String appointedEmail, int storeId) throws Exception{
         Member owner = memberList.get(ownerEmail);
         Member appointed = memberList.get(appointedEmail);
         if(owner != null){
@@ -889,7 +920,7 @@ public class UserController {
      * @param storeId
      * @throws Exception
      */
-    public void fireManager(int ownerId, int appointedId, int storeId) throws Exception {
+    public synchronized void fireManager(int ownerId, int appointedId, int storeId) throws Exception {
         if(ownerId % 2 == 0)
             throw new Exception("guest cannot fire people from a role in a store");
         else{
@@ -907,7 +938,7 @@ public class UserController {
         }
     }
 
-    public void fireManager(String ownerEmail, String appointedEmail, int storeId) throws Exception {
+    public synchronized void fireManager(String ownerEmail, String appointedEmail, int storeId) throws Exception {
         Member owner = memberList.get(ownerEmail);
         Member appointed = memberList.get(appointedEmail);
         if(owner != null){
@@ -931,6 +962,9 @@ public class UserController {
         else
             throw new Exception("no member has this email: "+ownerEmail);
     }
+
+
+
 
     //check that the format user@domain.com exists
     public boolean checkEmail(String email){
@@ -1016,4 +1050,24 @@ public class UserController {
 
         }
     }
+
+
+
+//    public synchronized void closeStore(int userID, int storeID) throws Exception
+//    {
+//        if (userID%2==0 )
+//        {
+//            throw new Exception("guest can not close stores");
+//        }
+//        String email = idToEmail.get(userID);
+//        if (email != null)
+//        {
+//            Member m = memberList.get(email);
+//            if(m != null ) //this method can also be invoked by the admin so there is no need to check if the user is loggedin
+//            {
+//                m.closeStore(int storeID);
+//            }
+//        }
+//
+//    }
 }

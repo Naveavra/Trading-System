@@ -1,5 +1,6 @@
 package market;
 
+import org.json.simple.JSONArray;
 import service.UserController;
 import utils.Logger;
 import utils.Response;
@@ -280,8 +281,7 @@ public class Market implements MarketInterface {
 
     @Override
     public Response<String> writeReviewToStore(int orderId, int storeId, String content, int grading, int userId) {
-        return null;
-    }
+        return null;}
 
     @Override
     public Response<String> writeReviewToProduct(int orderId, int storeId, int productId, String content, int grading, int userId) {
@@ -424,6 +424,11 @@ public class Market implements MarketInterface {
     }
 
     @Override
+    public Response<String> closeStorePermanetly(int adminId, int storeId) {
+        return null;
+    }
+
+    @Override
     public Response<String> getStore(int storeId) {
         return null;
     }
@@ -453,9 +458,13 @@ public class Market implements MarketInterface {
     public Response<String> removeAdmin(int userId, int adminId) {
         return null;
     }
-    public Response<String> getUsers(int userId){
+
+    /**
+     * return json of all the relevant information about the users: email, id, name
+     */
+    public Response<String> getUsers(){
         try{
-            String users = userController.getAllUsers(userId);
+            String users = userController.getUsersInfo();
             logger.log(Logger.logStatus.Success,"admin get users successfully on "+ LocalDateTime.now());
             return new Response<String>(users,null,null);
         }catch (Exception e){

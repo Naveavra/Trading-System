@@ -1,7 +1,6 @@
 package market;
 
-import domain.store.storeManagement.Store;
-import domain.user.Member;
+import org.json.simple.JSONArray;
 import utils.Response;
 
 import java.util.List;
@@ -86,6 +85,8 @@ public interface MarketInterface {
     public Response<String> closeStore(int userId,int storeId);
     public Response<String> reopenStore(int userId,int storeId);
 
+    public Response<String> closeStorePermanetly(int adminId, int storeId);
+
     //store methods
     //todo: decide if getStore will bring every thing togheter , prosucts , orders , ..statistics
     public Response<String> getStore(int storeId);
@@ -96,6 +97,6 @@ public interface MarketInterface {
     public Response<String> getStores();
     public Response<String> addAdmin(int userId, String name , String pass);
     public Response<String> removeAdmin(int userId , int adminId);
-    public Response<String> getUsers(int userId);
+    public Response<String> getUsers();
 
 }

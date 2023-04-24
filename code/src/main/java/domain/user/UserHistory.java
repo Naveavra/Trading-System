@@ -1,6 +1,7 @@
 package domain.user;
 
 
+import com.google.gson.Gson;
 import utils.Pair;
 
 import java.util.HashMap;
@@ -13,9 +14,9 @@ public class UserHistory {
     private HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> purchaseHistory;
     private HashMap <Integer, Integer> ordersAndPrices;
     private List<String> names;
-    private List<String> passwords;
+    private transient List<String> passwords;
     private List<String> emails;
-    private List<Pair<String, String>> securityQuestions;
+    private transient List<Pair<String, String>> securityQuestions;
 
     public UserHistory(){
         purchaseHistory = new HashMap<>();
@@ -65,19 +66,21 @@ public class UserHistory {
         return false;
     }
 
-    public String getUserPurchaseHistory(String name) {
-        String purchases = "purchase history for user " + name + ":\n";
-        for(int orderId : purchaseHistory.keySet()){
-            purchases = purchases+"  orderId: " + orderId +"\n";
-            for(int storeId : purchaseHistory.get(orderId).keySet()){
-                purchases = purchases + "    storeId: " + storeId + "\n";
-                for(int productId : purchaseHistory.get(orderId).get(storeId).keySet()) {
-                    purchases = purchases + "      proudctId: " + productId + ", quantity: " + purchaseHistory.get(orderId).get(storeId).get(productId) + "\n";
-                }
-            }
-            purchases = purchases + "  the total price was: " + ordersAndPrices.get(orderId) + "\n";
-        }
-       return purchases;
+    public String getUserPurchaseHistory(String name) { //NAVE
+        Gson gson = new Gson();
+        return gson.toJson(purchaseHistory);
+//        String purchases = "purchase history for user " + name + ":\n";
+//        for(int orderId : purchaseHistory.keySet()){
+//            purchases = purchases+"  orderId: " + orderId +"\n";
+//            for(int storeId : purchaseHistory.get(orderId).keySet()){
+//                purchases = purchases + "    storeId: " + storeId + "\n";
+//                for(int productId : purchaseHistory.get(orderId).get(storeId).keySet()) {
+//                    purchases = purchases + "      proudctId: " + productId + ", quantity: " + purchaseHistory.get(orderId).get(storeId).get(productId) + "\n";
+//                }
+//            }
+//            purchases = purchases + "  the total price was: " + ordersAndPrices.get(orderId) + "\n";
+//        }
+//       return purchases;
     }
 
     public String getInformation() {
