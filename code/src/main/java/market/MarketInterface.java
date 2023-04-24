@@ -45,14 +45,12 @@ public interface MarketInterface {
     public Response<String> openStore(int userId,String storeDescription);
     public Response<String> getMemberInformation(int userId);
     public Response<String> getUserPurchaseHistory(int userId);
-    public Response<Message> writeReviewToStore(int orderId, int storeId, String content, int grading, int userId);
-    public Response<Message> writeReviewToProduct(int orderId, int storeId,int productId, String content, int grading, int userId);
-    public Response<String> getProductInformation(int userId,int storeId , int producId);
-    public Response<String> getStoreInformation(int userId , int storeId);
-    public Response<String> rateStore(int userId,int storeId,int rating);
-    public Response<String> rateProduct(int userId,int storeId,int productId,int rating);
-    public Response<Message> sendQuestion(int userId,int storeId,String msg);
-    public Response<Message> sendComplaint(int userId,int storeId,String msg);
+    public Response<String> writeReviewToStore(int orderId, int storeId, String content, int grading, int userId);
+    public Response<String> writeReviewToProduct(int orderId, int storeId,int productId, String content, int grading, int userId);
+    public Response<String> getProductInformation(int storeId , int productId);
+    public Response<String> getStoreInformation( int storeId);
+    public Response<String> sendQuestion(int userId,int storeId,String msg);
+    public Response<String> sendComplaint(int userId,int storeId,String msg);
 
     //seller methods
     //todo : is that all what a seller can do?

@@ -281,12 +281,12 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<Message> writeReviewToStore(int orderId, int storeId, String content, int grading, int userId) {
+    public Response<String> writeReviewToStore(int orderId, int storeId, String content, int grading, int userId) {
         try{
             Message m = userController.writeReviewForStore(orderId,storeId,content,grading,userId);
             marketController.addReviewToStore(storeId, orderId, m);
             logger.log(Logger.logStatus.Success,"user write review on store successfully on "+ LocalDateTime.now());
-            return new Response<Message>(m,null,null);
+            return new Response<String>("user write review on store successfully",null,null);
         }catch (Exception e){
             logger.log(Logger.logStatus.Fail,"cant write review on store because: " + e.getMessage()+ "on "+ LocalDateTime.now());
             return new Response<>(null,"write review failed" , e.getMessage());
@@ -294,12 +294,12 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<Message> writeReviewToProduct(int orderId, int storeId, int productId, String content, int grading, int userId) {
+    public Response<String> writeReviewToProduct(int orderId, int storeId, int productId, String content, int grading, int userId) {
         try{
             Message m = userController.writeReviewForProduct(orderId,storeId,productId,content,grading,userId);
              marketController.writeReviewForProduct(m);
             logger.log(Logger.logStatus.Success,"user write review on product successfully on "+ LocalDateTime.now());
-            return new Response<Message>(m,null,null);
+            return new Response<String>("user write review successfully",null,null);
         }catch (Exception e){
             logger.log(Logger.logStatus.Fail,"cant write review to product because: " + e.getMessage()+ "on "+ LocalDateTime.now());
             return new Response<>(null,"write review failed" , e.getMessage());
@@ -307,13 +307,28 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getProductInformation(int userId, int storeId, int producId) {
-        return null;
+    public Response<String> getProductInformation(int storeId, int productId) {
+       try{
+           String res = marketController.getProductInformation(storeId,productId);
+           logger.log(Logger.logStatus.Success,"user get product information successfully on "+ LocalDateTime.now());
+           return new Response<String>(res,null,null);
+       }catch (Exception e){
+           logger.log(Logger.logStatus.Fail,"cant get product information because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+           return new Response<>(null,"get product information failed" , e.getMessage());
+       }
     }
 
+
     @Override
-    public Response<String> getStoreInformation(int userId, int storeId) {
-        return null;
+    public Response<String> getStoreInformation(int storeId) {
+        try{
+            String res = marketController.getStoreInformation(storeId);
+            logger.log(Logger.logStatus.Success,"user get store information successfully on "+ LocalDateTime.now());
+            return new Response<String>(res,null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant get store information because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"get product information failed" , e.getMessage());
+        }
     }
 
     public Response<String> getStoreDescription(int storeId)
@@ -329,23 +344,23 @@ public class Market implements MarketInterface {
 
     }
 
+
+    //TODO implement store questions
     @Override
-    public Response<String> rateStore(int userId, int storeId, int rating) {
-        return null;
+    public Response<String> sendQuestion(int userId, int storeId, String msg) {
+        try {
+            Message m = userController.sendQuestion(userId, storeId, msg);
+            String res = marketController.sendQuestion(m);
+            logger.log(Logger.logStatus.Success,"user send question successfully on "+ LocalDateTime.now());
+            return new Response<String>(res,null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant send information because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"send information failed" , e.getMessage());
+        }
     }
 
     @Override
-    public Response<String> rateProduct(int userId, int storeId, int productId, int rating) {
-        return null;
-    }
-
-    @Override
-    public Response<Message> sendQuestion(int userId, int storeId, String msg) {
-        return null;
-    }
-
-    @Override
-    public Response<Message> sendComplaint(int userId, int storeId, String msg) {
+    public Response<String> sendComplaint(int userId, int storeId, String msg) {
         return null;
     }
 

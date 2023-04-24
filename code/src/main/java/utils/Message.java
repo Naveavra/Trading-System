@@ -43,6 +43,8 @@ public class Message {
         return storeId;
     }
 
+    public int getProductId(){return productId;}
+
     public Member getReviewer() {
         return reviewer;
     }
