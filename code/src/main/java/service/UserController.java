@@ -7,6 +7,7 @@ import domain.user.Guest;
 import domain.user.Member;
 import utils.Message;
 import utils.Notification;
+import utils.Role;
 
 import java.util.HashMap;
 import java.util.List;
@@ -625,7 +626,7 @@ public class UserController {
             throw new Exception("guest does not have an email");
         else{
             String email = idToEmail.get(userId);
-            if(email != null)
+            if(email != null && checkEmail(newEmail))
                 changeUserEmail(email, newEmail);
             else
                 throw new Exception("no member has this id");
@@ -683,7 +684,7 @@ public class UserController {
             throw new Exception("guest does not have a name");
         else{
             String email = idToEmail.get(userId);
-            if(email != null)
+            if(email != null && checkPassword(newPassword))
                 changeUserPassword(email, oldPassword, newPassword);
             else
                 throw new Exception("no member has this id");
@@ -745,26 +746,83 @@ public class UserController {
             String appointedEmail = idToEmail.get(appointedId);
             if(ownerEmail != null){
                 if(appointedEmail != null){
-                    appointOwner(ownerEmail, appointedId, appointedEmail, storeId);
+                    appointOwner(ownerEmail, appointedEmail, storeId);
                 }
                 else
                     throw new Exception("the appointedId given does not belong to any member");
             }
             else
-                throw new Exception("the managerId given does not belong to any member");
+                throw new Exception("the ownerId given does not belong to any member");
         }
-
     }
 
-    public void appointOwner(String ownerEmail, int appointedId, String appointedEmail, int storeId) throws Exception{
+    public void appointOwner(String ownerEmail, String appointedEmail, int storeId) throws Exception{
         Member owner = memberList.get(ownerEmail);
         Member appointed = memberList.get(appointedEmail);
         if(owner != null){
             if(appointed != null){
-                Store store = owner.appointToOwner(appointedId, storeId);
-                Notification<String> notify = new Notification<>("you have been appointed to owner in store: " + storeId);
-                appointed.addNotification(notify);
-                appointed.changeRoleInStore(storeId, new StoreOwner(), store);
+                if(owner.getIsConnected()){
+                    if(appointed.checkRoleInStore(storeId) != Role.Owner) {
+                        Store store = owner.appointToOwner(appointed.getId(), storeId);
+                        Notification<String> notify = new Notification<>("you have been appointed to owner in store: " + storeId);
+                        appointed.addNotification(notify);
+                        appointed.changeRoleInStore(storeId, new StoreOwner(), store);
+                    }
+                    else
+                        throw new Exception("the member already is a owner in this store");
+                }
+                else
+                    throw new Exception("the member is not connected so he can't appoint");
+            }
+            else
+                throw new Exception("no member has this email: "+appointedEmail);
+        }
+        else
+            throw new Exception("no member has this email: "+ownerEmail);
+    }
+
+    /**
+     * firing an owner from the store
+     * @param ownerId
+     * @param appointedId
+     * @param storeId
+     * @throws Exception
+     */
+    public void fireOwner(int ownerId, int appointedId, int storeId) throws Exception {
+        if(ownerId % 2 == 0)
+            throw new Exception("guest cannot fire people from a role in a store");
+        else{
+            String ownerEmail = idToEmail.get(ownerId);
+            String appointedEmail = idToEmail.get(appointedId);
+            if(ownerEmail != null){
+                if(appointedEmail != null){
+                    fireOwner(ownerEmail, appointedEmail, storeId);
+                }
+                else
+                    throw new Exception("the appointedId given does not belong to any member");
+            }
+            else
+                throw new Exception("the ownerId given does not belong to any member");
+        }
+    }
+
+    public void fireOwner(String ownerEmail, String appointedEmail, int storeId) throws Exception {
+        Member owner = memberList.get(ownerEmail);
+        Member appointed = memberList.get(appointedEmail);
+        if(owner != null){
+            if(appointed != null){
+                if(owner.getIsConnected()){
+                    if(appointed.checkRoleInStore(storeId) == Role.Owner) {
+                        owner.fireOwner(appointed.getId(), storeId);
+                        Notification<String> notify = new Notification<>("you have been fired from owner in store: " + storeId);
+                        appointed.addNotification(notify);
+                        appointed.removeRoleInStore(storeId);
+                    }
+                    else
+                        throw new Exception("the member is not a owner in this store");
+                }
+                else
+                    throw new Exception("the member is not connected so he can't appoint");
             }
             else
                 throw new Exception("no member has this email: "+appointedEmail);
@@ -788,26 +846,34 @@ public class UserController {
             String appointedEmail = idToEmail.get(appointedId);
             if(ownerEmail != null){
                 if(appointedEmail != null){
-                    appointManager(ownerEmail, appointedId, appointedEmail, storeId);
+                    appointManager(ownerEmail, appointedEmail, storeId);
                 }
                 else
                     throw new Exception("the appointedId given does not belong to any member");
             }
             else
-                throw new Exception("the managerId given does not belong to any member");
+                throw new Exception("the ownerId given does not belong to any member");
         }
 
     }
 
-    public void appointManager(String ownerEmail, int appointedId, String appointedEmail, int storeId) throws Exception{
+    public void appointManager(String ownerEmail, String appointedEmail, int storeId) throws Exception{
         Member owner = memberList.get(ownerEmail);
         Member appointed = memberList.get(appointedEmail);
         if(owner != null){
             if(appointed != null){
-                Store store = owner.appointToManager(appointedId, storeId);
-                Notification<String> notify = new Notification<>("you have been appointed to manager in store: " + storeId);
-                appointed.addNotification(notify);
-                appointed.changeRoleInStore(storeId, new StoreManager(), store);
+                if(owner.getIsConnected()) {
+                    if (appointed.checkRoleInStore(storeId) != Role.Manager) {
+                        Store store = owner.appointToManager(appointed.getId(), storeId);
+                        Notification<String> notify = new Notification<>("you have been appointed to manager in store: " + storeId);
+                        appointed.addNotification(notify);
+                        appointed.changeRoleInStore(storeId, new StoreManager(), store);
+                    }
+                    else
+                        throw new Exception("the member already is a manager in this store");
+                }
+                else
+                    throw new Exception("the owner is not connected so he can't appoint");
             }
             else
                 throw new Exception("no member has this email: "+appointedEmail);
@@ -816,8 +882,55 @@ public class UserController {
             throw new Exception("no member has this email: "+ownerEmail);
     }
 
+    /**
+     * firing a manager from the store
+     * @param ownerId
+     * @param appointedId
+     * @param storeId
+     * @throws Exception
+     */
+    public void fireManager(int ownerId, int appointedId, int storeId) throws Exception {
+        if(ownerId % 2 == 0)
+            throw new Exception("guest cannot fire people from a role in a store");
+        else{
+            String ownerEmail = idToEmail.get(ownerId);
+            String appointedEmail = idToEmail.get(appointedId);
+            if(ownerEmail != null){
+                if(appointedEmail != null){
+                    fireManager(ownerEmail, appointedEmail, storeId);
+                }
+                else
+                    throw new Exception("the appointedId given does not belong to any member");
+            }
+            else
+                throw new Exception("the ownerId given does not belong to any member");
+        }
+    }
 
-
+    public void fireManager(String ownerEmail, String appointedEmail, int storeId) throws Exception {
+        Member owner = memberList.get(ownerEmail);
+        Member appointed = memberList.get(appointedEmail);
+        if(owner != null){
+            if(appointed != null){
+                if(owner.getIsConnected()){
+                    if(appointed.checkRoleInStore(storeId) == Role.Manager) {
+                        owner.fireManager(appointed.getId(), storeId);
+                        Notification<String> notify = new Notification<>("you have been fired from manager in store: " + storeId);
+                        appointed.addNotification(notify);
+                        appointed.removeRoleInStore(storeId);
+                    }
+                    else
+                        throw new Exception("the member is not a manager in this store");
+                }
+                else
+                    throw new Exception("the member is not connected so he can't appoint");
+            }
+            else
+                throw new Exception("no member has this email: "+appointedEmail);
+        }
+        else
+            throw new Exception("no member has this email: "+ownerEmail);
+    }
 
     //check that the format user@domain.com exists
     public boolean checkEmail(String email){
@@ -895,7 +1008,9 @@ public class UserController {
             String email = idToEmail.get(id);
             if (email != null)
             {
-                return memberList.get(email).getName();
+                Member m = memberList.get(email);
+                if(m != null && m.getIsConnected())
+                    return memberList.get(email).getName();
             }
             throw new Exception("user doesnt exist");
 

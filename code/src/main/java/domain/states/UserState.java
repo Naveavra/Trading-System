@@ -9,4 +9,7 @@ public abstract class UserState {
     public boolean checkPermission(Action a){
         return permission.checkPermission(a);
     }
+    public Role getRole(){
+        return role;
+    }
 }

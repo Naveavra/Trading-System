@@ -255,7 +255,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getMember(int userId) {
+    public Response<String> getMemberInformation(int userId) {
         try{
             String user = userController.getUserInformation(userId);
             logger.log(Logger.logStatus.Success,"user received successfully on "+ LocalDateTime.now());
@@ -267,7 +267,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getUserOrders(int userId) {
+    public Response<String> getUserPurchaseHistory(int userId) {
         try{
             String orders = userController.getUserPurchaseHistory(userId);
             logger.log(Logger.logStatus.Success,"user received orders successfully on "+ LocalDateTime.now());

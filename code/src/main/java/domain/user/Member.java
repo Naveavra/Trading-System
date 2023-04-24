@@ -335,4 +335,43 @@ public class Member {
         else
             throw new Exception("the member does not have a role in this store: " + storeId);
     }
+
+    public Role checkRoleInStore(int storeId) {
+        UserState state = roles.get(storeId);
+        if(state != null)
+            return state.getRole();
+        else
+            return null;
+    }
+
+    public void fireOwner(int appointedId, int storeId) throws Exception{
+        UserState storeState = roles.get(storeId);
+        if(storeState != null){
+            if(storeState.checkPermission(Action.fireOwner)){
+                stores.get(storeId).fireUser(appointedId);
+            }
+            else
+                throw new Exception("the member does not have permission to appoint a manager in this store: " + storeId);
+        }
+        else
+            throw new Exception("the member does not have a role in this store: " + storeId);
+    }
+
+    public void removeRoleInStore(int storeId) {
+        roles.remove(storeId);
+        stores.remove(storeId);
+    }
+
+    public void fireManager(int appointedId, int storeId) throws Exception{
+        UserState storeState = roles.get(storeId);
+        if(storeState != null){
+            if(storeState.checkPermission(Action.fireManager)){
+                stores.get(storeId).fireUser(appointedId);
+            }
+            else
+                throw new Exception("the member does not have permission to appoint a manager in this store: " + storeId);
+        }
+        else
+            throw new Exception("the member does not have a role in this store: " + storeId);
+    }
 }
