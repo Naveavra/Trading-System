@@ -12,4 +12,16 @@ public abstract class UserState {
     public Role getRole(){
         return role;
     }
+
+    public boolean checkHasAvailableAction(Action a){
+        return permission.checkAvailablePermission(a);
+    }
+
+    public void addAction(Action a){
+        permission.addAction(a);
+    }
+
+    public void removeAction(Action a){
+        permission.removeAction(a);
+    }
 }

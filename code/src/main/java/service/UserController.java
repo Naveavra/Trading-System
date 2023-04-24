@@ -9,6 +9,7 @@ import domain.user.Guest;
 import domain.user.Member;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import utils.Action;
 import utils.Message;
 import utils.Notification;
 import utils.Role;
@@ -414,7 +415,7 @@ public class UserController {
         else{
             String email = idToEmail.get(userId);
             if(email != null)
-                return writeComplaintToStore(orderId, storeId, comment, email);
+                return writeComplaintToMarket(orderId, storeId, comment, email);
             else
                 throw new Exception("no member has this id");
         }
@@ -422,7 +423,7 @@ public class UserController {
 
 
     //TODO:remember to add the storeCreator's email to the message (either later or in a function here)
-    public synchronized Message writeComplaintToStore(int orderId, int storeId, String comment,String email) throws Exception{
+    public synchronized Message writeComplaintToMarket(int orderId, int storeId, String comment,String email) throws Exception{
         Member m = memberList.get(email);
         if(m != null) {
             if(m.getIsConnected()) {
@@ -958,6 +959,101 @@ public class UserController {
             }
             else
                 throw new Exception("no member has this email: "+appointedEmail);
+        }
+        else
+            throw new Exception("no member has this email: "+ownerEmail);
+    }
+
+
+    /**
+     * adding a new permission to manager
+     * @param ownerId
+     * @param managerId
+     * @param a
+     * @param storeId
+     * @throws Exception
+     */
+    public synchronized void addManagerAction(int ownerId, int managerId, Action a, int storeId) throws Exception {
+        String managerEmail = idToEmail.get(managerId);
+        String ownerEmail = idToEmail.get(ownerId);
+        if(ownerEmail != null) {
+            if (managerEmail != null){
+                addManagerAction(ownerEmail, managerEmail, a, storeId);
+            }
+            else
+                throw new Exception("the managerId: " + managerId + " given goes not belong to any member");
+        }
+        else
+            throw new Exception("the ownerId: " + ownerId + " given goes not belong to any member");
+    }
+
+    public synchronized void addManagerAction(String ownerEmail, String managerEmail, Action a, int storeId) throws Exception {
+        Member owner = memberList.get(ownerEmail);
+        Member manager = memberList.get(managerEmail);
+        if(owner != null){
+            if(manager != null){
+                if(owner.getIsConnected()){
+                    if(manager.checkRoleInStore(storeId) == Role.Manager) {
+                        manager.addAction(a, storeId);
+                        Notification<String> notify = new Notification<>("the following action: "  + a.toString() + "\n" +
+                                "has been added for you for store: " + storeId);
+                        manager.addNotification(notify);
+                    }
+                    else
+                        throw new Exception("the member is not a manager in this store");
+                }
+                else
+                    throw new Exception("the member is not connected so he can't appoint");
+            }
+            else
+                throw new Exception("no member has this email: "+managerEmail);
+        }
+        else
+            throw new Exception("no member has this email: "+ownerEmail);
+    }
+
+    /**
+     * remove an action for the manager
+     * @param ownerId
+     * @param managerId
+     * @param a
+     * @param storeId
+     * @throws Exception
+     */
+    public synchronized void removeManagerAction(int ownerId, int managerId, Action a, int storeId) throws Exception {
+        String managerEmail = idToEmail.get(managerId);
+        String ownerEmail = idToEmail.get(ownerId);
+        if(ownerEmail != null) {
+            if (managerEmail != null){
+                removeManagerAction(ownerEmail, managerEmail, a, storeId);
+            }
+            else
+                throw new Exception("the managerId: " + managerId + " given goes not belong to any member");
+        }
+        else
+            throw new Exception("the ownerId: " + ownerId + " given goes not belong to any member");
+    }
+
+    public synchronized void removeManagerAction(String ownerEmail, String managerEmail, Action a, int storeId) throws Exception {
+        Member owner = memberList.get(ownerEmail);
+        Member manager = memberList.get(managerEmail);
+        if(owner != null){
+            if(manager != null){
+                if(owner.getIsConnected()){
+                    if(manager.checkRoleInStore(storeId) == Role.Manager) {
+                        manager.removeAction(a, storeId);
+                        Notification<String> notify = new Notification<>("the following action: "  + a.toString() + "\n" +
+                                "has been removed for you for store: " + storeId);
+                        manager.addNotification(notify);
+                    }
+                    else
+                        throw new Exception("the member is not a manager in this store");
+                }
+                else
+                    throw new Exception("the member is not connected so he can't appoint");
+            }
+            else
+                throw new Exception("no member has this email: "+managerEmail);
         }
         else
             throw new Exception("no member has this email: "+ownerEmail);

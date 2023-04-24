@@ -9,7 +9,6 @@ import java.util.List;
 
 public class StoreManager extends UserState {
 
-    private List<Action> addedActions;
     public  StoreManager(){
         role = Role.Manager;
         permission = new Permission();

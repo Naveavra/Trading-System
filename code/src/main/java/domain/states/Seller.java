@@ -24,7 +24,6 @@ public class Seller extends UserState {
         actions.add(Action.sendQuestion);
         actions.add(Action.sendComplaint);
         actions.add(Action.sellProduct);
-
          */
         permission.addActions(actions);
     }

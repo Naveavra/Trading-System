@@ -1,8 +1,6 @@
 package domain.user;
 
-import domain.states.Buyer;
 import domain.states.StoreCreator;
-import domain.states.StoreManager;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import utils.*;
@@ -375,5 +373,43 @@ public class Member {
         }
         else
             throw new Exception("the member does not have a role in this store: " + storeId);
+    }
+
+    public void addAction(Action a, int storeId) throws Exception {
+        UserState state = roles.get(storeId);
+        if(state != null) {
+            if (state.getRole() == Role.Manager) {
+                if (!state.checkPermission(a)) {
+                    if (state.checkHasAvailableAction(a)) {
+                        state.addAction(a);
+                    }
+                    else
+                        throw new Exception("manager can't have this permission");
+                }
+                else
+                    throw new Exception("the manager already has this action");
+            }
+            else
+                throw new Exception("the role of the member in this store is not manager");
+        }
+        else
+            throw new Exception("the member does not work in this store");
+    }
+
+    public void removeAction(Action a, int storeId) throws Exception {
+        UserState state = roles.get(storeId);
+        if(state != null) {
+            if (state.getRole() == Role.Manager) {
+                if (state.checkPermission(a)) {
+                        state.removeAction(a);
+                }
+                else
+                    throw new Exception("the manager already does not have this action");
+            }
+            else
+                throw new Exception("the role of the member in this store is not manager");
+        }
+        else
+            throw new Exception("the member does not work in this store");
     }
 }
