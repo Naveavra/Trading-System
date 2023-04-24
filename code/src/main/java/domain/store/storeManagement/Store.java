@@ -1,5 +1,6 @@
 package domain.store.storeManagement;
 
+import com.google.gson.Gson;
 import domain.store.discount.DiscountPolicy;
 import utils.Message;
 import utils.Pair;
@@ -19,13 +20,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Store {
     private final int storeid;
     private boolean isActive;
-    private final int creatorId;
+    private final transient int creatorId;
     private String storeDescription;
     private final AppHistory appHistory; //first one is always the store creator
     private final ProductController inventory; //<productID,<product, quantity>>
     private final ConcurrentHashMap<Integer, Order> storeorders;    //orederid, order
     private final ConcurrentHashMap<Integer, Message> messages; //<messageid, message>
     private DiscountPolicy discountPolicy;
+
+    private final ConcurrentHashMap<Integer, Message> productReviews;
 
     public Store(int id, String description, int creatorId){
         Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
@@ -37,7 +40,29 @@ public class Store {
         this.messages = new ConcurrentHashMap<>();
         this.storeorders = new ConcurrentHashMap<>();
         this.discountPolicy = new DiscountPolicy();
-        //this.productreviews = new ConcurrentHashMap<>();
+        this.productReviews = new ConcurrentHashMap<>();
+    }
+
+    public Message getProductReview(int productId) throws Exception
+    {
+        Message review = productReviews.get(productId);
+        if (review != null)
+        {
+            return review;
+        }
+        throw new Exception("no reviews for this product");
+    }
+
+    public void addProductReview(Message m) throws Exception
+    {
+        if (storeorders.containsKey(m.getOrderId()))
+        {
+            productReviews.put(m.getProductId(), m);
+        }
+        else
+        {
+            throw new Exception("cant add review for this product");
+        }
     }
 
     public int getStoreid()
@@ -273,4 +298,16 @@ public class Store {
         }
 
     }
+
+    public String getProductInformation(int producId) throws Exception{
+        Gson gson = new Gson();
+        if (inventory.getProduct(producId) != null)
+        {
+            return gson.toJson(inventory.getProduct(producId));
+        }
+        throw new Exception("cant get product information");
+
+    }
+
+
 }

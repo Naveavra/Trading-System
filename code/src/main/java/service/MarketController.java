@@ -60,6 +60,8 @@ public class MarketController {
         storectrl.giveFeedback(storeID, messageID, feedback);
     }
 
+    public String
+
 
     public void addReviewToStore(int storeId, int orderId, Message m) throws Exception {
         Store store = this.storectrl.getStore(storeId);
@@ -71,5 +73,41 @@ public class MarketController {
         {
             throw new Exception("store doesn't not exist or is doesn't active");
         }
+    }
+
+    public String writeReviewForProduct(Message m) throws Exception{
+        Store store = storectrl.getStore(m.getStoreId());
+        if (store != null && store.isActive())
+        {
+            store.addProductReview(m);
+        }
+    }
+
+    public String getProductInformation(int storeId, int producId) throws Exception {
+        Store store = storectrl.getStore(storeId);
+        if (store != null && store.isActive())
+        {
+            return store.getProductInformation(producId);
+        }
+        throw new Exception("cant get product information");
+    }
+
+    public String getStoreInformation(int storeId) throws Exception {
+        Store store = storectrl.getStore(storeId);
+        if (store != null && store.isActive())
+        {
+            Gson gson = new Gson();
+            return gson.toJson(store);
+        }
+        throw new Exception("can not show store information");
+    }
+
+    public String getStoreDescription(int storeId) throws Exception{
+        Store store = storectrl.getStore(storeId);
+        if (store != null && store.isActive())
+        {
+            return store.getStoreDescription();
+        }
+        throw new Exception("can not show store information");
     }
 }

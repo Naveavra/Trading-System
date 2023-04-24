@@ -297,7 +297,7 @@ public class Market implements MarketInterface {
     public Response<Message> writeReviewToProduct(int orderId, int storeId, int productId, String content, int grading, int userId) {
         try{
             Message m = userController.writeReviewForProduct(orderId,storeId,productId,content,grading,userId);
-            //todo : implement marketController.addReviewToProduct(m)
+             marketController.writeReviewForProduct(m);
             logger.log(Logger.logStatus.Success,"user write review on product successfully on "+ LocalDateTime.now());
             return new Response<Message>(m,null,null);
         }catch (Exception e){
@@ -314,6 +314,19 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> getStoreInformation(int userId, int storeId) {
         return null;
+    }
+
+    public Response<String> getStoreDescription(int storeId)
+    {
+        try{
+            String res = marketController.getStoreDescription(storeId);
+            logger.log(Logger.logStatus.Success,"user get store information successfully on "+ LocalDateTime.now());
+            return new Response<String>(res,null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant get store information because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"get product information failed" , e.getMessage());
+        }
+
     }
 
     @Override
