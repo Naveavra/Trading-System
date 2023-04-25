@@ -65,6 +65,18 @@ public class StoreController {
         return null;
     }
 
+    private void addQuestion(Message m, int storeId) throws Exception
+    {
+        Store store = storeList.get(storeId);
+        if (store != null && store.isActive())
+        {
+            store.addQuestion(m);
+            return;
+        }
+        throw new Exception("store does not exist or is not open");
+
+    }
+
     public Store openStore(String desc, int userID)
     {
         Store store = new Store(storescounter.getAndIncrement(), desc, userID);

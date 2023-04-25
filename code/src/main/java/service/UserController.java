@@ -1186,8 +1186,17 @@ public class UserController {
      * @param storeId
      * @return
      */
-    public synchronized String getWorkersInformation(int userId, int storeId){
-
+    public synchronized String getWorkersInformation(int userId, int storeId) throws Exception{
+        if(userId % 2 == 0)
+            throw new Exception("guest can't see workers information");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                return getWorkersInformation(email, storeId);
+            else
+                throw new Exception("no member has this id");
+        }
+        return null;
     }
 
 

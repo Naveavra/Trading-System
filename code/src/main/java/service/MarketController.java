@@ -110,4 +110,9 @@ public class MarketController {
         }
         throw new Exception("can not show store information");
     }
+
+    public String addQuestion(Message m, int storeId) throws Exception{
+        return storectrl.addQuestion(m, storeId);
+
+    }
 }
