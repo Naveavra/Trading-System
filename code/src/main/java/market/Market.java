@@ -33,6 +33,7 @@ public class Market implements MarketInterface {
         logger = Logger.getInstance();
         userController = new UserController();
         marketController = new MarketController();
+        admin.holdMarket(this);
     }
 
 
@@ -176,9 +177,9 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> login(String email, String pass) {
+    public Response<String> login(String email, String pass, List<String> answers) {
         try{
-            userController.login(email,pass,new ArrayList<String>());
+            userController.login(email,pass,answers);
             logger.log(Logger.logStatus.Success,"user" + email + "logged in successfully on "+ LocalDateTime.now());
             return new Response<String>(" u logged successfully",null,null);
         }catch (Exception e){
@@ -348,8 +349,8 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> sendQuestion(int userId, int storeId, String msg) {
         try {
-            Message m = userController.sendQuestion(userId, storeId, msg);
-            String res = marketController.sendQuestion(m);
+            Message m = userController.sendQuestionToStore(userId, msg, storeId);
+            String res = marketController.addQuestion(m, storeId);
             logger.log(Logger.logStatus.Success,"user send question successfully on "+ LocalDateTime.now());
             return new Response<String>(res,null,null);
         }catch (Exception e){
@@ -509,7 +510,7 @@ public class Market implements MarketInterface {
      */
     public Response<String> getUsers(){
         try{
-            String users = userController.getAllUserNames();
+            String users = userController.getUserInformation();
             logger.log(Logger.logStatus.Success,"admin get users successfully on "+ LocalDateTime.now());
             return new Response<String>(users,null,null);
         }catch (Exception e){

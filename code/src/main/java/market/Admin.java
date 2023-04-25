@@ -21,4 +21,6 @@ public class Admin {
     }
 
 
+    public void holdMarket(Market market) {
+    }
 }

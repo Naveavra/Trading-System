@@ -1200,6 +1200,16 @@ public class UserController {
     }
 
 
+    public synchronized String getWorkersInformation(String email, int storeId) throws Exception {
+        Member m = memberList.get(storeId);
+        if(m != null){
+
+        }
+        else
+            throw new Exception("no member has this email: " + email);
+    }
+
+
     //check that the format user@domain.com exists
     public boolean checkEmail(String email){
         String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z0-9-]{2,})$";

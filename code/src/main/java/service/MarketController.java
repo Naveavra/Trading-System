@@ -60,7 +60,6 @@ public class MarketController {
         storectrl.giveFeedback(storeID, messageID, feedback);
     }
 
-    public String
 
 
     public void addReviewToStore(int storeId, int orderId, Message m) throws Exception {
