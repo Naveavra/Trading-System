@@ -31,8 +31,8 @@ public interface MarketInterface {
 //    public Response<String> changeQuantityInCart(int storeId, int productId, int change);
     public Response<String> getCart(int id);
     public Response<String> getCart(String userName);
-    public Response<String> buy(int userId);
-    public Response<String> buy(String userName);
+    public Response<String> makePurchase(int userId , String accountNumber);
+    public Response<String> makePurchase(String userName,String accountNumber);
 
     //member methods
     public Response<String> login(String email , String pass);
@@ -49,12 +49,9 @@ public interface MarketInterface {
     public Response<String> writeReviewToProduct(int orderId, int storeId,int productId, String content, int grading, int userId);
     public Response<String> getProductInformation(int storeId , int productId);
     public Response<String> getStoreInformation( int storeId);
+    public Response<String> getStoreProducts(int storeId);
     public Response<String> sendQuestion(int userId,int storeId,String msg);
-    public Response<String> sendComplaint(int userId,int storeId,String msg);
-
-    //seller methods
-    //todo : is that all what a seller can do?
-    public Response<String> sell(int userId,int storeId,int orderId);
+    public Response<String> sendComplaint(int userId,int orderId,int storeId,String msg);
 
     // manager methods
     //todo: miki what purchase and discount policy and constraint should get
@@ -75,7 +72,7 @@ public interface MarketInterface {
     public Response<String> getStoreOrders(int userId , int storeId);
 
     //store owner methods
-    public Response<String> addOwner(int userId , int storeId,int ownerId);
+    public Response<String> appointOwner(int userId , int storeId,int ownerId);
     public Response<String> fireOwner(int userId , int storeId, int ownerId);
     public Response<String> changeManagerPermission (int userId,int storeId, List<Integer> permissionsIds);
     public Response<String> getAppointments(int userId, int storeId);

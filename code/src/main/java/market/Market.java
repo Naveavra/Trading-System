@@ -1,7 +1,9 @@
 package market;
 
-import org.json.simple.JSONArray;
+import domain.store.order.Order;
 import service.UserController;
+import service.payment.ProxyPayment;
+import utils.Action;
 import utils.Logger;
 import utils.Message;
 import utils.Response;
@@ -12,6 +14,7 @@ import service.MarketController;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -25,6 +28,9 @@ public class Market implements MarketInterface {
     private final ConcurrentLinkedDeque<Admin> admins;
     private final UserController userController;
     private final MarketController marketController;
+    //serveices
+    ProxyPayment proxyPayment;
+    Gson gson ;
     private final Logger logger;
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
@@ -34,6 +40,8 @@ public class Market implements MarketInterface {
         logger = Logger.getInstance();
         userController = new UserController();
         marketController = new MarketController();
+        gson = new Gson();
+        proxyPayment = new ProxyPayment();
     }
 
 
@@ -129,7 +137,7 @@ public class Market implements MarketInterface {
     }
 
 
-    public Response<String> getCart( int id) {
+    public Response<String> getCart(int id) {
         try{
             Gson gson = new Gson();
             String cart = gson.toJson(userController.getUserCart(id));
@@ -155,16 +163,21 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> buy(int userId) {
-//        try {
-//            HashMap<Integer, HashMap<Integer, Integer>> cart = uc.getUserCart(userId);
-//            String recipt = mc.purchase(userId,cart);
-//        } catch (Exception e) {
-//
-//        }
-        return null;
+    public Response<String> makePurchase(int userId,String accountNumber) {
+        try {
+            HashMap<Integer, HashMap<Integer, Integer>> h = new HashMap<>();
+            HashMap<Integer, HashMap<Integer, Integer>> cart = gson.fromJson(userController.getUserCart(userId), h.getClass());
+            int amont  = marketController.caclulatePrice(cart);
+            String order = marketController.purchaseProducts(cart,userId ,amont);
+            proxyPayment.makePurchase(accountNumber,amont);
+            logger.log(Logger.logStatus.Success,"user made purchase on "+ LocalDateTime.now());
+            return new Response<String>(order,null,null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail,"user cant make purchase " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"make purchase failed" , e.getMessage());
+        }
     }
-    public Response<String> buy(String name) {
+    public Response<String> makePurchase(String name,String accountNumber) {
 //        try {
 //            HashMap<Integer, HashMap<Integer, Integer>> cart = uc.getUserCart(name);
 //            mc.purchase(name,cart);
@@ -341,7 +354,16 @@ public class Market implements MarketInterface {
             logger.log(Logger.logStatus.Fail,"cant get store information because: " + e.getMessage()+ "on "+ LocalDateTime.now());
             return new Response<>(null,"get product information failed" , e.getMessage());
         }
-
+    }
+    public Response<String> getStoreProducts(int storeId){
+        try{
+            String res = marketController.getStoreProducts(storeId);
+            logger.log(Logger.logStatus.Success,"user get store products successfully on "+ LocalDateTime.now());
+            return new Response<String>(res,null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant get store products because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"get products failed" , e.getMessage());
+        }
     }
 
 
@@ -349,10 +371,10 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> sendQuestion(int userId, int storeId, String msg) {
         try {
-            Message m = userController.sendQuestion(userId, storeId, msg);
-            String res = marketController.sendQuestion(m);
+            Message m = userController.sendQuestion(userId,storeId,msg);
+            marketController.sendQuestion(storeId,m);
             logger.log(Logger.logStatus.Success,"user send question successfully on "+ LocalDateTime.now());
-            return new Response<String>(res,null,null);
+            return new Response<String>("question added successfully",null,null);
         }catch (Exception e){
             logger.log(Logger.logStatus.Fail,"cant send information because: " + e.getMessage()+ "on "+ LocalDateTime.now());
             return new Response<>(null,"send information failed" , e.getMessage());
@@ -360,63 +382,148 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> sendComplaint(int userId, int storeId, String msg) {
-        return null;
-    }
-
-    @Override
-    public Response<String> sell(int userId, int storeId, int orderId) {
-        return null;
+    public Response<String> sendComplaint(int userId,int orderId, int storeId, String msg) {
+        try {
+           Message m = userController.sendComplaint(userId,orderId, storeId, msg);
+            for(Admin a :admins){
+                a.addComplaint(m);
+            }
+            logger.log(Logger.logStatus.Success,"user send complaint successfully on "+ LocalDateTime.now());
+            return new Response<String>("user send complaint successfully",null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant send complaint because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"send Complaint failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> appointManager(int userId, int storeId, int managerIdToAppoint) {
-        return null;
+        try{
+            userController.appointManager(userId,managerIdToAppoint,storeId);
+            logger.log(Logger.logStatus.Success,"user appoint " +managerIdToAppoint + "to Manager in: "+storeId+ " successfully on "+ LocalDateTime.now());
+            return new Response<String>("user appointManager successfully",null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant appoint Manager because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"appoint Manager failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> changeStoreDescription(int userId, int storeId, String description) {
-        return null;
+        try{
+            userController.checkAccess(userId,storeId, Action.changeStoreDescription);
+            marketController.setStoreDescription(storeId, description);
+            logger.log(Logger.logStatus.Success,"user change store description successfully on "+ LocalDateTime.now());
+            return new Response<String>("user change store description successfully",null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant change store description because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"change store description failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> changePurchasePolicy(int userId, int storeId, String policy) {
-        return null;
+        try{
+            userController.checkAccess(userId,storeId, Action.changePurchasePolicy);
+            marketController.setStorePurchasePolicy(storeId,policy);
+            logger.log(Logger.logStatus.Success,"user change store purchase policy successfully on "+ LocalDateTime.now());
+            return new Response<String>("user change store purchase policy successfully",null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant change store purchase policy because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"change store policy purchase failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> changeDiscountPolicy(int userId, int storeId, String policy) {
-        return null;
+        try{
+            userController.checkAccess(userId,storeId, Action.changeDiscountPolicy);
+            marketController.setStoreDiscountPolicy(storeId,policy);
+            logger.log(Logger.logStatus.Success,"user change store policy discount successfully on "+ LocalDateTime.now());
+            return new Response<String>("user change store discount policy successfully",null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant change store discount policy because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"change store discount policy failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> addPurchaseConstraint(int userId, int storeId, String constraint) {
-        return null;
+        try{
+            userController.checkAccess(userId,storeId, Action.addPurchaseConstraint);
+            marketController.addPurchaseConstraint(storeId,constraint);
+            logger.log(Logger.logStatus.Success,"user purchase constraint successfully on "+ LocalDateTime.now());
+            return new Response<String>("user purchase constraint successfully",null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant purchase constraint policy because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"purchase constraint failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> fireManager(int userId, int storeId, int managerToFire) {
-        return null;
+        try{
+            userController.checkAccess(userId,storeId, Action.fireManager);
+            userController.fireManager(userId,managerToFire,storeId);
+            logger.log(Logger.logStatus.Success,"user fire manager successfully on "+ LocalDateTime.now());
+            return new Response<String>("user fire manager successfully",null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant fire manager because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"fire manager failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> checkWorkersStatus(int userId, int storeId, int workerId) {
-        return null;
+        try{
+            userController.checkAccess(userId,storeId, Action.checkWorkersStatus);
+            String res = userController.getWorkerStatus(userId, storeId,workerId);
+            logger.log(Logger.logStatus.Success,"user check worker status successfully on "+ LocalDateTime.now());
+            return new Response<String>("user check worker status successfully",null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant check worker status because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"check worker status failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> viewQuestions(int userId, int storeId) {
-        return null;
+        try{
+            userController.checkAccess(userId,storeId, Action.viewMessages);
+            String res = userController.getQuestions(userId, storeId);
+            logger.log(Logger.logStatus.Success,"user check worker status successfully on "+ LocalDateTime.now());
+            return new Response<String>(res,null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant get questions because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"get questions failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> answerQuestion(int userId, int storeId, int questionId, String answer) {
-        return null;
+        try{
+            userController.checkAccess(userId,storeId, Action.answerMessage);
+            userController.answerQuestion(userId, storeId,questionId,answer);
+            logger.log(Logger.logStatus.Success,"user answer question successfully on "+ LocalDateTime.now());
+            return new Response<String>("user answer question successfully",null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant answer question because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"answer question failed" , e.getMessage());
+        }
     }
 
     @Override
     public Response<String> seeStoreHistory(int userId, int storeId) {
-        return null;
+        try{
+            userController.checkAccess(userId,storeId, Action.seeStoreHistory);
+            //todo: bring only store history;
+            String res = marketController.getStoreInformation(storeId);
+            logger.log(Logger.logStatus.Success,"user answer question successfully on "+ LocalDateTime.now());
+            return new Response<String>("user answer question successfully",null,null);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail,"cant answer question because: " + e.getMessage()+ "on "+ LocalDateTime.now());
+            return new Response<>(null,"answer question failed" , e.getMessage());
+        }
     }
 
     @Override
@@ -440,7 +547,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> addOwner(int userId, int storeId, int ownerId) {
+    public Response<String> appointOwner(int userId, int storeId, int ownerId) {
         return null;
     }
 

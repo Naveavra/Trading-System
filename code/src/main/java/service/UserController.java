@@ -4,11 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
+import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import domain.user.Guest;
 import domain.user.Member;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import utils.Action;
 import utils.Message;
 import utils.Notification;
 import utils.Role;
@@ -1051,6 +1053,48 @@ public class UserController {
         }
     }
 
+    public Message sendQuestion(int userId, int storeId,String msg) throws Exception {
+        String email = idToEmail.get(userId);
+        if(email !=null) {
+            Member m = memberList.get(email);
+            if (!m.getIsConnected()) {
+                int tmp = messageIds;
+                messageIds += 2;
+               return  m.sendQuestion(tmp, storeId, msg);
+            }
+            throw new Exception("member is not connected");
+        }
+        throw new Exception("user isn't exist");
+    }
+
+    public Message sendComplaint(int userId, int orderId, int storeId, String msg) throws Exception {
+        String email = idToEmail.get(userId);
+        if(email !=null) {
+            Member m = memberList.get(email);
+            if (!m.getIsConnected()) {
+                int tmp = messageIds;
+                messageIds += 2;
+                return  m.writeComplaint(tmp,orderId,storeId,msg);
+            }
+            throw new Exception("member is not connected");
+        }
+        throw new Exception("user isn't exist");
+    }
+
+    public void checkAccess(int userId, int storeId, Action changeStoreDescription) throws Exception {
+        Member m = memberList.get(userId);
+        if(m !=null){
+           UserState state = m.getRoleInStore(storeId);
+           if(state !=null){
+              if(!state.checkPermission(changeStoreDescription)){
+                  throw  new Exception("user denied!");
+              }
+              return;
+           }
+            throw  new Exception("user doesn't have samhut!");
+        }
+        throw  new Exception("user dont exist");
+    }
 
 
 //    public synchronized void closeStore(int userID, int storeID) throws Exception

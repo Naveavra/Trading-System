@@ -1,8 +1,6 @@
 package domain.user;
 
-import domain.states.Buyer;
 import domain.states.StoreCreator;
-import domain.states.StoreManager;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import utils.*;
@@ -163,10 +161,8 @@ public class Member {
 
     public void openStore(Store store) {
         UserState creator = new StoreCreator();
-        stores.put(store.getStoreid(), store);
-        roles.put(store.getStoreid(), creator);
-
-
+        stores.put(store.getStoreId(), store);
+        roles.put(store.getStoreId(), creator);
     }
 
 
@@ -375,5 +371,8 @@ public class Member {
         }
         else
             throw new Exception("the member does not have a role in this store: " + storeId);
+    }
+    public UserState getRoleInStore(int storeId){
+        return roles.get(storeId);
     }
 }
