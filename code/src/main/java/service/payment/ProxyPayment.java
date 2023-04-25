@@ -11,13 +11,12 @@ public class ProxyPayment implements PaymentAdapter {
     }
 
     @Override
-    public void makePurchase(String accountNumber , int amount) {
+    public void makePurchase(String accountNumber , int amount) throws Exception{
         if (real!=null){
             real.makePurchase(accountNumber,amount);
-            System.out.println("real transaction was made");
         }
         else{
-            System.out.println("proxy made fake transaction");
+            throw new Exception("proxy made fake transaction");
         }
     }
 }

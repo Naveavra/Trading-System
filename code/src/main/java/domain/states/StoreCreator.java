@@ -26,6 +26,7 @@ public class StoreCreator extends UserState {
         actions.add(Action.seeStoreHistory);
         actions.add(Action.addProduct);
         actions.add(Action.addDiscountConstraint);
+        actions.add(Action.seeStoreOrders);
 
         actions.add(Action.addOwner);
         actions.add(Action.fireOwner);

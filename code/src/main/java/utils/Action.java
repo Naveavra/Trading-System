@@ -10,6 +10,8 @@ public enum Action {
     appointManager, // manager, owner, creator
     appointOwner,
     addProduct, // manager, owner, creator
+    removeProduct, //removes a product from store
+    updateProduct, //updates product fields
     changeStoreDescription, // manager, owner, creator
     changePurchasePolicy, // manager, owner, creator
     changeDiscountPolicy, // manager, owner, creator
@@ -25,5 +27,8 @@ public enum Action {
     viewMessages, // manager, owner, creator
     answerMessage, // manager, owner, creator
     seeStoreHistory, // manager, owner, creator
+    seeStoreOrders, // manager,owner,creator
+    addAdmin,
+    removeAdmin,
 }
 

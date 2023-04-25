@@ -1,12 +1,11 @@
 package domain.store.storeManagement;
 
+import com.google.gson.Gson;
+import utils.Order;
 import domain.store.product.Product;
 import utils.Message;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,23 +25,32 @@ public class StoreController {
     /**
      * adds a new product to a store.
      */
-    public synchronized void addProduct(int storeid, String name, String desc, int price, int quantity) {
+    public synchronized int addProduct(int storeid, String name, String desc, int price, int quantity) {
         Store st;
         Product prod;
+        int id = -1;
         if ((st = getStore(storeid)) != null && (prod = getExistingProductByName(name)) != null) {
             Product prod_ = prod.clone();
             prod_.setDescription(desc);
             prod_.setPrice(price);
             prod_.setQuantity(quantity);
             st.addNewExistingProduct(prod_);
+            id = prod_.getID();
         } else if ((st = getStore(storeid)) != null) {
             Product p = st.addNewProduct(name, desc, productIDs);
             p.setPrice(price);
             p.setQuantity(quantity);
             addToProducts(p.clone());
+            id = p.getID();
+        }
+        return id;
+    }
+    public void addToCategory(int storeId, int productId, List<String> categories){
+        Store st;
+        if((st = getStore(storeId))!= null){
+            st.addToCategories(productId,categories);
         }
     }
-
     private Set<Integer> closeStorePermanetly(int storeId) throws Exception {
         Store store = storeList.get(storeId);
         if (store != null) {
@@ -120,7 +128,7 @@ public class StoreController {
      * @param shoppingcart the client shopping cart
      * @return if successful returs the store owners ids else null
      */
-    public Set<Integer> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart) {
+    public synchronized Set<Integer> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart) {
         Set<Integer> storeOwnersIDS = new HashSet<>();
         for (Integer storeid : shoppingcart.keySet()) {
             Store store = storeList.get(storeid);
@@ -204,6 +212,68 @@ public class StoreController {
             store.giveFeedback(messageID, feedback);
         } else {
             throw new Exception("store doesnt Exist or Open");
+        }
+    }
+
+    public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
+        Store store = storeList.get(storeId);
+        if (store != null && store.isActive())
+        {
+            return store.getQuestions();
+        }
+        else {
+            throw new Exception("store doesnt Exist or Open");
+        }
+    }
+
+    public void answerQuestion(int storeId, int questionId, String answer) throws Exception{
+        Store store = storeList.get(storeId);
+        if (store != null && store.isActive())
+        {
+            store.answerQuestion(questionId, answer);
+        }
+    }
+
+    public ConcurrentHashMap<Integer, Order> getStoreOrderHistory(int storeId) throws Exception {
+        Store store = storeList.get(storeId);
+        if (store != null && store.isActive())
+        {
+            return store.getOrdersHistory();
+        }
+        throw new Exception("store doesnt Exist or Open");
+    }
+
+    public AppHistory getAppointments(int storeId) throws Exception{
+        Store store = storeList.get(storeId);
+        if (store != null && store.isActive())
+        {
+            return store.getAppHistory();
+        }
+        throw new Exception("store doesnt Exist or Open");
+    }
+
+    public String getStoresInformation() {
+        Gson gson = new Gson();
+        return gson.toJson(storeList);
+    }
+
+    public Set<Integer> closeStorePermanently(int storeId) throws Exception {
+        Store store = storeList.get(storeId);
+        if(store != null){
+            storeList.remove(storeId);
+            return store.getUsersInStore();
+        }
+        else
+            throw new Exception("the store does not exist in the system");
+    }
+
+    public void removeProduct(int storeId, int productId) throws Exception  {
+        Store st;
+        if((st = storeList.get(storeId))!=null){
+            st.removeProduct(productId);
+        }
+        else{
+            throw new Exception("Store id doesn't exist.");
         }
     }
 }

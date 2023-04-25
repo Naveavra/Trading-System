@@ -2,19 +2,14 @@ package service;
 
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
-import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import domain.user.Guest;
 import domain.user.Member;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import utils.Action;
-import utils.Message;
-import utils.Notification;
-import utils.Role;
+import utils.*;
 
 import com.google.gson.Gson;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,19 +20,23 @@ public class UserController {
 
     ConcurrentHashMap<Integer, Guest> guestList;
     int guestIds;
-    ConcurrentHashMap<String, Member> memberList;
+    ConcurrentHashMap<String, Member> activeMemberList;
+    ConcurrentHashMap<String, Member> inActiveMemberList;
     ConcurrentHashMap<Integer, String> idToEmail;
     int memberIds;
     int messageIds;
+    private transient Gson gson ;
 
 
     public UserController(){
         guestList = new ConcurrentHashMap<>();
         guestIds = 0;
-        memberList = new ConcurrentHashMap<>();
+        activeMemberList = new ConcurrentHashMap<>();
+        inActiveMemberList = new ConcurrentHashMap<>();
         idToEmail = new ConcurrentHashMap<>();
         memberIds = 1;
         messageIds = 0;
+        gson = new Gson();
     }
 
 
@@ -58,7 +57,7 @@ public class UserController {
     public synchronized void register(String email, String password, String birthday) throws Exception{
         if(!checkEmail(email))
             throw new Exception("invalid email");
-        for (Member m : memberList.values())
+        for (Member m : activeMemberList.values())
             if(m.getEmail().equals(email))
                 throw new Exception("the email is already taken");
         if(!checkPassword(password))
@@ -67,7 +66,7 @@ public class UserController {
             throw new Exception("birthday not legal");
 
         Member m = new Member(memberIds, email, password, birthday);
-        memberList.put(email, m);
+        activeMemberList.put(email, m);
         idToEmail.put(memberIds, email);
         memberIds+=2;
     }
@@ -78,12 +77,14 @@ public class UserController {
             throw new Exception("invalid email");
         if(!checkPassword(password))
             throw new Exception("invalid password");
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m == null)
             throw new Exception("no such email");
         try {
-            if(m.login(password, answers))
+            if(m.login(password, answers)) {
+                activeMemberList.put(email, inActiveMemberList.remove(email));
                 return m.getId();
+            }
         }
         catch (Exception e){
             throw new Exception(e.getMessage());
@@ -102,14 +103,13 @@ public class UserController {
     }
 
     public synchronized int logout(String email) throws Exception{
-        Member m = memberList.get(email);
+        Member m =activeMemberList.get(email);
         if (m != null) {
-            if (m.getIsConnected()) {
+            {
                 m.disconnect();
+                inActiveMemberList.put(email, activeMemberList.remove(email));
                 return enterGuest();
             }
-            else
-                throw new Exception("member is disconnected already");
         }
         else
             throw new Exception("member not found");
@@ -122,15 +122,7 @@ public class UserController {
     public synchronized String getAllUserNames()
     {
         Gson gson = new Gson();
-        return gson.toJson(memberList.keySet());
-//
-//        for (Member obj : memberList.values()) {
-//            JSONObject jsonObj = new JSONObject();
-//            jsonObj.put("name", ((Member)obj).getName());
-//            jsonArray.add(jsonObj);
-//        }
-
- //       return jsonArray;
+        return gson.toJson(activeMemberList.keySet());
     }
 
     //adding the productId to the user's cart with the given quantity
@@ -150,12 +142,9 @@ public class UserController {
     }
 
     public synchronized void addProductToCart(String email, int storeId, int productId, int quantity) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if (m.getIsConnected())
                 m.addProductToCart(storeId, productId, quantity);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no such member exists");
@@ -180,12 +169,9 @@ public class UserController {
     }
 
     public synchronized void removeProductFromCart(String email, int storeId, int productId) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected())
                 m.removeProductFromCart(storeId, productId);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no such member exists");
@@ -210,12 +196,9 @@ public class UserController {
         }
     }
     public synchronized void changeQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected())
                 m.changeQuantityInCart(storeId, productId, change);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no such member exists");
@@ -247,13 +230,10 @@ public class UserController {
     }
 
     public synchronized String getUserCart(String email) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         Gson gson = new Gson();
         if(m != null) {
-            if(m.getIsConnected())
                 return gson.toJson(m.getCartContent());
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no such member exists");
@@ -270,12 +250,9 @@ public class UserController {
     }
 
     public synchronized void purchaseMade(int orderId, String email, int totalPrice) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected())
                 m.purchaseMade(orderId, totalPrice);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has that email");
@@ -292,7 +269,7 @@ public class UserController {
         String email = idToEmail.get(userId);
         if(email == null)
             return false;
-        return memberList.get(email) != null;
+        return activeMemberList.get(email) != null;
     }
 
 
@@ -310,12 +287,9 @@ public class UserController {
     }
 
     public synchronized void openStore(String email, Store store) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected())
                 m.openStore(store);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("the member does not exist");
@@ -346,15 +320,13 @@ public class UserController {
     }
 
     public synchronized Message writeReviewForStore(int orderId, int storeId, String content, int grading, String email) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected()) {
+            {
                 int tmp = memberIds;
                 messageIds += 2;
                 return m.writeReview(tmp, storeId, orderId, content, grading);
             }
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -385,15 +357,13 @@ public class UserController {
     }
 
     public synchronized Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, String email) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected()) {
+            {
                 int tmp = messageIds;
                 messageIds += 2;
                 return m.writeReview(tmp, storeId, productId, orderId, comment, grading);
             }
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -423,15 +393,13 @@ public class UserController {
 
     //TODO:remember to add the storeCreator's email to the message (either later or in a function here)
     public synchronized Message writeComplaintToMarket(int orderId, int storeId, String comment,String email) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected()) {
+            {
                 int tmp = messageIds;
                 messageIds += 2;
                 return m.writeComplaint(tmp, orderId, storeId, comment);
             }
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -453,15 +421,13 @@ public class UserController {
 
     //TODO:need to check before that the storeId is legal
     public Message sendQuestionToStore(int storeId, String question, String email) throws Exception {
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected()) {
+            {
                 int tmp = messageIds;
                 messageIds += 2;
                 return m.sendQuestion(tmp, storeId, question);
             }
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -489,12 +455,9 @@ public class UserController {
 
 
     public synchronized boolean canCheckMessages(String email, int storeId) throws Exception {
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected())
                 return m.canCheckMessages(storeId);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -515,12 +478,9 @@ public class UserController {
     }
 
     public synchronized boolean canGiveFeedback(String email, int storeId) throws Exception {
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected())
                 return m.canGiveFeedback(storeId);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -544,12 +504,9 @@ public class UserController {
     }
 
     public synchronized void addNotification(String email, Notification notification) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if (m.getIsConnected())
                 m.addNotification(notification);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -576,12 +533,9 @@ public class UserController {
     }
 
     public synchronized List<String> displayNotifications(String email) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null){
-            if(m.getIsConnected())
                 return m.displayNotifications();
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has such email");
@@ -606,7 +560,7 @@ public class UserController {
      * @return returns json
      */
     public synchronized String getUserPurchaseHistory(String email) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m!= null)
             return m.getUserPurchaseHistory();
         else
@@ -635,12 +589,9 @@ public class UserController {
     }
 
     public synchronized String getUserInformation(String email) throws Exception {
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null){
-            if(m.getIsConnected())
-                return m.getInformation();
-            else
-                throw new Exception("the member is not connected");
+                return m.getPrivateInformation();
         }
         else
             throw new Exception("no member has this email");
@@ -664,12 +615,9 @@ public class UserController {
         }
     }
     public synchronized void changeUserEmail(String email, String newEmail) throws Exception {
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected())
                 m.setNewEmail(newEmail);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -692,12 +640,9 @@ public class UserController {
         }
     }
     public synchronized void changeUserName(String email, String newName) throws Exception {
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected())
                 m.setNewName(newName);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -722,12 +667,9 @@ public class UserController {
         }
     }
     public synchronized void changeUserPassword(String email, String oldPassword, String newPassword) throws Exception {
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null) {
-            if(m.getIsConnected())
                 m.setNewPassword(oldPassword, newPassword);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -747,12 +689,9 @@ public class UserController {
 
 
     public synchronized void addSecurityQuestion(String email, String question, String answer) throws Exception{
-        Member m = memberList.get(email);
+        Member m = activeMemberList.get(email);
         if(m != null){
-            if(m.getIsConnected())
                 m.addQuestionForLogin(question, answer);
-            else
-                throw new Exception("the member is not connected");
         }
         else
             throw new Exception("no member has this email");
@@ -788,8 +727,8 @@ public class UserController {
     }
 
     public synchronized void appointOwner(String ownerEmail, String appointedEmail, int storeId) throws Exception{
-        Member owner = memberList.get(ownerEmail);
-        Member appointed = memberList.get(appointedEmail);
+        Member owner = activeMemberList.get(ownerEmail);
+        Member appointed = activeMemberList.get(appointedEmail);
         if(owner != null){
             if(appointed != null){
                 if(owner.getIsConnected()){
@@ -838,8 +777,8 @@ public class UserController {
     }
 
     public synchronized void fireOwner(String ownerEmail, String appointedEmail, int storeId) throws Exception {
-        Member owner = memberList.get(ownerEmail);
-        Member appointed = memberList.get(appointedEmail);
+        Member owner = activeMemberList.get(ownerEmail);
+        Member appointed = activeMemberList.get(appointedEmail);
         if(owner != null){
             if(appointed != null){
                 if(owner.getIsConnected()){
@@ -889,8 +828,8 @@ public class UserController {
     }
 
     public synchronized void appointManager(String ownerEmail, String appointedEmail, int storeId) throws Exception{
-        Member owner = memberList.get(ownerEmail);
-        Member appointed = memberList.get(appointedEmail);
+        Member owner = activeMemberList.get(ownerEmail);
+        Member appointed = activeMemberList.get(appointedEmail);
         if(owner != null){
             if(appointed != null){
                 if(owner.getIsConnected()) {
@@ -939,8 +878,8 @@ public class UserController {
     }
 
     public synchronized void fireManager(String ownerEmail, String appointedEmail, int storeId) throws Exception {
-        Member owner = memberList.get(ownerEmail);
-        Member appointed = memberList.get(appointedEmail);
+        Member owner = activeMemberList.get(ownerEmail);
+        Member appointed = activeMemberList.get(appointedEmail);
         if(owner != null){
             if(appointed != null){
                 if(owner.getIsConnected()){
@@ -987,8 +926,8 @@ public class UserController {
     }
 
     public synchronized void addManagerAction(String ownerEmail, String managerEmail, Action a, int storeId) throws Exception {
-        Member owner = memberList.get(ownerEmail);
-        Member manager = memberList.get(managerEmail);
+        Member owner = activeMemberList.get(ownerEmail);
+        Member manager = activeMemberList.get(managerEmail);
         if(owner != null){
             if(manager != null){
                 if(owner.getIsConnected()){
@@ -1034,8 +973,8 @@ public class UserController {
     }
 
     public synchronized void removeManagerAction(String ownerEmail, String managerEmail, Action a, int storeId) throws Exception {
-        Member owner = memberList.get(ownerEmail);
-        Member manager = memberList.get(managerEmail);
+        Member owner = activeMemberList.get(ownerEmail);
+        Member manager = activeMemberList.get(managerEmail);
         if(owner != null){
             if(manager != null){
                 if(owner.getIsConnected()){
@@ -1079,14 +1018,14 @@ public class UserController {
     }
 
     public synchronized void closeStore(String userEmail, int storeId) throws Exception {
-        Member m = memberList.get(userEmail);
+        Member m = activeMemberList.get(userEmail);
         if(m != null) {
             Set<Integer> workerIds = m.closeStore(storeId);
             workerIds.remove(m.getId());
             for(int workerId : workerIds){
                 String email = idToEmail.get(workerId);
                 if(email != null) {
-                    Member worker = memberList.get(email);
+                    Member worker = activeMemberList.get(email);
                     if(worker != null) {
                         worker.changeToInactive(storeId);
                         String notify = "the store: " + storeId + " has been temporarily closed";
@@ -1126,14 +1065,14 @@ public class UserController {
     }
 
     public synchronized void reOpenStore(String userEmail, int storeId) throws Exception {
-        Member m = memberList.get(userEmail);
+        Member m = activeMemberList.get(userEmail);
         if(m != null) {
             Set<Integer> workerIds = m.reOpenStore(storeId);
             workerIds.remove(m.getId());
             for(int workerId : workerIds){
                 String email = idToEmail.get(workerId);
                 if(email != null) {
-                    Member worker = memberList.get(email);
+                    Member worker = activeMemberList.get(email);
                     if(worker != null) {
                         worker.changeToActive(storeId);
                         String notify = "the store: " + storeId + " has been reOpened";
@@ -1175,7 +1114,7 @@ public class UserController {
     }
 
     public synchronized boolean checkPermission(String userEmail, Action action, int storeId) throws Exception {
-        Member m = memberList.get(userEmail);
+        Member m = activeMemberList.get(userEmail);
         if(m != null)
             return m.checkPermission(action, storeId);
         else
@@ -1203,12 +1142,48 @@ public class UserController {
 
 
     public synchronized String getWorkersInformation(String email, int storeId) throws Exception {
-        Member m = memberList.get(storeId);
+        Member m = activeMemberList.get(email);
         if(m != null){
-
+            if(m.checkPermission(Action.checkWorkersStatus, storeId)){
+                List<Info> information = new LinkedList<>();
+                Set<Integer> workerIds = m.getWorkerIds(storeId);
+                for (int workerId : workerIds) {
+                    Member worker = getMember(workerId);
+                    Info info = worker.getInformation(storeId);
+                    information.add(info);
+                }
+                return gson.toJson(information);
+            }
+            else
+                throw new Exception("the member can't see workers status in this store");
         }
         else
             throw new Exception("no member has this email: " + email);
+    }
+
+
+    /**
+     * function to make things easier, not being used outside of userController
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    private synchronized Member getMember(int userId) throws Exception {
+        if(userId % 2 == 0)
+            throw new Exception("the id given is of a guest");
+        else{
+           String email = idToEmail.get(userId);
+           if(email != null){
+               Member m = activeMemberList.get(email);
+               if( m != null)
+                   return m;
+               else
+                   throw new Exception("no member has this email");
+           }
+           else
+               throw new Exception("no member has this id");
+
+        }
     }
 
 
@@ -1289,13 +1264,36 @@ public class UserController {
             String email = idToEmail.get(id);
             if (email != null)
             {
-                Member m = memberList.get(email);
+                Member m = activeMemberList.get(email);
                 if(m != null && m.getIsConnected())
-                    return memberList.get(email).getName();
+                    return activeMemberList.get(email).getName();
             }
             throw new Exception("user doesnt exist");
 
         }
+    }
+
+    /**
+     * removes the role because the store has been permanently closed
+     * @param adminId
+     * @param userId
+     * @param storeId
+     */
+    public void removeStoreRole(int adminId, int userId, int storeId) throws Exception {
+        if(adminId < 0){
+            Member m = getMember(userId);
+            m.removeRoleInStore(storeId);
+        }
+        else{
+            throw new Exception("the id given is not of an admin");
+        }
+    }
+
+    //TODO: complete those functions
+    public void cancelMembership(int userToRemove) {
+    }
+
+    public String getUsersInformation() {
     }
 
 //    public synchronized void closeStore(int userID, int storeID) throws Exception

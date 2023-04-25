@@ -1,33 +1,51 @@
 package market;
 
-import domain.user.Member;
-import utils.Message;
+import service.MarketController;
+import service.UserController;
+import utils.Notification;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Admin {
 
-    Market market;
     private int adminId;
 
     private String emailAdmin;
     private String passwordAdmin;
 
-    private Member adminsAccount;
-    private List<Message> complaints;
-    public Admin(){
-    complaints = new ArrayList<>();
+    private MarketController marketController;
+    private UserController userController;
+    public Admin(int adminId, String email, String password){
+        this.adminId = adminId;
+        emailAdmin = email;
+        passwordAdmin = password;
+
     }
-    public void closeStorePermanetly(int storeID)
-    {
-        market.closeStorePermanetly(this.adminId, storeID);
+    public int getAdminId(){
+        return adminId;
     }
-    public void addComplaint(Message m){
-        complaints.add(m);
+    public void closeStorePermanently(int storeId) throws Exception {
+        Set<Integer> userIds = marketController.closeStorePermanently(storeId);
+        for(int userId : userIds){
+            String notify = "the store: " + storeId +" has been permanently closed";
+            Notification<String> notification = new Notification<>(notify);
+            userController.addNotification(userId, notification);
+            userController.removeStoreRole(adminId, userId, storeId);
+        }
     }
+    public boolean checkEmail(String email){
+        return emailAdmin == email;
+    }
+    public boolean checkPassword(String pass){
+        return passwordAdmin == pass;
+    }
+    public String
 
 
-    public void holdMarket(Market market) {
+
+    public void addControllers(UserController userController, MarketController marketController) {
+        this.marketController = marketController;
+        this.userController = userController;
     }
 }

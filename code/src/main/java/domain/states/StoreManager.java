@@ -19,7 +19,7 @@ public class StoreManager extends UserState {
         actions.add(Action.viewMessages);
         actions.add(Action.answerMessage);
         actions.add(Action.seeStoreHistory);
-
+        actions.add(Action.seeStoreOrders);
         permission.addActions(actions);
 
 

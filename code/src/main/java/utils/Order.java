@@ -1,4 +1,4 @@
-package domain.store.order;
+package utils;
 
 
 import utils.Status;

@@ -3,6 +3,7 @@ package domain.user;
 
 import com.google.gson.Gson;
 import utils.Pair;
+import utils.PrivateInfo;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -83,21 +84,10 @@ public class UserHistory {
 //       return purchases;
     }
 
-    public String getInformation() {
-        String ans = "the current name is: " + names.get(names.size()-1) + ".\n";
-        ans = ans + " list of all names that were used:\n";
-        for(String name : names)
-            ans = ans + "  " + name + "\n";
-        ans = ans + "the current email is: "+emails.get(emails.size()-1) + ".\n";
-        ans = ans + " list of all emails that were used:\n";
-        for(String email: emails)
-            ans = ans + "  " + email + "\n";
-        ans = ans + "the current password is: " + passwords.get(passwords.size()-1) + ".\n";
-        ans = ans + " list of all passwords that were used:\n";
-        for(String password: passwords)
-            ans = ans + "  " + password + "\n";
-        return ans;
-
+    public void getInformation(PrivateInfo info) {
+        info.addOldNames(names);
+        info.addOldEmails(emails);
+        info.addOldPasswords(passwords);
     }
 
     public void changeAnswerForQuestion(String question, String newAnswer) {

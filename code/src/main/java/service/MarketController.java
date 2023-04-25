@@ -1,15 +1,19 @@
 package service;
 
-import domain.store.order.Order;
+import utils.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
 import domain.store.storeManagement.StoreController;
-import domain.user.Member;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
 import com.google.gson.Gson;
 import jdk.jshell.spi.ExecutionControl;
 import utils.Message;
+import utils.Receipt;
 
 public class MarketController {
 
@@ -26,12 +30,13 @@ public class MarketController {
         gson = new Gson();
     }
 
-    public String purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId,int totalPrice)
+    public Receipt purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId,int totalPrice)
     {
         Order order = orderctrl.createNewOrder(userId,shoppingCart);
         order.setTotalPrice(totalPrice);
         storectrl.purchaseProducts(shoppingCart);
-        return gson.toJson(order);
+        Receipt receipt = new Receipt(userId, order.getOrderId(), shoppingCart, totalPrice);
+        return receipt;
         //TODO SOMETHING WITH ORDER
     }
 
@@ -83,13 +88,22 @@ public class MarketController {
 
     }
 
+    public void addProduct(int storeId, String name, String description, int price, int quantity, List<String> categories) throws Exception{
+        int id = storectrl.addProduct(storeId,name,description,price,quantity);
+        if(id == -1){
+            throw new Exception("Something went wrong in adding product");
+        }
+        storectrl.addToCategory(storeId,id,categories);
+    }
     public String getProductInformation(int storeId, int producId) throws Exception {
         Store store = storectrl.getStore(storeId);
         if (store != null && store.isActive())
         {
             return store.getProductInformation(producId);
         }
-        throw new Exception("cant get product information");
+        else {
+            throw new Exception("cant get product information");
+        }
     }
 
     public String getStoreInformation(int storeId) throws Exception {
@@ -98,8 +112,9 @@ public class MarketController {
         {
             Gson gson = new Gson();
             return gson.toJson(store);
+        }else {
+            throw new Exception("can not show store information");
         }
-        throw new Exception("can not show store information");
     }
 
     public String getStoreDescription(int storeId) throws Exception{
@@ -108,7 +123,9 @@ public class MarketController {
         {
             return store.getStoreDescription();
         }
-        throw new Exception("can not show store information");
+        else {
+            throw new Exception("can not show store information");
+        }
     }
 
     public void addQuestion(Message m, int storeId) throws Exception {
@@ -120,20 +137,26 @@ public class MarketController {
         {
              store.setStoreDescription(des);
         }
-        throw new Exception("store does not exist");
+        else {
+            throw new Exception("store does not exist");
+        }
     }
+
     public void setStorePurchasePolicy(int storeId,String policy) throws Exception{
         Store store = storectrl.getStore(storeId);
         if (store != null )
         {
             store.setStorePolicy(policy);
         }
-        throw new Exception("store does not exist");
+        else {
+            throw new Exception("store does not exist");
+        }
     }
 
 
 
-    public int caclulatePrice(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart) {
+
+    public int calculatePrice(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart) {
         int totalprice = 0;
         for (Integer storeid : shoppingCart.keySet())
         {
@@ -163,10 +186,55 @@ public class MarketController {
         if(s != null){
             s.addQuestion(message);
         }
-        throw new Exception("store doesn't exist");
+        else {
+            throw new Exception("store doesn't exist");
+        }
     }
 
     public void setStoreDiscountPolicy(int storeId, String policy) throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("miki implement please");
+    }
+
+    public void addPurchaseConstraint(int storeId, String constraint) throws Exception {
+        Store s;
+        if((s= storectrl.getStore(storeId) )!= null){
+            s.addPurchaseConstraint(constraint);
+        }
+        else{
+            throw new Exception("store doesn't exist, sorry bruh :(");
+        }
+    }
+
+    public String getQuestions(int storeId) throws Exception {
+        Gson gson = new Gson();
+        return gson.toJson(storectrl.getQuestions(storeId));
+
+    }
+
+    public void answerQuestion(int storeId, int questionId, String answer) throws Exception{
+        storectrl.answerQuestion(storeId, questionId, answer);
+    }
+
+    public String getStoreOrderHistory(int storeId) throws Exception
+    {
+        Gson gson = new Gson();
+        return gson.toJson(storectrl.getStoreOrderHistory(storeId));
+    }
+
+    public String getAppointments(int storeId) throws Exception {
+        Gson gson = new Gson();
+        return gson.toJson(storectrl.getAppointments(storeId));
+    }
+
+    public String getStoresInformation() {
+        return storectrl.getStoresInformation();
+    }
+
+    public Set<Integer> closeStorePermanently(int storeId) throws Exception {
+        return storectrl.closeStorePermanently(storeId);
+    }
+
+    public void deleteProduct(int storeId, int productId) {
+        storectrl.removeProduct(storeId,productId);
     }
 }

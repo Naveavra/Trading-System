@@ -1,7 +1,5 @@
 package domain.store.discount;
 
-import domain.store.order.Order;
-
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 

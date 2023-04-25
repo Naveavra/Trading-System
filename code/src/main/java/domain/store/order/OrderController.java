@@ -1,6 +1,6 @@
 package domain.store.order;
 
-import domain.store.order.Order;
+import utils.Order;
 import utils.Status;
 
 import java.util.HashMap;

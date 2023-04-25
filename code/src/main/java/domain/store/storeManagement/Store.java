@@ -3,18 +3,15 @@ package domain.store.storeManagement;
 import com.google.gson.Gson;
 import domain.store.discount.DiscountPolicy;
 import domain.store.product.Inventory;
-import jdk.jshell.spi.ExecutionControl;
+import domain.store.purchase.PurchasePolicy;
 import utils.Message;
 import utils.MessageState;
 import utils.Pair;
-import domain.store.order.Order;
+import utils.Order;
 import domain.store.product.Product;
 import utils.Role;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,6 +28,7 @@ public class Store {
 
     private final ConcurrentHashMap<Integer, Message> questions;
     private DiscountPolicy discountPolicy;
+    private PurchasePolicy purchasePolicy;
 
     private final ConcurrentHashMap<Integer, Message> productReviews;
     Gson gson ;
@@ -44,6 +42,7 @@ public class Store {
         this.messages = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
         this.discountPolicy = new DiscountPolicy();
+        this. purchasePolicy = new PurchasePolicy();
         this.productReviews = new ConcurrentHashMap<>();
         this.questions = new ConcurrentHashMap<>();
         gson = new Gson();
@@ -59,6 +58,8 @@ public class Store {
         throw new Exception("no reviews for this product");
     }
 
+    public AppHistory getAppHistory(){return appHistory;}
+
     public void addQuestion(Message m)
     {
         questions.put(m.getMessageId(), m);
@@ -66,10 +67,12 @@ public class Store {
 
     public void answerQuestion(int messageID, String answer) throws Exception {
         Message msg = questions.get(messageID);
-        if (msg != null && msg.getState() == MessageState.question)
+        if (msg != null && msg.getState() == MessageState.question && !msg.getSeen())
         {
             msg.sendFeedback(answer);
+            return;
         }
+        throw new Exception("cant answer question");
     }
 
     public void addProductReview(Message m) throws Exception
@@ -348,7 +351,41 @@ public class Store {
         return gson.toJson(inventory.getProducts());
     }
 
-    public void setStorePolicy(String policy) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("miki implement please");
+    public void setStorePolicy(String policy) throws Exception {
+        // i think the policy holds the constraints. or in different words, constraints define the policies.
+        try {
+            addPurchaseConstraint(policy);
+        } catch (Exception e) {
+            throw new Exception("Couldn't create a new policy");
+        }
+    }
+
+    public void addPurchaseConstraint(String constraint)throws Exception {
+        if(!purchasePolicy.createConstraint(constraint)){
+            throw new Exception("Couldn't create the constraint");
+        }
+    }
+
+    public HashMap<Integer, Message> getQuestions() { //<messageids, message>
+        HashMap<Integer, Message> questionsToAnswer = new HashMap<>();
+        for (Message message : this.questions.values())
+        {
+            if (!message.getSeen())
+            {
+                questionsToAnswer.put(message.getMessageId(), Message);
+            }
+        }
+        return questionsToAnswer;
+    }
+    public void addToCategories(int productId, List<String> categories){
+        for(String category: categories){
+            inventory.addToCategory(category,productId);
+        }
+    }
+
+    public void removeProduct(int productId) throws Exception{
+         if(!inventory.removeProduct(productId)>-1){
+             throw new Exception("Unable to remove Product, productId doesn't exist.");
+         }
     }
 }

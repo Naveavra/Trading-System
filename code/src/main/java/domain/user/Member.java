@@ -1,5 +1,6 @@
 package domain.user;
 
+import com.google.gson.Gson;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
@@ -17,17 +18,19 @@ public class Member {
     private int id;
     private String name;
     private String birthday;
+    int age;
     private String email;
     private transient String password;
 
     private HashMap<Integer, UserState> activeRoles; //connection between registered to the shops
-    private HashMap<Integer, UserState> inActiveRoles;
+    private transient HashMap<Integer, UserState> inActiveRoles;
     private HashMap<Integer, Store> activeStores; //saves all the stores it has a job at
-    private HashMap<Integer, Store> inActiveStores;
+    private transient HashMap<Integer, Store> inActiveStores;
     private transient ConcurrentLinkedDeque<Notification> notifications;
 
     private UserHistory userHistory;
     private boolean isConnected;
+    private transient Gson gson ;
 
     private transient List<Pair<String, String>> securityQuestions;
     //new Member(1, "eliben123@gmail.com", "aBc123", "24/02/2002")
@@ -38,6 +41,7 @@ public class Member {
         this.email = email;
         this.password = password;
         this.birthday = birthday;
+        age = calculateAge();
         activeRoles = new HashMap<>();
         inActiveRoles = new HashMap<>();
         activeStores = new HashMap<>();
@@ -49,6 +53,25 @@ public class Member {
         g = new Guest(id);
         notifications = new ConcurrentLinkedDeque<>();
         securityQuestions = new LinkedList<>();
+        gson = new Gson();
+    }
+
+    private int calculateAge() {
+        String[] splitBDay = birthday.split("/");
+        int[] bDay = {Integer.parseInt(splitBDay[0]), Integer.parseInt(splitBDay[1]), Integer.parseInt(splitBDay[2])};
+        String currentDate = String.valueOf(java.time.LocalDate.now());
+        String[] splitCurrentDay = currentDate.split("-");
+        int[] curDay = {Integer.parseInt(splitCurrentDay[0]), Integer.parseInt(splitCurrentDay[1]),
+                Integer.parseInt(splitCurrentDay[2])};
+        int tmp = curDay[0];
+        curDay[0] = curDay[2];
+        curDay[2] = tmp;
+
+        int ans = 0;
+        ans = ans + curDay[2] - bDay[2];
+        if(curDay[1] > bDay[1] || (curDay[1] == bDay[1] && curDay[0] > bDay[0]))
+            ans = ans + 1;
+        return ans;
     }
 
 
@@ -163,15 +186,8 @@ public class Member {
 
     public void openStore(Store store) {
         UserState creator = new StoreCreator();
-<<<<<<< HEAD
-        activeStores.put(store.getStoreid(), store);
-        activeRoles.put(store.getStoreid(), creator);
-
-
-=======
-        stores.put(store.getStoreId(), store);
-        roles.put(store.getStoreId(), creator);
->>>>>>> version1codeZiv
+        activeStores.put(store.getStoreId(), store);
+        activeRoles.put(store.getStoreId(), creator);
     }
 
 
@@ -282,8 +298,10 @@ public class Member {
         return userHistory.getUserPurchaseHistory(name);
     }
 
-    public String getInformation() {
-        return userHistory.getInformation();
+    public String getPrivateInformation() {
+        PrivateInfo info = new PrivateInfo(id, name, email, birthday, age);
+        userHistory.getInformation(info);
+        return gson.toJson(info);
     }
 
     /**
@@ -366,7 +384,9 @@ public class Member {
 
     public void removeRoleInStore(int storeId) {
         activeRoles.remove(storeId);
+        inActiveRoles.remove(storeId);
         activeStores.remove(storeId);
+        inActiveStores.remove(storeId);
     }
 
     public void fireManager(int appointedId, int storeId) throws Exception{
@@ -381,7 +401,6 @@ public class Member {
         else
             throw new Exception("the member does not have a role in this store: " + storeId);
     }
-<<<<<<< HEAD
 
     public void addAction(Action a, int storeId) throws Exception {
         UserState state = activeRoles.get(storeId);
@@ -480,9 +499,22 @@ public class Member {
         inActiveRoles.remove(storeId);
         activeStores.put(storeId, inActiveStores.get(storeId));
         inActiveStores.remove(storeId);
-=======
-    public UserState getRoleInStore(int storeId){
-        return roles.get(storeId);
->>>>>>> version1codeZiv
+    }
+
+    public Set<Integer> getWorkerIds(int storeId) throws Exception {
+        Store store = activeStores.get(storeId);
+        UserState state = activeRoles.get(storeId);
+        if(store != null && state.getRole() == Role.Creator)
+            return store.getUsersInStore();
+        else
+            throw new Exception("the member is not allowed to get the worker ids in store: " + storeId);
+    }
+
+    public Info getInformation(int storeId) {
+        Info info = new PrivateInfo(id, name, email, birthday, age);
+        UserState state = activeRoles.get(storeId);
+        if(state.getRole() == Role.Manager)
+            info.addManagerActions(state.getActions());
+        return info;
     }
 }

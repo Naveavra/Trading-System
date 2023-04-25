@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Permission {
-    private ConcurrentLinkedDeque<Action> actions;
+    private List<Action> actions;
     private List<Action> addedActions;
 
     public Permission(){
-        actions = new ConcurrentLinkedDeque<>();
+        actions = new LinkedList<>();
         addedActions = new LinkedList<>();
 
     }
@@ -37,5 +37,9 @@ public class Permission {
 
     public void removeAction(Action a){
         actions.remove(a);
+    }
+
+    public List<Action> getActions() {
+        return actions;
     }
 }
