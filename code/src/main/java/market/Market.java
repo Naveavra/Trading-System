@@ -40,6 +40,8 @@ public class Market implements MarketInterface {
 
     private LocalTime startTime;
 
+    private HashMap<Integer, Action> actionIds;
+
     public Market(Admin admin) {
         activeAdmins = new ConcurrentHashMap<>();
         inActiveAdmins = new ConcurrentHashMap<>();
@@ -53,6 +55,27 @@ public class Market implements MarketInterface {
 
         startTime = LocalTime.now();
         admin.addControllers(userController, marketController);
+
+        actionIds.put(0, Action.addProduct);
+        actionIds.put(1, Action.removeProduct);
+        actionIds.put(2, Action.updateProduct);
+        actionIds.put(3, Action.changeStoreDescription);
+        actionIds.put(4, Action.changePurchasePolicy);
+        actionIds.put(5, Action.changeDiscountPolicy);
+        actionIds.put(6, Action.addPurchaseConstraint);
+        actionIds.put(7, Action.addDiscountConstraint);
+        actionIds.put(8, Action.viewMessages);
+        actionIds.put(9, Action.answerMessage);
+        actionIds.put(10, Action.seeStoreHistory);
+        actionIds.put(11, Action.seeStoreOrders);
+        actionIds.put(12, Action.checkWorkersStatus);
+        actionIds.put(13, Action.appointManager);
+        actionIds.put(14, Action.fireManager);
+        actionIds.put(15, Action.appointOwner);
+        actionIds.put(16, Action.fireOwner);
+        actionIds.put(17, Action.changeManagerPermission);
+        actionIds.put(18, Action.closeStore);
+        actionIds.put(19, Action.reopenStore);
     }
 
 
@@ -670,11 +693,28 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> changeManagerPermission(int userId, int storeId, List<Integer> permissionsIds) {
+    public Response<String> addManagerPermission(int ownerId, int userId, int storeId, int permissionsId) {
         try {
-
+            userController.addManagerAction(ownerId, userId, actionIds.get(permissionsId), storeId);
+            logger.log(Logger.logStatus.Success, "the action " + permissionsId +" has been added to user: " + userId +
+                    "on time: "+ LocalDateTime.now());
+            return new Response<>("add manager permission was successful", null, null);
         } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "cant add permission because: " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "add permission failed", e.getMessage());
+        }
+    }
 
+    @Override
+    public Response<String> removeManagerPermission(int ownerId, int userId, int storeId, int permissionsId) {
+        try {
+            userController.removeManagerAction(ownerId, userId, actionIds.get(permissionsId), storeId);
+            logger.log(Logger.logStatus.Success, "the action " + permissionsId +" has been removed from user: " + userId +
+                    "on time: "+ LocalDateTime.now());
+            return new Response<>("manager permission was removed successful", null, null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "cant remove permission because: " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "remove permission fail", e.getMessage());
         }
     }
 

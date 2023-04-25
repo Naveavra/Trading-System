@@ -74,7 +74,8 @@ public interface MarketInterface {
     //store owner methods
     public Response appointOwner(int userId , int storeId,int ownerId);
     public Response fireOwner(int userId , int storeId, int ownerId);
-    public Response changeManagerPermission (int userId,int storeId, List<Integer> permissionsIds);
+    public Response addManagerPermission (int ownerId, int userId,int storeId, int permissionsId);
+    public Response removeManagerPermission (int ownerId, int userId,int storeId, int permissionsId);
     public Response getAppointments(int userId, int storeId);
 
     //store creator methods
