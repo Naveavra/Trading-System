@@ -2,12 +2,13 @@ package domain.store.storeManagement;
 
 import com.google.gson.Gson;
 import domain.store.discount.DiscountPolicy;
+import domain.store.product.Inventory;
+import jdk.jshell.spi.ExecutionControl;
 import utils.Message;
 import utils.MessageState;
 import utils.Pair;
 import domain.store.order.Order;
 import domain.store.product.Product;
-import domain.store.product.ProductController;
 import utils.Role;
 
 import java.util.ArrayList;
@@ -24,27 +25,28 @@ public class Store {
     private final transient int creatorId;
     private String storeDescription;
     private final AppHistory appHistory; //first one is always the store creator
-    private final ProductController inventory; //<productID,<product, quantity>>
-    private final ConcurrentHashMap<Integer, Order> storeorders;    //orederid, order
+    private final Inventory inventory; //<productID,<product, quantity>>
+    private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
     private final ConcurrentHashMap<Integer, Message> messages; //<messageid, message>
 
     private final ConcurrentHashMap<Integer, Message> questions;
     private DiscountPolicy discountPolicy;
 
     private final ConcurrentHashMap<Integer, Message> productReviews;
-
+    Gson gson ;
     public Store(int id, String description, int creatorId){
         Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
         appHistory = new AppHistory(creatorNode);
         this.storeid = id;
         this.storeDescription = description;
         this.creatorId = creatorId;
-        this.inventory = new ProductController();
+        this.inventory = new Inventory();
         this.messages = new ConcurrentHashMap<>();
-        this.storeorders = new ConcurrentHashMap<>();
+        this.storeOrders = new ConcurrentHashMap<>();
         this.discountPolicy = new DiscountPolicy();
         this.productReviews = new ConcurrentHashMap<>();
         this.questions = new ConcurrentHashMap<>();
+        gson = new Gson();
     }
 
     public Message getProductReview(int productId) throws Exception
@@ -72,7 +74,7 @@ public class Store {
 
     public void addProductReview(Message m) throws Exception
     {
-        if (storeorders.containsKey(m.getOrderId()))
+        if (storeOrders.containsKey(m.getOrderId()))
         {
             productReviews.put(m.getProductId(), m);
         }
@@ -82,7 +84,7 @@ public class Store {
         }
     }
 
-    public int getStoreid()
+    public int getStoreId()
     {
         return storeid;
     }
@@ -95,7 +97,7 @@ public class Store {
         return this.messages;
     }
     public ConcurrentHashMap<Integer, Order> getOrdersHistory() {
-        return this.storeorders;
+        return this.storeOrders;
     }
 
     //TODO reopen store
@@ -130,7 +132,7 @@ public class Store {
     }
 
     public int addReview(int orderId, Message review) throws Exception {
-        if (storeorders.containsKey(orderId))
+        if (storeOrders.containsKey(orderId))
         {
             messages.put(review.getMessageId(), review);
             return creatorId;
@@ -138,7 +140,7 @@ public class Store {
         throw new Exception("order doesnt exist");
     }
 
-    public void addOrder(Order order){ storeorders.put(order.getOrderId(), order);}
+    public void addOrder(Order order){ storeOrders.put(order.getOrderId(), order);}
 
     /**
      * @return the users that has a role in the store
@@ -158,7 +160,7 @@ public class Store {
         return new HashSet<>(appHistory.removeChild(joblessuser));
     }
 
-    public ProductController getInventory()
+    public Inventory getInventory()
     {
         return inventory;
     }
@@ -317,14 +319,36 @@ public class Store {
     }
 
     public String getProductInformation(int producId) throws Exception{
-        Gson gson = new Gson();
+
         if (inventory.getProduct(producId) != null)
         {
             return gson.toJson(inventory.getProduct(producId));
         }
         throw new Exception("cant get product information");
-
     }
 
 
+    public synchronized int caclulatePrice(HashMap<Integer, Integer> basket) throws Exception {
+        int purchaseingprice = 0;
+        for (Integer productid : basket.keySet())
+        {
+            Product p = inventory.getProduct(productid);
+            if (p != null && basket.get(productid) <= p.getQuantity())
+            {
+                int discount = discountPolicy.handleDiscounts(basket,inventory.getPrices());
+                purchaseingprice += p.price * basket.get(productid) -  discount;
+//                p.setQuantity(p.getQuantity()-basket.get(productid));
+            }
+            else throw new Exception("product isn't available");
+        }
+        return purchaseingprice;
+    }
+
+    public String getProducts() {
+        return gson.toJson(inventory.getProducts());
+    }
+
+    public void setStorePolicy(String policy) throws ExecutionControl.NotImplementedException {
+        throw new ExecutionControl.NotImplementedException("miki implement please");
+    }
 }

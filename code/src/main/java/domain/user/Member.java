@@ -163,10 +163,15 @@ public class Member {
 
     public void openStore(Store store) {
         UserState creator = new StoreCreator();
+<<<<<<< HEAD
         activeStores.put(store.getStoreid(), store);
         activeRoles.put(store.getStoreid(), creator);
 
 
+=======
+        stores.put(store.getStoreId(), store);
+        roles.put(store.getStoreId(), creator);
+>>>>>>> version1codeZiv
     }
 
 
@@ -376,6 +381,7 @@ public class Member {
         else
             throw new Exception("the member does not have a role in this store: " + storeId);
     }
+<<<<<<< HEAD
 
     public void addAction(Action a, int storeId) throws Exception {
         UserState state = activeRoles.get(storeId);
@@ -474,5 +480,9 @@ public class Member {
         inActiveRoles.remove(storeId);
         activeStores.put(storeId, inActiveStores.get(storeId));
         inActiveStores.remove(storeId);
+=======
+    public UserState getRoleInStore(int storeId){
+        return roles.get(storeId);
+>>>>>>> version1codeZiv
     }
 }

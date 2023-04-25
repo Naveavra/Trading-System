@@ -2,9 +2,12 @@ package service;
 
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
+import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import domain.user.Guest;
 import domain.user.Member;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import utils.Action;
 import utils.Message;
 import utils.Notification;
@@ -1196,7 +1199,6 @@ public class UserController {
             else
                 throw new Exception("no member has this id");
         }
-        return null;
     }
 
 
@@ -1295,8 +1297,6 @@ public class UserController {
 
         }
     }
-
-
 
 //    public synchronized void closeStore(int userID, int storeID) throws Exception
 //    {
