@@ -13,19 +13,8 @@ public class StoreManager extends UserState {
         role = Role.Manager;
         permission = new Permission();
         List<Action> actions = new LinkedList<>();
+        List<Action> addedActions = new LinkedList<>();
 
-        /*
-        actions.add(Action.buyProduct);
-        actions.add(Action.createStore);
-        actions.add(Action.getProductInformation);
-        actions.add(Action.getStoreInformation);
-        actions.add(Action.writeReview);
-        actions.add(Action.rateProduct);
-        actions.add(Action.rateStore);
-        actions.add(Action.sendQuestion);
-        actions.add(Action.sendComplaint);
-        actions.add(Action.sellProduct);
-         */
 
         actions.add(Action.viewMessages);
         actions.add(Action.answerMessage);
@@ -40,27 +29,10 @@ public class StoreManager extends UserState {
         addedActions.add(Action.changePurchasePolicy);
         addedActions.add(Action.changeDiscountPolicy);
         addedActions.add(Action.addPurchaseConstraint);
+        addedActions.add(Action.addDiscountConstraint);
         addedActions.add(Action.fireManager);
         addedActions.add(Action.checkWorkersStatus);
         addedActions.add(Action.addProduct);
-        addedActions.add(Action.addDiscountConstraint);
+        permission.addPossibleActions(addedActions);
     }
-
-    public boolean actionCanBeAdded(Action a){
-        return addedActions.contains(a);
-    }
-
-    public void addActionToManager(Action a) throws Exception {
-        if(actionCanBeAdded(a))
-            permission.addAction(a);
-        else
-            throw new Exception("this action can't be added to manager");
-
-    }
-
-    public void removeActionFromManager(Action a){
-        permission.removeAction(a);
-    }
-
-
 }

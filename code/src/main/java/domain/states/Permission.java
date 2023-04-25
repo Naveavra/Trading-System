@@ -27,7 +27,6 @@ public class Permission {
         this.actions.addAll(actions);
 
     }
-
     public void addPossibleActions(List<Action> actions){
         addedActions.addAll(actions);
     }

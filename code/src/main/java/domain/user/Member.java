@@ -6,9 +6,7 @@ import domain.store.storeManagement.Store;
 import utils.*;
 
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 //TODO: change all the void functions to return a value in case of success/failure
@@ -22,8 +20,10 @@ public class Member {
     private String email;
     private transient String password;
 
-    private HashMap<Integer, UserState> roles; //connection between registered to the shops
-    private HashMap<Integer, Store> stores; //saves all the stores it has a job at
+    private HashMap<Integer, UserState> activeRoles; //connection between registered to the shops
+    private HashMap<Integer, UserState> inActiveRoles;
+    private HashMap<Integer, Store> activeStores; //saves all the stores it has a job at
+    private HashMap<Integer, Store> inActiveStores;
     private transient ConcurrentLinkedDeque<Notification> notifications;
 
     private UserHistory userHistory;
@@ -38,8 +38,10 @@ public class Member {
         this.email = email;
         this.password = password;
         this.birthday = birthday;
-        roles = new HashMap<>();
-        stores = new HashMap<>();
+        activeRoles = new HashMap<>();
+        inActiveRoles = new HashMap<>();
+        activeStores = new HashMap<>();
+        inActiveStores = new HashMap<>();
         userHistory = new UserHistory();
         userHistory.addEmail(this.email);
         userHistory.addName(this.name);
@@ -64,8 +66,8 @@ public class Member {
     }
 
     public void changeRoleInStore(int storeId, UserState userState, Store store){
-        roles.put(storeId, userState);
-        stores.put(storeId, store);
+        activeRoles.put(storeId, userState);
+        activeStores.put(storeId, store);
     }
 
 
@@ -161,8 +163,8 @@ public class Member {
 
     public void openStore(Store store) {
         UserState creator = new StoreCreator();
-        stores.put(store.getStoreid(), store);
-        roles.put(store.getStoreid(), creator);
+        activeStores.put(store.getStoreid(), store);
+        activeRoles.put(store.getStoreid(), creator);
 
 
     }
@@ -256,7 +258,7 @@ public class Member {
      * @return
      */
     public boolean canCheckMessages(int storeId) {
-        UserState us = roles.get(storeId);
+        UserState us = activeRoles.get(storeId);
         return us.checkPermission(Action.viewMessages);
     }
 
@@ -267,7 +269,7 @@ public class Member {
      * @return
      */
     public boolean canGiveFeedback(int storeId) {
-        UserState us = roles.get(storeId);
+        UserState us = activeRoles.get(storeId);
         return us.checkPermission(Action.answerMessage);
     }
 
@@ -309,11 +311,11 @@ public class Member {
     }
 
     public Store appointToManager(int appointedId, int storeId) throws Exception {
-        UserState storeState = roles.get(storeId);
+        UserState storeState = activeRoles.get(storeId);
         if(storeState != null){
             if(storeState.checkPermission(Action.appointManager)){
-                stores.get(storeId).appointUser(id, appointedId, Role.Manager);
-                return stores.get(storeId);
+                activeStores.get(storeId).appointUser(id, appointedId, Role.Manager);
+                return activeStores.get(storeId);
             }
             else
                 throw new Exception("the member does not have permission to appoint a manager in this store: " + storeId);
@@ -323,11 +325,11 @@ public class Member {
     }
 
     public Store appointToOwner(int appointedId, int storeId) throws Exception {
-        UserState storeState = roles.get(storeId);
+        UserState storeState = activeRoles.get(storeId);
         if(storeState != null){
             if(storeState.checkPermission(Action.appointOwner)){
-                stores.get(storeId).appointUser(id, appointedId, Role.Owner);
-                return stores.get(storeId);
+                activeStores.get(storeId).appointUser(id, appointedId, Role.Owner);
+                return activeStores.get(storeId);
             }
             else
                 throw new Exception("the member does not have permission to appoint a manager in this store: " + storeId);
@@ -337,7 +339,7 @@ public class Member {
     }
 
     public Role checkRoleInStore(int storeId) {
-        UserState state = roles.get(storeId);
+        UserState state = activeRoles.get(storeId);
         if(state != null)
             return state.getRole();
         else
@@ -345,10 +347,10 @@ public class Member {
     }
 
     public void fireOwner(int appointedId, int storeId) throws Exception{
-        UserState storeState = roles.get(storeId);
+        UserState storeState = activeRoles.get(storeId);
         if(storeState != null){
             if(storeState.checkPermission(Action.fireOwner)){
-                stores.get(storeId).fireUser(appointedId);
+                activeStores.get(storeId).fireUser(appointedId);
             }
             else
                 throw new Exception("the member does not have permission to appoint a manager in this store: " + storeId);
@@ -358,15 +360,15 @@ public class Member {
     }
 
     public void removeRoleInStore(int storeId) {
-        roles.remove(storeId);
-        stores.remove(storeId);
+        activeRoles.remove(storeId);
+        activeStores.remove(storeId);
     }
 
     public void fireManager(int appointedId, int storeId) throws Exception{
-        UserState storeState = roles.get(storeId);
+        UserState storeState = activeRoles.get(storeId);
         if(storeState != null){
             if(storeState.checkPermission(Action.fireManager)){
-                stores.get(storeId).fireUser(appointedId);
+                activeStores.get(storeId).fireUser(appointedId);
             }
             else
                 throw new Exception("the member does not have permission to appoint a manager in this store: " + storeId);
@@ -376,7 +378,7 @@ public class Member {
     }
 
     public void addAction(Action a, int storeId) throws Exception {
-        UserState state = roles.get(storeId);
+        UserState state = activeRoles.get(storeId);
         if(state != null) {
             if (state.getRole() == Role.Manager) {
                 if (!state.checkPermission(a)) {
@@ -397,7 +399,7 @@ public class Member {
     }
 
     public void removeAction(Action a, int storeId) throws Exception {
-        UserState state = roles.get(storeId);
+        UserState state = activeRoles.get(storeId);
         if(state != null) {
             if (state.getRole() == Role.Manager) {
                 if (state.checkPermission(a)) {
@@ -411,5 +413,66 @@ public class Member {
         }
         else
             throw new Exception("the member does not work in this store");
+    }
+
+    public Set<Integer> closeStore(int storeId) throws Exception {
+        UserState state = activeRoles.get(storeId);
+        if(state != null){
+            if(state.checkPermission(Action.closeStore)){
+                Store store = activeStores.get(storeId);
+                if(store != null) {
+                    changeToInactive(storeId);
+                    return store.closeStoreTemporary(id);
+                }
+                else
+                    throw new Exception("the store does not exist");
+            }
+            else
+                throw new Exception("the member is not allowed to close the store");
+        }
+        else
+            throw new Exception("tne member does not work in this store: " + storeId);
+    }
+
+    public Set<Integer> reOpenStore(int storeId) throws Exception {
+
+        UserState state = inActiveRoles.get(storeId);
+        if(state != null){
+            if(state.checkPermission(Action.reopenStore)){
+                Store store = inActiveStores.get(storeId);
+                if(store != null) {
+                    changeToActive(storeId);
+                    return store.reopenStore(id);
+                }
+                else
+                    throw new Exception("the store is not closed");
+            }
+            else
+                throw new Exception("the member is not allowed to open the store");
+        }
+        else
+            throw new Exception("tne member does not work in this store: " + storeId);
+    }
+
+    public boolean checkPermission(Action action, int storeId) {
+        UserState role = activeRoles.get(storeId);
+        if(role != null)
+            return role.checkPermission(action);
+        else
+            return false;
+    }
+
+    public void changeToInactive(int storeId) {
+        inActiveRoles.put(storeId, activeRoles.get(storeId));
+        activeRoles.remove(storeId);
+        inActiveStores.put(storeId, activeStores.get(storeId));
+        activeStores.remove(storeId);
+    }
+
+    public void changeToActive(int storeId) {
+        activeRoles.put(storeId, inActiveRoles.get(storeId));
+        inActiveRoles.remove(storeId);
+        activeStores.put(storeId, inActiveStores.get(storeId));
+        inActiveStores.remove(storeId);
     }
 }
