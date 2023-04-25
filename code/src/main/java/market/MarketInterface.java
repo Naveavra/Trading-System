@@ -1,7 +1,5 @@
 package market;
 
-import org.json.simple.JSONArray;
-import utils.Message;
 import utils.Response;
 
 import java.util.List;
@@ -83,7 +81,7 @@ public interface MarketInterface {
     public Response closeStore(int userId,int storeId);
     public Response reopenStore(int userId,int storeId);
 
-    public Response closeStorePermanently(int adminId, int storeId);
+    public Response closeStorePermanently(int adminId, int storeId) throws Exception;
 
     //store methods
     //todo: decide if getStore will bring every thing togheter , prosucts , orders , ..statistics
@@ -91,13 +89,15 @@ public interface MarketInterface {
     public Response getProducts(int storeId);
 
     // admin methods
-    public Response getAdmins();
+    public Response adminLogin(String email ,String pass);
+    public Response adminLogout(int adminId);
+    public Response getAdmins(int adminId);
     public Response getStores();
     public Response addAdmin(int userId, String email , String pass);
-    public Response removeAdmin(int userId , int adminId);
-    public Response getUsers(int adminId);
+    public Response removeAdmin(int adminId);
+    public Response getUsersPurchaseHistory(int adminId);
     public Response answerComplaint(int adminId,int complaintId,String ans);
     public Response cancelMembership(int adminId,int userToRemove);
-    public Response sendNotification(int adminId,int userToSendTo,String msg);
+    public Response watchLog(int adminId);
 
 }

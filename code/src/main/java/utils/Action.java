@@ -28,7 +28,5 @@ public enum Action {
     answerMessage, // manager, owner, creator
     seeStoreHistory, // manager, owner, creator
     seeStoreOrders, // manager,owner,creator
-    addAdmin,
-    removeAdmin,
 }
 

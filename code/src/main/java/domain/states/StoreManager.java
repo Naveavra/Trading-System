@@ -30,7 +30,6 @@ public class StoreManager extends UserState {
         addedActions.add(Action.changeDiscountPolicy);
         addedActions.add(Action.addPurchaseConstraint);
         addedActions.add(Action.addDiscountConstraint);
-        addedActions.add(Action.fireManager);
         addedActions.add(Action.checkWorkersStatus);
         addedActions.add(Action.addProduct);
         permission.addPossibleActions(addedActions);

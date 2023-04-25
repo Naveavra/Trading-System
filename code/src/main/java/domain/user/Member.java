@@ -369,14 +369,14 @@ public class Member {
             return null;
     }
 
-    public void fireOwner(int appointedId, int storeId) throws Exception{
+    public Set<Integer> fireOwner(int appointedId, int storeId) throws Exception{
         UserState storeState = activeRoles.get(storeId);
         if(storeState != null){
-            if(storeState.checkPermission(Action.fireOwner)){
-                activeStores.get(storeId).fireUser(appointedId);
+            if(id == appointedId || checkPermission(Action.fireOwner, storeId)){
+                return activeStores.get(storeId).fireUser(appointedId);
             }
             else
-                throw new Exception("the member does not have permission to appoint a manager in this store: " + storeId);
+                throw new Exception("the member does not have permission to fire an owner in this store: " + storeId);
         }
         else
             throw new Exception("the member does not have a role in this store: " + storeId);
@@ -389,14 +389,14 @@ public class Member {
         inActiveStores.remove(storeId);
     }
 
-    public void fireManager(int appointedId, int storeId) throws Exception{
+    public Set<Integer> fireManager(int appointedId, int storeId) throws Exception{
         UserState storeState = activeRoles.get(storeId);
         if(storeState != null){
-            if(storeState.checkPermission(Action.fireManager)){
-                activeStores.get(storeId).fireUser(appointedId);
+            if(id == appointedId || checkPermission(Action.fireManager, storeId)){
+                return activeStores.get(storeId).fireUser(appointedId);
             }
             else
-                throw new Exception("the member does not have permission to appoint a manager in this store: " + storeId);
+                throw new Exception("the member does not have permission to fire a manager in this store: " + storeId);
         }
         else
             throw new Exception("the member does not have a role in this store: " + storeId);
@@ -516,5 +516,45 @@ public class Member {
         if(state.getRole() == Role.Manager)
             info.addManagerActions(state.getActions());
         return info;
+    }
+
+    public List<Integer> removeAllRoles() throws Exception{
+        List<Integer> storeIds = new LinkedList<>();
+        for(int storeId : activeRoles.keySet()) {
+            UserState state = activeRoles.get(storeId);
+            if(state.getRole() != Role.Creator) {
+                Store store = activeStores.get(storeId);
+                if (store != null) {
+                    if(state.getRole() == Role.Manager)
+                        fireManager(id, storeId);
+                    else
+                        fireOwner(id, storeId);
+                }
+                else
+                    throw new Exception("the store does not exist");
+            }
+            else
+                storeIds.add(storeId);
+        }
+
+        for(int storeId : inActiveRoles.keySet()) {
+            if(activeRoles.get(storeId).getRole() != Role.Creator) {
+                Store store = inActiveStores.get(storeId);
+                if (store != null)
+                    store.fireUser(id);
+                else
+                    throw new Exception("the store does not exist");
+            }
+            else
+                storeIds.add(storeId);
+        }
+        return storeIds;
+    }
+
+
+    public Set<Integer> getAllStoreIds(){
+        Set<Integer> storeIds = activeStores.keySet();
+        storeIds.addAll((inActiveRoles.keySet()));
+        return storeIds;
     }
 }

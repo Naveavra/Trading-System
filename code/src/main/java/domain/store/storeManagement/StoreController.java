@@ -276,4 +276,14 @@ public class StoreController {
             throw new Exception("Store id doesn't exist.");
         }
     }
+
+    public void updateProduct(int storeId, int productId, List<String> categories, String name, String description, int price, int quantity) throws Exception {
+        Store st;
+        if((st = storeList.get(storeId))!=null){
+            st.updateProduct(productId, categories, name,  description, price, quantity);
+        }
+        else{
+            throw new Exception("Store id doesn't exist.");
+        }
+    }
 }

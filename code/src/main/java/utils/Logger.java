@@ -31,4 +31,7 @@ public class Logger {
     public void log(logStatus type,String message) {
         logMap.get(type).add(message);
     }
+    public HashMap<logStatus,List<String>> getLogMap(){
+        return logMap;
+    }
 }

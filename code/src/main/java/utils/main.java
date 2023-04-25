@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import domain.user.Member;
 import service.UserController;
 
+import java.io.Reader;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class main {
@@ -16,7 +17,7 @@ public class main {
         System.out.println(userController.getAllUserNames());
         //userController.displayNotifications("ellibend123@gmail.com");
         ConcurrentHashMap<String, Member> memberList = new ConcurrentHashMap<>();
-        memberList = json.fromJson(userController.getUsersInfo(), memberList.getClass());
+        memberList = json.fromJson((Reader) userController.getUsersInformation(), memberList.getClass());
         System.out.println(memberList);
     }
 }

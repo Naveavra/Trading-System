@@ -11,10 +11,10 @@ import java.util.Set;
 
 public class AppHistory {
     public static class Node{
-        Pair<Integer, Role> data; //userid and role
-        ArrayList<Node> children; //list of all the users this user appoint in this store
+        private Pair<Integer, Role> data; //userid and role
+        private ArrayList<Node> children; //list of all the users this user appoint in this store
 
-        Set<Integer> dismissed;
+        private Set<Integer> dismissed;
         public Node(Pair<Integer, Role> appointment){
             //Assign data to the new node, set left and right children to null
             this.data = appointment;

@@ -24,6 +24,7 @@ public class Product {
         name = _name;
         description = desc;
         price = 0;
+        categories = new LinkedList<>();
     }
 
     public String getName(){return name;}
@@ -42,7 +43,11 @@ public class Product {
         }
         //else maybe should throw exception
     }
-
+    public void replaceQuantity(int newQuantity){
+        if(newQuantity>0){
+            quantity = newQuantity;
+        }
+    }
     public void setPrice(int newPrice){
         if(newPrice>0){
             price = newPrice;
@@ -70,5 +75,9 @@ public class Product {
     }
 
     public int getPrice() { return price;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

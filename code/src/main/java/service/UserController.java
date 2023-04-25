@@ -783,10 +783,23 @@ public class UserController {
             if(appointed != null){
                 if(owner.getIsConnected()){
                     if(appointed.checkRoleInStore(storeId) == Role.Owner) {
-                        owner.fireOwner(appointed.getId(), storeId);
-                        Notification<String> notify = new Notification<>("you have been fired from owner in store: " + storeId);
-                        appointed.addNotification(notify);
-                        appointed.removeRoleInStore(storeId);
+                            Set<Integer> firedIds = owner.fireOwner(appointed.getId(), storeId);
+                            firedIds.remove(appointed.getId());
+                            for (int firedId : firedIds) {
+                                Member fired = getMember(firedId);
+                                if (fired.checkRoleInStore(storeId) == Role.Owner) {
+                                    Notification<String> notify = new Notification<>("you have been fired from owner in store: " + storeId);
+                                    fired.addNotification(notify);
+                                    fired.removeRoleInStore(storeId);
+                                } else {
+                                    Notification<String> notify = new Notification<>("you have been fired from manager in store: " + storeId);
+                                    fired.addNotification(notify);
+                                    fired.removeRoleInStore(storeId);
+                                }
+                            }
+                            Notification<String> notify = new Notification<>("you have been fired from owner in store: " + storeId);
+                            appointed.addNotification(notify);
+                            appointed.removeRoleInStore(storeId);
                     }
                     else
                         throw new Exception("the member is not a owner in this store");
@@ -1290,10 +1303,31 @@ public class UserController {
     }
 
     //TODO: complete those functions
-    public void cancelMembership(int userToRemove) {
+    public List<Integer> cancelMembership(int userToRemove) throws Exception{
+        Member m = getMember(userToRemove);
+        Set<Integer> storeIds = m.getAllStoreIds();
+        List<Integer> creatorStoreIds = new LinkedList<>();
+        for(int storeId : storeIds){
+            if(m.checkRoleInStore(storeId) == Role.Manager)
+                fireManager(userToRemove, userToRemove, storeId);
+            else if(m.checkRoleInStore(storeId) == Role.Owner)
+                fireOwner(userToRemove, userToRemove, storeId);
+            else
+                creatorStoreIds.add(storeId);
+        }
+        activeMemberList.remove(idToEmail.get(userToRemove));
+        inActiveMemberList.remove(idToEmail.get(userToRemove));
+        idToEmail.remove(userToRemove);
+        return creatorStoreIds;
     }
 
-    public String getUsersInformation() {
+    public List<String> getUsersInformation() {
+        List<String> membersInformation = new LinkedList<>();
+        for(Member m : activeMemberList.values()) {
+            String history = m.getUserPurchaseHistory();
+            membersInformation.add(history);
+        }
+        return membersInformation;
     }
 
 //    public synchronized void closeStore(int userID, int storeID) throws Exception

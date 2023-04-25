@@ -145,19 +145,19 @@ public class Inventory {
         return matchingProducts;
     }
 
-    public ArrayList<Product> getAllFromCategory(String category){
-        ArrayList<Product> result = new ArrayList<>();
-        ArrayList<Integer> prod_ids = categories.get(category);
-        if(prod_ids!= null){
-            for(Integer id : prod_ids){
-                Product p = getProduct(id);
-                if(p!=null){
-                    result.add(p);
-                }
-            }
-        }
-        return result;
-    }
+//    public ArrayList<Product> getAllFromCategory(String category){
+//        ArrayList<Product> result = new ArrayList<>();
+//        ArrayList<Integer> prod_ids = categories.get(category);
+//        if(prod_ids!= null){
+//            for(Integer id : prod_ids){
+//                Product p = getProduct(id);
+//                if(p!=null){
+//                    result.add(p);
+//                }
+//            }
+//        }
+//        return result;
+//    }
 
     /**
      * @param prodID INTEGER
@@ -206,9 +206,54 @@ public class Inventory {
     public synchronized int removeProduct(int productId) {
         if(productList.contains(productId)){
             productList.remove(productId);
-            for(ArrayList<Integer> prodIds : A)
+            for(ArrayList<Integer> prodIds : categories.values()){
+                if(prodIds.contains(productId)){
+                    prodIds.remove(Integer.valueOf(productId));
+                }
+            }
+            return 0;
         }
+        return -1;
+    }
 
+    public void updateProduct(int productId, List<String> categories,String name, String description, int price, int quantity) throws Exception{
+        if(productList.contains(productId)){
+            if(categories!=null){
+                replaceCategories(productId,categories);
+            }
+            if(name!=null){
+                setName(productId,name);
+            }
+            if(description!=null){
+                setDescription(productId,description);
+            }
+            if(price > 0){
+                setPrice(productId,price);
+            }
+            if(quantity > 0){
+                replaceQuantity(productId,quantity);
+            }
+        }
+    }
 
+    private void replaceQuantity(int productId, int quantity) {
+        Product p = getProduct(productId);
+        p.replaceQuantity(quantity);
+    }
+
+    private void setName(int productId, String name) {
+        Product p = getProduct(productId);
+        p.setName(name);
+    }
+
+    private void replaceCategories(int productId, List<String> categories) {
+        for(ArrayList<Integer> category: this.categories.values()){
+            if(category.contains(productId)){
+                category.remove(Integer.valueOf(productId));
+            }
+        }
+        for(String category: categories){
+            addToCategory(category,productId);
+        }
     }
 }

@@ -372,7 +372,7 @@ public class Store {
         {
             if (!message.getSeen())
             {
-                questionsToAnswer.put(message.getMessageId(), Message);
+                questionsToAnswer.put(message.getMessageId(), message);
             }
         }
         return questionsToAnswer;
@@ -384,8 +384,12 @@ public class Store {
     }
 
     public void removeProduct(int productId) throws Exception{
-         if(!inventory.removeProduct(productId)>-1){
+         if(!(inventory.removeProduct(productId)>-1)){
              throw new Exception("Unable to remove Product, productId doesn't exist.");
          }
+    }
+
+    public void updateProduct(int productId, List<String> categories, String name, String description, int price, int quantity) throws Exception {
+        inventory.updateProduct(productId,categories,name,description,price,quantity);
     }
 }

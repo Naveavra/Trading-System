@@ -234,7 +234,11 @@ public class MarketController {
         return storectrl.closeStorePermanently(storeId);
     }
 
-    public void deleteProduct(int storeId, int productId) {
+    public void deleteProduct(int storeId, int productId) throws Exception {
         storectrl.removeProduct(storeId,productId);
+    }
+
+    public void updateProduct(int storeId, int productId, List<String> categories, String name, String description, int price, int quantity) throws Exception {
+        storectrl.updateProduct(storeId,productId,categories,name,description,price,quantity);
     }
 }
