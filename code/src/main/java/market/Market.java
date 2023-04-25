@@ -1,6 +1,5 @@
 package market;
 
-import org.json.simple.JSONArray;
 import service.UserController;
 import utils.Logger;
 import utils.Message;
@@ -510,7 +509,7 @@ public class Market implements MarketInterface {
      */
     public Response<String> getUsers(){
         try{
-            String users = userController.getUsersInfo();
+            String users = userController.getAllUserNames();
             logger.log(Logger.logStatus.Success,"admin get users successfully on "+ LocalDateTime.now());
             return new Response<String>(users,null,null);
         }catch (Exception e){

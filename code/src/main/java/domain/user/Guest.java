@@ -1,9 +1,5 @@
 package domain.user;
 
-import domain.states.Buyer;
-import domain.states.UserState;
-import utils.Action;
-
 import java.util.HashMap;
 
 public class Guest {

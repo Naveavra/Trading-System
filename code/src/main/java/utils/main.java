@@ -1,6 +1,5 @@
 package utils;
 
-import domain.user.Member;
 import service.UserController;
 
 public class main {
@@ -9,7 +8,7 @@ public class main {
         UserController userController = new UserController();
         userController.register("elliben123@gmail.com", "aBc1234", "21/02/2002");
         userController.register("ellibend123@gmail.com", "aBc1234", "21/02/2002");
-        System.out.println(userController.getUsersInfo());
+        System.out.println(userController.getAllUserNames());
 
 
     }

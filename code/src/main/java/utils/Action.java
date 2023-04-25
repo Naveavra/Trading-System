@@ -11,17 +11,6 @@ public enum Action {
     appointOwner,
     addProduct, // manager, owner, creator
     changeStoreDescription, // manager, owner, creator
-    /*
-    createStore, //buyer, seller, manager, owner, creator
-    getProductInformation, //buyer, seller, manager, owner, creator
-    getStoreInformation, //buyer, seller, manager, owner, creator
-    writeReview, //buyer, seller, manager, owner, creator
-    rateProduct, //buyer, seller, manager, owner, creator
-    rateStore, //buyer, seller, manager, owner, creator
-
-    sendQuestion, //buyer, seller, manager, owner, creator
-    sendComplaint, //buyer, seller, manager, owner, creator
-     */
     changePurchasePolicy, // manager, owner, creator
     changeDiscountPolicy, // manager, owner, creator
     addPurchaseConstraint, // manager, owner, creator

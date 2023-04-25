@@ -1,22 +1,19 @@
 package service;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
 import domain.store.storeManagement.Store;
 import domain.user.Guest;
 import domain.user.Member;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import utils.Action;
 import utils.Message;
 import utils.Notification;
 import utils.Role;
 
 import com.google.gson.Gson;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -51,7 +48,7 @@ public class UserController {
 
 
 
-    public synchronized void exitGuest(int id){
+    public void exitGuest(int id){
         guestList.remove(id);
     }
 
@@ -119,10 +116,10 @@ public class UserController {
     /**
      * @return list off all the usernames in our system
      */
-    public synchronized String getUsersInfo()
+    public synchronized String getAllUserNames()
     {
         Gson gson = new Gson();
-        return gson.toJson(memberList);
+        return gson.toJson(memberList.keySet());
 //
 //        for (Member obj : memberList.values()) {
 //            JSONObject jsonObj = new JSONObject();
@@ -408,13 +405,13 @@ public class UserController {
      * @param userId
      * @return
      */
-    public synchronized Message writeComplaintToStore(int orderId, int storeId, String comment,int userId)throws Exception{
+    public synchronized Message writeComplaintToMarket(int orderId, int storeId, String comment,int userId)throws Exception{
         if(userId % 2 == 0)
             throw new Exception("guest can't write complaints");
         else{
             String email = idToEmail.get(userId);
             if(email != null)
-                return writeComplaintToStore(orderId, storeId, comment, email);
+                return writeComplaintToMarket(orderId, storeId, comment, email);
             else
                 throw new Exception("no member has this id");
         }
@@ -422,7 +419,7 @@ public class UserController {
 
 
     //TODO:remember to add the storeCreator's email to the message (either later or in a function here)
-    public synchronized Message writeComplaintToStore(int orderId, int storeId, String comment,String email) throws Exception{
+    public synchronized Message writeComplaintToMarket(int orderId, int storeId, String comment,String email) throws Exception{
         Member m = memberList.get(email);
         if(m != null) {
             if(m.getIsConnected()) {
@@ -557,7 +554,7 @@ public class UserController {
 
 
     /**
-     * displayes the user's notifications
+     * displays the user's notifications
      * @param userId
      * @return
      * @throws Exception
@@ -616,7 +613,7 @@ public class UserController {
     //TODO:remember to add into login the option to answer the security questions(if needed)
 
     /**
-     * returns all of the user's information
+     * returns all the user's information
      * @param userId
      * @return
      * @throws Exception
@@ -627,7 +624,7 @@ public class UserController {
         else{
             String email = idToEmail.get(userId);
             if(email != null)
-                return email;
+                return getUserInformation(email);
             else
                 throw new Exception("no member has this id");
         }
@@ -964,6 +961,234 @@ public class UserController {
     }
 
 
+    /**
+     * adding a new permission to manager
+     * @param ownerId
+     * @param managerId
+     * @param a
+     * @param storeId
+     * @throws Exception
+     */
+    public synchronized void addManagerAction(int ownerId, int managerId, Action a, int storeId) throws Exception {
+        String managerEmail = idToEmail.get(managerId);
+        String ownerEmail = idToEmail.get(ownerId);
+        if(ownerEmail != null) {
+            if (managerEmail != null){
+                addManagerAction(ownerEmail, managerEmail, a, storeId);
+            }
+            else
+                throw new Exception("the managerId: " + managerId + " given goes not belong to any member");
+        }
+        else
+            throw new Exception("the ownerId: " + ownerId + " given goes not belong to any member");
+    }
+
+    public synchronized void addManagerAction(String ownerEmail, String managerEmail, Action a, int storeId) throws Exception {
+        Member owner = memberList.get(ownerEmail);
+        Member manager = memberList.get(managerEmail);
+        if(owner != null){
+            if(manager != null){
+                if(owner.getIsConnected()){
+                    if(manager.checkRoleInStore(storeId) == Role.Manager) {
+                        manager.addAction(a, storeId);
+                        Notification<String> notify = new Notification<>("the following action: "  + a.toString() + "\n" +
+                                "has been added for you for store: " + storeId);
+                        manager.addNotification(notify);
+                    }
+                    else
+                        throw new Exception("the member is not a manager in this store");
+                }
+                else
+                    throw new Exception("the member is not connected so he can't appoint");
+            }
+            else
+                throw new Exception("no member has this email: "+managerEmail);
+        }
+        else
+            throw new Exception("no member has this email: "+ownerEmail);
+    }
+
+    /**
+     * remove an action for the manager
+     * @param ownerId
+     * @param managerId
+     * @param a
+     * @param storeId
+     * @throws Exception
+     */
+    public synchronized void removeManagerAction(int ownerId, int managerId, Action a, int storeId) throws Exception {
+        String managerEmail = idToEmail.get(managerId);
+        String ownerEmail = idToEmail.get(ownerId);
+        if(ownerEmail != null) {
+            if (managerEmail != null){
+                removeManagerAction(ownerEmail, managerEmail, a, storeId);
+            }
+            else
+                throw new Exception("the managerId: " + managerId + " given goes not belong to any member");
+        }
+        else
+            throw new Exception("the ownerId: " + ownerId + " given goes not belong to any member");
+    }
+
+    public synchronized void removeManagerAction(String ownerEmail, String managerEmail, Action a, int storeId) throws Exception {
+        Member owner = memberList.get(ownerEmail);
+        Member manager = memberList.get(managerEmail);
+        if(owner != null){
+            if(manager != null){
+                if(owner.getIsConnected()){
+                    if(manager.checkRoleInStore(storeId) == Role.Manager) {
+                        manager.removeAction(a, storeId);
+                        Notification<String> notify = new Notification<>("the following action: "  + a.toString() + "\n" +
+                                "has been removed for you for store: " + storeId);
+                        manager.addNotification(notify);
+                    }
+                    else
+                        throw new Exception("the member is not a manager in this store");
+                }
+                else
+                    throw new Exception("the member is not connected so he can't appoint");
+            }
+            else
+                throw new Exception("no member has this email: "+managerEmail);
+        }
+        else
+            throw new Exception("no member has this email: "+ownerEmail);
+    }
+
+
+    /**
+     * closing a store temporarily
+     * @param userId
+     * @param storeId
+     * @throws Exception
+     */
+    public synchronized void closeStore(int userId, int storeId) throws Exception {
+        if(userId % 2 == 0)
+            throw new Exception("guest can't close stores");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                closeStore(email, storeId);
+            else
+                throw new Exception("no member has this id: " + userId);
+        }
+
+    }
+
+    public synchronized void closeStore(String userEmail, int storeId) throws Exception {
+        Member m = memberList.get(userEmail);
+        if(m != null) {
+            Set<Integer> workerIds = m.closeStore(storeId);
+            workerIds.remove(m.getId());
+            for(int workerId : workerIds){
+                String email = idToEmail.get(workerId);
+                if(email != null) {
+                    Member worker = memberList.get(email);
+                    if(worker != null) {
+                        worker.changeToInactive(storeId);
+                        String notify = "the store: " + storeId + " has been temporarily closed";
+                        Notification<String> notification = new Notification<>(notify);
+                        addNotification(workerId, notification);
+                    }
+                    else
+                        throw new Exception("the set for closeStore contains an id that its corresponding email does not belong" +
+                                " to any member");
+                }
+                else
+                    throw new Exception("the set for closeStore contains an id of a non existent member");
+            }
+        }
+        else
+            throw new Exception("no member has this email: " + userEmail);
+    }
+
+
+    /**
+     * reopening a store
+     * @param userId
+     * @param storeId
+     * @throws Exception
+     */
+    public synchronized void reOpenStore(int userId, int storeId) throws Exception {
+        if(userId % 2 == 0)
+            throw new Exception("guest can't close stores");
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                reOpenStore(email, storeId);
+            else
+                throw new Exception("no member has this id: " + userId);
+        }
+
+    }
+
+    public synchronized void reOpenStore(String userEmail, int storeId) throws Exception {
+        Member m = memberList.get(userEmail);
+        if(m != null) {
+            Set<Integer> workerIds = m.reOpenStore(storeId);
+            workerIds.remove(m.getId());
+            for(int workerId : workerIds){
+                String email = idToEmail.get(workerId);
+                if(email != null) {
+                    Member worker = memberList.get(email);
+                    if(worker != null) {
+                        worker.changeToActive(storeId);
+                        String notify = "the store: " + storeId + " has been reOpened";
+                        Notification<String> notification = new Notification<>(notify);
+                        addNotification(workerId, notification);
+                    }
+                    else
+                        throw new Exception("the set for closeStore contains an id that its corresponding email does not belong" +
+                                " to any member");
+                }
+                else
+                    throw new Exception("the set for closeStore contains an id of a non existent member");
+            }
+        }
+        else
+            throw new Exception("no member has this email: " + userEmail);
+    }
+
+
+    /**
+     * checks if the user can do a specific action in a store
+     * @param userId
+     * @param action
+     * @param storeId
+     * @return
+     * @throws Exception
+     */
+    public synchronized boolean checkPermission(int userId, Action action, int storeId) throws Exception {
+        if(userId % 2 == 0)
+            return false;
+        else{
+            String email = idToEmail.get(userId);
+            if(email != null)
+                return checkPermission(email, action, storeId);
+            else
+                throw new Exception("no member has this id: " + userId);
+        }
+
+    }
+
+    public synchronized boolean checkPermission(String userEmail, Action action, int storeId) throws Exception {
+        Member m = memberList.get(userEmail);
+        if(m != null)
+            return m.checkPermission(action, storeId);
+        else
+            throw new Exception("no member has this email: " + userEmail);
+    }
+
+
+    /**
+     * getting information about the workers in a store
+     * @param userId
+     * @param storeId
+     * @return
+     */
+    public synchronized String getWorkersInformation(int userId, int storeId){
+
+    }
 
 
     //check that the format user@domain.com exists
@@ -973,6 +1198,7 @@ public class UserController {
                 .matcher(email)
                 .matches();
     }
+
 
     //the password length is between 6 and 20, need 1 small letter, 1 big letter and 1 number at least.
     // all other characters are not allowed
@@ -1063,7 +1289,7 @@ public class UserController {
 //        if (email != null)
 //        {
 //            Member m = memberList.get(email);
-//            if(m != null ) //this method can also be invoked by the admin so there is no need to check if the user is loggedin
+//            if(m != null ) //this method can also be invoked by the admin so there is no need to check if the user is logged in
 //            {
 //                m.closeStore(int storeID);
 //            }

@@ -13,19 +13,6 @@ public class StoreOwner extends UserState {
         permission = new Permission();
         List<Action> actions = new LinkedList<>();
 
-        /*
-        actions.add(Action.buyProduct);
-        actions.add(Action.createStore);
-        actions.add(Action.getProductInformation);
-        actions.add(Action.getStoreInformation);
-        actions.add(Action.writeReview);
-        actions.add(Action.rateProduct);
-        actions.add(Action.rateStore);
-        actions.add(Action.sendQuestion);
-        actions.add(Action.sendComplaint);
-        actions.add(Action.sellProduct);
-         */
-
         actions.add(Action.appointManager);
         actions.add(Action.changeStoreDescription);
         actions.add(Action.changePurchasePolicy);
