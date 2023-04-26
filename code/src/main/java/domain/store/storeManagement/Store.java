@@ -5,6 +5,7 @@ import domain.store.discount.DiscountPolicy;
 import domain.store.product.Inventory;
 import domain.store.purchase.PurchasePolicy;
 import utils.ProductInfo;
+import utils.StoreInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.Pair;
@@ -380,5 +381,10 @@ public class Store {
 
     public void updateProduct(int productId, List<String> categories, String name, String description, int price, int quantity) throws Exception {
         inventory.updateProduct(productId,categories,name,description,price,quantity);
+    }
+
+    public StoreInfo getStoreInformation() {
+        StoreInfo info = new StoreInfo(storeid, storeDescription, isActive, creatorId, getRating());
+        return info;
     }
 }

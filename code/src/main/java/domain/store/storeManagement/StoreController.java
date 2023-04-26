@@ -3,6 +3,7 @@ package domain.store.storeManagement;
 import com.google.gson.Gson;
 import utils.Filter.ProductFilter;
 import utils.ProductInfo;
+import utils.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
@@ -151,8 +152,8 @@ public class StoreController {
         return true;
     }
 
-    public Store getStore(int storeid) {
-        return storeList.get(storeid);
+    public Store getStore(int storeId) {
+        return storeList.get(storeId);
     }
 
 
@@ -237,10 +238,6 @@ public class StoreController {
         throw new Exception("store doesnt Exist or Open");
     }
 
-    public String getStoresInformation() {
-        Gson gson = new Gson();
-        return gson.toJson(storeList);
-    }
 
     public Set<Integer> closeStorePermanently(int storeId) throws Exception {
         Store store = storeList.get(storeId);
@@ -305,5 +302,16 @@ public class StoreController {
         }
         else
             throw new Exception("the id given does not match any store");
+    }
+
+    public StoreInfo getStoreInformation(int storeId){
+        Store store = getStore(storeId);
+        return store.getStoreInformation();
+
+    }
+
+    public String getStoresInformation() {
+        Gson gson = new Gson();
+        return gson.toJson(storeList);
     }
 }

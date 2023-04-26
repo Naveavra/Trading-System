@@ -1,6 +1,7 @@
 package service;
 
 import utils.ProductInfo;
+import utils.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
@@ -76,26 +77,19 @@ public class MarketController {
         storectrl.addToCategory(storeId,id,categories);
         return id;
     }
-    public String getProductInformation(int storeId, int producId) throws Exception {
+    public String getProductInformation(int storeId, int productId) throws Exception {
         Store store = storectrl.getStore(storeId);
         if (store != null && store.isActive())
         {
-            return store.getProductInformation(producId);
+            return store.getProductInformation(productId);
         }
         else {
             throw new Exception("cant get product information");
         }
     }
 
-    public String getStoreInformation(int storeId) throws Exception {
-        Store store = storectrl.getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            Gson gson = new Gson();
-            return gson.toJson(store);
-        }else {
-            throw new Exception("can not show store information");
-        }
+    public StoreInfo getStoreInformation(int storeId) throws Exception {
+        return storectrl.getStoreInformation(storeId);
     }
 
     public String getStoreDescription(int storeId) throws Exception{
