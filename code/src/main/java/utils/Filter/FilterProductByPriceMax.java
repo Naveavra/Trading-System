@@ -8,6 +8,7 @@ public class FilterProductByPriceMax extends FilterStrategy{
     int maxPrice = 0;
     public FilterProductByPriceMax(){
 
+
     }
     public void setMaxPrice(int price){
         if(price>=0){

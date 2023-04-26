@@ -213,9 +213,9 @@ public class Store {
         return inventory.getQuantity(pid);
     }
 
-    public ArrayList<Product> getProductByCategories(ArrayList<String> categories) {
-        return inventory.getProductByCategories(categories);
-    }
+//    public ArrayList<Product> getProductByCategories(ArrayList<String> categories) {
+//        return inventory.getProductByCategories(categories);
+//    }
 
     /**
      * @param userID creator id

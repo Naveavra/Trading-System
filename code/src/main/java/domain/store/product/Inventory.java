@@ -85,36 +85,36 @@ public class Inventory {
         return new ArrayList<>(categories.keySet());
     }
 
-    /**
-     * This method takes an ArrayList of categories as input and returns an ArrayList
-     * of matching products sorted by the number of categories that they match (from most to least)
-     */
-    public ArrayList<Product> getProductByCategories(ArrayList<String> categories) {
-        ArrayList<Product> matchingProducts = new ArrayList<>();
-        Map<Product, Integer> productToNumMatches = new HashMap<>();
-        for(String cat: categories){
-            ArrayList<Integer> prod_ids = this.categories.get(cat);
-            if(prod_ids!= null){
-                for(Integer prodid : prod_ids){
-                    Product p = getProduct(prodid);
-                    if(p!= null && !matchingProducts.contains(p)){
-                        matchingProducts.add(p);
-                        productToNumMatches.put(p,1);
-                    } else if (p != null) {
-                        productToNumMatches.put(p,productToNumMatches.get(p)+1);
-                    }
-                }
-            }
-        }
-
-        matchingProducts.sort((p1, p2) -> {
-            int numMatches1 = productToNumMatches.get(p1);
-            int numMatches2 = productToNumMatches.get(p2);
-            return Integer.compare(numMatches2, numMatches1);
-        });
-
-        return matchingProducts;
-    }
+//    /**
+//     * This method takes an ArrayList of categories as input and returns an ArrayList
+//     * of matching products sorted by the number of categories that they match (from most to least)
+//     */
+//    public ArrayList<Product> getProductByCategories(ArrayList<String> categories) {
+//        ArrayList<Product> matchingProducts = new ArrayList<>();
+//        Map<Product, Integer> productToNumMatches = new HashMap<>();
+//        for(String cat: categories){
+//            ArrayList<Integer> prod_ids = this.categories.get(cat);
+//            if(prod_ids!= null){
+//                for(Integer prodid : prod_ids){
+//                    Product p = getProduct(prodid);
+//                    if(p!= null && !matchingProducts.contains(p)){
+//                        matchingProducts.add(p);
+//                        productToNumMatches.put(p,1);
+//                    } else if (p != null) {
+//                        productToNumMatches.put(p,productToNumMatches.get(p)+1);
+//                    }
+//                }
+//            }
+//        }
+//
+//        matchingProducts.sort((p1, p2) -> {
+//            int numMatches1 = productToNumMatches.get(p1);
+//            int numMatches2 = productToNumMatches.get(p2);
+//            return Integer.compare(numMatches2, numMatches1);
+//        });
+//
+//        return matchingProducts;
+//    }
 
     public ArrayList<Product> getProductByKeywords(ArrayList<String> keywords) {
         Set<Product> temp = new HashSet<>();

@@ -2,6 +2,8 @@ package market;
 
 import utils.marketRelated.Response;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public interface MarketInterface {
@@ -25,6 +27,10 @@ public interface MarketInterface {
     public Response getCart(String userName);
     public Response makePurchase(int userId , String accountNumber);
     public Response getStoreDescription(int storeId);
+
+    public Response showFilterOptions();
+    public Response filterBy(HashMap<String,String> filterOptions);
+
 
     //member methods
     public Response login(String email , String pass, List<String> answers);

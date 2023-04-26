@@ -6,6 +6,10 @@ import domain.store.product.Product;
 
 public class FilterProductByRating extends FilterStrategy{
 
+    public FilterProductByRating() {
+
+    }
+
     @Override
     public ArrayList<Product> filter(ArrayList<Product> products) {
         // TODO Auto-generated method stub
