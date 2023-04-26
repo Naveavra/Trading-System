@@ -1,6 +1,7 @@
 package junit;
 
 import data.AdminInfo;
+import data.ProductInfo;
 import data.StoreInfo;
 import data.UserInfo;
 import org.junit.jupiter.api.AfterEach;
@@ -50,14 +51,19 @@ public class StoreTest extends ProjectTest{
         UserInfo ui = users_dict.get(users[0][USER_EMAIL]);
         StoreInfo si = new StoreInfo(ui.getUserId(), "Gong");
         si.setStoreId(createStore(si));
-        assertTrue(si.getStoreId() > 0);
+        assertTrue(si.getStoreId() < 0);
     }
 
     //Get products in store:
 
     @Test
     public void testGetProductInStore() {
-        //TODO:
+        UserInfo ui = users_dict.get(users[0][USER_EMAIL]);
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
+        StoreInfo si = new StoreInfo(ui.getUserId(), "Gong");
+        si.setStoreId(createStore(si));
+        List<ProductInfo> products = getProductInStore(si.getStoreId());
+        assertNotNull(products);
     }
 
     @Test

@@ -147,11 +147,21 @@ public class BridgeImplement implements Bridge {
         return -1;
     }
 
+    private List<ProductInfo> toProductsInfoList(List<utils.ProductInfo> products)
+    {
+        List<ProductInfo> ps = new ArrayList<>();
+        for (utils.ProductInfo p: products)
+        {
+            ps.add(new ProductInfo(p));
+        }
+        return ps;
+    }
+
     @Override
     public List<ProductInfo> getProductsInStore(int store) {
         Response<List<utils.ProductInfo>> res = market.getStoreProducts(store);
         if (res != null && !res.errorOccurred()) {
-            return null;//TODO: toProductInfo
+            return toProductsInfoList(res.getValue());
         }
         return null;
     }
