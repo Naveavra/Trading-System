@@ -44,11 +44,22 @@ private Basket basket;
 
 
     @Test
-    void removeProductFromCart() {
+    void removeProductFromCart_suucess() {
         Product apple = new Product(0,"apple","red apple");
         Product banana = new Product(1,"banana","yellow banana");
         basket.addProductToCart(0,10);
         basket.addProductToCart(1,10);
+        basket.removeProductFromCart(0);
+        HashMap<Integer,Integer> products = basket.getContent();
+        assertTrue(products.get(0)==null);
+        assertTrue(products.keySet().size()==1);
+    }
+    @Test
+    void removeProductFromCart_fail() {
+        Product apple = new Product(0,"apple","red apple");
+        Product banana = new Product(1,"banana","yellow banana");
+        basket.addProductToCart(0,10);
+
         basket.removeProductFromCart(0);
         HashMap<Integer,Integer> products = basket.getContent();
         assertTrue(products.get(0)==null);
@@ -62,6 +73,6 @@ private Basket basket;
         basket.changeQuantityInCart(0,100);
         HashMap<Integer,Integer> products = basket.getContent();
         assertTrue(products.get(0)!=null);
-        assertTrue(products.get(0)==100);
+        assertTrue(products.get(0)==110);
     }
 }
