@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import domain.store.discount.DiscountPolicy;
 import domain.store.product.Inventory;
 import domain.store.purchase.PurchasePolicy;
+import utils.Filter.FilterStrategy;
+import utils.Filter.ProductFilter;
+import utils.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.Pair;
@@ -30,7 +33,7 @@ public class Store {
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
 
-    private final ConcurrentHashMap<Integer, Message> productReviews;
+    private final ConcurrentHashMap<Integer, Message> productReviews; //maybe need to remove from here, i think this is unnecessary
     Gson gson ;
     public Store(int id, String description, int creatorId){
         Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
@@ -49,7 +52,13 @@ public class Store {
     }
 
 
-
+    public double getStoreRating(){
+        double sum = 0.0;
+        for(Message msg: storeReviews.values()){
+            sum+= msg.getRating();
+        }
+        return sum/storeReviews.size();
+    }
     public AppHistory getAppHistory(){return appHistory;}
 
     public int addQuestion(Message m)
@@ -278,9 +287,7 @@ public class Store {
         return true;
     }
 
-    public ArrayList<Product> getProductByKeywords(ArrayList<String> keywords){
-        return inventory.getProductByKeywords(keywords);
-    }
+
 
 
     public String getProductName(int productId) throws Exception{
@@ -379,4 +386,17 @@ public class Store {
     public void updateProduct(int productId, List<String> categories, String name, String description, int price, int quantity) throws Exception {
         inventory.updateProduct(productId,categories,name,description,price,quantity);
     }
+
+
+    public ArrayList<ProductInfo> filterBy(HashMap<String, String> filterOptions) {
+        ProductFilter filter = new ProductFilter();
+        for (String option:filterOptions.keySet()){
+            FilterStrategy next = filter.createStrategy(filter.getStrategy(option),filterOptions.get(option));
+            if(next!=null) {
+                filter.addStrategy(next);
+            }
+        }
+        return inventory.filterBy(filter,getStoreRating());
+    }
+
 }

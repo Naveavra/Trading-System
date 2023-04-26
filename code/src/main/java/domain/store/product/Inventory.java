@@ -1,5 +1,8 @@
 package domain.store.product;
 
+import utils.Filter.ProductFilter;
+import utils.ProductInfo;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,6 +42,21 @@ public class Inventory {
     public synchronized Product addProduct(Product p){
         if(getProductByName(p.name) == null) productList.put(p.getID(), p);
         return p;
+    }
+
+    /**
+     * returns all related categories for productId.
+     * @param productId
+     * @return ArrayList<Categories>
+     */
+    public synchronized ArrayList<String> getProductCategories(int productId){
+        ArrayList<String> relatedCategories = new ArrayList<>();
+        for(String category : categories.keySet()){
+            if(categories.get(category).contains(productId)){
+                relatedCategories.add(category);
+            }
+        }
+        return relatedCategories;
     }
     /**
      * gets product id and return list of the grading the product got by buyers
@@ -116,34 +134,34 @@ public class Inventory {
 //        return matchingProducts;
 //    }
 
-    public ArrayList<Product> getProductByKeywords(ArrayList<String> keywords) {
-        Set<Product> temp = new HashSet<>();
-        Map<Product, Integer> productToNumMatches = new HashMap<>();
-        for(String word : keywords) {
-            String regex = "\\b" + Pattern.quote(word) + "\\b";
-            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            for (Product p : productList.values()) {
-                Matcher matcher = pattern.matcher(p.getDescription());
-                if(matcher.find()){
-                    if(temp.add(p)){
-                        productToNumMatches.put(p,1);
-                    }
-                    else{
-                        productToNumMatches.put(p,productToNumMatches.get(p)+1);
-                    }
-                }
-            }
-        }
-        ArrayList<Product> matchingProducts = new ArrayList<>(temp);
-
-        matchingProducts.sort((p1, p2) -> {
-            int numMatches1 = productToNumMatches.get(p1);
-            int numMatches2 = productToNumMatches.get(p2);
-            return Integer.compare(numMatches2, numMatches1);
-        });
-
-        return matchingProducts;
-    }
+//    public ArrayList<Product> getProductByKeywords(ArrayList<String> keywords) {
+//        Set<Product> temp = new HashSet<>();
+//        Map<Product, Integer> productToNumMatches = new HashMap<>();
+//        for(String word : keywords) {
+//            String regex = "\\b" + Pattern.quote(word) + "\\b";
+//            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+//            for (Product p : productList.values()) {
+//                Matcher matcher = pattern.matcher(p.getDescription());
+//                if(matcher.find()){
+//                    if(temp.add(p)){
+//                        productToNumMatches.put(p,1);
+//                    }
+//                    else{
+//                        productToNumMatches.put(p,productToNumMatches.get(p)+1);
+//                    }
+//                }
+//            }
+//        }
+//        ArrayList<Product> matchingProducts = new ArrayList<>(temp);
+//
+//        matchingProducts.sort((p1, p2) -> {
+//            int numMatches1 = productToNumMatches.get(p1);
+//            int numMatches2 = productToNumMatches.get(p2);
+//            return Integer.compare(numMatches2, numMatches1);
+//        });
+//
+//        return matchingProducts;
+//    }
 
 //    public ArrayList<Product> getAllFromCategory(String category){
 //        ArrayList<Product> result = new ArrayList<>();
@@ -255,5 +273,20 @@ public class Inventory {
         for(String category: categories){
             addToCategory(category,productId);
         }
+    }
+
+    public ArrayList<ProductInfo> filterBy(ProductFilter filter,double storeRating) {
+        filter.setOp(this::getProduct);
+        filter.setCategories(categories);
+        filter.setStoreRating(storeRating);
+        //need to set more relevant things here as soon as all filters are implemented.
+        ArrayList<Product> filtered = filter.filter(new ArrayList<>(productList.values()));
+        ArrayList<ProductInfo> result = new ArrayList<>();
+        for(Product p: filtered){
+            ProductInfo info = p.getProductInfo();
+            info.setCategories(getProductCategories(p.getID()));
+            result.add(info);
+        }
+        return result;
     }
 }

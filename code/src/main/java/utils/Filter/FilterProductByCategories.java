@@ -12,19 +12,30 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FilterProductByCategories extends FilterStrategy{
     private ConcurrentHashMap<String,ArrayList<Integer>> categories;
-    public FilterProductByCategories() {
+    private ArrayList<String> categoriesToSearchBy;
 
+    public FilterProductByCategories() {
+        this.name = "Categories";
+    }
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     @Override
     public ArrayList<Product> filter(ArrayList<Product> products) {
         ArrayList<Product> matchingProducts = new ArrayList<>();
         Map<Product, Integer> productToNumMatches = new HashMap<>();
-        for(String cat: categories.keySet()){
+        for(String cat: categoriesToSearchBy){
             ArrayList<Integer> prod_ids = this.categories.get(cat);
             if(prod_ids!= null){
                 for(Integer prodid : prod_ids){
-                    Product p = getProductOp.getProduct(prodid);
+//                    Product p = getProductOp.getProduct(prodid);
+                    Product p = null;
+                    for(Product prod: products){
+                        if(prod.getID()==prodid)
+                            p = prod;
+                    }
                     if(p!= null && !matchingProducts.contains(p)){
                         matchingProducts.add(p);
                         productToNumMatches.put(p,1);
@@ -42,15 +53,23 @@ public class FilterProductByCategories extends FilterStrategy{
         });
         FilterStrategy nextOne = getNext();
         if(nextOne!=null){
-            matchingProducts = nextOne.filter(products);
+            matchingProducts = nextOne.filter(matchingProducts);
         }
         return matchingProducts;
     }
 
     /**
-     * set the categories to filter
+     * set the categories to filter by
+     * @param cat
+     */
+    public void setCategoriesToSearchBy(ArrayList<String> cat){
+        categoriesToSearchBy = cat;
+    }
+    /**
+     * set the categories to filter (ALL CATEGORIES)
      * @param cat ConcurrentHashMap<String,ArrayList<Integer>>
      */
+    @Override
     public void setCategories(ConcurrentHashMap<String,ArrayList<Integer>> cat){
         this.categories=cat;
     }

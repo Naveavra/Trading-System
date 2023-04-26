@@ -1,5 +1,7 @@
 package service;
 
+import domain.store.product.Product;
+import utils.ProductInfo;
 import utils.orderRelated.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
@@ -11,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gson.Gson;
-import jdk.jshell.spi.ExecutionControl;
 import utils.messageRelated.Message;
 import utils.userInfoRelated.Receipt;
 
@@ -224,7 +225,7 @@ public class MarketController {
      * @param filterOptions
      * @return json string representation of the selected products.
      */
-    public String filterBy(HashMap<String,String> filterOptions) {
+    public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) {
         return storectrl.filterBy(filterOptions);
     }
 }

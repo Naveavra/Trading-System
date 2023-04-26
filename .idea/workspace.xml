@@ -5,24 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6ae14e4-fbd0-4323-b4ff-3afa10dfd922" name="Changes" comment="adding new functoins in implementation">
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByCategories.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByKeywords.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/GetProductOperation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/work1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_2.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Product.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/market/MarketInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/service/MarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByCategories.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByCategories.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByKeywords.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByKeywords.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMax.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMax.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMin.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByRating.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByRating.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByStoreRating.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByStoreRating.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterStrategy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/ProductFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/ProductFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/ProductInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/ProductInfo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +46,14 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -91,7 +97,7 @@
       <workItem from="1682198620589" duration="6420000" />
       <workItem from="1682342606410" duration="619000" />
       <workItem from="1682343265358" duration="5465000" />
-      <workItem from="1682500733867" duration="9353000" />
+      <workItem from="1682500733867" duration="18292000" />
     </task>
     <task id="LOCAL-00001" summary="adding new functoins in interface">
       <created>1682083957384</created>

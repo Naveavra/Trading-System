@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductInfo {
@@ -11,13 +12,15 @@ public class ProductInfo {
     public int quantity;
 
 
-    public ProductInfo(int productId , List<String> categories,String name , String desc ,int price , int quantity){
+    public ProductInfo(int productId ,String name , String desc ,int price , int quantity){
         this.id = productId;
-        this.categories = categories;
         this.name =name;
         this.description =desc;
         this.price = price;
         this.quantity =quantity;
+    }
+    public void setCategories(ArrayList<String> cat){
+        this.categories = cat;
     }
 
 }

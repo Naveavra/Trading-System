@@ -6,9 +6,14 @@ import domain.store.product.Product;
 
 public class FilterProductByPriceMax extends FilterStrategy{
     int maxPrice = 0;
+
     public FilterProductByPriceMax(){
+        this.name = "PriceRangeMax";
+    }
 
-
+    @Override
+    public String getName(){
+        return this.name;
     }
     public void setMaxPrice(int price){
         if(price>=0){
