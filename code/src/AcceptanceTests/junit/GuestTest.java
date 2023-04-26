@@ -129,7 +129,7 @@ public class GuestTest extends ProjectTest{
         GuestInfo buyer = new GuestInfo();
         //Login
         buyer.setId(enterSystem());
-        assertEquals(stores.get(0).getStoreDescription(), getStore(stores.get(0).getStoreId()));
+        assertEquals(stores.get(0).getDescription(), getStore(stores.get(0).getStoreId()));
     }
 
     //Purchase the cart:

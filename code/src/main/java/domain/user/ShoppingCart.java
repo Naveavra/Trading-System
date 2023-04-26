@@ -13,8 +13,10 @@ public class ShoppingCart {
         baskets = new HashMap<>();
     }
 
-    public void addProductToCart(int storeId, int productId, int quantity) {
-
+    public void addProductToCart(int storeId, int productId, int quantity) throws Exception {
+        if (quantity < 1) {
+            throw new Exception("quantity mast be bigger then 0");
+        }
         if(!baskets.containsKey(storeId))
             baskets.put(storeId, new Basket());
         baskets.get(storeId).addProductToCart(productId, quantity);

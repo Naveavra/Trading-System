@@ -1,15 +1,13 @@
 package junit;
 
-import data.PermissionInfo;
-import data.PositionInfo;
-import data.ProductInfo;
-import data.PurchaseInfo;
+import data.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +37,6 @@ public class StoreOwnerTest extends ProjectTest{
     }
 
 
-    //TODO: After Tear Down clear the data from the system : initialize again system
 
     /** TODO: Add every test also login and logout
      * 1. Inventory management: ADD/ Remove/ Update - V & TODO Alert Test?
@@ -180,13 +177,19 @@ public class StoreOwnerTest extends ProjectTest{
 
     @Test
     public void testAfterPurchaseGetStorePurchasesHistory(){
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
-        List<PurchaseInfo> purchases = this.getStorePurchasesHistory(uid, storeId);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        List<PurchaseInfo> purchases = this.getStorePurchasesHistory(uid.getUserId(), storeId);
         assertNotNull(purchases);
         assertTrue(purchases.size() == 0);
         //TODO: add procces of purchase of product
-        purchases = this.getStorePurchasesHistory(uid, storeId);
+        //Add product to cart
+        int status = addProductToCart(uid.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
+        assertTrue(status > -1);
+        status  = makePurchase(uid.getUserId(), "00000000000");
+        assertTrue(status > 0);
+        purchases = this.getStorePurchasesHistory(uid.getUserId(), storeId);
         assertNotNull(purchases);
         assertTrue(purchases.size() > 0);
     }
@@ -463,32 +466,35 @@ public class StoreOwnerTest extends ProjectTest{
 
     @Test
     public void testAppointmentExistOwnerToMangerInStore() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         int uIdOwner = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
         int storeId = stores.get(0).getStoreId();
-        int status = this.appointmentOwnerInStore(uid, storeId,uIdOwner);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        int status = this.appointmentOwnerInStore(uid.getUserId(), storeId, uIdOwner);
         assertTrue(status > 0);
-        status = this.appointmentMangerInStore(uid, storeId,uIdOwner);
+        status = this.appointmentMangerInStore(uid.getUserId(), storeId, uIdOwner);
         assertTrue(status < 0);
     }
 
     @Test
     public void testAppointmentExistManagerInStore() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
         int storeId = stores.get(0).getStoreId();
-        int status = this.appointmentMangerInStore(uid, storeId,uIdManager);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        int status = this.appointmentMangerInStore(uid.getUserId(), storeId,uIdManager);
         assertTrue(status > 0);
-        status = this.appointmentMangerInStore(uid, storeId,uIdManager);
+        status = this.appointmentMangerInStore(uid.getUserId(), storeId,uIdManager);
         assertTrue(status < 0);
     }
 
     @Test
     public void testNotOwnerTryAppointmentManagerInStore() {
-        int uid = this.users_dict.get(users[2][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[2][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
-        int status = this.appointmentMangerInStore(uid, storeId,uIdManager);
+        int status = this.appointmentMangerInStore(uid.getUserId(), storeId,uIdManager);
         assertTrue(status < 0);
     }
 
@@ -496,49 +502,54 @@ public class StoreOwnerTest extends ProjectTest{
 
     @Test
     public void testAppointmentOwnerInStore() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         int uIdOwner = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         int storeId = stores.get(0).getStoreId();
-        int status = this.appointmentOwnerInStore(uid, storeId,uIdOwner);
+        int status = this.appointmentOwnerInStore(uid.getUserId(), storeId,uIdOwner);
         assertTrue(status > 0);
     }
 
     @Test
     public void testAppointmentExistMangerToOwnerInStore() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
         int storeId = stores.get(0).getStoreId();
-        int status = this.appointmentMangerInStore(uid, storeId,uIdManager);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        int status = this.appointmentMangerInStore(uid.getUserId(), storeId,uIdManager);
         assertTrue(status > 0);
-        status = this.appointmentOwnerInStore(uid, storeId,uIdManager);
+        status = this.appointmentOwnerInStore(uid.getUserId(), storeId,uIdManager);
         assertTrue(status > 0);
     }
 
     @Test
     public void testAppointmentExistOwnerInStore() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         int uIdOwner = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
         int storeId = stores.get(0).getStoreId();
-        int status = this.appointmentOwnerInStore(uid, storeId,uIdOwner);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        int status = this.appointmentOwnerInStore(uid.getUserId(), storeId,uIdOwner);
         assertTrue(status > 0);
-        status = this.appointmentOwnerInStore(uid, storeId,uIdOwner);
+        status = this.appointmentOwnerInStore(uid.getUserId(), storeId,uIdOwner);
         assertTrue(status < 0);
     }
 
     @Test
     public void testAppointmentUnRealOwnerInStore() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
-        int status = this.appointmentOwnerInStore(uid, storeId,ERROR);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        int status = this.appointmentOwnerInStore(uid.getUserId(), storeId,ERROR);
         assertTrue(status < 0);
     }
 
     @Test
     public void testNotOwnerTryAppointmentOwnerInStore() {
-        int uid = this.users_dict.get(users[2][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[2][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         int uIdOwner = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
-        int status = this.appointmentOwnerInStore(uid, storeId,uIdOwner);
+        int status = this.appointmentOwnerInStore(uid.getUserId(), storeId,uIdOwner);
         assertTrue(status < 0);
     }
 
@@ -546,9 +557,10 @@ public class StoreOwnerTest extends ProjectTest{
 
     @Test
     public void testChangePurchasePolicy() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
-        int status = this.changePurchasePolicy(uid, storeId,"Bid");
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        int status = this.changePurchasePolicy(uid.getUserId(), storeId,"Bid");
         assertTrue(status > 0);
     }
 
@@ -739,4 +751,67 @@ public class StoreOwnerTest extends ProjectTest{
         assertTrue(status < 0);
     }
 
+    @Test
+    public void testAddProductCartAndRemoveAtSameTime(){
+        GuestInfo buyer1 = new GuestInfo();
+        UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        //Login
+        buyer1.setId(enterSystem());
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        AtomicInteger i = new AtomicInteger();
+        Thread t1 = new Thread(() -> {
+            i.addAndGet(removeProduct(uid.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId()));
+        });
+        Thread t2 = new Thread(() -> {
+            i.addAndGet(addProductToCart(buyer1.getId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1));
+        });
+        t1.start();
+        t2.start();
+        assertTrue(i.get() <= 0);
+
+    }
+
+    @Test
+    public void appointOwnerSameTime(){
+        UserInfo creator = this.users_dict.get(users[0][USER_EMAIL]);//Owner of store 4
+        UserInfo uid1 = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        UserInfo uid2 = this.users_dict.get(users[2][USER_EMAIL]);//Owner of store 4
+        //Login
+        uid1.setUserId(login(uid1.getEmail(), uid1.getPassword()));
+        uid2.setUserId(login(uid2.getEmail(), uid2.getPassword()));
+        appointmentOwnerInStore(creator.getUserId(), stores.get(0).getStoreId(), uid1.getUserId());
+        AtomicInteger i = new AtomicInteger();
+        Thread t1 = new Thread(() -> {
+            i.addAndGet(appointmentOwnerInStore(creator.getUserId(), stores.get(0).getStoreId(), uid2.getUserId()));
+        });
+        Thread t2 = new Thread(() -> {
+            i.addAndGet(appointmentOwnerInStore(uid1.getUserId(), stores.get(0).getStoreId(), uid2.getUserId()));
+        });
+        t1.start();
+        t2.start();
+        assertTrue(i.get() <= 0);
+
+    }
+
+    @Test
+    public void appointManagerSameTime(){
+        UserInfo creator = this.users_dict.get(users[0][USER_EMAIL]);//Owner of store 4
+        UserInfo uid1 = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        UserInfo uid2 = this.users_dict.get(users[2][USER_EMAIL]);//Owner of store 4
+        //Login
+        uid1.setUserId(login(uid1.getEmail(), uid1.getPassword()));
+        uid2.setUserId(login(uid2.getEmail(), uid2.getPassword()));
+        appointmentOwnerInStore(creator.getUserId(), stores.get(0).getStoreId(), uid1.getUserId());
+        AtomicInteger i = new AtomicInteger();
+        Thread t1 = new Thread(() -> {
+            i.addAndGet(appointmentMangerInStore(creator.getUserId(), stores.get(0).getStoreId(), uid2.getUserId()));
+        });
+        Thread t2 = new Thread(() -> {
+            i.addAndGet(appointmentMangerInStore(uid1.getUserId(), stores.get(0).getStoreId(), uid2.getUserId()));
+        });
+        t1.start();
+        t2.start();
+        assertTrue(i.get() <= 0);
+
+    }
 }

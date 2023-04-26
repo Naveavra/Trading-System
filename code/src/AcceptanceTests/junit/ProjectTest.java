@@ -149,7 +149,7 @@ public abstract class ProjectTest{
     }
 
     public int createStore(StoreInfo si) {
-        return bridge.createStore(si.getCreatorId(), si.getStoreDescription());
+        return bridge.createStore(si.getCreatorId(), si.getDescription());
     }
     public int createStore(int creatorId, String storeDesc) {
         return bridge.createStore(creatorId, storeDesc);

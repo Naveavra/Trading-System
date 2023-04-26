@@ -1,7 +1,6 @@
 package service;
 
 
-import domain.store.product.Product;
 import utils.ProductInfo;
 import utils.StoreInfo;
 import utils.orderRelated.Order;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
 import utils.messageRelated.Message;
@@ -192,7 +192,7 @@ public class MarketController {
         return gson.toJson(storectrl.getAppointments(storeId));
     }
 
-    public String getStoresInformation() {
+    public ConcurrentHashMap<Integer, Store> getStoresInformation() {
         return storectrl.getStoresInformation();
     }
 
