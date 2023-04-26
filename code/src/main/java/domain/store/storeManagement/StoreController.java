@@ -1,10 +1,7 @@
 package domain.store.storeManagement;
 
-import com.google.gson.Gson;
-import utils.Filter.*;
 import utils.ProductInfo;
 import utils.Filter.ProductFilter;
-import utils.ProductInfo;
 import utils.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
@@ -308,8 +305,7 @@ public class StoreController {
 
     }
 
-    public String getStoresInformation() {
-        Gson gson = new Gson();
-        return gson.toJson(storeList);
+    public ConcurrentHashMap<Integer, Store> getStoresInformation() {
+        return storeList;
     }
 }

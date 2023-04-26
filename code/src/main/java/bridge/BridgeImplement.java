@@ -168,46 +168,104 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int appointmentOwnerInStore(int user, int store, int owner) {
+        Response<String> res = market.appointOwner(owner, store, user);
+        if(res != null && !res.errorOccurred())
+        {
+            return 1;
+        }
         return 0;
     }
 
     @Override
     public int appointmentMangerInStore(int user, int store, int manger) {
+        Response<String> res = market.appointManager(user, store, manger);
+        if(res != null && !res.errorOccurred())
+        {
+            return 1;
+        }
         return 0;
     }
 
     @Override
     public int closeStore(int user, int store) {
+        Response<String> res = market.closeStore(user, store);
+        if(res != null && !res.errorOccurred())
+        {
+            return 1;
+        }
         return 0;
     }
 
     @Override
     public int reopenStore(int user, int store) {
+        Response<String> res = market.reopenStore(user, store);
+        if(res != null && !res.errorOccurred())
+        {
+            return 1;
+        }
         return 0;
     }
 
     @Override
     public List<PositionInfo> getPositionInStore(int user, int store) {
+        Response<String> res = market.getAppointments(user, store);
+        if(res != null && !res.errorOccurred())
+        {
+            return null;//TODO: res.getValue();
+        }
         return null;
     }
 
     @Override
     public int changeStoreManagerPermissions(int user, int store, List<Integer> permissionsIds) {
-        return 0;
+        Response<List<PermissionInfo>> res = null; //TODO : market.changeStoreManagerPermissions(user, store);
+        if(res != null && !res.errorOccurred())
+        {
+            return 1;
+        }
+        return -1;
     }
 
     @Override
     public List<PermissionInfo> getManagerPermissionInStore(int user, int store, int manager) {
+        Response<List<PermissionInfo>> res = null; //TODO : market.seeStoreHistory(user, store);
+        if(res != null && !res.errorOccurred())
+        {
+            return res.getValue();
+        }
         return null;
     }
 
     @Override
     public List<PurchaseInfo> getStorePurchasesHistory(int user, int store) {
+        Response<utils.StoreInfo> res = market.seeStoreHistory(user, store);
+        if(!res.errorOccurred())
+        {
+            return new ArrayList<>();//TODO
+        }
         return null;
+    }
+
+    public List<PurchaseInfo> toBuyerPurchaseHistoryList(String purchaseHistory)
+    {
+        Gson gson = new Gson();
+        List<PurchaseInfo> piList = new ArrayList<>();
+        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> historyList = null;
+        historyList = gson.fromJson(purchaseHistory, historyList.getClass());
+        for (ConcurrentHashMap.Entry<Integer, HashMap<Integer, HashMap<Integer, Integer>>> entry : historyList.entrySet())
+        {
+            piList.add(new PurchaseInfo(entry.getValue()));
+        }
+        return piList;
     }
 
     @Override
     public List<PurchaseInfo> getBuyerPurchasesHistory(int user, int buyer) {
+        Response<String> res = market.getUserPurchaseHistory(user);
+        if(!res.errorOccurred())
+        {
+            return toBuyerPurchaseHistoryList(res.getValue());
+        }
         return null;
     }
 
@@ -233,12 +291,10 @@ public class BridgeImplement implements Bridge {
         return null;
     }
 
-    private List<StoreInfo> toStoresList(String stores)
+    private List<StoreInfo> toStoresList(ConcurrentHashMap<Integer, Store> stores)
     {
-        Gson gson = new Gson();
         List<StoreInfo> storeInfos = new ArrayList<>();
-        ConcurrentHashMap<Integer, Store> storesList = gson.fromJson(stores, ConcurrentHashMap.class);
-        for (ConcurrentHashMap.Entry<Integer, Store> entry : storesList.entrySet())
+        for (ConcurrentHashMap.Entry<Integer, Store> entry : stores.entrySet())
         {
             storeInfos.add(new StoreInfo(entry.getValue()));
         }
@@ -248,7 +304,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<StoreInfo> getAllStores() {
-        Response<String> res = market.getStores();
+        Response<ConcurrentHashMap<Integer, Store>> res = market.getStores();
         if(!res.errorOccurred())
         {
             return toStoresList(res.getValue());
@@ -266,20 +322,12 @@ public class BridgeImplement implements Bridge {
         return -1;
     }
 
-    private StoreInfo toStoreInfo(String jsonStore)
-    {
-        Gson gson = new Gson();
-        Store store = gson.fromJson(jsonStore, Store.class);
-        return new StoreInfo(store);
-    }
-
     @Override
     public StoreInfo getStore(int storeId) {
-        Response<String> res = market.getStore(storeId);
+        Response<utils.StoreInfo> res = market.getStore(storeId);
         if(!res.errorOccurred())
         {
-
-            return toStoreInfo(res.getValue());
+            return new StoreInfo(res.getValue());
         }
         return null;
     }

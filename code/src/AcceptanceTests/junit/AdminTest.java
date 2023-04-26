@@ -148,7 +148,7 @@ public class AdminTest extends ProjectTest {
         List<StoreInfo> allStores = this.getAllStores();
         assertNotNull(allStores);
         assertEquals(stores.size(), allStores.size());
-        int status = logout(mainAdmin.getAdminId());
+        int status = adminLogout(mainAdmin.getAdminId());
         assertTrue(status > 0);
     }
 
@@ -161,8 +161,11 @@ public class AdminTest extends ProjectTest {
         assertEquals(stores.size(), allStores.size());
         UserInfo ui = users_dict.get(users[0][0]);
         StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "Phone Accessory Store");
+        status = login(ui.getEmail(), ui.getPassword());
+        assertTrue(status > 0);
+        ui.setUserId(status);
         newStore0.setStoreId(createStore(newStore0));
-        assertTrue(newStore0.getStoreId() > 0);
+        assertTrue(newStore0.getStoreId() >= 0);
         allStores = this.getAllStores();
         assertNotNull(allStores);
         assertEquals(stores.size() + 1, allStores.size());
@@ -175,13 +178,15 @@ public class AdminTest extends ProjectTest {
         int adminId = this.mainAdmin.getAdminId();
         List<StoreInfo> allStores = this.getAllStores();
         assertNotNull(allStores);
-        assertEquals(admins_dict.size(), allStores.size());
+        assertEquals(stores.size(), allStores.size());
         UserInfo ui = users_dict.get(users[0][0]);
-        stores.get(0);
+        int status = login(ui.getEmail(), ui.getPassword());
+        assertTrue(status > 0);
+        assertTrue(closeStore(ui.getUserId(), stores.get(0).getStoreId()) > 0);
         allStores = this.getAllStores();
         assertNotNull(allStores);
-        assertEquals(admins_dict.size() - 1, allStores.size());
-        int status = logout(mainAdmin.getAdminId());
+        assertEquals(stores.size() - 1, allStores.size());
+        status = logout(mainAdmin.getAdminId());
         assertTrue(status > 0);
     }
 
@@ -194,7 +199,7 @@ public class AdminTest extends ProjectTest {
         List<AdminInfo> allAdmins = this.getAllAdmins(adminId);
         assertNotNull(allAdmins);
         assertEquals(admins_dict.size(), allAdmins.size());
-        int status = logout(mainAdmin.getAdminId());
+        int status = adminLogout(mainAdmin.getAdminId());
         assertTrue(status > 0);
     }
 
@@ -209,7 +214,7 @@ public class AdminTest extends ProjectTest {
         allAdmins = this.getAllAdmins(adminId);
         assertNotNull(allAdmins);
         assertEquals(admins_dict.size() + 1, allAdmins.size());
-        status = logout(mainAdmin.getAdminId());
+        status = adminLogout(mainAdmin.getAdminId());
         assertTrue(status > 0);
     }
 

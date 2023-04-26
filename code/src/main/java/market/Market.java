@@ -700,10 +700,10 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> seeStoreHistory(int userId, int storeId) {
+    public Response<StoreInfo> seeStoreHistory(int userId, int storeId) {
         try {
             if (userController.checkPermission(userId, Action.seeStoreHistory, storeId)) {
-                String res = marketController.getStoreInformation(storeId);
+                StoreInfo res = marketController.getStoreInformation(storeId);
                 logger.log(Logger.logStatus.Success, "user get store history successfully on " + LocalDateTime.now());
                 return new Response<>(res, null, null);
             }
@@ -914,9 +914,9 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getStore(int storeId) {
+    public Response<StoreInfo> getStore(int storeId) {
         try {
-            String store = marketController.getStoreInformation(storeId);
+            StoreInfo store = marketController.getStoreInformation(storeId);
             logger.log(Logger.logStatus.Success, "user get the store successfully on " + LocalDateTime.now());
             return new Response<>(store, null, null);
         } catch (Exception e) {
@@ -996,9 +996,9 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getStores() {
+    public Response<ConcurrentHashMap<Integer, Store>> getStores() {
         try {
-            String stores = marketController.getStoresInformation();
+            ConcurrentHashMap<Integer, Store> stores = marketController.getStoresInformation();
             logger.log(Logger.logStatus.Success, "user got the stores successfully on " + LocalDateTime.now());
             return new Response<>(stores, null, null);
         } catch (Exception e) {

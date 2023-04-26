@@ -706,6 +706,10 @@ public class UserController {
     public synchronized void appointOwner(String ownerEmail, String appointedEmail, int storeId) throws Exception{
         Member owner = activeMemberList.get(ownerEmail);
         Member appointed = activeMemberList.get(appointedEmail);
+        if(appointed == null)
+        {
+            appointed = inActiveMemberList.get(appointedEmail);
+        }
         if(owner != null){
             if(appointed != null){
                 if(owner.getIsConnected()){
@@ -820,6 +824,10 @@ public class UserController {
     public synchronized void appointManager(String ownerEmail, String appointedEmail, int storeId) throws Exception{
         Member owner = activeMemberList.get(ownerEmail);
         Member appointed = activeMemberList.get(appointedEmail);
+        if (appointed  == null)
+        {
+            appointed = inActiveMemberList.get(appointedEmail);
+        }
         if(owner != null){
             if(appointed != null){
                 if(owner.getIsConnected()) {
