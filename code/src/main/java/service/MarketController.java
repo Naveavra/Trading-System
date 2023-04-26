@@ -12,13 +12,12 @@ import java.util.Set;
 
 import com.google.gson.Gson;
 import jdk.jshell.spi.ExecutionControl;
-import utils.Message;
-import utils.Receipt;
+import utils.messageRelated.Message;
+import utils.userInfoRelated.Receipt;
 
 public class MarketController {
 
     StoreController storectrl;
-    //ProductController productctrl;
     OrderController orderctrl;
     UserController userCtrl;
     Gson gson;
@@ -46,11 +45,8 @@ public class MarketController {
      */
     public Store openStore(int userID, String description) throws Exception
     {
-
         Store store = storectrl.openStore(description, userID);
        return store;
-
-
     }
 
     public String getProductName(int storeId ,int  productId) throws Exception {
@@ -61,30 +57,13 @@ public class MarketController {
 
         return storectrl.checkMessages(storeID);
     }
-    public void giveFeedback(int storeID, int messageID, String feedback ) throws Exception
-    {
-        storectrl.giveFeedback(storeID, messageID, feedback);
+
+    public int addReviewToStore(Message m) throws Exception {
+        return storectrl.writeReviewForStore(m);
     }
 
-
-    public void addReviewToStore(int storeId, int orderId, Message m) throws Exception {
-        Store store = this.storectrl.getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            store.addReview(orderId, m);
-        }
-        else
-        {
-            throw new Exception("store doesn't not exist or is doesn't active");
-        }
-    }
-
-    public void writeReviewForProduct(Message m) throws Exception{
-        Store store = storectrl.getStore(m.getStoreId());
-        if (store != null && store.isActive())
-        {
-            store.addProductReview(m);
-        }
+    public int writeReviewForProduct(Message m) throws Exception{
+        return storectrl.writeReviewForProduct(m);
 
     }
 
@@ -128,8 +107,8 @@ public class MarketController {
         }
     }
 
-    public void addQuestion(Message m, int storeId) throws Exception {
-        storectrl.addQuestion(m, storeId);
+    public int addQuestion(Message m) throws Exception {
+        return storectrl.addQuestion(m);
     }
     public void setStoreDescription(int storeId,String des) throws Exception{
         Store store = storectrl.getStore(storeId);
@@ -181,16 +160,6 @@ public class MarketController {
         return s.getProducts();
     }
 
-    public void sendQuestion(int storeId, Message message) throws Exception {
-        Store s =storectrl.getStore(storeId);
-        if(s != null){
-            s.addQuestion(message);
-        }
-        else {
-            throw new Exception("store doesn't exist");
-        }
-    }
-
     public void setStoreDiscountPolicy(int storeId, String policy) throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("miki implement please");
     }
@@ -205,9 +174,9 @@ public class MarketController {
         }
     }
 
-    public String getQuestions(int storeId) throws Exception {
+    public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
         Gson gson = new Gson();
-        return gson.toJson(storectrl.getQuestions(storeId));
+        return storectrl.getQuestions(storeId);
 
     }
 
@@ -240,5 +209,9 @@ public class MarketController {
 
     public void updateProduct(int storeId, int productId, List<String> categories, String name, String description, int price, int quantity) throws Exception {
         storectrl.updateProduct(storeId,productId,categories,name,description,price,quantity);
+    }
+
+    public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
+        return storectrl.viewReviews(storeId);
     }
 }

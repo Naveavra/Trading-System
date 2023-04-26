@@ -3,12 +3,13 @@ package domain.user;
 
 import com.google.gson.Gson;
 import utils.Pair;
-import utils.PrivateInfo;
+import utils.userInfoRelated.PrivateInfo;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+//TODO: need to decide if to keep security questions in history
 public class UserHistory {
 
     //the hashmap shows from orderId to the shopping cart content
@@ -17,7 +18,7 @@ public class UserHistory {
     private List<String> names;
     private transient List<String> passwords;
     private List<String> emails;
-    private transient List<Pair<String, String>> securityQuestions;
+    private transient HashMap<String, String> securityQuestions;
 
     public UserHistory(){
         purchaseHistory = new HashMap<>();
@@ -25,7 +26,7 @@ public class UserHistory {
         names = new LinkedList<>();
         passwords = new LinkedList<>();
         emails = new LinkedList<>();
-        securityQuestions = new LinkedList<>();
+        securityQuestions = new HashMap<>();
     }
 
     public void addPurchaseMade(int orderId, int totalPrice, HashMap<Integer, HashMap<Integer, Integer>> purchase){
@@ -44,8 +45,8 @@ public class UserHistory {
         emails.add(email);
     }
 
-    public void addQuestion(Pair<String, String> question){
-        securityQuestions.add(question);
+    public void addQuestion(String question, String answer){
+        securityQuestions.put(question, answer);
     }
 
     public boolean checkOrderOccurred(int orderId){
@@ -67,7 +68,7 @@ public class UserHistory {
         return false;
     }
 
-    public String getUserPurchaseHistory(String name) { //NAVE
+    public String getUserPurchaseHistory() { //NAVE
         Gson gson = new Gson();
         return gson.toJson(purchaseHistory);
 //        String purchases = "purchase history for user " + name + ":\n";
@@ -88,11 +89,15 @@ public class UserHistory {
         info.addOldNames(names);
         info.addOldEmails(emails);
         info.addOldPasswords(passwords);
+        info.addSecurityQuestion(securityQuestions);
     }
 
     public void changeAnswerForQuestion(String question, String newAnswer) {
-        for(Pair<String, String> secQuestion : securityQuestions)
-            if(secQuestion.getFirst().equals(question))
-                secQuestion.setSecond(newAnswer);
+        if(securityQuestions.containsKey(question))
+            securityQuestions.put(question, newAnswer);
+    }
+
+    public void removeSecurityQuestion(String question) {
+        securityQuestions.remove(question);
     }
 }

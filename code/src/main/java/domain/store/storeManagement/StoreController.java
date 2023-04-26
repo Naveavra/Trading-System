@@ -3,7 +3,7 @@ package domain.store.storeManagement;
 import com.google.gson.Gson;
 import utils.Order;
 import domain.store.product.Product;
-import utils.Message;
+import utils.messageRelated.Message;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,15 +51,6 @@ public class StoreController {
             st.addToCategories(productId,categories);
         }
     }
-    private Set<Integer> closeStorePermanetly(int storeId) throws Exception {
-        Store store = storeList.get(storeId);
-        if (store != null) {
-            storeList.remove(storeId);
-            return store.closeStoreTemporary(store.getCreatorId());
-        } else {
-            throw new Exception("store doesnt exist");
-        }
-    }
 
     private Product getExistingProductByName(String prodName) {
         for (Product p : products.values()) {
@@ -70,13 +61,12 @@ public class StoreController {
         return null;
     }
 
-    public void addQuestion(Message m, int storeId) throws Exception
+    public int addQuestion(Message m) throws Exception
     {
-        Store store = storeList.get(storeId);
+        Store store = storeList.get(m.getStoreId());
         if (store != null && store.isActive())
         {
-            store.addQuestion(m);
-            return;
+            return store.addQuestion(m);
         }
         throw new Exception("store does not exist or is not open");
     }
@@ -90,16 +80,20 @@ public class StoreController {
     /**
      * @return the store creator id if the store or order doesn't exist return -1
      */
-    public int writeReviewForStore(Message message) {
+    public int writeReviewForStore(Message message) throws Exception {
         Store store = storeList.get(message.getStoreId());
         if (store != null && store.isActive()) {
-            try {
-                return store.addReview(message.getOrderId(), message);
-            } catch (Exception e) {
-                return -1;
-            }
+            return store.addReview(message.getOrderId(), message);
         }
-        return -1;
+        throw new Exception("the storeId given does not belong to any active store");
+    }
+
+    public int writeReviewForProduct(Message message) throws Exception {
+        Store store = storeList.get(message.getStoreId());
+        if (store != null && store.isActive()) {
+            return store.addProductReview(message);
+        }
+        throw new Exception("the storeId given does not belong to any active store");
     }
 
 
@@ -203,17 +197,6 @@ public class StoreController {
         }
     }
 
-    /**
-     * the store owner replies to the reviews on his store
-     */
-    public void giveFeedback(int storeID, int messageID, String feedback) throws Exception {
-        Store store = storeList.get(storeID);
-        if (store != null && store.isActive()) {
-            store.giveFeedback(messageID, feedback);
-        } else {
-            throw new Exception("store doesnt Exist or Open");
-        }
-    }
 
     public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
         Store store = storeList.get(storeId);
@@ -284,6 +267,17 @@ public class StoreController {
         }
         else{
             throw new Exception("Store id doesn't exist.");
+        }
+    }
+
+    public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
+        Store store = storeList.get(storeId);
+        if (store != null && store.isActive())
+        {
+            return store.getStoreReviews();
+        }
+        else {
+            throw new Exception("store doesnt Exist or Open");
         }
     }
 }

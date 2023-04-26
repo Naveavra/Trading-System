@@ -1,7 +1,7 @@
 package domain.store.storeManagement;
 
 import utils.Pair;
-import utils.Role;
+import utils.stateRelated.Role;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,6 +36,11 @@ public class AppHistory {
                 }
             }
             return null;
+        }
+
+        //added for tests
+        public Pair<Integer, Role> getData(){
+            return data;
         }
 
         private void addChild(Pair<Integer, Role> child)

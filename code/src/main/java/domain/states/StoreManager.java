@@ -1,8 +1,8 @@
 package domain.states;
 
 
-import utils.Action;
-import utils.Role;
+import utils.stateRelated.Action;
+import utils.stateRelated.Role;
 
 import java.util.LinkedList;
 import java.util.List;

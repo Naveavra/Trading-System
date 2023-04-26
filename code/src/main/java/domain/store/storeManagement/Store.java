@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import domain.store.discount.DiscountPolicy;
 import domain.store.product.Inventory;
 import domain.store.purchase.PurchasePolicy;
-import utils.Message;
-import utils.MessageState;
+import utils.messageRelated.Message;
+import utils.messageRelated.MessageState;
 import utils.Pair;
 import utils.Order;
 import domain.store.product.Product;
-import utils.Role;
+import utils.stateRelated.Role;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +24,7 @@ public class Store {
     private final AppHistory appHistory; //first one is always the store creator
     private final Inventory inventory; //<productID,<product, quantity>>
     private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
-    private final ConcurrentHashMap<Integer, Message> messages; //<messageid, message>
+    private final ConcurrentHashMap<Integer, Message> storeReviews; //<messageid, message>
 
     private final ConcurrentHashMap<Integer, Message> questions;
     private DiscountPolicy discountPolicy;
@@ -39,30 +39,23 @@ public class Store {
         this.storeDescription = description;
         this.creatorId = creatorId;
         this.inventory = new Inventory();
-        this.messages = new ConcurrentHashMap<>();
+        this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
         this.discountPolicy = new DiscountPolicy();
         this. purchasePolicy = new PurchasePolicy();
-        this.productReviews = new ConcurrentHashMap<>();
+        this.productReviews = new ConcurrentHashMap<>();//hash map between messageId to message for product
         this.questions = new ConcurrentHashMap<>();
         gson = new Gson();
     }
 
-    public Message getProductReview(int productId) throws Exception
-    {
-        Message review = productReviews.get(productId);
-        if (review != null)
-        {
-            return review;
-        }
-        throw new Exception("no reviews for this product");
-    }
+
 
     public AppHistory getAppHistory(){return appHistory;}
 
-    public void addQuestion(Message m)
+    public int addQuestion(Message m)
     {
         questions.put(m.getMessageId(), m);
+        return creatorId;
     }
 
     public void answerQuestion(int messageID, String answer) throws Exception {
@@ -75,11 +68,13 @@ public class Store {
         throw new Exception("cant answer question");
     }
 
-    public void addProductReview(Message m) throws Exception
+
+    public int addProductReview(Message m) throws Exception
     {
         if (storeOrders.containsKey(m.getOrderId()))
         {
-            productReviews.put(m.getProductId(), m);
+            productReviews.put(m.getMessageId(), m);
+            return creatorId;
         }
         else
         {
@@ -96,15 +91,17 @@ public class Store {
         return creatorId;
     }
 
-    public ConcurrentHashMap<Integer, Message> getMessages() {
-        return this.messages;
+    public HashMap<Integer, Message> getStoreReviews() {
+        HashMap<Integer, Message> ans = new HashMap<>();
+        for(int messageId : storeReviews.keySet())
+            ans.put(messageId, storeReviews.get(messageId));
+        for(int messageId : productReviews.keySet())
+            ans.put(messageId, productReviews.get(messageId));
+        return ans;
     }
     public ConcurrentHashMap<Integer, Order> getOrdersHistory() {
         return this.storeOrders;
     }
-
-    //TODO reopen store
-
 
     public boolean isActive() {
         return isActive;
@@ -137,7 +134,7 @@ public class Store {
     public int addReview(int orderId, Message review) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
-            messages.put(review.getMessageId(), review);
+            storeReviews.put(review.getMessageId(), review);
             return creatorId;
         }
         throw new Exception("order doesnt exist");
@@ -298,7 +295,7 @@ public class Store {
 
     public ArrayList<String> checkMessages() {
         ArrayList<String> messagesToRead = new ArrayList<>();
-        for (Message m : messages.values()){
+        for (Message m : storeReviews.values()){
             if (!m.getSeen())
             {
                 messagesToRead.add(m.getContent());
@@ -309,17 +306,6 @@ public class Store {
 
     }
 
-    public void giveFeedback(int messageID, String feedback) throws Exception {
-        if (messages.get(messageID) != null)
-        {
-            messages.get(messageID).sendFeedback(feedback);
-        }
-        else
-        {
-            throw new Exception("message id is not correct;");
-        }
-
-    }
 
     public String getProductInformation(int producId) throws Exception{
 
@@ -377,6 +363,7 @@ public class Store {
         }
         return questionsToAnswer;
     }
+
     public void addToCategories(int productId, List<String> categories){
         for(String category: categories){
             inventory.addToCategory(category,productId);

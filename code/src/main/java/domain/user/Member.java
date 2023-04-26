@@ -4,14 +4,20 @@ import com.google.gson.Gson;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
-import utils.*;
+import utils.messageRelated.Message;
+import utils.messageRelated.MessageState;
+import utils.messageRelated.Notification;
+import utils.stateRelated.Action;
+import utils.stateRelated.Role;
+import utils.userInfoRelated.Info;
+import utils.userInfoRelated.PrivateInfo;
 
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-//TODO: change all the void functions to return a value in case of success/failure
-//TODO: need to add to functions an addToUserHistory so that it will save all the information
+
 public class Member {
 
     private transient Guest g;
@@ -32,7 +38,7 @@ public class Member {
     private boolean isConnected;
     private transient Gson gson ;
 
-    private transient List<Pair<String, String>> securityQuestions;
+    private transient ConcurrentHashMap<String, String> securityQuestions;
     //new Member(1, "eliben123@gmail.com", "aBc123", "24/02/2002")
     public Member(int id, String email, String password, String birthday){
         this.id = id;
@@ -52,7 +58,7 @@ public class Member {
         userHistory.addPassword(this.password);
         g = new Guest(id);
         notifications = new ConcurrentLinkedDeque<>();
-        securityQuestions = new LinkedList<>();
+        securityQuestions = new ConcurrentHashMap<>();
         gson = new Gson();
     }
 
@@ -146,8 +152,8 @@ public class Member {
     private boolean checkSecurityAnswers(List<String> answers) {
         if(answers.size() != securityQuestions.size())
             return false;
-        for(int i = 0; i<securityQuestions.size(); i++)
-            if(!answers.get(i).equals(securityQuestions.get(i).getSecond()))
+        for(String answer : securityQuestions.values())
+            if(!answers.contains(answer))
                 return false;
         return true;
     }
@@ -295,7 +301,7 @@ public class Member {
     }
 
     public String getUserPurchaseHistory() {
-        return userHistory.getUserPurchaseHistory(name);
+        return userHistory.getUserPurchaseHistory();
     }
 
     public String getPrivateInformation() {
@@ -310,27 +316,29 @@ public class Member {
      * @param answer
      */
     public void addQuestionForLogin(String question, String answer) throws Exception {
-        for(Pair<String, String> secQuestion : securityQuestions){
-            if(question.equals(secQuestion.getFirst()))
-                throw new Exception("you already added this question");
-        }
+        if(securityQuestions.containsKey(question))
+            throw new Exception("you already added this question");
 
-        Pair<String, String> secQuestion = new Pair<>(question, answer);
-        securityQuestions.add(secQuestion);
-        userHistory.addQuestion(secQuestion);
+        securityQuestions.put(question, answer);
+        userHistory.addQuestion(question, answer);
     }
 
     public void changeAnswerForQuestion(String question, String newAnswer) throws Exception {
-        boolean check = false;
-        for(Pair<String, String> secQuestion : securityQuestions){
-            if(question.equals(secQuestion.getFirst())) {
-                check = true;
-                secQuestion.setSecond(newAnswer);
-                userHistory.changeAnswerForQuestion(question, newAnswer);
-            }
+        if(securityQuestions.containsKey(question)) {
+            securityQuestions.put(question, newAnswer);
+            userHistory.changeAnswerForQuestion(question, newAnswer);
         }
-        if(!check)
+        else
             throw new Exception("the question you gave is not part of your security questions");
+    }
+
+    public void removeSecurityQuestion(String question) throws Exception {
+        if(securityQuestions.containsKey(question)) {
+            securityQuestions.remove(question);
+            userHistory.removeSecurityQuestion(question);
+        }
+        else
+            throw new Exception("the question: " + question +" is not a security question");
     }
 
     public Store appointToManager(int appointedId, int storeId) throws Exception {
@@ -389,11 +397,11 @@ public class Member {
         inActiveStores.remove(storeId);
     }
 
-    public Set<Integer> fireManager(int appointedId, int storeId) throws Exception{
+    public void fireManager(int appointedId, int storeId) throws Exception{
         UserState storeState = activeRoles.get(storeId);
         if(storeState != null){
             if(id == appointedId || checkPermission(Action.fireManager, storeId)){
-                return activeStores.get(storeId).fireUser(appointedId);
+                activeStores.get(storeId).fireUser(appointedId);
             }
             else
                 throw new Exception("the member does not have permission to fire a manager in this store: " + storeId);
@@ -510,47 +518,13 @@ public class Member {
             throw new Exception("the member is not allowed to get the worker ids in store: " + storeId);
     }
 
-    public Info getInformation(int storeId) {
-        Info info = new PrivateInfo(id, name, email, birthday, age);
+    public PrivateInfo getInformation(int storeId) {
+        PrivateInfo info = new PrivateInfo(id, name, email, birthday, age);
         UserState state = activeRoles.get(storeId);
         if(state.getRole() == Role.Manager)
             info.addManagerActions(state.getActions());
         return info;
     }
-
-    public List<Integer> removeAllRoles() throws Exception{
-        List<Integer> storeIds = new LinkedList<>();
-        for(int storeId : activeRoles.keySet()) {
-            UserState state = activeRoles.get(storeId);
-            if(state.getRole() != Role.Creator) {
-                Store store = activeStores.get(storeId);
-                if (store != null) {
-                    if(state.getRole() == Role.Manager)
-                        fireManager(id, storeId);
-                    else
-                        fireOwner(id, storeId);
-                }
-                else
-                    throw new Exception("the store does not exist");
-            }
-            else
-                storeIds.add(storeId);
-        }
-
-        for(int storeId : inActiveRoles.keySet()) {
-            if(activeRoles.get(storeId).getRole() != Role.Creator) {
-                Store store = inActiveStores.get(storeId);
-                if (store != null)
-                    store.fireUser(id);
-                else
-                    throw new Exception("the store does not exist");
-            }
-            else
-                storeIds.add(storeId);
-        }
-        return storeIds;
-    }
-
 
     public Set<Integer> getAllStoreIds(){
         Set<Integer> storeIds = activeStores.keySet();

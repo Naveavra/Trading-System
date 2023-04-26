@@ -46,7 +46,6 @@ public class ShoppingCart {
     }
 
     public HashMap<Integer, HashMap<Integer, Integer>> getContent() {
-        Gson gson = new Gson();
         HashMap<Integer, HashMap<Integer, Integer>> cartContent = new HashMap<>();
         for(int storeId : baskets.keySet()) {
             HashMap<Integer, Integer> basketContent = baskets.get(storeId).getContent();

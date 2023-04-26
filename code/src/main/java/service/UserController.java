@@ -5,10 +5,15 @@ import domain.states.StoreOwner;
 import domain.store.storeManagement.Store;
 import domain.user.Guest;
 import domain.user.Member;
-import utils.*;
 
 import com.google.gson.Gson;
+import utils.messageRelated.Message;
+import utils.messageRelated.Notification;
+import utils.stateRelated.Action;
+import utils.stateRelated.Role;
+import utils.userInfoRelated.Info;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -50,8 +55,17 @@ public class UserController {
 
 
 
-    public void exitGuest(int id){
-        guestList.remove(id);
+    public void exitGuest(int id) throws Exception {
+        if(id % 2 ==0) {
+            if(guestList.containsKey(id)) {
+                guestList.remove(id);
+            }
+            else
+                throw new Exception("id given does not belong to any guest");
+
+        }
+        else
+            throw new Exception("id given is not of guest");
     }
 
     public synchronized void register(String email, String password, String birthday) throws Exception{
@@ -114,15 +128,6 @@ public class UserController {
         else
             throw new Exception("member not found");
 
-    }
-
-    /**
-     * @return list off all the usernames in our system
-     */
-    public synchronized String getAllUserNames()
-    {
-        Gson gson = new Gson();
-        return gson.toJson(activeMemberList.keySet());
     }
 
     //adding the productId to the user's cart with the given quantity
@@ -211,12 +216,12 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    public synchronized String getUserCart(int userId) throws Exception{
+    public synchronized HashMap<Integer, HashMap<Integer, Integer>>  getUserCart(int userId) throws Exception{
         Gson gson = new Gson();
         if(userId % 2 == 0) {
             Guest g = guestList.get(userId);
             if(g != null)
-                return  gson.toJson(g.getCartContent());
+                return  g.getCartContent();
             else
                 throw new Exception("no such guest exists");
         }
@@ -229,11 +234,11 @@ public class UserController {
         }
     }
 
-    public synchronized String getUserCart(String email) throws Exception{
+    public synchronized HashMap<Integer, HashMap<Integer, Integer>>  getUserCart(String email) throws Exception{
         Member m = activeMemberList.get(email);
         Gson gson = new Gson();
         if(m != null) {
-                return gson.toJson(m.getCartContent());
+                return m.getCartContent();
         }
         else
             throw new Exception("no such member exists");
@@ -246,6 +251,13 @@ public class UserController {
                 purchaseMade(orderId, email, totalPrice);
             else
                 throw new Exception("no member has such id");
+        }
+        else{
+            Guest g = guestList.get(userId);
+            if(g != null)
+                g.emptyCart();
+            else
+                throw new Exception("userId given does not belong to any active user");
         }
     }
 
@@ -311,8 +323,9 @@ public class UserController {
             throw new Exception("a guest can't write reviews");
         else{
             String email = idToEmail.get(userId);
-            if(email != null)
+            if(email != null) {
                 return writeReviewForStore(orderId, storeId, content, grading, email);
+            }
             else
                 throw new Exception("no member has such id");
         }
@@ -391,7 +404,6 @@ public class UserController {
     }
 
 
-    //TODO:remember to add the storeCreator's email to the message (either later or in a function here)
     public synchronized Message writeComplaintToMarket(int orderId, int storeId, String comment,String email) throws Exception{
         Member m = activeMemberList.get(email);
         if(m != null) {
@@ -433,58 +445,6 @@ public class UserController {
             throw new Exception("no member has this email");
     }
 
-    /**
-     * functions to check the permissions of the user
-     * @param userId
-     * @param storeId
-     * @return
-     * @throws Exception
-     */
-    public synchronized boolean canCheckMessages(int userId, int storeId) throws Exception{
-        if(userId % 2 == 0)
-            return false;
-        else{
-            String email = idToEmail.get(userId);
-            if(email != null)
-                return canCheckMessages(email, storeId);
-            else
-                throw new Exception("no member has this id");
-
-        }
-    }
-
-
-    public synchronized boolean canCheckMessages(String email, int storeId) throws Exception {
-        Member m = activeMemberList.get(email);
-        if(m != null) {
-                return m.canCheckMessages(storeId);
-        }
-        else
-            throw new Exception("no member has this email");
-
-    }
-
-    public synchronized boolean canGiveFeedback(int userId, int storeId) throws Exception {
-        if(userId % 2 == 0)
-            return false;
-        else{
-            String email = idToEmail.get(userId);
-            if(email != null)
-                return canGiveFeedback(email, storeId);
-            else
-                throw new Exception("no member has this id");
-
-        }
-    }
-
-    public synchronized boolean canGiveFeedback(String email, int storeId) throws Exception {
-        Member m = activeMemberList.get(email);
-        if(m != null) {
-                return m.canGiveFeedback(storeId);
-        }
-        else
-            throw new Exception("no member has this email");
-    }
     /**
      * add notification for a user.
      * @param userId
@@ -675,6 +635,13 @@ public class UserController {
             throw new Exception("no member has this email");
     }
 
+    /**
+     * member can add security questions for login
+     * @param userId
+     * @param question
+     * @param answer
+     * @throws Exception
+     */
     public synchronized void addSecurityQuestion(int userId, String question, String answer) throws Exception {
         if(userId % 2 == 0)
             throw new Exception("guest does not login");
@@ -696,6 +663,16 @@ public class UserController {
         else
             throw new Exception("no member has this email");
 
+    }
+
+    public synchronized void changeAnswerForLoginQuestion(int userId, String question, String newAnswer) throws Exception {
+        Member m = getMember(userId);
+        m.changeAnswerForQuestion(question, newAnswer);
+    }
+
+    public synchronized void removeSecurityQuestion(int userId, String question) throws Exception {
+        Member m = getMember(userId);
+        m.removeSecurityQuestion(question);
     }
 
 
@@ -1141,7 +1118,7 @@ public class UserController {
      * @param storeId
      * @return
      */
-    public synchronized String getWorkersInformation(int userId, int storeId) throws Exception{
+    public synchronized List<Info> getWorkersInformation(int userId, int storeId) throws Exception{
         if(userId % 2 == 0)
             throw new Exception("guest can't see workers information");
         else{
@@ -1154,7 +1131,7 @@ public class UserController {
     }
 
 
-    public synchronized String getWorkersInformation(String email, int storeId) throws Exception {
+    public synchronized List<Info> getWorkersInformation(String email, int storeId) throws Exception {
         Member m = activeMemberList.get(email);
         if(m != null){
             if(m.checkPermission(Action.checkWorkersStatus, storeId)){
@@ -1165,7 +1142,7 @@ public class UserController {
                     Info info = worker.getInformation(storeId);
                     information.add(info);
                 }
-                return gson.toJson(information);
+                return information;
             }
             else
                 throw new Exception("the member can't see workers status in this store");
@@ -1176,7 +1153,7 @@ public class UserController {
 
 
     /**
-     * function to make things easier, not being used outside of userController
+     * function to make things easier, not being used outside userController
      * @param userId
      * @return
      * @throws Exception
@@ -1197,6 +1174,11 @@ public class UserController {
                throw new Exception("no member has this id");
 
         }
+    }
+
+    public synchronized String getUserEmail(int userId) throws Exception {
+        Member m = getMember(userId);
+        return m.getEmail();
     }
 
 
@@ -1302,7 +1284,6 @@ public class UserController {
         }
     }
 
-    //TODO: complete those functions
     public List<Integer> cancelMembership(int userToRemove) throws Exception{
         Member m = getMember(userToRemove);
         Set<Integer> storeIds = m.getAllStoreIds();
@@ -1329,22 +1310,4 @@ public class UserController {
         }
         return membersInformation;
     }
-
-//    public synchronized void closeStore(int userID, int storeID) throws Exception
-//    {
-//        if (userID%2==0 )
-//        {
-//            throw new Exception("guest can not close stores");
-//        }
-//        String email = idToEmail.get(userID);
-//        if (email != null)
-//        {
-//            Member m = memberList.get(email);
-//            if(m != null ) //this method can also be invoked by the admin so there is no need to check if the user is logged in
-//            {
-//                m.closeStore(int storeID);
-//            }
-//        }
-//
-//    }
 }

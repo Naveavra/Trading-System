@@ -1,7 +1,7 @@
 package domain.states;
 
-import utils.Action;
-import utils.Role;
+import utils.stateRelated.Action;
+import utils.stateRelated.Role;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class StoreOwner extends UserState {
         actions.add(Action.addProduct);
         actions.add(Action.addDiscountConstraint);
 
-        actions.add(Action.addOwner);
+        actions.add(Action.appointOwner);
         actions.add(Action.fireOwner);
         actions.add(Action.changeManagerPermission);
 

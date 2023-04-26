@@ -2,7 +2,7 @@ package market;
 
 import service.MarketController;
 import service.UserController;
-import utils.Notification;
+import utils.messageRelated.Notification;
 
 import java.util.List;
 import java.util.Objects;

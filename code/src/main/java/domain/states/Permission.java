@@ -1,10 +1,9 @@
 package domain.states;
 
-import utils.Action;
+import utils.stateRelated.Action;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Permission {
     private List<Action> actions;
