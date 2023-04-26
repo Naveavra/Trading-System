@@ -23,4 +23,10 @@ public class DiscountPolicy {
         }
         return totalDiscount;
     }
+
+    public boolean createConstraint(String policy) {
+        //TODO handle parsing the constraint (probably using Stanford NLP library)
+        discounts.add(new ConcreteDiscountConstraint());
+        return true;
+    }
 }

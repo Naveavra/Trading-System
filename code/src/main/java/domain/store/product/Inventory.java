@@ -210,7 +210,8 @@ public class Inventory {
     public List<ProductInfo> getProducts() {
         List<ProductInfo> productInfos = new LinkedList<>();
         for (Product p : productList.values()){
-            ProductInfo info = new ProductInfo(p.getID(), p.getCategories(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity());
+            ProductInfo info = new ProductInfo(p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity());
+            info.setCategories(getProductCategories(p.getID()));
             productInfos.add(info);
         }
         return productInfos;
@@ -281,10 +282,20 @@ public class Inventory {
         }
     }
 
+    public void setProductsRatings(){
+        for(Product p : productgrading.keySet()){
+            double sum = 0;
+            for(int rating : productgrading.get(p)){
+                sum += rating;
+            }
+            p.setRating(sum/productgrading.get(p).size());
+        }
+    }
     public ArrayList<ProductInfo> filterBy(ProductFilter filter,double storeRating) {
         filter.setOp(this::getProduct);
         filter.setCategories(categories);
         filter.setStoreRating(storeRating);
+        setProductsRatings();
         //need to set more relevant things here as soon as all filters are implemented.
         ArrayList<Product> filtered = filter.filter(new ArrayList<>(productList.values()));
         ArrayList<ProductInfo> result = new ArrayList<>();

@@ -71,7 +71,7 @@ public class ProductFilter{
                 strat = temp3;
             case StoreRating:// StoreRating <rating number>
                 FilterProductByStoreRating temp4 = new FilterProductByStoreRating();
-                temp4.setStoreRating(Integer.parseInt(params));
+                temp4.setStoreRatingToFilterBy(Integer.parseInt(params));
                 strat = temp4;
             case Categories:// Categories <categories divided by spaces>
                 FilterProductByCategories temp5 =  new FilterProductByCategories();
@@ -130,12 +130,12 @@ public class ProductFilter{
             strategy.setStoreRating(storeRating);
         }
     }
-    public void setRating(int rating){
-        FilterStrategy strategy = getFilterStrategy("ProductRating");
-        if(strategy!=null) {
-            strategy.setRating(rating);
-        }
-    }
+//    public void setRating(int rating){
+//        FilterStrategy strategy = getFilterStrategy("ProductRating");
+//        if(strategy!=null) {
+//            strategy.setRating(rating);
+//        }
+//    }
     public void setCategories(ConcurrentHashMap<String,ArrayList<Integer>> cat){
         FilterStrategy strategy = getFilterStrategy("Categories");
         if(strategy!=null) {

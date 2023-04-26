@@ -12,6 +12,7 @@ public class Product {
     public String description;
     public int price; //for one product
     public int quantity;
+    public double rating;
     //private ConcurrentLinkedDeque<String> categories;
     //private double discount;  no need for discount here, the discount is calculated by the policy
 
@@ -89,5 +90,9 @@ public class Product {
 
     public List<String> getCategories(){
         return categories;
+    }
+
+    public void setRating(double v) {
+        rating = v;
     }
 }
