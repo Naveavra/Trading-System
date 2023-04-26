@@ -210,7 +210,7 @@ public class Inventory {
     public List<ProductInfo> getProducts() {
         List<ProductInfo> productInfos = new LinkedList<>();
         for (Product p : productList.values()){
-            ProductInfo info = new ProductInfo(p.getID(), p.getCategories(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity());
+            ProductInfo info = new ProductInfo(p.getID(),p.getName(), p.getDescription(), p.getPrice(), p.getQuantity());
             productInfos.add(info);
         }
         return productInfos;

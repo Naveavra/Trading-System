@@ -58,11 +58,13 @@ public class UserController {
     public void exitGuest(int id) throws Exception {
         if(id % 2 ==0) {
             if(guestList.containsKey(id)) {
+                Guest g = guestList.get(id);
+                g.emptyCart();
                 guestList.remove(id);
+
             }
             else
                 throw new Exception("id given does not belong to any guest");
-
         }
         else
             throw new Exception("id given is not of guest");

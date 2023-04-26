@@ -16,6 +16,7 @@ public class Basket {
 
 
     public void addProductToCart(int productId, int quantity){
+        //todo: need to throw exepthion if quantity is below zero
         productList.put(productId, quantity);
     }
 
