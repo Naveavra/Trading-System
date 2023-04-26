@@ -30,7 +30,6 @@ private Basket basket;
         assertTrue(products.get(0)!=null);
         assertTrue(products.get(0)==10);
         assertTrue(products.keySet().size()==2);
-
     }
 
     @Test
