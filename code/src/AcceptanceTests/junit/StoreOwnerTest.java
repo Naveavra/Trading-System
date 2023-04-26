@@ -89,12 +89,13 @@ public class StoreOwnerTest extends ProjectTest{
 
     @Test
     public void testGetManagerPermissionInStore(){
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
         int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
-        int status = this.appointmentMangerInStore(uid, storeId,uIdManager);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        int status = this.appointmentMangerInStore(uid.getUserId(), storeId,uIdManager);
         assertTrue(status > 0);
-        List<PermissionInfo> permissions = this.getManagerPermissionInStore(uid, storeId, uIdManager);
+        List<PermissionInfo> permissions = this.getManagerPermissionInStore(uid.getUserId(), storeId, uIdManager);
         assertNotNull(permissions);
         assertTrue(permissions.size() > 0);
     }
@@ -677,10 +678,10 @@ public class StoreOwnerTest extends ProjectTest{
         UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         ProductInfo product2Add = goodProduct0;
-        productId0 = this.addProduct(uid.getUserId(), stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        productId0 = this.addProduct(uid.getUserId(), stores.get(0).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
         assertTrue(productId0 >= 0);
-        status = this.removeProduct(uid.getUserId(), stores.get(2).getStoreId(), productId0);
+        status = this.removeProduct(uid.getUserId(), stores.get(0).getStoreId(), productId0);
         assertTrue(status > 0);
     }
 
