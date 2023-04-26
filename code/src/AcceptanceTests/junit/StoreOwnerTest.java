@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -750,4 +751,67 @@ public class StoreOwnerTest extends ProjectTest{
         assertTrue(status < 0);
     }
 
+    @Test
+    public void testAddProductCartAndRemoveAtSameTime(){
+        GuestInfo buyer1 = new GuestInfo();
+        UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        //Login
+        buyer1.setId(enterSystem());
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        AtomicInteger i = new AtomicInteger();
+        Thread t1 = new Thread(() -> {
+            i.addAndGet(removeProduct(uid.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId()));
+        });
+        Thread t2 = new Thread(() -> {
+            i.addAndGet(addProductToCart(buyer1.getId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1));
+        });
+        t1.start();
+        t2.start();
+        assertTrue(i.get() <= 0);
+
+    }
+
+    @Test
+    public void appointOwnerSameTime(){
+        UserInfo creator = this.users_dict.get(users[0][USER_EMAIL]);//Owner of store 4
+        UserInfo uid1 = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        UserInfo uid2 = this.users_dict.get(users[2][USER_EMAIL]);//Owner of store 4
+        //Login
+        uid1.setUserId(login(uid1.getEmail(), uid1.getPassword()));
+        uid2.setUserId(login(uid2.getEmail(), uid2.getPassword()));
+        appointmentOwnerInStore(creator.getUserId(), stores.get(0).getStoreId(), uid1.getUserId());
+        AtomicInteger i = new AtomicInteger();
+        Thread t1 = new Thread(() -> {
+            i.addAndGet(appointmentOwnerInStore(creator.getUserId(), stores.get(0).getStoreId(), uid2.getUserId()));
+        });
+        Thread t2 = new Thread(() -> {
+            i.addAndGet(appointmentOwnerInStore(uid1.getUserId(), stores.get(0).getStoreId(), uid2.getUserId()));
+        });
+        t1.start();
+        t2.start();
+        assertTrue(i.get() <= 0);
+
+    }
+
+    @Test
+    public void appointManagerSameTime(){
+        UserInfo creator = this.users_dict.get(users[0][USER_EMAIL]);//Owner of store 4
+        UserInfo uid1 = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        UserInfo uid2 = this.users_dict.get(users[2][USER_EMAIL]);//Owner of store 4
+        //Login
+        uid1.setUserId(login(uid1.getEmail(), uid1.getPassword()));
+        uid2.setUserId(login(uid2.getEmail(), uid2.getPassword()));
+        appointmentOwnerInStore(creator.getUserId(), stores.get(0).getStoreId(), uid1.getUserId());
+        AtomicInteger i = new AtomicInteger();
+        Thread t1 = new Thread(() -> {
+            i.addAndGet(appointmentMangerInStore(creator.getUserId(), stores.get(0).getStoreId(), uid2.getUserId()));
+        });
+        Thread t2 = new Thread(() -> {
+            i.addAndGet(appointmentMangerInStore(uid1.getUserId(), stores.get(0).getStoreId(), uid2.getUserId()));
+        });
+        t1.start();
+        t2.start();
+        assertTrue(i.get() <= 0);
+
+    }
 }
