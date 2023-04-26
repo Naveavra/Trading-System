@@ -6,8 +6,14 @@ import domain.store.product.Product;
 
 public class FilterProductByPriceMin extends FilterStrategy{
     int minPrice = 0;
-    public FilterProductByPriceMin(){
 
+
+    public FilterProductByPriceMin(){
+        this.name = "PriceRangeMin";
+    }
+    @Override
+    public String getName() {
+        return this.name;
     }
     public void setMinPrice(int price){
         if(price>=0){

@@ -1,5 +1,7 @@
 package domain.store.product;
 
+import utils.ProductInfo;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -80,6 +82,9 @@ public class Product {
     public void setName(String name) {
         this.name = name;
     }
+
+    public ProductInfo getProductInfo(){
+        return new ProductInfo(getID(),getName(),getDescription(),getPrice(),getQuantity());
 
     public List<String> getCategories(){
         return categories;

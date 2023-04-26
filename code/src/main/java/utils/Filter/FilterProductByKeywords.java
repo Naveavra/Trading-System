@@ -8,9 +8,15 @@ import java.util.regex.Pattern;
 
 public class FilterProductByKeywords extends FilterStrategy{
     private ArrayList<String> keywords;
+
     public FilterProductByKeywords() {
+        this.name = "Keywords";
     }
 
+    @Override
+    public String getName() {
+        return this.name;
+    }
 
 
     @Override

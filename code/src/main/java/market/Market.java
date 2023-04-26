@@ -507,9 +507,16 @@ public class Market implements MarketInterface {
 
     @Override
     public Response filterBy(HashMap<String,String> filterOptions) {
-        return new Response<>(marketController.filterBy(filterOptions),null,null);
+        ArrayList<ProductInfo> result = marketController.filterBy(filterOptions);
+        if(result.isEmpty()){
+            logger.log(Logger.logStatus.Fail, "No products found by those filter options, on " + LocalDateTime.now());
+            return new Response<>(null, "No products found by those filter options", "result array is empty, no products found");
+        }
+        logger.log(Logger.logStatus.Success,"Filtered products successfully on" + LocalDateTime.now());
+        return new Response<>(result,null,null);
     }
 
+    @Override
     public Response<List<ProductInfo>> getStoreProducts(int storeId) {
         try {
             List<ProductInfo> res = marketController.getStoreProducts(storeId);

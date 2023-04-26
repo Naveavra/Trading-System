@@ -1,13 +1,14 @@
 package domain.store.storeManagement;
 
 import com.google.gson.Gson;
+import utils.Filter.*;
+import utils.ProductInfo;
 import utils.Filter.ProductFilter;
 import utils.ProductInfo;
 import utils.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -173,14 +174,14 @@ public class StoreController {
 //        return products;
 //    }
 
-    public ArrayList<Product> getProductByKeyWords(ArrayList<String> keywords) {
-        ArrayList<Product> products = new ArrayList<>();
-        for (Store store :
-                storeList.values()) {
-            products.addAll(store.getProductByKeywords(keywords));
-        }
-        return products;
-    }
+//    public ArrayList<Product> getProductByKeyWords(ArrayList<String> keywords) {
+//        ArrayList<Product> products = new ArrayList<>();
+//        for (Store store :
+//                storeList.values()) {
+//            products.addAll(store.getProductByKeywords(keywords));
+//        }
+//        return products;
+//    }
 
     public String getProductName(int storeId, int productId) throws Exception {
         Store store = storeList.get(storeId);
@@ -284,15 +285,12 @@ public class StoreController {
         return new ProductFilter().getNames();
     }
 
-    public String filterBy(HashMap<String,String> filterOptions) {
-        ProductFilter filter = new ProductFilter();
-        for (String option:filterOptions.keySet()){
-            switch (option){
-                case "Keywords":
-                    filter.createStrategy(filter.getStrategy(option));
-            }
+    public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) {
+        ArrayList<ProductInfo> result = new ArrayList<>();
+        for(Store st : storeList.values()){
+            result.addAll(st.filterBy(filterOptions));
         }
-        return null;
+       return result;
     }
 
     public List<ProductInfo> getProducts(int storeId) throws Exception {
