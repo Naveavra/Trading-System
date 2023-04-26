@@ -1,7 +1,7 @@
 package domain.store.order;
 
-import utils.Order;
-import utils.Status;
+import utils.orderRelated.Order;
+import utils.orderRelated.Status;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;

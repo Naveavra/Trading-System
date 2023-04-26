@@ -2,7 +2,7 @@ package market;
 
 import service.security.ProxySecurity;
 import service.supplier.ProxySupplier;
-import utils.Order;
+import utils.orderRelated.Order;
 import service.UserController;
 import service.payment.ProxyPayment;
 import utils.*;
@@ -18,7 +18,6 @@ import utils.stateRelated.Action;
 import utils.userInfoRelated.Info;
 import utils.userInfoRelated.Receipt;
 
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -732,6 +731,8 @@ public class Market implements MarketInterface {
         }
     }
 
+
+    //TODO: need to use supplierProxy for changing the quantity
     @Override
     public Response<String> updateProduct(int userId, int storeId, int productId, List<String> categories, String name, String description, int price, int quantity) {
         try {

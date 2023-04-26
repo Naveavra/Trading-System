@@ -80,7 +80,7 @@ public class UserController {
             throw new Exception("birthday not legal");
 
         Member m = new Member(memberIds, email, password, birthday);
-        activeMemberList.put(email, m);
+        inActiveMemberList.put(email, m);
         idToEmail.put(memberIds, email);
         memberIds+=2;
     }

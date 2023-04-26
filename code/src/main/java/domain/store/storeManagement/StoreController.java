@@ -1,7 +1,7 @@
 package domain.store.storeManagement;
 
 import com.google.gson.Gson;
-import utils.Order;
+import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
 

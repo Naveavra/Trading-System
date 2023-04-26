@@ -1,6 +1,6 @@
 package service;
 
-import utils.Order;
+import utils.orderRelated.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
 import domain.store.storeManagement.StoreController;

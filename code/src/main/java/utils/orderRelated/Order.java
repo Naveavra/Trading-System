@@ -1,10 +1,7 @@
-package utils;
+package utils.orderRelated;
 
-
-import utils.Status;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Order {
     private int orderId;
