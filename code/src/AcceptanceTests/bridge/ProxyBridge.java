@@ -195,11 +195,27 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int changeStoreManagerPermissions(int user, int store, List<Integer> permissionsIds) {
+    public int addStoreManagerPermissions(int user, int store, int managerId, int permissionsIds) {
         if (real != null)
-            return real.changeStoreManagerPermissions(user, store, permissionsIds);
+            return real.addStoreManagerPermissions(user, store, managerId, permissionsIds);
         return -1;
     }
+
+    @Override
+    public int removeStoreManagerPermissions(int user, int store, int managerId, int permissionsIds) {
+        if (real != null)
+            return real.removeStoreManagerPermissions(user, store, managerId, permissionsIds);
+        return -1;
+    }
+
+    @Override
+    public int changeStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
+        if (real != null)
+            return real.changeStoreManagerPermissions(user, store, managerId, permissionsIds);
+        return -1;
+    }
+
+
 
     @Override
     public List<PermissionInfo> getManagerPermissionInStore(int user, int store, int manager) {

@@ -280,15 +280,40 @@ public interface Bridge {
     List<PositionInfo> getPositionInStore(int user, int store);
 
     /**
+     * Add the store manager permissions
+     *
+     * @param user user username
+     * @param store store id
+     * @param managerId manager id
+     * @param permissionsIds the permission id
+     * @return If succeed returns 1. Otherwise,
+     *         return -1.
+     */
+    int addStoreManagerPermissions(int user, int store, int managerId, int permissionsIds);
+
+    /**
+     * Remove the store manager permissions
+     *
+     * @param user user username
+     * @param store store id
+     * @param managerId manager id
+     * @param permissionsIds  permission id
+     * @return If succeed returns 1. Otherwise,
+     *         return -1.
+     */
+    int removeStoreManagerPermissions(int user, int store, int managerId, int permissionsIds);
+
+    /**
      * Change the store manager permissions
      *
      * @param user user username
      * @param store store id
+     * @param managerId manager id
      * @param permissionsIds list of the permissions
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int changeStoreManagerPermissions(int user,int store, List<Integer> permissionsIds);
+    int changeStoreManagerPermissions(int user,int store, int managerId,  List<Integer> permissionsIds);
 
     /**
      * Gets information about store manager’s permissions

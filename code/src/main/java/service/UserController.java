@@ -833,7 +833,7 @@ public class UserController {
         if(owner != null){
             if(appointed != null){
                 if(owner.getIsConnected()) {
-                    if (appointed.checkRoleInStore(storeId) != Role.Manager) {
+                    if (appointed.checkRoleInStore(storeId) != Role.Manager && appointed.checkRoleInStore(storeId) != Role.Owner) {
                         Store store = owner.appointToManager(appointed.getId(), storeId);
                         Notification<String> notify = new Notification<>("you have been appointed to manager in store: " + storeId);
                         appointed.addNotification(notify);

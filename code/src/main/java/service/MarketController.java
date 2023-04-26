@@ -8,10 +8,7 @@ import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
 import domain.store.storeManagement.StoreController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
@@ -193,6 +190,13 @@ public class MarketController {
     }
 
     public ConcurrentHashMap<Integer, Store> getStoresInformation() {
+        HashMap<Integer, Store> toReturn = new HashMap<>();
+        for (Map.Entry<Integer, Store> store: storectrl.getStoresInformation().entrySet())
+        {
+            if(store.getValue().isActive()) {
+                toReturn.put(store.getKey(), store.getValue());
+            }
+        }
         return storectrl.getStoresInformation();
     }
 

@@ -226,14 +226,36 @@ public class BridgeImplement implements Bridge {
         return null;
     }
 
+
+
     @Override
-    public int changeStoreManagerPermissions(int user, int store, List<Integer> permissionsIds) {
-        Response<List<PermissionInfo>> res = null; //TODO : market.changeStoreManagerPermissions(user, store);
-        if(res != null && !res.errorOccurred())
+    public int addStoreManagerPermissions(int user, int store, int managerId, int permissionsIds) {
+        Response<String> res = market.addManagerPermission(user, managerId, store, permissionsIds);
+        if(res == null || res.errorOccurred())
         {
-            return 1;
+            return -1;
         }
-        return -1;
+        return 1;
+    }
+
+    @Override
+    public int removeStoreManagerPermissions(int user, int store, int managerId,int permissionsIds) {
+        Response<String> res = market.removeManagerPermission(user, managerId, store, permissionsIds);
+        if(res == null || res.errorOccurred())
+        {
+            return -1;
+        }
+        return 1;
+    }
+
+    @Override
+    public int changeStoreManagerPermissions(int user, int managerId, int store, List<Integer> permissionsIds) {
+        Response<List<PermissionInfo>> res = null;//TODO:market.changeStoreManagerPermissions(user, store);
+        if(res == null || res.errorOccurred())
+        {
+            return -1;
+        }
+        return 1;
     }
 
     @Override

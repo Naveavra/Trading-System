@@ -192,8 +192,8 @@ public abstract class ProjectTest{
         return bridge.changePurchasePolicy(user, store, policy);
     }
 
-    public int changeStoreManagerPermissions(int user, int store, List<Integer> permissionsIds) {
-        return bridge.changeStoreManagerPermissions(user, store, permissionsIds);
+    public int changeStoreManagerPermissions(int user, int store, int manager, List<Integer> permissionsIds) {
+        return bridge.changeStoreManagerPermissions(user, store, manager, permissionsIds);
     }
 
     public int closeStore(int user, int store) {

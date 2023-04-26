@@ -358,10 +358,24 @@ public class GuestTest extends ProjectTest{
 
     @Test
     public void testRegisterSystem(){
-        int id = register("hello123@gmail.com", "hello123", "01/01/2002");
+        int id = register("hello123@gmail.com", "hello12A3", "01/01/2002");
         assertTrue(id > -1);
     }
-
+    @Test
+    public void testRegisterIllegalPasswordSystem(){
+        int id = register("hello123@gmail.com", "hello123", "01/01/2002");
+        assertTrue(id < 0);
+    }
+    @Test
+    public void testRegisterIllegalBrithdaySystem(){
+        int id = register("hello123@gmail.com", "hello123", "01/01/100");
+        assertTrue(id < 0);
+    }
+    @Test
+    public void testRegisterIllegalMailSystem(){
+        int id = register("hello123", "hello123", "01/01/2002");
+        assertTrue(id < 0);
+    }
     @Test
     public void testRegisterExistMailSystem(){
         int id = register("hello123@gmail.com", "hello123", "01/01/2002");

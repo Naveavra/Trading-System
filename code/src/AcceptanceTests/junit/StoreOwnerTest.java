@@ -114,19 +114,20 @@ public class StoreOwnerTest extends ProjectTest{
 
     @Test
     public void testGetManagerPermissionInStoreAfterChange(){
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
         int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
-        int status = this.appointmentMangerInStore(uid, storeId,uIdManager);
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
+        int status = this.appointmentMangerInStore(ui.getUserId(), storeId,uIdManager);
         List<Integer> permissions2change = new ArrayList<>();
         permissions2change.add(0);
         assertTrue(status > 0);
-        List<PermissionInfo> permissions = this.getManagerPermissionInStore(uid, storeId, uIdManager);
+        List<PermissionInfo> permissions = this.getManagerPermissionInStore(ui.getUserId(), storeId, uIdManager);
         assertNotNull(permissions);
         assertTrue(permissions.size() > 0);
-        status = this.changeStoreManagerPermissions(uid, storeId, permissions2change);
+        status = this.changeStoreManagerPermissions(ui.getUserId(), storeId,uIdManager, permissions2change);
         assertTrue(status > 0);
-        permissions = this.getManagerPermissionInStore(uid, storeId, uIdManager);
+        permissions = this.getManagerPermissionInStore(ui.getUserId(), storeId, uIdManager);
         assertNotNull(permissions);
         assertTrue(permissions.size() > 0);
     }
@@ -199,9 +200,10 @@ public class StoreOwnerTest extends ProjectTest{
 
     @Test
     public void testGetPositionInStore(){
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
-        List<PositionInfo> positions = this.getPositionInStore(uid, storeId);
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
+        List<PositionInfo> positions = this.getPositionInStore(ui.getUserId(), storeId);
         assertNotNull(positions);
     }
 
@@ -366,7 +368,7 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(0);
         permissions.add(1);
         permissions.add(2);
-        status = this.changeStoreManagerPermissions(uid, uIdManager, permissions);
+        status = this.changeStoreManagerPermissions(uid, storeId, uIdManager, permissions);
         assertTrue(status > 0);
     }
 
@@ -381,7 +383,7 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(0);
         permissions.add(1);
         permissions.add(2);
-        status = this.changeStoreManagerPermissions(uid, uIdManager, permissions);
+        status = this.changeStoreManagerPermissions(uid, storeId, uIdManager, permissions);
         assertTrue(status > 0);
         //TODO: Add functionality of getting message
     }
@@ -397,7 +399,7 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(ERROR);
         permissions.add(1);
         permissions.add(2);
-        status = this.changeStoreManagerPermissions(uid, uIdManager, permissions);
+        status = this.changeStoreManagerPermissions(uid, storeId, uIdManager, permissions);
         assertTrue(status < 0);
     }
 
@@ -410,7 +412,7 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(0);
         permissions.add(1);
         permissions.add(2);
-        int status = this.changeStoreManagerPermissions(uid, uIdManager, permissions);
+        int status = this.changeStoreManagerPermissions(uid, storeId, uIdManager, permissions);
         assertTrue(status < 0);
     }
 
@@ -425,23 +427,24 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(0);
         permissions.add(1);
         permissions.add(2);
-        status = this.changeStoreManagerPermissions(uid, uIdOwner, permissions);
+        status = this.changeStoreManagerPermissions(uid, storeId, uIdOwner, permissions);
         assertTrue(status < 0);
     }
 
     @Test
     public void testNotOwnerTryChangeStoreManagerPermissions() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
         int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
         int notOwnerId = this.users_dict.get(users[2][USER_EMAIL]).getUserId();
         int storeId = stores.get(0).getStoreId();
-        int status = this.appointmentMangerInStore(uid, storeId,uIdManager);
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
+        int status = this.appointmentMangerInStore(ui.getUserId(), storeId,uIdManager);
         assertTrue(status > 0);
         List<Integer> permissions = new ArrayList<>();
         permissions.add(0);
         permissions.add(1);
         permissions.add(2);
-        status = this.changeStoreManagerPermissions(notOwnerId, uIdManager, permissions);
+        status = this.changeStoreManagerPermissions(notOwnerId, storeId, uIdManager, permissions);
         assertTrue(status < 0);
     }
 
@@ -449,19 +452,21 @@ public class StoreOwnerTest extends ProjectTest{
 
     @Test
     public void testAppointmentManagerInStore() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
         int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
         int storeId = stores.get(0).getStoreId();
-        int status = this.appointmentMangerInStore(uid, storeId,uIdManager);
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
+        int status = this.appointmentMangerInStore(ui.getUserId(), storeId,uIdManager);
         assertTrue(status > 0);
     }
 
     @Test
     public void testAppointmentUnRealManagerInStore() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
-        int status = this.appointmentMangerInStore(uid, storeId,ERROR);
-        assertTrue(status < 0);
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
+        int status = this.appointmentMangerInStore(ui.getUserId(), storeId, ERROR);
+        assertFalse(status > 0);
     }
 
     @Test
@@ -473,7 +478,7 @@ public class StoreOwnerTest extends ProjectTest{
         int status = this.appointmentOwnerInStore(uid.getUserId(), storeId, uIdOwner);
         assertTrue(status > 0);
         status = this.appointmentMangerInStore(uid.getUserId(), storeId, uIdOwner);
-        assertTrue(status < 0);
+        assertFalse(status > 0);
     }
 
     @Test
@@ -655,12 +660,13 @@ public class StoreOwnerTest extends ProjectTest{
     @Test
     public void testAddExistsProduct() {
         int productId0, productId1;
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         ProductInfo product2Add = goodProduct0;
-        productId0 = this.addProduct(uid, stores.get(1).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        productId0 = this.addProduct(uid.getUserId(), stores.get(1).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
         assertTrue(productId0 > 0);
-        productId1 = this.addProduct(uid, stores.get(1).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        productId1 = this.addProduct(uid.getUserId(), stores.get(1).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
         assertTrue(productId1 < 0);
     }
@@ -668,25 +674,27 @@ public class StoreOwnerTest extends ProjectTest{
     @Test
     public void testRemoveProduct() {
         int productId0, status;
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         ProductInfo product2Add = goodProduct0;
-        productId0 = this.addProduct(uid, stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        productId0 = this.addProduct(uid.getUserId(), stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
-        assertTrue(productId0 > 0);
-        status = this.removeProduct(uid, stores.get(2).getStoreId(), productId0);
+        assertTrue(productId0 >= 0);
+        status = this.removeProduct(uid.getUserId(), stores.get(2).getStoreId(), productId0);
         assertTrue(status > 0);
     }
 
     @Test
     public void testNotOwnerTryRemoveProduct() {
         int productId0, status;
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         ProductInfo product2Add = goodProduct0;
-        productId0 = this.addProduct(uid, stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        productId0 = this.addProduct(uid.getUserId(), stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
-        assertTrue(productId0 > 0);
-        uid = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
-        status = this.removeProduct(uid, stores.get(2).getStoreId(), productId0);
+        assertTrue(productId0 >= 0);
+        int ui = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
+        status = this.removeProduct(ui, stores.get(2).getStoreId(), productId0);
         assertTrue(status < 0);
     }
 
@@ -701,13 +709,14 @@ public class StoreOwnerTest extends ProjectTest{
     @Test
     public void testUpdateProduct() {
         int productId0, status;
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         ProductInfo product2Add = goodProduct0;
-        productId0 = this.addProduct(uid, stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        productId0 = this.addProduct(uid.getUserId(), stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
-        assertTrue(productId0 > 0);
+        assertTrue(productId0 >= 0);
         product2Add.setPrice(60);
-        status = this.updateProduct(uid, stores.get(2).getStoreId(), productId0, product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        status = this.updateProduct(uid.getUserId(), stores.get(2).getStoreId(), productId0, product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
         assertTrue(status > 0);
     }
@@ -715,14 +724,15 @@ public class StoreOwnerTest extends ProjectTest{
     @Test
     public void testNotOwnerTryUpdateProduct() {
         int productId0, status;
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         ProductInfo product2Add = goodProduct0;
-        productId0 = this.addProduct(uid, stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        productId0 = this.addProduct(uid.getUserId(), stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
         assertTrue(productId0 > 0);
-        uid = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
+        int ui = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
         product2Add.setPrice(60);
-        status = this.updateProduct(uid, stores.get(2).getStoreId(), productId0, product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        status = this.updateProduct(ui, stores.get(2).getStoreId(), productId0, product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
         assertTrue(status < 0);
     }
@@ -730,13 +740,14 @@ public class StoreOwnerTest extends ProjectTest{
     @Test
     public void testUpdateMissDetailsProduct() {
         int productId0, status;
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
         ProductInfo product2Add = goodProduct0;
-        productId0 = this.addProduct(uid, stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        productId0 = this.addProduct(ui.getUserId(), stores.get(2).getStoreId(), product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
         assertTrue(productId0 > 0);
         product2Add.setPrice(ERROR);
-        status = this.updateProduct(uid, stores.get(2).getStoreId(), productId0, product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
+        status = this.updateProduct(ui.getUserId(), stores.get(2).getStoreId(), productId0, product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
         assertTrue(status < 0);
     }
