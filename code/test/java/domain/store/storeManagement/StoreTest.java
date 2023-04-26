@@ -98,11 +98,11 @@ class StoreTest {
     @Test
     void giveFeedback() throws Exception
     {
-        Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.reviewStore);
+        Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.question);
         Order order = store.getOrdersHistory().get(0);
         store.addReview(order.getOrderId(), msg);
         Assertions.assertFalse(msg.gotFeedback());
-        store.giveFeedback(0, "fuck you cuz");
+        store.answerQuestion(0, "fuck you cuz");
         Assertions.assertTrue(msg.gotFeedback());
     }
 

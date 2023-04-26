@@ -78,7 +78,7 @@ public interface MarketInterface {
     public Response closeStore(int userId,int storeId);
     public Response reopenStore(int userId,int storeId);
 
-    public Response closeStorePermanently(int adminId, int storeId) throws Exception;
+    public Response closeStorePermanently(int adminId, int storeId);
 
     //store methods
     //todo: decide if getStore will bring every thing togheter , products , orders , ..statistics

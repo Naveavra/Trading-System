@@ -869,13 +869,19 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> closeStorePermanently(int adminId, int storeId) throws Exception {
+    public Response<String> closeStorePermanently(int adminId, int storeId){
         if (adminId < 0) {
             Admin admin = activeAdmins.get(adminId);
             if (admin != null) {
-                admin.closeStorePermanently(storeId);
-                logger.log(Logger.logStatus.Success, "the store: " + storeId + " has been permanently closed by admin: " + adminId +" at time " + LocalDateTime.now());
-                return new Response<String>("close was permanently closed", null, null);
+                try {
+                    admin.closeStorePermanently(storeId);
+                    logger.log(Logger.logStatus.Success, "the store: " + storeId + " has been permanently closed by admin: " + adminId + " at time " + LocalDateTime.now());
+                    return new Response<String>("close was permanently closed", null, null);
+                }
+                catch (Exception e){
+                    logger.log(Logger.logStatus.Fail, "the user: " + adminId + "  cannot close store because: " + e.getMessage() + " at time " + LocalDateTime.now());
+                    return new Response<>(null, "close permanent not successfully", e.getMessage());
+                }
             } else {
                 logger.log(Logger.logStatus.Fail, "the user: " + adminId + " cannot permanently close stores"  +" at time " + LocalDateTime.now());
                 return new Response<>(null, "close permanent not successfully", "the id given is not of an admin");
