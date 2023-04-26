@@ -2,6 +2,7 @@ package domain.store.storeManagement;
 
 import com.google.gson.Gson;
 import utils.Filter.ProductFilter;
+import utils.ProductInfo;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
@@ -294,5 +295,14 @@ public class StoreController {
                     filter.createStrategy(filter.getStrategy(option));
             }
         }
+    }
+
+    public List<ProductInfo> getProducts(int storeId) throws Exception {
+        Store s = getStore(storeId);
+        if(s != null){
+            return s.getProducts();
+        }
+        else
+            throw new Exception("the id given does not match any store");
     }
 }

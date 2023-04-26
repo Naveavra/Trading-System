@@ -509,9 +509,9 @@ public class Market implements MarketInterface {
         return new Response<>(marketController.filterBy(filterOptions),null,null);
     }
 
-    public Response<String> getStoreProducts(int storeId) {
+    public Response<List<ProductInfo>> getStoreProducts(int storeId) {
         try {
-            String res = marketController.getStoreProducts(storeId);
+            List<ProductInfo> res = marketController.getStoreProducts(storeId);
             logger.log(Logger.logStatus.Success, "user get store products successfully on " + LocalDateTime.now());
             return new Response<>(res, null, null);
         } catch (Exception e) {
@@ -919,9 +919,7 @@ public class Market implements MarketInterface {
     @Override
     public Response<List<ProductInfo>> getProducts(int storeId) {
         try{
-            String res = marketController.getStoreProducts(storeId);
-            List<ProductInfo> products = new LinkedList<>();
-            products = gson.fromJson(res ,products.getClass());
+            List<ProductInfo> products = marketController.getStoreProducts(storeId);
             logger.log(Logger.logStatus.Success, "store get products successfully on " + LocalDateTime.now());
             return new Response<>(products, null, null);
         }catch(Exception e){

@@ -1,5 +1,6 @@
 package service;
 
+import utils.ProductInfo;
 import utils.orderRelated.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
@@ -149,15 +150,8 @@ public class MarketController {
         return totalprice;
     }
 
-    public String getStoreProducts(int storeId) throws Exception {
-        Store s = storectrl.getStore(storeId);
-        if(s==null){
-            throw new Exception("store not available");
-        }
-        if(!s.isActive()){
-            throw new Exception("store not available");
-        }
-        return s.getProducts();
+    public List<ProductInfo> getStoreProducts(int storeId) throws Exception {
+        return storectrl.getProducts(storeId);
     }
 
     public void setStoreDiscountPolicy(int storeId, String policy) throws ExecutionControl.NotImplementedException {

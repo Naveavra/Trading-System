@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import domain.store.discount.DiscountPolicy;
 import domain.store.product.Inventory;
 import domain.store.purchase.PurchasePolicy;
+import utils.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.Pair;
@@ -333,8 +334,8 @@ public class Store {
         return purchaseingprice;
     }
 
-    public String getProducts() {
-        return gson.toJson(inventory.getProducts());
+    public List<ProductInfo> getProducts() {
+        return inventory.getProducts();
     }
 
     public void setStorePolicy(String policy) throws Exception {
