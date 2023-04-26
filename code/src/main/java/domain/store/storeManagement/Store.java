@@ -404,7 +404,7 @@ public class Store {
     }
 
     public StoreInfo getStoreInformation() {
-        StoreInfo info = new StoreInfo(storeid, storeDescription, isActive, creatorId, getRating());
+        StoreInfo info = new StoreInfo(storeid, storeDescription, isActive, creatorId, getStoreRating());
         return info;
     }
 

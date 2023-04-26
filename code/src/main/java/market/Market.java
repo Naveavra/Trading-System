@@ -478,9 +478,9 @@ public class Market implements MarketInterface {
 
 
     @Override
-    public Response<String> getStoreInformation(int storeId) {
+    public Response<StoreInfo> getStoreInformation(int storeId) {
         try {
-            String res = marketController.getStoreInformation(storeId);
+            StoreInfo res = marketController.getStoreInformation(storeId);
             logger.log(Logger.logStatus.Success, "user get store information successfully on " + LocalDateTime.now());
             return new Response<>(res, null, null);
         } catch (Exception e) {
