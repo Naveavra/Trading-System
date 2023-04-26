@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import domain.store.discount.DiscountPolicy;
 import domain.store.product.Inventory;
 import domain.store.purchase.PurchasePolicy;
+
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
 import utils.ProductInfo;
+import utils.StoreInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.Pair;
@@ -45,9 +47,10 @@ public class Store {
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
         this.discountPolicy = new DiscountPolicy();
-        this. purchasePolicy = new PurchasePolicy();
+        this.purchasePolicy = new PurchasePolicy();
         this.productReviews = new ConcurrentHashMap<>();//hash map between messageId to message for product
         this.questions = new ConcurrentHashMap<>();
+        this.isActive = true;
         gson = new Gson();
     }
 
@@ -340,8 +343,8 @@ public class Store {
         return purchaseingprice;
     }
 
-    public String getProducts() {
-        return gson.toJson(inventory.getProducts());
+    public List<ProductInfo> getProducts() {
+        return inventory.getProducts();
     }
 
     public void setStorePolicy(String policy) throws Exception {
@@ -388,6 +391,7 @@ public class Store {
     }
 
 
+
     public ArrayList<ProductInfo> filterBy(HashMap<String, String> filterOptions) {
         ProductFilter filter = new ProductFilter();
         for (String option:filterOptions.keySet()){
@@ -397,6 +401,11 @@ public class Store {
             }
         }
         return inventory.filterBy(filter,getStoreRating());
+    }
+
+    public StoreInfo getStoreInformation() {
+        StoreInfo info = new StoreInfo(storeid, storeDescription, isActive, creatorId, getRating());
+        return info;
     }
 
 }

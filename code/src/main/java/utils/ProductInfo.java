@@ -23,4 +23,7 @@ public class ProductInfo {
         this.categories = cat;
     }
 
+    public List<String> getCategories() {
+        return categories;
+    }
 }

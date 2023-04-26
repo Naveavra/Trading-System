@@ -12,6 +12,7 @@ public class Logger {
     private HashMap<logStatus,List<String>> logMap;
     
     private Logger() {
+        logMap = new HashMap<>();
         logMap.put(logStatus.Success, new ArrayList<>());
         logMap.put(logStatus.Fail, new ArrayList<>());
     }

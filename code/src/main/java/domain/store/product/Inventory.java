@@ -1,5 +1,6 @@
 package domain.store.product;
 
+
 import utils.Filter.ProductFilter;
 import utils.ProductInfo;
 
@@ -129,7 +130,7 @@ public class Inventory {
 //            int numMatches1 = productToNumMatches.get(p1);
 //            int numMatches2 = productToNumMatches.get(p2);
 //            return Integer.compare(numMatches2, numMatches1);
-//        });
+;//        });
 //
 //        return matchingProducts;
 //    }
@@ -206,8 +207,13 @@ public class Inventory {
         return prices;
     }
 
-    public Collection<Product> getProducts() {
-        return productList.values();
+    public List<ProductInfo> getProducts() {
+        List<ProductInfo> productInfos = new LinkedList<>();
+        for (Product p : productList.values()){
+            ProductInfo info = new ProductInfo(p.getID(), p.getCategories(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity());
+            productInfos.add(info);
+        }
+        return productInfos;
     }
     public void addToCategory(String category, int productId){
         category =category.toLowerCase();

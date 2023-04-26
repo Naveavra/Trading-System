@@ -1,7 +1,9 @@
 package service;
 
+
 import domain.store.product.Product;
 import utils.ProductInfo;
+import utils.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
@@ -68,33 +70,27 @@ public class MarketController {
 
     }
 
-    public void addProduct(int storeId, String name, String description, int price, int quantity, List<String> categories) throws Exception{
+    public int addProduct(int storeId, String name, String description, int price, int quantity, List<String> categories) throws Exception{
         int id = storectrl.addProduct(storeId,name,description,price,quantity);
         if(id == -1){
             throw new Exception("Something went wrong in adding product");
         }
         storectrl.addToCategory(storeId,id,categories);
+        return id;
     }
-    public String getProductInformation(int storeId, int producId) throws Exception {
+    public String getProductInformation(int storeId, int productId) throws Exception {
         Store store = storectrl.getStore(storeId);
         if (store != null && store.isActive())
         {
-            return store.getProductInformation(producId);
+            return store.getProductInformation(productId);
         }
         else {
             throw new Exception("cant get product information");
         }
     }
 
-    public String getStoreInformation(int storeId) throws Exception {
-        Store store = storectrl.getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            Gson gson = new Gson();
-            return gson.toJson(store);
-        }else {
-            throw new Exception("can not show store information");
-        }
+    public StoreInfo getStoreInformation(int storeId) throws Exception {
+        return storectrl.getStoreInformation(storeId);
     }
 
     public String getStoreDescription(int storeId) throws Exception{
@@ -150,15 +146,8 @@ public class MarketController {
         return totalprice;
     }
 
-    public String getStoreProducts(int storeId) throws Exception {
-        Store s = storectrl.getStore(storeId);
-        if(s==null){
-            throw new Exception("store not available");
-        }
-        if(!s.isActive()){
-            throw new Exception("store not available");
-        }
-        return s.getProducts();
+    public List<ProductInfo> getStoreProducts(int storeId) throws Exception {
+        return storectrl.getProducts(storeId);
     }
 
     public void setStoreDiscountPolicy(int storeId, String policy) throws ExecutionControl.NotImplementedException {

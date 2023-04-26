@@ -64,6 +64,8 @@ public class Market implements MarketInterface {
         proxySecurity = new ProxySecurity();
         proxySupplier = new ProxySupplier();
         complaints = new ConcurrentHashMap<>();
+        actionIds = new HashMap<>();
+        marketInfo = new MarketInfo();
 
         admin.addControllers(userController, marketController);
 
@@ -288,10 +290,9 @@ public class Market implements MarketInterface {
     }
 
 
-    public Response<String> getCart(int id) {
+    public Response<HashMap<Integer, HashMap<Integer, Integer>>> getCart(int id) {
         try {
-            Gson gson = new Gson();
-            String cart = gson.toJson(userController.getUserCart(id));
+            HashMap<Integer, HashMap<Integer, Integer>> cart = userController.getUserCart(id);
             String name = userController.getUserName(id);
             logger.log(Logger.logStatus.Success, "user" + name + "ask for his cart on " + LocalDateTime.now());
             return new Response<>(cart, null, null);
@@ -372,14 +373,14 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> openStore(int userId, String des) {
+    public Response<Integer> openStore(int userId, String des) {
         try {
             if (userController.canOpenStore(userId)) {
                 Store store = marketController.openStore(userId, des);
                 userController.openStore(userId, store);
                 String name = userController.getUserName(userId);
                 logger.log(Logger.logStatus.Success, "user" + name + "open store successfully on " + LocalDateTime.now());
-                return new Response<>("u open store store successfully", null, null);
+                return new Response<>(store.getStoreId(), null, null);
             } else {
                 return new Response<>(null, "open store failed", "user is not allowed to open store");
             }
@@ -516,9 +517,9 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getStoreProducts(int storeId) {
+    public Response<List<ProductInfo>> getStoreProducts(int storeId) {
         try {
-            String res = marketController.getStoreProducts(storeId);
+            List<ProductInfo> res = marketController.getStoreProducts(storeId);
             logger.log(Logger.logStatus.Success, "user get store products successfully on " + LocalDateTime.now());
             return new Response<>(res, null, null);
         } catch (Exception e) {
@@ -715,16 +716,17 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> addProduct(int userId, int storeId, List<String> categories, String name, String description, int price, int quantity) {
+    public Response<Integer> addProduct(int userId, int storeId, List<String> categories, String name, String description, int price, int quantity) {
         try {
+            int productId = -1;
             if (userController.checkPermission(userId, Action.addProduct, storeId)) {
-                marketController.addProduct(storeId, name, description, price, quantity, categories);
+                productId = marketController.addProduct(storeId, name, description, price, quantity, categories);
             } else {
                 logger.log(Logger.logStatus.Fail, "Product Addition Failed, Because: User doesn't have necessary permissions. on: " + LocalDateTime.now());
                 return new Response<>(null, "Product Addition Failed", "User doesn't have necessary permissions");
             }
             logger.log(Logger.logStatus.Success, "Add product successfull on: " + LocalDateTime.now());
-            return new Response<>(null, null, null);
+            return new Response<>(productId, null, null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "Cant add product because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "Product Addition Failed", e.getMessage());
@@ -926,9 +928,7 @@ public class Market implements MarketInterface {
     @Override
     public Response<List<ProductInfo>> getProducts(int storeId) {
         try{
-            String res = marketController.getStoreProducts(storeId);
-            List<ProductInfo> products = new LinkedList<>();
-            products = gson.fromJson(res ,products.getClass());
+            List<ProductInfo> products = marketController.getStoreProducts(storeId);
             logger.log(Logger.logStatus.Success, "store get products successfully on " + LocalDateTime.now());
             return new Response<>(products, null, null);
         }catch(Exception e){
@@ -1024,7 +1024,7 @@ public class Market implements MarketInterface {
                     return new Response<>(null, "add admin failed", "another admin already exist with this name");
                 }
             }
-            Admin a = new Admin(adminId.getAndIncrement(), email, pass);
+            Admin a = new Admin(adminId.getAndDecrement(), email, pass);
             inActiveAdmins.put(a.getAdminId(), a);
             logger.log(Logger.logStatus.Success, "admin added new admin successfully on " + LocalDateTime.now());
             return new Response<>("admin added new admin successfully", null, null);
@@ -1036,8 +1036,12 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> removeAdmin(int adminId) {
         Admin me = activeAdmins.get(adminId);
+        if(activeAdmins.size() + inActiveAdmins.size() == 1){
+            logger.log(Logger.logStatus.Fail, "cant remove admin , need at least 1 admin in the system" + LocalDateTime.now());
+            return new Response<>(null, "remove admin failed", "need at least 1 admin in the system");
+        }
         if (me != null) {
-            inActiveAdmins.remove(adminId);
+            activeAdmins.remove(adminId);
             logger.log(Logger.logStatus.Success, "admin removed himself successfully on " + LocalDateTime.now());
             return new Response<>("u removed u self successfully", null, null);
         }
