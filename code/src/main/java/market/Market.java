@@ -20,6 +20,7 @@ import utils.userInfoRelated.Receipt;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -497,6 +498,16 @@ public class Market implements MarketInterface {
             logger.log(Logger.logStatus.Fail, "cant get store information because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "get product information failed", e.getMessage());
         }
+    }
+
+    @Override
+    public Response showFilterOptions() {
+        return new Response<>(marketController.showFilterOptions(),null,null);
+    }
+
+    @Override
+    public Response filterBy(HashMap<String,String> filterOptions) {
+        return new Response<>(marketController.filterBy(filterOptions),null,null);
     }
 
     public Response<String> getStoreProducts(int storeId) {

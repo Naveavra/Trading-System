@@ -214,4 +214,17 @@ public class MarketController {
     public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
         return storectrl.viewReviews(storeId);
     }
+
+    public ArrayList<String> showFilterOptions() {
+       return storectrl.showFilterOptions();
+    }
+
+    /**
+     * returns the filtered items by filterOptions.
+     * @param filterOptions
+     * @return json string representation of the selected products.
+     */
+    public String filterBy(HashMap<String,String> filterOptions) {
+        return storectrl.filterBy(filterOptions);
+    }
 }

@@ -5,14 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6ae14e4-fbd0-4323-b4ff-3afa10dfd922" name="Changes" comment="adding new functoins in implementation">
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/states/Buyer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/states/Permission.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/states/Permission.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/states/Seller.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/states/Seller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/states/StoreManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/states/StoreManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/states/UserState.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/states/UserState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/Guest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/Guest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/Member.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/service/UserController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByCategories.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByKeywords.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/GetProductOperation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/work1.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/market/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/market/MarketInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/service/MarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMax.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMax.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMin.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByRating.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByRating.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByStoreRating.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByStoreRating.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/ProductFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/ProductFilter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +32,14 @@
   <component name="CompilerWorkspaceConfiguration">
     <option name="MAKE_PROJECT_ON_SAVE" value="true" />
     <option name="PARALLEL_COMPILATION" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -55,14 +73,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Owner/BGU/SPL/spl Assigment/work3/spl-net&quot;
-  }
-}</component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -75,6 +91,7 @@
       <workItem from="1682198620589" duration="6420000" />
       <workItem from="1682342606410" duration="619000" />
       <workItem from="1682343265358" duration="5465000" />
+      <workItem from="1682500733867" duration="9353000" />
     </task>
     <task id="LOCAL-00001" summary="adding new functoins in interface">
       <created>1682083957384</created>
