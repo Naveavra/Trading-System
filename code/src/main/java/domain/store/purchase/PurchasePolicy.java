@@ -1,6 +1,6 @@
 package domain.store.purchase;
 
-import utils.Order;
+import utils.orderRelated.Order;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 

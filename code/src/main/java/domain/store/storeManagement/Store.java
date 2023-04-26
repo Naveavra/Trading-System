@@ -7,7 +7,7 @@ import domain.store.purchase.PurchasePolicy;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.Pair;
-import utils.Order;
+import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.stateRelated.Role;
 

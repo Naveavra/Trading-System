@@ -7,14 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.MarketController;
 import service.UserController;
-import utils.Order;
+import utils.orderRelated.Order;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class StoreTest {

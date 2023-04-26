@@ -1,6 +1,6 @@
 package domain.store.purchase;
 
-import utils.Order;
+import utils.orderRelated.Order;
 
 public class ConcrectePurchaseConstraint extends PurchaseConstraint{
     @Override
