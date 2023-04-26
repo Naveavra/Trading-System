@@ -295,6 +295,7 @@ public class StoreController {
                     filter.createStrategy(filter.getStrategy(option));
             }
         }
+        return null;
     }
 
     public List<ProductInfo> getProducts(int storeId) throws Exception {

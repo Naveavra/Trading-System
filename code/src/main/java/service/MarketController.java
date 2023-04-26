@@ -68,12 +68,13 @@ public class MarketController {
 
     }
 
-    public void addProduct(int storeId, String name, String description, int price, int quantity, List<String> categories) throws Exception{
+    public int addProduct(int storeId, String name, String description, int price, int quantity, List<String> categories) throws Exception{
         int id = storectrl.addProduct(storeId,name,description,price,quantity);
         if(id == -1){
             throw new Exception("Something went wrong in adding product");
         }
         storectrl.addToCategory(storeId,id,categories);
+        return id;
     }
     public String getProductInformation(int storeId, int producId) throws Exception {
         Store store = storectrl.getStore(storeId);

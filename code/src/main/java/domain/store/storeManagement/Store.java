@@ -43,9 +43,10 @@ public class Store {
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
         this.discountPolicy = new DiscountPolicy();
-        this. purchasePolicy = new PurchasePolicy();
+        this.purchasePolicy = new PurchasePolicy();
         this.productReviews = new ConcurrentHashMap<>();//hash map between messageId to message for product
         this.questions = new ConcurrentHashMap<>();
+        this.isActive = true;
         gson = new Gson();
     }
 

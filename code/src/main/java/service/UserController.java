@@ -91,7 +91,7 @@ public class UserController {
             throw new Exception("invalid email");
         if(!checkPassword(password))
             throw new Exception("invalid password");
-        Member m = activeMemberList.get(email);
+        Member m = inActiveMemberList.get(email);
         if(m == null)
             throw new Exception("no such email");
         try {

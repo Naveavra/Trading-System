@@ -20,4 +20,7 @@ public class ProductInfo {
         this.quantity =quantity;
     }
 
+    public List<String> getCategories() {
+        return categories;
+    }
 }
