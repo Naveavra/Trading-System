@@ -408,4 +408,17 @@ public class Store {
         return info;
     }
 
+    public void setStoreDiscountPolicy(String policy) throws Exception {
+        try {
+            addDiscountConstraint(policy);
+        } catch (Exception e) {
+            throw new Exception("Couldn't create a new policy");
+        }
+    }
+
+    private void addDiscountConstraint(String policy) throws Exception {
+        if(!discountPolicy.createConstraint(policy)){
+            throw new Exception("Couldn't create the constraint");
+        }
+    }
 }

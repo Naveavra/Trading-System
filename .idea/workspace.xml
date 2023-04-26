@@ -5,22 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6ae14e4-fbd0-4323-b4ff-3afa10dfd922" name="Changes" comment="adding new functoins in implementation">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/discount/DiscountPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/discount/DiscountPolicy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Product.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/market/Market.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/service/MarketController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByCategories.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByCategories.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByKeywords.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByKeywords.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMax.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMax.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMin.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByPriceMin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByRating.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByRating.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByStoreRating.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByStoreRating.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterStrategy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/ProductFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/ProductFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/ProductInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/ProductInfo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

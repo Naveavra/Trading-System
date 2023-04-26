@@ -150,8 +150,15 @@ public class MarketController {
         return storectrl.getProducts(storeId);
     }
 
-    public void setStoreDiscountPolicy(int storeId, String policy) {
-       //TODo: "miki implement please");
+    public void setStoreDiscountPolicy(int storeId, String policy) throws Exception {
+        Store store = storectrl.getStore(storeId);
+        if (store != null )
+        {
+            store.setStoreDiscountPolicy(policy);
+        }
+        else {
+            throw new Exception("store does not exist");
+        }
     }
 
     public void addPurchaseConstraint(int storeId, String constraint) throws Exception {
