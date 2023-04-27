@@ -213,8 +213,8 @@ public abstract class ProjectTest{
         return bridge.getStorePurchasesHistory(user, store);
     }
 
-    public List<PurchaseInfo> getBuyerPurchasesHistory(int user, int store) {
-        return bridge.getStorePurchasesHistory(user, store);
+    public List<PurchaseInfo> getBuyerPurchasesHistory(int user, int buyer) {
+        return bridge.getBuyerPurchasesHistory(user, buyer);
     }
 
     public List<PermissionInfo> getManagerPermissionInStore(int user, int store, int manager) {

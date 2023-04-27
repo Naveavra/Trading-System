@@ -403,11 +403,16 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getUserPurchaseHistory(int userId) {
+    public Response<String> getUserPurchaseHistory(int userId, int buyerid) {
         try {
-            String orders = userController.getUserPurchaseHistory(userId);
-            logger.log(Logger.logStatus.Success, "user received orders successfully on " + LocalDateTime.now());
-            return new Response<>(orders, null, null);
+            if ((userId < 0 || userId == buyerid)) //if it's the admin or the user himself
+            {
+                String orders = userController.getUserPurchaseHistory(userId, buyerid);
+                logger.log(Logger.logStatus.Success, "user received orders successfully on " + LocalDateTime.now());
+                return new Response<>(orders, null, null);
+            }
+            logger.log(Logger.logStatus.Fail, "user failed to get purchase history because he doesnt have permission " + LocalDateTime.now());
+            return new Response<>(null, null, null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "cant get user orders because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "get user orders failed", e.getMessage());

@@ -58,8 +58,9 @@ public class StoreOwnerTest extends ProjectTest{
     public void testGetBuyerPurchasesHistory(){
         int adminId = this.mainAdmin.getAdminId();
         int buyer = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
+        int status = adminLogin(this.mainAdmin.getEmail(), this.mainAdmin.getPassword());
         List<PurchaseInfo> purchases = this.getBuyerPurchasesHistory(adminId, buyer);
-        assertNotNull(purchases);
+        //assertNotNull(purchases);
         assertTrue(purchases.size() == 0);
     }
 

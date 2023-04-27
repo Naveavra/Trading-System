@@ -46,7 +46,7 @@ public interface MarketInterface {
 
     public Response openStore(int userId,String storeDescription);
     public Response getMemberInformation(int userId);
-    public Response getUserPurchaseHistory(int userId);
+    public Response getUserPurchaseHistory(int userId, int buyerid);
     public Response writeReviewToStore(int orderId, int storeId, String content, int grading, int userId);
     public Response writeReviewToProduct(int orderId, int storeId,int productId, String content, int grading, int userId);
     public Response checkReviews(int userId, int storeId);
@@ -98,7 +98,7 @@ public interface MarketInterface {
     public Response getStores();
     public Response addAdmin(int userId, String email , String pass);
     public Response removeAdmin(int adminId);
-    public Response getUsersPurchaseHistory(int adminId);
+    public Response getUsersPurchaseHistory(int buyerId);
     public Response answerComplaint(int adminId,int complaintId,String ans);
     public Response cancelMembership(int adminId,int userToRemove);
     public Response watchLog(int adminId);

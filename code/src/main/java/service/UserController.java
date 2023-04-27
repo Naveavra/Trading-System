@@ -504,23 +504,30 @@ public class UserController {
     }
 
 
-    public synchronized String getUserPurchaseHistory(int userId) throws Exception {
+    /**
+     * @param userId the one who asks
+     */
+    public synchronized String getUserPurchaseHistory(int userId, int buyerId) throws Exception {
         if(userId % 2 ==0)
             throw new Exception("guest can't access the user history");
-        else{
+        else if (userId < 0) {
+            return adminGetUserPurchaseHistory(buyerId);
+        } else{
             String email = idToEmail.get(userId);
             if(email != null)
                 return getUserPurchaseHistory(email);
             else
                 throw new Exception("no member has this id");
-
         }
     }
 
-    /**
-     * @param email
-     * @return returns json
-     */
+    public synchronized String adminGetUserPurchaseHistory(int userId) throws Exception
+    {
+        Member m = getMember(userId);
+        return m.getUserPurchaseHistory();
+    }
+
+
     public synchronized String getUserPurchaseHistory(String email) throws Exception{
         Member m = activeMemberList.get(email);
         if(m!= null)
@@ -1177,8 +1184,13 @@ public class UserController {
                Member m = activeMemberList.get(email);
                if( m != null)
                    return m;
-               else
+               else {
+                   if ((m = inActiveMemberList.get(email)) != null)
+                   {
+                       return m;
+                   }
                    throw new Exception("no member has this email");
+               }
            }
            else
                throw new Exception("no member has this id");

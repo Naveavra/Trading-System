@@ -283,8 +283,8 @@ public class BridgeImplement implements Bridge {
         Gson gson = new Gson();
         List<PurchaseInfo> piList = new ArrayList<>();
         HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> historyList = null;
-        historyList = gson.fromJson(purchaseHistory, historyList.getClass());
-        for (ConcurrentHashMap.Entry<Integer, HashMap<Integer, HashMap<Integer, Integer>>> entry : historyList.entrySet())
+        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>ans = gson.fromJson(purchaseHistory, historyList.getClass());
+        for (ConcurrentHashMap.Entry<Integer, HashMap<Integer, HashMap<Integer, Integer>>> entry : ans.entrySet())
         {
             piList.add(new PurchaseInfo(entry.getValue()));
         }
@@ -293,7 +293,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<PurchaseInfo> getBuyerPurchasesHistory(int user, int buyer) {
-        Response<String> res = market.getUserPurchaseHistory(user);
+        Response<String> res = market.getUserPurchaseHistory(user, buyer);
         if(!res.errorOccurred())
         {
             return toBuyerPurchaseHistoryList(res.getValue());
