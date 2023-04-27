@@ -29,8 +29,12 @@ public class MarketController {
         gson = new Gson();
     }
 
-    public Receipt purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId,int totalPrice)
+    public Receipt purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId,int totalPrice) throws Exception
     {
+        if (totalPrice < 0 )
+        {
+            throw new Exception("could not complete purchase, not enough units in the store");
+        }
         Order order = orderctrl.createNewOrder(userId,shoppingCart);
         order.setTotalPrice(totalPrice);
         storectrl.purchaseProducts(shoppingCart);

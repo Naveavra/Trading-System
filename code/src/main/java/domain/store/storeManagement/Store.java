@@ -281,7 +281,7 @@ public class Store {
         for (Integer productid : basket.keySet())
         {
             Product p = inventory.getProduct(productid);
-            if (!(p != null && basket.get(productid) >= p.getQuantity()))
+            if (!(p != null && basket.get(productid) <= p.getQuantity()))
             {
                 return false;
             }

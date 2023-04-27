@@ -315,7 +315,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> makePurchase(int userId, String accountNumber) {
+    public synchronized Response<String> makePurchase(int userId, String accountNumber) {
         try {
             HashMap<Integer, HashMap<Integer, Integer>> cart = userController.getUserCart(userId);
             int amount = marketController.calculatePrice(cart);

@@ -96,6 +96,7 @@ public abstract class ProjectTest{
         //Add product to store 4
         pi5s4 = createProduct5();
         pi5s4.setProductId(addProduct(ui1.getUserId(), newStore4.getStoreId(), pi5s4));
+
         logout(ui.getUserId());
         logout(ui1.getUserId());
     }

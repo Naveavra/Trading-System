@@ -115,14 +115,14 @@ public class MemberTest extends ProjectTest{
     }
 
     @Test
-    public void testPurchaseCartSameTime(){
+    public void testPurchaseCartSameTime(){ //TODO ELI
         UserInfo buyer1 = this.users_dict.get(users[0][USER_EMAIL]);
         UserInfo buyer2 = this.users_dict.get(users[1][USER_EMAIL]);
-        UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+     //   UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
         //Login
         buyer1.setUserId(login(buyer1.getEmail(), buyer1.getPassword()));
         buyer2.setUserId(login(buyer2.getEmail(), buyer2.getPassword()));
-        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+     //   uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         //Check the cart:
         int status = addProductToCart(buyer1.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
         assertTrue(status > -1);
