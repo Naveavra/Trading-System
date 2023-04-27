@@ -15,7 +15,7 @@ public class ShoppingCart {
 
     public void addProductToCart(int storeId, int productId, int quantity) throws Exception {
         if (quantity < 1) {
-            throw new Exception("quantity mast be bigger then 0");
+            throw new Exception("quantity must be bigger then 0");
         }
         if(!baskets.containsKey(storeId))
             baskets.put(storeId, new Basket());

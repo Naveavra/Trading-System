@@ -1,5 +1,7 @@
-package domain.store.product;
+package java.domain.store.product;
 
+import domain.store.product.Inventory;
+import domain.store.product.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

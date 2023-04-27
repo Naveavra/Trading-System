@@ -22,6 +22,7 @@ class StoreTest {
     MarketController marketCtrl;
     StoreController storeCtrl;
     UserController userCtrl;
+
     @BeforeEach
     void setUp() throws Exception {
         int storeId = 1;
@@ -36,10 +37,10 @@ class StoreTest {
         store.setProductQuantity(1, 50);
         store.setPrice(0, 10);
         store.setPrice(1, 5);
-        HashMap<Integer,Integer> products1 = new HashMap<>();
+        HashMap<Integer, Integer> products1 = new HashMap<>();
         products1.put(0, 10); //pid, quantity
         products1.put(1, 5);
-        HashMap<Integer, HashMap<Integer,Integer>> productinOrder1 = new HashMap<>(); //storeid, products
+        HashMap<Integer, HashMap<Integer, Integer>> productinOrder1 = new HashMap<>(); //storeid, products
         productinOrder1.put(0, products1);
         Order order1 = new Order(0, 0, productinOrder1);
         store.addOrder(order1);
@@ -50,16 +51,14 @@ class StoreTest {
     }
 
     @Test
-    void SetWrongPrice()
-    {
+    void SetWrongPrice() {
         Assertions.assertThrows(Exception.class, () -> {
             store.setPrice(0, -5);
         });
     }
 
     @Test
-    void SetNewPrice () throws Exception
-    {
+    void SetNewPrice() throws Exception {
         store.setPrice(0, 1);
         store.setPrice(1, 1);
         Assertions.assertEquals(1, store.getInventory().getProduct(0).price);
@@ -67,23 +66,20 @@ class StoreTest {
     }
 
     @Test
-    void getProductNotInStore() throws Exception
-    {
+    void getProductNotInStore() throws Exception {
         Assertions.assertNull(store.getInventory().getProduct(3));
         Assertions.assertNull(store.getInventory().getProduct(2));
     }
 
     @Test
-    void getProduct()
-    {
+    void getProduct() {
         Assertions.assertEquals(0, store.getInventory().getProduct(0).id);
         Assertions.assertEquals(1, store.getInventory().getProduct(1).id);
 
     }
 
     @Test
-    void addReview() throws Exception
-    {
+    void addReview() throws Exception {
         Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.reviewStore);
         Order order = store.getOrdersHistory().get(0);
         store.addReview(order.getOrderId(), msg);
@@ -93,8 +89,7 @@ class StoreTest {
     }
 
     @Test
-    void giveFeedback() throws Exception
-    {
+    void giveFeedback() throws Exception {
         Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.question);
         Order order = store.getOrdersHistory().get(0);
         store.addReview(order.getOrderId(), msg);
@@ -104,8 +99,7 @@ class StoreTest {
     }
 
     @Test
-    void getMessagesEmpty() throws Exception
-    {
+    void getMessagesEmpty() throws Exception {
         Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.reviewStore);
         Order order = store.getOrdersHistory().get(0);
         store.addReview(order.getOrderId(), msg);

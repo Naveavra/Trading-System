@@ -1,8 +1,13 @@
-package domain.store.product;
+package java.domain.store.product;
 
 import domain.store.product.Product;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import domain.store.product.Inventory;
+import domain.store.product.Product;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ProductTest {
 
@@ -82,6 +87,7 @@ public class ProductTest {
         // Assert
         assertEquals(0, product.price);
     }
+
     @Test
     public void testProductNegativeQuantity() {
         // Arrange

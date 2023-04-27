@@ -15,8 +15,5 @@ public class ProxyPayment implements PaymentAdapter {
         if (real!=null){
             real.makePurchase(accountNumber,amount);
         }
-        else{
-            throw new Exception("proxy made fake transaction");
-        }
     }
 }

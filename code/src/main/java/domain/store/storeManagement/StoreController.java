@@ -6,6 +6,8 @@ import utils.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
+import utils.userInfoRelated.Receipt;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -307,5 +309,15 @@ public class StoreController {
 
     public ConcurrentHashMap<Integer, Store> getStoresInformation() {
         return storeList;
+    }
+
+    public void purchaseMade(Receipt receipt) throws Exception {
+        HashMap<Integer, HashMap<Integer, Integer>> cart = receipt.getProducts();
+        for(int storeId : cart.keySet()){
+            Store store = getStore(storeId);
+            for(int productId : cart.get(storeId).keySet()){
+                store.setProductQuantity(productId, store.getQuantityOfProduct(productId) - cart.get(storeId).get(productId));
+            }
+        }
     }
 }

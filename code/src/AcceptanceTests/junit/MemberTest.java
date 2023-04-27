@@ -90,11 +90,11 @@ public class MemberTest extends ProjectTest{
     public void testPurchaseCartNoAtSameTime(){
         UserInfo buyer1 = this.users_dict.get(users[0][USER_EMAIL]);
         UserInfo buyer2 = this.users_dict.get(users[1][USER_EMAIL]);
-        UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        //UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
         //Login
         buyer1.setUserId(login(buyer1.getEmail(), buyer1.getPassword()));
         buyer2.setUserId(login(buyer2.getEmail(), buyer2.getPassword()));
-        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        //uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         //Check the cart:
         int status = addProductToCart(buyer1.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
         assertTrue(status > -1);
@@ -187,7 +187,7 @@ public class MemberTest extends ProjectTest{
         UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
         //Check the cart:
         CartInfo ci = getCart(buyer.getUserId());
-        assertNull(uid);
+        assertNull(ci);
     }
 
     @Test
@@ -224,7 +224,7 @@ public class MemberTest extends ProjectTest{
         uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         //Add product to cart
         int status = addProductToCart(buyer.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), ERROR);
-        assertTrue(status < -1);
+        assertEquals(-1, status);
     }
 
     @Test
@@ -256,15 +256,15 @@ public class MemberTest extends ProjectTest{
 
     @Test
     public void testLoginSystem(){
-        int id = register("hello123@gmail.com", "hello123A", "01/01/2002");
+        int id = register("hello123@gmail.com", "hello123", "2000/01/01 20:00:00");
         assertTrue(id > -1);
-        int status = login("hello123@gmail.com", "hello123A");
+        int status = login("hello123@gmail.com", "hello123");
         assertTrue(status > -1);
     }
 
     @Test
     public void testAlreadyLoggedInSystem(){
-        int id = register("hello123@gmail.com", "hello123A", "01/01/2002");
+        int id = register("hello123@gmail.com", "hello123A", "01/01/2000");
         assertTrue(id > -1);
         int status = login("hello123@gmail.com", "hello123A");
         assertTrue(status > -1);
@@ -274,15 +274,15 @@ public class MemberTest extends ProjectTest{
 
     @Test
     public void testWrongLoginSystem(){
-        int id = register("hello123@gmail.com", "hello123A", "01/01/2002");
+        int id = register("hello123@gmail.com", "hello123", "2000/01/01 20:00:00");
         assertTrue(id > -1);
-        int status = login("hello123@gmail.com", "hello123A");
+        int status = login("hello123@gmail.com", "hello12123");
         assertTrue(status < 0);
     }
 
     @Test
     public void testUnExistUserLoginSystem(){
-        int status = login("hello123@gmail.com", "hello123A");
+        int status = login("hello123@gmail.com", "hello12123");
         assertTrue(status < 0);
     }
 
@@ -290,15 +290,15 @@ public class MemberTest extends ProjectTest{
 
     @Test
     public void testRegisterSystem(){
-        int id = register("hello123@gmail.com", "hello123A", "01/01/2002");
+        int id = register("hello123@gmail.com", "hello123", "2000/01/01 20:00:00");
         assertTrue(id > -1);
     }
 
     @Test
     public void testRegisterExistMailSystem(){
-        int id = register("hello123@gmail.com", "hello123A", "01/01/2002");
+        int id = register("hello123@gmail.com", "hello123", "2000/01/01 20:00:00");
         assertTrue(id > -1);
-        id = register("hello123@gmail.com", "hello123A", "01/01/2002");
+        id = register("hello123@gmail.com", "hello123", "2000/01/01 20:00:00");
         assertTrue(id < 0);
     }
 }
