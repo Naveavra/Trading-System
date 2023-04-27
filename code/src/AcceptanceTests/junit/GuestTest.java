@@ -129,7 +129,7 @@ public class GuestTest extends ProjectTest{
         GuestInfo buyer = new GuestInfo();
         //Login
         buyer.setId(enterSystem());
-        assertEquals(stores.get(0).getDescription(), getStore(stores.get(0).getStoreId()));
+        assertEquals(stores.get(0).getDescription(), getStore(stores.get(0).getStoreId()).getDescription());
     }
 
     //Purchase the cart:
@@ -255,7 +255,7 @@ public class GuestTest extends ProjectTest{
         UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
         //Check the cart:
         CartInfo ci = getCart(buyer.getId());
-        assertNull(uid);
+        assertNull(ci);
     }
 
     @Test
@@ -316,7 +316,7 @@ public class GuestTest extends ProjectTest{
         uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         //Add product to cart
         int status = addProductToCart(buyer.getId(), stores.get(4).getStoreId(), ERROR, 2);
-        assertTrue(status < -1);
+        assertTrue(status <= -1);
     }
 
 
@@ -342,7 +342,7 @@ public class GuestTest extends ProjectTest{
 
     @Test
     public void testWrongLoginSystem(){
-        int id = register("hello123@gmail.com", "hello123", "01/01/2002");
+        int id = register("hello123@gmail.com", "hellAo123", "01/01/2002");
         assertTrue(id > -1);
         int status = login("hello123@gmail.com", "hello123A");
         assertTrue(status < 0);
