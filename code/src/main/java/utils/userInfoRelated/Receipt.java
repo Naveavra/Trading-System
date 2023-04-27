@@ -18,4 +18,8 @@ public class Receipt {
     public int getOrderId(){
         return orderId;
     }
+
+    public HashMap<Integer, HashMap<Integer, Integer>> getProducts(){
+        return products;
+    }
 }

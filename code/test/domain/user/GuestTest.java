@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GuestTest {
     private Guest guest;
+
     @BeforeEach
     void setUp() {
         //guest

@@ -224,4 +224,8 @@ public class MarketController {
     public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) {
         return storectrl.filterBy(filterOptions);
     }
+
+    public void purchaseMade(Receipt receipt) throws Exception {
+        storectrl.purchaseMade(receipt);
+    }
 }

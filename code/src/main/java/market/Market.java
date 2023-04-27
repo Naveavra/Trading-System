@@ -21,7 +21,6 @@ import utils.userInfoRelated.Receipt;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -322,6 +321,7 @@ public class Market implements MarketInterface {
             int amount = marketController.calculatePrice(cart);
             Receipt receipt = marketController.purchaseProducts(cart, userId, amount);
             proxyPayment.makePurchase(accountNumber, amount);
+            //marketController.purchaseMade(receipt);
             userController.purchaseMade(userId, receipt.getOrderId(), amount);
             marketInfo.addPurchaseCount();
             logger.log(Logger.logStatus.Success, "user made purchase on " + LocalDateTime.now());
