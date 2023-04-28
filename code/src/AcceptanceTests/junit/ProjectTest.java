@@ -193,8 +193,8 @@ public abstract class ProjectTest{
         return bridge.changePurchasePolicy(user, store, policy);
     }
 
-    public int changeStoreManagerPermissions(int user, int store, int manager, List<Integer> permissionsIds) {
-        return bridge.changeStoreManagerPermissions(user, store, manager, permissionsIds);
+    public int addStoreManagerPermissions(int user, int store, int manager, List<Integer> permissionsIds) {
+        return bridge.addStoreManagerPermissions(user, store, manager, permissionsIds);
     }
 
     public int closeStore(int user, int store) {
@@ -217,7 +217,7 @@ public abstract class ProjectTest{
         return bridge.getBuyerPurchasesHistory(user, buyer);
     }
 
-    public List<PermissionInfo> getManagerPermissionInStore(int user, int store, int manager) {
+    public PermissionInfo getManagerPermissionInStore(int user, int store, int manager) {
         return bridge.getManagerPermissionInStore(user, store, manager);
     }
 

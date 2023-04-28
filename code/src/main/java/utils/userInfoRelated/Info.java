@@ -26,4 +26,26 @@ public class Info {
     public void addManagerActions(List<Action> actions){
         managerActions.addAll(actions);
     }
+
+    public List<Action> getManagerActions(){
+        return managerActions;
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public int getAge(){
+        return age;
+    }
+    public String getName(){
+        return name;
+    }
+    public String getEmail(){
+        return email;
+    }
+
+    public String getBirthday(){
+        return birthday;
+    }
 }

@@ -25,6 +25,8 @@ public class StoreOwner extends UserState {
         actions.add(Action.seeStoreHistory);
         actions.add(Action.seeStoreOrders);
         actions.add(Action.addProduct);
+        actions.add(Action.removeProduct);
+        actions.add(Action.updateProduct);
         actions.add(Action.addDiscountConstraint);
 
         actions.add(Action.appointOwner);

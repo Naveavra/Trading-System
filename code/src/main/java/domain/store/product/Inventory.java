@@ -1,6 +1,7 @@
 package domain.store.product;
 
 
+import data.PositionInfo;
 import utils.Filter.ProductFilter;
 import utils.ProductInfo;
 
@@ -30,11 +31,16 @@ public class Inventory {
      * @param description String
      * @param prod_id AtomicInteger
      */
-    public synchronized Product addProduct(String name,String description,AtomicInteger prod_id){
+    public synchronized Product addProduct(String name,String description,AtomicInteger prod_id) throws Exception {
         Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
             p = new Product(id,name,description);
+            for(Product product : productList.values())
+                if(p.getName().equals(product.getName()) && p.getDescription().equals(product.getDescription())) {
+                    prod_id.getAndDecrement();
+                    throw new Exception("the product already exists in the system, aborting add");
+                }
             productList.put(id,p);
 // categories.put(p,new ArrayList<>());
         }
@@ -229,7 +235,7 @@ public class Inventory {
     }
 
     public synchronized int removeProduct(int productId) {
-        if(productList.contains(productId)){
+        if(productList.containsKey(productId)){
             productList.remove(productId);
             for(ArrayList<Integer> prodIds : categories.values()){
                 if(prodIds.contains(productId)){
@@ -242,22 +248,32 @@ public class Inventory {
     }
 
     public void updateProduct(int productId, List<String> categories,String name, String description, int price, int quantity) throws Exception{
-        if(productList.contains(productId)){
+        if(productList.containsKey(productId)){
             if(categories!=null){
                 replaceCategories(productId,categories);
             }
+            else
+                throw new Exception("categories empty");
             if(name!=null){
                 setName(productId,name);
             }
+            else
+                throw new Exception("name is empty");
             if(description!=null){
                 setDescription(productId,description);
             }
+            else
+                throw new Exception("description is empty");
             if(price > 0){
                 setPrice(productId,price);
             }
+            else
+                throw new Exception("price is illegal");
             if(quantity > 0){
                 replaceQuantity(productId,quantity);
             }
+            else
+                throw new Exception("quantity is illegal");
         }
     }
 

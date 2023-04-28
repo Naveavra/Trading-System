@@ -71,6 +71,7 @@ public class AppHistory {
 
         root = new Node(creatorNode);
         usersInStore = new HashSet<>();
+        usersInStore.add(creatorNode.getFirst());
     }
     public boolean addNode(Integer father, Pair<Integer, Role> child) throws Exception {
         Node childNode = root.findNode(child.getFirst());

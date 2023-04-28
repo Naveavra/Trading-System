@@ -300,14 +300,14 @@ public class Member {
         return us.checkPermission(Action.answerMessage);
     }
 
-    public String getUserPurchaseHistory() {
+    public HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> getUserPurchaseHistory() {
         return userHistory.getUserPurchaseHistory();
     }
 
-    public String getPrivateInformation() {
+    public Info getPrivateInformation() {
         PrivateInfo info = new PrivateInfo(id, name, email, birthday, age);
         userHistory.getInformation(info);
-        return gson.toJson(info);
+        return info;
     }
 
     /**
@@ -518,8 +518,8 @@ public class Member {
             throw new Exception("the member is not allowed to get the worker ids in store: " + storeId);
     }
 
-    public PrivateInfo getInformation(int storeId) {
-        PrivateInfo info = new PrivateInfo(id, name, email, birthday, age);
+    public Info getInformation(int storeId) {
+        Info info = new Info(id, name, email, birthday, age);
         UserState state = activeRoles.get(storeId);
         if(state.getRole() == Role.Manager)
             info.addManagerActions(state.getActions());

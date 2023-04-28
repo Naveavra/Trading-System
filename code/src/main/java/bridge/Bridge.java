@@ -233,11 +233,11 @@ public interface Bridge {
      *
      * @param user user id
      * @param store store id
-     * @param owner id of the user who we want to appoint as an owner in store.
+     * @param newOwner id of the user who we want to appoint as an owner in store.
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int appointmentOwnerInStore(int user, int store,int owner);
+    int appointmentOwnerInStore(int user, int store,int newOwner);
 
     /**
      * Appointment new manger in the store
@@ -285,11 +285,11 @@ public interface Bridge {
      * @param user user username
      * @param store store id
      * @param managerId manager id
-     * @param permissionsIds the permission id
+     * @param permissionsId the permission id
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int addStoreManagerPermissions(int user, int store, int managerId, int permissionsIds);
+    int addStoreManagerPermissions(int user, int store, int managerId, int permissionsId);
 
     /**
      * Remove the store manager permissions
@@ -313,17 +313,17 @@ public interface Bridge {
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int changeStoreManagerPermissions(int user,int store, int managerId,  List<Integer> permissionsIds);
+    int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds);
 
     /**
      * Gets information about store manager’s permissions
      *
-     * @param user user id
-     * @param store store id
+     * @param user    user id
+     * @param store   store id
      * @param manager manager id
      * @return If succeed returns the list of manger permissions in the store. Otherwise, return null.
      */
-    List<PermissionInfo> getManagerPermissionInStore(int user, int store, int manager);
+    PermissionInfo getManagerPermissionInStore(int user, int store, int manager);
 
     /**
      * Gets purchases history in store

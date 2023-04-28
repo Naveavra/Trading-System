@@ -1,6 +1,9 @@
 package service;
 
 
+import domain.store.product.Product;
+import domain.store.storeManagement.AppHistory;
+import utils.Pair;
 import utils.ProductInfo;
 import utils.StoreInfo;
 import utils.orderRelated.Order;
@@ -13,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
 import utils.messageRelated.Message;
+import utils.orderRelated.OrderInfo;
 import utils.userInfoRelated.Receipt;
 
 public class MarketController {
@@ -29,7 +33,7 @@ public class MarketController {
         gson = new Gson();
     }
 
-    public Receipt purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId,int totalPrice) throws Exception
+    public Pair<Receipt, Set<Integer>> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId, int totalPrice) throws Exception
     {
         if (totalPrice < 0 )
         {
@@ -37,9 +41,10 @@ public class MarketController {
         }
         Order order = orderctrl.createNewOrder(userId,shoppingCart);
         order.setTotalPrice(totalPrice);
-        storectrl.purchaseProducts(shoppingCart);
+        Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
         Receipt receipt = new Receipt(userId, order.getOrderId(), shoppingCart, totalPrice);
-        return receipt;
+        Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);
+        return ans;
         //TODO SOMETHING WITH ORDER
     }
 
@@ -79,7 +84,7 @@ public class MarketController {
         storectrl.addToCategory(storeId,id,categories);
         return id;
     }
-    public String getProductInformation(int storeId, int productId) throws Exception {
+    public ProductInfo getProductInformation(int storeId, int productId) throws Exception {
         Store store = storectrl.getStore(storeId);
         if (store != null && store.isActive())
         {
@@ -182,15 +187,14 @@ public class MarketController {
         storectrl.answerQuestion(storeId, questionId, answer);
     }
 
-    public String getStoreOrderHistory(int storeId) throws Exception
+    public List<OrderInfo> getStoreOrderHistory(int storeId) throws Exception
     {
-        Gson gson = new Gson();
-        return gson.toJson(storectrl.getStoreOrderHistory(storeId));
+        return storectrl.getStoreOrderHistory(storeId);
     }
 
-    public String getAppointments(int storeId) throws Exception {
+    public AppHistory getAppointments(int storeId) throws Exception {
         Gson gson = new Gson();
-        return gson.toJson(storectrl.getAppointments(storeId));
+        return storectrl.getAppointments(storeId);
     }
 
     public ConcurrentHashMap<Integer, Store> getStoresInformation() {

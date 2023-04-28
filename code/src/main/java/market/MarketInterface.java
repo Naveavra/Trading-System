@@ -64,6 +64,7 @@ public interface MarketInterface {
     public Response changeDiscountPolicy(int userId,int storeId,String policy);
     public Response addPurchaseConstraint(int userId,int storeId,String constraint);
     public Response fireManager(int userId,int storeId,int managerToFire);
+    public Response checkWorkerStatus(int userId, int workerId, int storeId);
     public Response checkWorkersStatus(int userId,int storeId);
     public Response viewQuestions(int userId,int storeId);
     public Response answerQuestion(int userId,int storeId ,int questionId,String answer);
@@ -71,13 +72,19 @@ public interface MarketInterface {
     public Response addProduct(int useIid, int storeId,List<String> categories, String name , String description , int price , int quantity);
     public Response deleteProduct(int userId,int storeId,int productId);
     public Response updateProduct(int userId, int storeId,int productId, List<String> categories, String name , String description , int price , int quantity);
-    public Response getStoreOrders(int userId , int storeId);
+    //public Response getStoreOrders(int userId , int storeId);
 
     //store owner methods
     public Response appointOwner(int userId , int storeId,int ownerId);
     public Response fireOwner(int userId , int storeId, int ownerId);
     public Response addManagerPermission (int ownerId, int userId,int storeId, int permissionsId);
-    public Response removeManagerPermission (int ownerId, int userId,int storeId, int permissionsId);
+
+    Response<String> addManagerPermissions(int ownerId, int userId, int storeId, List<Integer> permissionsIds);
+
+    public Response removeManagerPermission (int ownerId, int userId, int storeId, int permissionsId);
+
+    Response<String> removeManagerPermissions(int ownerId, int userId, int storeId, List<Integer> permissionsIds);
+
     public Response getAppointments(int userId, int storeId);
 
     //store creator methods
@@ -88,7 +95,7 @@ public interface MarketInterface {
 
     //store methods
     //todo: decide if getStore will bring every thing togheter , products , orders , ..statistics
-    public Response getStore(int storeId);
+    //public Response getStore(int storeId);
     public Response getProducts(int storeId);
 
     // admin methods

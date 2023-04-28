@@ -24,7 +24,11 @@ public class InventoryTest {
         String name = "Product 1";
         String description = "This is product 1";
         AtomicInteger prod_id = new AtomicInteger(0);
-        inventory.addProduct(name, description, prod_id);
+        try {
+            inventory.addProduct(name, description, prod_id);
+        }catch (Exception e){
+            assert false;
+        }
 
         Product p = inventory.getProduct(0);
         assertNotNull(p);
@@ -38,7 +42,11 @@ public class InventoryTest {
         String name = "Product 1";
         String description = "This is product 1";
         AtomicInteger prod_id = new AtomicInteger(0);
-        inventory.addProduct(name, description, prod_id);
+        try {
+            inventory.addProduct(name, description, prod_id);
+        }catch (Exception e){
+            assert false;
+        }
 
         int prodID = 0;
         String newDescription = "This is the new description";
@@ -85,7 +93,11 @@ public class InventoryTest {
         String name = "Product 1";
         String description = "This is product 1";
         AtomicInteger prod_id = new AtomicInteger(0);
-        inventory.addProduct(name, description, prod_id);
+        try {
+            inventory.addProduct(name, description, prod_id);
+        }catch (Exception e){
+            assert false;
+        }
 
         int prodID = 0;
         int initialQuantity = inventory.getProduct(prodID).getQuantity();
@@ -103,7 +115,12 @@ public class InventoryTest {
         AtomicInteger prod_id = new AtomicInteger();
 
         // Act
-        controller.addProduct("Product A", "Description A", prod_id);
+
+        try {
+            controller.addProduct("Product A", "Description A", prod_id);
+        }catch (Exception e){
+            assert false;
+        }
         Product actualProduct = controller.getProduct(0);
 
         // Assert
@@ -117,10 +134,17 @@ public class InventoryTest {
         // Arrange
         Inventory controller = new Inventory();
         AtomicInteger prod_id = new AtomicInteger();
-        controller.addProduct("Product A", "Description A", prod_id);
-
+        try {
+            controller.addProduct("Product A", "Description A", prod_id);
+        }catch (Exception e){
+            assert false;
+        }
         // Act
-        controller.addProduct("Product A", "Description B", prod_id);
+        try {
+            controller.addProduct("Product A", "Description B", prod_id);
+        }catch (Exception e){
+            assert false;
+        }
         Product actualProduct = controller.getProduct(0);
 
         // Assert
@@ -134,7 +158,11 @@ public class InventoryTest {
         // Arrange
         Inventory controller = new Inventory();
         AtomicInteger prod_id = new AtomicInteger();
-        controller.addProduct("Product A", "Description A", prod_id);
+        try {
+            controller.addProduct("Product A", "Description A", prod_id);
+        }catch (Exception e){
+            assert false;
+        }
 
         // Act
         controller.setDescription(0, "New Description");
@@ -177,7 +205,11 @@ public class InventoryTest {
         // Arrange
         Inventory controller = new Inventory();
         AtomicInteger prod_id = new AtomicInteger();
-        controller.addProduct("Product A", "Description A", prod_id);
+        try {
+            controller.addProduct("Product A", "Description A", prod_id);
+        }catch (Exception e){
+            assert false;
+        }
 
         // Act
         controller.addQuantity(0, 5);
@@ -193,7 +225,11 @@ public class InventoryTest {
         // Arrange
         Inventory controller = new Inventory();
         AtomicInteger prod_id = new AtomicInteger();
-        controller.addProduct("Product A", "Description A", prod_id);
+        try {
+            controller.addProduct("Product A", "Description A", prod_id);
+        }catch (Exception e){
+            assert false;
+        }
 
         // Act
         Product actualProduct = controller.getProductByName("Product A");

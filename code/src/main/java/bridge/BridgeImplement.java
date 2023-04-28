@@ -1,17 +1,18 @@
 package bridge;
 
 import data.*;
+import domain.store.storeManagement.AppHistory;
 import domain.store.storeManagement.Store;
 import market.Admin;
 import market.Market;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import com.google.gson.Gson;
+
 import utils.marketRelated.Response;
+import utils.orderRelated.OrderInfo;
+import utils.userInfoRelated.Info;
+import utils.userInfoRelated.Receipt;
 
 public class BridgeImplement implements Bridge {
     private Market market;
@@ -177,13 +178,13 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int appointmentOwnerInStore(int user, int store, int owner) {
-        Response<String> res = market.appointOwner(owner, store, user);
+    public int appointmentOwnerInStore(int user, int store, int newOwner) {
+        Response<String> res = market.appointOwner(user, store, newOwner);
         if(res != null && !res.errorOccurred())
         {
             return 1;
         }
-        return 0;
+        return -1;
     }
 
     @Override
@@ -193,7 +194,7 @@ public class BridgeImplement implements Bridge {
         {
             return 1;
         }
-        return 0;
+        return -1;
     }
 
     @Override
@@ -203,7 +204,7 @@ public class BridgeImplement implements Bridge {
         {
             return 1;
         }
-        return 0;
+        return -1;
     }
 
     @Override
@@ -213,15 +214,18 @@ public class BridgeImplement implements Bridge {
         {
             return 1;
         }
-        return 0;
+        return -1;
     }
 
     @Override
     public List<PositionInfo> getPositionInStore(int user, int store) {
-        Response<String> res = market.getAppointments(user, store);
+        Response<List<Info>> res = market.checkWorkersStatus(user, store);
         if(res != null && !res.errorOccurred())
         {
-            return null;//TODO: res.getValue();
+            List<PositionInfo> ans = new LinkedList<>();
+            for(Info info : res.getValue())
+                ans.add(new PositionInfo(info));
+            return ans;
         }
         return null;
     }
@@ -249,8 +253,8 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int changeStoreManagerPermissions(int user, int managerId, int store, List<Integer> permissionsIds) {
-        Response<List<PermissionInfo>> res = null;//TODO:market.changeStoreManagerPermissions(user, store);
+    public int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
+        Response<String> res = market.addManagerPermissions(user, managerId, store, permissionsIds);
         if(res == null || res.errorOccurred())
         {
             return -1;
@@ -259,41 +263,41 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public List<PermissionInfo> getManagerPermissionInStore(int user, int store, int manager) {
-        Response<List<PermissionInfo>> res = null; //TODO : market.seeStoreHistory(user, store);
+    public PermissionInfo getManagerPermissionInStore(int user, int store, int manager) {
+        Response<Info> res = market.checkWorkerStatus(user, manager, store); //TODO : market.seeStoreHistory(user, store);
         if(res != null && !res.errorOccurred())
         {
-            return res.getValue();
+            return new PermissionInfo(res.getValue().getManagerActions());
         }
         return null;
     }
 
     @Override
     public List<PurchaseInfo> getStorePurchasesHistory(int user, int store) {
-        Response<utils.StoreInfo> res = market.seeStoreHistory(user, store);
+        Response<List<OrderInfo>> res = market.seeStoreHistory(user, store);
         if(!res.errorOccurred())
         {
-            return new ArrayList<>();//TODO
+            List<PurchaseInfo> purchases = new LinkedList<>();
+            for(OrderInfo orderInfo : res.getValue())
+                purchases.add(new PurchaseInfo(orderInfo.getProductsInStores()));
+            return purchases;
         }
         return null;
     }
 
-    public List<PurchaseInfo> toBuyerPurchaseHistoryList(String purchaseHistory)
+    public List<PurchaseInfo> toBuyerPurchaseHistoryList(HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> purchaseHistory)
     {
-        Gson gson = new Gson();
         List<PurchaseInfo> piList = new ArrayList<>();
-        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> historyList = null;
-        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>ans = gson.fromJson(purchaseHistory, historyList.getClass());
-        for (ConcurrentHashMap.Entry<Integer, HashMap<Integer, HashMap<Integer, Integer>>> entry : ans.entrySet())
+        for (HashMap<Integer, HashMap<Integer, Integer>> entry : purchaseHistory.values())
         {
-            piList.add(new PurchaseInfo(entry.getValue()));
+            piList.add(new PurchaseInfo(entry));
         }
         return piList;
     }
 
     @Override
     public List<PurchaseInfo> getBuyerPurchasesHistory(int user, int buyer) {
-        Response<String> res = market.getUserPurchaseHistory(user, buyer);
+        Response<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> res = market.getUserPurchaseHistory(user, buyer);
         if(!res.errorOccurred())
         {
             return toBuyerPurchaseHistoryList(res.getValue());
@@ -356,7 +360,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public StoreInfo getStore(int storeId) {
-        Response<utils.StoreInfo> res = market.getStore(storeId);
+        Response<utils.StoreInfo> res = market.getStoreInformation(storeId);
         if(!res.errorOccurred())
         {
             return new StoreInfo(res.getValue());
@@ -435,7 +439,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int makePurchase(int user, String accountNumber) {
-        Response<String> res = market.makePurchase(user, accountNumber);
+        Response<Receipt> res = market.makePurchase(user, accountNumber);
         if(!res.errorOccurred())
         {
             return 1;

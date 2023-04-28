@@ -14,6 +14,7 @@ import utils.messageRelated.MessageState;
 import utils.Pair;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
+import utils.orderRelated.OrderInfo;
 import utils.stateRelated.Role;
 
 import java.util.*;
@@ -111,8 +112,14 @@ public class Store {
             ans.put(messageId, productReviews.get(messageId));
         return ans;
     }
-    public ConcurrentHashMap<Integer, Order> getOrdersHistory() {
-        return this.storeOrders;
+    public List<OrderInfo> getOrdersHistory() {
+        List<OrderInfo> orderInfos = new LinkedList<>();
+        for(int orderId : storeOrders.keySet()){
+            Order order = storeOrders.get(orderId);
+            OrderInfo orderInfo = new OrderInfo(orderId, order.getUserId(), order.getProductsInStores(), order.getTotalPrice());
+            orderInfos.add(orderInfo);
+        }
+        return orderInfos;
     }
 
     public boolean isActive() {
@@ -152,7 +159,9 @@ public class Store {
         throw new Exception("order doesnt exist");
     }
 
-    public void addOrder(Order order){ storeOrders.put(order.getOrderId(), order);}
+    public void addOrder(Order order){
+        storeOrders.put(order.getOrderId(), order);
+    }
 
     /**
      * @return the users that has a role in the store
@@ -182,8 +191,7 @@ public class Store {
      * @param name new name of the product
      * @param pid product id
      */
-    public synchronized Product addNewProduct(String name, String description, AtomicInteger pid)
-    {
+    public synchronized Product addNewProduct(String name, String description, AtomicInteger pid) throws Exception {
         return inventory.addProduct(name, description, pid);
     }
     public synchronized Product addNewExistingProduct(Product p){
@@ -278,14 +286,14 @@ public class Store {
      * @return true if success else false
      */
     public boolean makeOrder(HashMap<Integer, Integer> basket){
-        for (Integer productid : basket.keySet())
+        for (Integer productId : basket.keySet())
         {
-            Product p = inventory.getProduct(productid);
-            if (!(p != null && basket.get(productid) <= p.getQuantity()))
+            Product p = inventory.getProduct(productId);
+            if (!(p != null && basket.get(productId) <= p.getQuantity()))
             {
                 return false;
             }
-            inventory.getProduct(productid).setQuantity(basket.get(productid) * (-1));
+            inventory.getProduct(productId).setQuantity(basket.get(productId) * (-1));
         }
         return true;
     }
@@ -317,11 +325,12 @@ public class Store {
     }
 
 
-    public String getProductInformation(int producId) throws Exception{
+    public ProductInfo getProductInformation(int productId) throws Exception{
 
-        if (inventory.getProduct(producId) != null)
+        if (inventory.getProduct(productId) != null)
         {
-            return gson.toJson(inventory.getProduct(producId));
+            Product p = inventory.getProduct(productId);
+            return new ProductInfo(p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity());
         }
         throw new Exception("cant get product information");
     }

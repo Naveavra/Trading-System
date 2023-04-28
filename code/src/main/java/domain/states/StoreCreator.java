@@ -25,6 +25,8 @@ public class StoreCreator extends UserState {
         actions.add(Action.answerMessage);
         actions.add(Action.seeStoreHistory);
         actions.add(Action.addProduct);
+        actions.add(Action.removeProduct);
+        actions.add(Action.updateProduct);
         actions.add(Action.addDiscountConstraint);
         actions.add(Action.seeStoreOrders);
 
@@ -34,6 +36,7 @@ public class StoreCreator extends UserState {
 
         actions.add(Action.closeStore);
         actions.add(Action.reopenStore);
+
 
         permission.addActions(actions);
     }

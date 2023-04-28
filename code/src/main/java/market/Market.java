@@ -1,8 +1,8 @@
 package market;
 
+import domain.store.storeManagement.AppHistory;
 import service.security.ProxySecurity;
 import service.supplier.ProxySupplier;
-import utils.orderRelated.Order;
 import service.UserController;
 import service.payment.ProxyPayment;
 import utils.*;
@@ -14,6 +14,7 @@ import utils.marketRelated.MarketInfo;
 import utils.marketRelated.Response;
 import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
+import utils.orderRelated.OrderInfo;
 import utils.stateRelated.Action;
 import utils.userInfoRelated.Info;
 import utils.userInfoRelated.Receipt;
@@ -22,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -178,6 +180,7 @@ public class Market implements MarketInterface {
     }
 
 
+
     @Override
     public Response displayNotifications(int userId) {
         try {
@@ -211,11 +214,22 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> addProductToCart(int userId, int storeId, int productId, int quantity) {
         try {
-            userController.addProductToCart(userId, storeId, productId, quantity);
-            String name = userController.getUserName(userId);
-            String productName = marketController.getProductName(storeId, productId);
-            logger.log(Logger.logStatus.Success, "user " + name + "add " + quantity + " " + productName + " to shopping cart on " + LocalDateTime.now());
-            return new Response<>("user add to cart successfully", null, null);
+            List<ProductInfo> productInfos = marketController.getStoreProducts(storeId);
+            boolean check = false;
+            for(ProductInfo product : productInfos)
+                if(product.id == productId)
+                    check = true;
+            if(check) {
+                userController.addProductToCart(userId, storeId, productId, quantity);
+                String name = userController.getUserName(userId);
+                String productName = marketController.getProductName(storeId, productId);
+                logger.log(Logger.logStatus.Success, "user " + name + "add " + quantity + " " + productName + " to shopping cart on " + LocalDateTime.now());
+                return new Response<>("user add to cart successfully", null, null);
+            }
+            else {
+                logger.log(Logger.logStatus.Fail, "the user  can't add the product because the productId does not exist in the store on " + LocalDateTime.now());
+                return new Response<>(null, "add product to cart failed", "productId does not exist in store");
+            }
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "user cant add product To Cart because " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "add product to cart failed", e.getMessage());
@@ -302,10 +316,9 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getCart(String userName) {
+    public Response<HashMap<Integer, HashMap<Integer, Integer>>> getCart(String userName) {
         try {
-            Gson gson = new Gson();
-            String cart = gson.toJson(userController.getUserCart(userName));
+            HashMap<Integer, HashMap<Integer, Integer>> cart = userController.getUserCart(userName);
             logger.log(Logger.logStatus.Success, "user" + userName + "ask for his cart on " + LocalDateTime.now());
             return new Response<>(cart, null, null);
         } catch (Exception e) {
@@ -315,17 +328,23 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public synchronized Response<String> makePurchase(int userId, String accountNumber) {
+    public synchronized Response<Receipt> makePurchase(int userId, String accountNumber) {
         try {
             HashMap<Integer, HashMap<Integer, Integer>> cart = userController.getUserCart(userId);
             int amount = marketController.calculatePrice(cart);
-            Receipt receipt = marketController.purchaseProducts(cart, userId, amount);
+            Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userId, amount);
+            Receipt receipt = ans.getFirst();
+            Set<Integer> creatorIds = ans.getSecond();
             proxyPayment.makePurchase(accountNumber, amount);
-            //marketController.purchaseMade(receipt);
             userController.purchaseMade(userId, receipt.getOrderId(), amount);
+            for(int creatorId : creatorIds) {
+                String notify = "a new purchase was made in your store";
+                Notification<String> notification = new Notification<>(notify);
+                userController.addNotification(creatorId, notification);
+            }
             marketInfo.addPurchaseCount();
             logger.log(Logger.logStatus.Success, "user made purchase on " + LocalDateTime.now());
-            return new Response<>(gson.toJson(receipt), null, null);
+            return new Response<>(receipt, null, null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "user cant make purchase " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "make purchase failed", e.getMessage());
@@ -391,9 +410,9 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getMemberInformation(int userId) {
+    public Response<Info> getMemberInformation(int userId) {
         try {
-            String user = userController.getUserInformation(userId);
+            Info user = userController.getUserPrivateInformation(userId);
             logger.log(Logger.logStatus.Success, "user received successfully on " + LocalDateTime.now());
             return new Response<>(user, null, null);
         } catch (Exception e) {
@@ -403,16 +422,16 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getUserPurchaseHistory(int userId, int buyerid) {
+    public Response<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> getUserPurchaseHistory(int userId, int buyerId) {
         try {
-            if ((userId < 0 || userId == buyerid)) //if it's the admin or the user himself
+            if ((userId < 0 || userId == buyerId)) //if it's the admin or the user himself
             {
-                String orders = userController.getUserPurchaseHistory(userId, buyerid);
+                HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> orders = userController.getUserPurchaseHistory(userId, buyerId);
                 logger.log(Logger.logStatus.Success, "user received orders successfully on " + LocalDateTime.now());
                 return new Response<>(orders, null, null);
             }
             logger.log(Logger.logStatus.Fail, "user failed to get purchase history because he doesnt have permission " + LocalDateTime.now());
-            return new Response<>(null, null, null);
+            return new Response<>(null, "getPurchaseHistory failed", "no permission to see");
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "cant get user orders because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "get user orders failed", e.getMessage());
@@ -470,9 +489,9 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> getProductInformation(int storeId, int productId) {
+    public Response<ProductInfo> getProductInformation(int storeId, int productId) {
         try {
-            String res = marketController.getProductInformation(storeId, productId);
+            ProductInfo res = marketController.getProductInformation(storeId, productId);
             logger.log(Logger.logStatus.Success, "user get product information successfully on " + LocalDateTime.now());
             return new Response<>(res, null, null);
         } catch (Exception e) {
@@ -657,6 +676,22 @@ public class Market implements MarketInterface {
     }
 
     @Override
+    public Response<Info> checkWorkerStatus(int userId, int workerId, int storeId) {
+        try{
+            if (userController.checkPermission(userId, Action.checkWorkersStatus, storeId)) {
+                Info res = userController.getWorkerInformation(userId, workerId, storeId);
+                logger.log(Logger.logStatus.Success, "user check worker status successfully on " + LocalDateTime.now());
+                return new Response<>(res, null, null);
+            }
+            logger.log(Logger.logStatus.Fail, "cant check worker status because: user dont have access" + "on " + LocalDateTime.now());
+            return new Response<>(null, "change check worker status failed", "user dont have access");
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "cant check worker status because: " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "check worker status failed", e.getMessage());
+        }
+    }
+
+    @Override
     public Response<List<Info>> checkWorkersStatus(int userId, int storeId) {
         try {
             if (userController.checkPermission(userId, Action.checkWorkersStatus, storeId)) {
@@ -705,10 +740,10 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<StoreInfo> seeStoreHistory(int userId, int storeId) {
+    public Response<List<OrderInfo>> seeStoreHistory(int userId, int storeId) {
         try {
             if (userController.checkPermission(userId, Action.seeStoreHistory, storeId)) {
-                StoreInfo res = marketController.getStoreInformation(storeId);
+                List<OrderInfo> res = marketController.getStoreOrderHistory(storeId);
                 logger.log(Logger.logStatus.Success, "user get store history successfully on " + LocalDateTime.now());
                 return new Response<>(res, null, null);
             }
@@ -749,7 +784,7 @@ public class Market implements MarketInterface {
                 return new Response<>(null, "Cant Remove Product", "User doesn't have permission");
             }
             logger.log(Logger.logStatus.Success, "Delete product successful on: " + LocalDateTime.now());
-            return new Response<>(null, null, null);
+            return new Response<>("product was successfully deleted", null, null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "Cant delete product because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "Product deletion Failed", e.getMessage());
@@ -769,7 +804,7 @@ public class Market implements MarketInterface {
                 return new Response<>(null, "Can't Update Product", "User doesn't have permission");
             }
             logger.log(Logger.logStatus.Success, "Update product successful on: " + LocalDateTime.now());
-            return new Response<>(null, null, null);
+            return new Response<>("updated product was successful", null, null);
         }catch (Exception e){
             logger.log(Logger.logStatus.Fail, "Cant update product because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "Product Update Failed", e.getMessage());
@@ -777,28 +812,9 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<HashMap<Integer, Order>> getStoreOrders(int userId, int storeId) {
-        //get store orderHistory
-        try {
-            if (userController.checkPermission(userId, Action.seeStoreOrders, storeId)) {
-                String res = marketController.getStoreOrderHistory(storeId);
-                HashMap<Integer, Order> orders = new HashMap<>();
-                orders = gson.fromJson(res, orders.getClass());
-                logger.log(Logger.logStatus.Success, "user get orders successfully on " + LocalDateTime.now());
-                return new Response<HashMap<Integer, Order>>(orders, null, null);
-            }
-            logger.log(Logger.logStatus.Fail, "cant get store orders  because: user dont have access" + "on " + LocalDateTime.now());
-            return new Response<>(null, "get store orders failed", "user dont have access");
-        } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail, "cant  get store orders   because: " + e.getMessage() + "on " + LocalDateTime.now());
-            return new Response<>(null, "get store orders  failed", e.getMessage());
-        }
-    }
-
-    @Override
     public Response<String> appointOwner(int userId, int storeId, int ownerId) {
         try {
-            userController.appointOwner(ownerId, userId, storeId);
+            userController.appointOwner(userId, ownerId, storeId);
             logger.log(Logger.logStatus.Success, "appointed user successfully on " + LocalDateTime.now());
             return new Response<>("user appointManager successfully", null, null);
         } catch (Exception e) {
@@ -826,10 +842,39 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> addManagerPermission(int ownerId, int userId, int storeId, int permissionsId) {
         try {
-            userController.addManagerAction(ownerId, userId, actionIds.get(permissionsId), storeId);
-            logger.log(Logger.logStatus.Success, "the action " + permissionsId +" has been added to user: " + userId +
-                    "on time: "+ LocalDateTime.now());
-            return new Response<>("add manager permission was successful", null, null);
+            Action a = actionIds.get(permissionsId);
+            if(a != null) {
+                userController.addManagerAction(ownerId, userId, a, storeId);
+                logger.log(Logger.logStatus.Success, "the action " + permissionsId + " has been added to user: " + userId +
+                        "on time: " + LocalDateTime.now());
+                return new Response<>("add manager permission was successful", null, null);
+            }
+            else{
+                logger.log(Logger.logStatus.Fail, "cant add permission because the action id does not match an action on " + LocalDateTime.now());
+                return new Response<>(null, "add permission failed", "no id match");
+            }
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "cant add permission because: " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "add permission failed", e.getMessage());
+        }
+    }
+
+    @Override
+    public Response<String> addManagerPermissions(int ownerId, int userId, int storeId, List<Integer> permissionsIds) {
+        try {
+            for(int permissionsId : permissionsIds) {
+                Action a = actionIds.get(permissionsId);
+                if(a != null) {
+                    userController.addManagerAction(ownerId, userId, a, storeId);
+                    logger.log(Logger.logStatus.Success, "the action " + permissionsId + " has been added to user: " + userId +
+                            "on time: " + LocalDateTime.now());
+                }
+                else{
+                    logger.log(Logger.logStatus.Fail, "cant add permission because the action id does not match an action on " + LocalDateTime.now());
+                    return new Response<>(null, "add permission failed", "no id match");
+                }
+            }
+            return new Response<>("add manager permissions was successful", null, null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "cant add permission because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "add permission failed", e.getMessage());
@@ -839,9 +884,37 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> removeManagerPermission(int ownerId, int userId, int storeId, int permissionsId) {
         try {
-            userController.removeManagerAction(ownerId, userId, actionIds.get(permissionsId), storeId);
-            logger.log(Logger.logStatus.Success, "the action " + permissionsId +" has been removed from user: " + userId +
-                    "on time: "+ LocalDateTime.now());
+            Action a = actionIds.get(permissionsId);
+            if(a != null) {
+                userController.removeManagerAction(ownerId, userId, a, storeId);
+                logger.log(Logger.logStatus.Success, "the action " + permissionsId + " has been removed from user: " + userId +
+                        "on time: " + LocalDateTime.now());
+                return new Response<>("manager permission was removed successful", null, null);
+            }
+            else{
+                logger.log(Logger.logStatus.Fail, "cant add permission because the action id does not match an action on " + LocalDateTime.now());
+                return new Response<>(null, "add permission failed", "no id match");
+            }
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "cant remove permission because: " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "remove permission fail", e.getMessage());
+        }
+    }
+    @Override
+    public Response<String> removeManagerPermissions(int ownerId, int userId, int storeId, List<Integer> permissionsIds) {
+        try {
+            for(int permissionId : permissionsIds) {
+                Action a = actionIds.get(permissionId);
+                if(a != null) {
+                    userController.removeManagerAction(ownerId, userId, a, storeId);
+                    logger.log(Logger.logStatus.Success, "the action " + permissionId + " has been removed from user: " + userId +
+                            "on time: " + LocalDateTime.now());
+                }
+                else{
+                    logger.log(Logger.logStatus.Fail, "cant add permission because the action id does not match an action on " + LocalDateTime.now());
+                    return new Response<>(null, "add permission failed", "no id match");
+                }
+            }
             return new Response<>("manager permission was removed successful", null, null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "cant remove permission because: " + e.getMessage() + "on " + LocalDateTime.now());
@@ -849,11 +922,12 @@ public class Market implements MarketInterface {
         }
     }
 
+
     @Override
-    public Response<String> getAppointments(int userId, int storeId) {
+    public Response<AppHistory> getAppointments(int userId, int storeId) {
         try {
             if (userController.checkPermission(userId, Action.seeStoreHistory, storeId)) {
-                String res = marketController.getAppointments(storeId);
+                AppHistory res = marketController.getAppointments(storeId);
                 logger.log(Logger.logStatus.Success, "user get appointments" + LocalDateTime.now());
                 return new Response<>(res, null, null);
             } else {
@@ -872,7 +946,7 @@ public class Market implements MarketInterface {
         {
             userController.closeStore(userId, storeId);
             logger.log(Logger.logStatus.Success, "user closed store" + LocalDateTime.now());
-            return new Response<>(null, null, null);
+            return new Response<>("close store was successful", null, null);
 
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "cant close store: " + e.getMessage() + "on " + LocalDateTime.now());
@@ -886,7 +960,7 @@ public class Market implements MarketInterface {
         {
             userController.reOpenStore(userId, storeId);
             logger.log(Logger.logStatus.Success, "user reopened store" + LocalDateTime.now());
-            return new Response<>(null, null, null);
+            return new Response<>("reopen store was successful", null, null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "cant reopen store: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "reopen store failed", e.getMessage());
@@ -915,18 +989,6 @@ public class Market implements MarketInterface {
         } else {
             logger.log(Logger.logStatus.Fail, "the user: " + adminId + " cannot permanently close stores"  +" at time " + LocalDateTime.now());
             return new Response<>(null, "close permanent not successfully", "the id given is not of an admin");
-        }
-    }
-
-    @Override
-    public Response<StoreInfo> getStore(int storeId) {
-        try {
-            StoreInfo store = marketController.getStoreInformation(storeId);
-            logger.log(Logger.logStatus.Success, "user get the store successfully on " + LocalDateTime.now());
-            return new Response<>(store, null, null);
-        } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail, "cant get store because: " + e.getMessage() + "on " + LocalDateTime.now());
-            return new Response<>(null, "get store failed", e.getMessage());
         }
     }
 
@@ -1058,11 +1120,11 @@ public class Market implements MarketInterface {
      * return json of all the relevant information about the users: email, id, name
      */
     @Override
-    public Response<List<String>> getUsersPurchaseHistory(int adminId) {
+    public Response<List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>>> getUsersPurchaseHistory(int adminId) {
         try {
             Admin a = activeAdmins.get(adminId);
             if (a != null) {
-                List<String> users = userController.getUsersInformation();
+                List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> users = userController.getUsersInformation();
                 logger.log(Logger.logStatus.Success, "admin get users successfully on " + LocalDateTime.now());
                 return new Response<>(users, null, null);
             }

@@ -20,6 +20,7 @@ public class StoreManager extends UserState {
         actions.add(Action.answerMessage);
         actions.add(Action.seeStoreHistory);
         actions.add(Action.seeStoreOrders);
+        actions.add(Action.checkWorkersStatus);
         permission.addActions(actions);
 
 
@@ -29,8 +30,9 @@ public class StoreManager extends UserState {
         addedActions.add(Action.changeDiscountPolicy);
         addedActions.add(Action.addPurchaseConstraint);
         addedActions.add(Action.addDiscountConstraint);
-        addedActions.add(Action.checkWorkersStatus);
         addedActions.add(Action.addProduct);
+        addedActions.add(Action.removeProduct);
+        addedActions.add(Action.updateProduct);
         permission.addPossibleActions(addedActions);
     }
 }

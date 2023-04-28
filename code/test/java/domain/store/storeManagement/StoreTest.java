@@ -1,6 +1,8 @@
-package domain.store.storeManagement;
+package java.domain.store.storeManagement;
 
 import domain.store.product.Product;
+import domain.store.storeManagement.Store;
+import domain.store.storeManagement.StoreController;
 import domain.user.Member;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +12,7 @@ import service.UserController;
 import utils.orderRelated.Order;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
+import utils.orderRelated.OrderInfo;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -81,7 +84,7 @@ class StoreTest {
     @Test
     void addReview() throws Exception {
         Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.reviewStore);
-        Order order = store.getOrdersHistory().get(0);
+        OrderInfo order = store.getOrdersHistory().get(0);
         store.addReview(order.getOrderId(), msg);
         Assertions.assertEquals(0, store.getOrdersHistory().get(0).getOrderId());
         Assertions.assertEquals("what a shitty store", store.checkMessages().get(0));
@@ -91,7 +94,7 @@ class StoreTest {
     @Test
     void giveFeedback() throws Exception {
         Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.question);
-        Order order = store.getOrdersHistory().get(0);
+        OrderInfo order = store.getOrdersHistory().get(0);
         store.addReview(order.getOrderId(), msg);
         Assertions.assertFalse(msg.gotFeedback());
         store.answerQuestion(0, "fuck you cuz");
@@ -101,7 +104,7 @@ class StoreTest {
     @Test
     void getMessagesEmpty() throws Exception {
         Message msg = new Message(0, "what a shitty store", user1, 0, 0, MessageState.reviewStore);
-        Order order = store.getOrdersHistory().get(0);
+        OrderInfo order = store.getOrdersHistory().get(0);
         store.addReview(order.getOrderId(), msg);
         store.checkMessages();
         Assertions.assertTrue(store.checkMessages().isEmpty());
