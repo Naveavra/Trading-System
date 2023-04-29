@@ -10,5 +10,10 @@ public class ProxyPayment implements PaymentAdapter {
             real = paymentAdapter;
     }
 
-    public void pay(){}
+    @Override
+    public void makePurchase(String accountNumber , int amount) throws Exception{
+        if (real != null){
+            real.makePurchase(accountNumber,amount);
+        }
+    }
 }

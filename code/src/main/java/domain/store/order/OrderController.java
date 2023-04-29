@@ -1,7 +1,7 @@
 package domain.store.order;
 
-import domain.store.order.Order;
-import utils.Status;
+import utils.orderRelated.Order;
+import utils.orderRelated.Status;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,9 +17,11 @@ public class OrderController {
         orderID = new AtomicInteger();
     }
     
-    public synchronized void createNewOrder(int userID,HashMap<Integer,HashMap<Integer,Integer>> products){
+    public synchronized Order createNewOrder(int userID,HashMap<Integer,HashMap<Integer,Integer>> products){
         int id = orderID.getAndIncrement();
-        orders.put(id, new Order(id,userID,products));
+        Order or =  new Order(id,userID,products);
+        orders.put(id, or);
+        return or;
     }
     
     public synchronized Order getOrder(int order_ID){

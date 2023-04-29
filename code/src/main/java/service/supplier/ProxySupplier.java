@@ -12,4 +12,6 @@ public class ProxySupplier implements SupplierAdapter {
     }
     public void orderSupplies(){}
 
+
+
 }
