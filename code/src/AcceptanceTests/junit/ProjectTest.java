@@ -201,6 +201,10 @@ public abstract class ProjectTest{
         return bridge.closeStore(user, store);
     }
 
+    public List<String> getNotifications(int userId){
+        return bridge.getNotifications(userId);
+    }
+
     public int reopenStore(int user, int store) {
         return bridge.reopenStore(user, store);
     }

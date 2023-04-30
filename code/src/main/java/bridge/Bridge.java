@@ -475,4 +475,6 @@ public interface Bridge {
      *         return -1.
      */
     int changeQuantityInCart(int userId, int storeId, int productId, int change);
+
+    List<String> getNotifications(int userId);
 }

@@ -1059,7 +1059,7 @@ public class UserController {
         Member m = activeMemberList.get(userEmail);
         if(m != null) {
             Set<Integer> workerIds = m.closeStore(storeId);
-            workerIds.remove(m.getId());
+            //workerIds.remove(m.getId());
             for(int workerId : workerIds){
                 String email = idToEmail.get(workerId);
                 if(email != null) {
@@ -1108,7 +1108,7 @@ public class UserController {
         Member m = activeMemberList.get(userEmail);
         if(m != null) {
             Set<Integer> workerIds = m.reOpenStore(storeId);
-            workerIds.remove(m.getId());
+            //workerIds.remove(m.getId());
             for(int workerId : workerIds){
                 String email = idToEmail.get(workerId);
                 if(email != null) {

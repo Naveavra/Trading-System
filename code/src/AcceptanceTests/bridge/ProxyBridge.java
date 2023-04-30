@@ -334,4 +334,11 @@ public class ProxyBridge implements Bridge {
             return real.changeQuantityInCart(userId, storeId, productId, change);
         return -1;
     }
+
+    @Override
+    public List<String> getNotifications(int userId) {
+        if(real != null)
+            return real.getNotifications(userId);
+        return null;
+    }
 }

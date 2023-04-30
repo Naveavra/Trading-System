@@ -115,7 +115,7 @@ public class MemberTest extends ProjectTest{
     }
 
     @Test
-    public void testPurchaseCartSameTime(){ //TODO ELI
+    public void testPurchaseCartSameTime(){
         UserInfo buyer1 = this.users_dict.get(users[0][USER_EMAIL]);
         UserInfo buyer2 = this.users_dict.get(users[1][USER_EMAIL]);
      //   UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4

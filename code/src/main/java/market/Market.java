@@ -182,7 +182,7 @@ public class Market implements MarketInterface {
 
 
     @Override
-    public Response displayNotifications(int userId) {
+    public Response<List<String>> displayNotifications(int userId) {
         try {
             List<String> notifications = userController.displayNotifications(userId);
             logger.log(Logger.logStatus.Success, "user: " + userId + "got notifications successfully on " + LocalDateTime.now());

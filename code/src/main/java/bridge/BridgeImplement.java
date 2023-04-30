@@ -477,4 +477,14 @@ public class BridgeImplement implements Bridge {
         return -1;
     }
 
+    @Override
+    public List<String> getNotifications(int userId) {
+        Response<List<String>> res = market.displayNotifications(userId);
+        if(!res.errorOccurred())
+        {
+            return res.getValue();
+        }
+        return null;
+    }
+
 }
