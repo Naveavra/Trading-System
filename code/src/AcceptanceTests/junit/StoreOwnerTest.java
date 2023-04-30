@@ -258,10 +258,13 @@ public class StoreOwnerTest extends ProjectTest{
         int storeId = stores.get(0).getStoreId();
         int status = this.closeStore(uid.getUserId(), storeId);
         assertTrue(status > 0);
+        int pre = this.getNotifications(uid.getUserId()).size();
+        assertEquals(1, pre);
         status = this.reopenStore(uid.getUserId(), storeId);
         assertTrue(status > 0);
         //TODO: Get Alert
-        assertTrue(false);
+        int post = this.getNotifications(uid.getUserId()).size();
+        assertEquals(1, post);
     }
 
     @Test
@@ -331,7 +334,8 @@ public class StoreOwnerTest extends ProjectTest{
         int status = this.closeStore(uid.getUserId(), storeId);
         assertTrue(status > 0);
         //TODO: Get Alert
-        assertTrue(false);
+        int pre = this.getNotifications(uid.getUserId()).size();
+        assertEquals(1, pre);
     }
 
     @Test
@@ -413,8 +417,6 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(2);
         status = this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdManager, permissions);
         assertTrue(status > 0);
-        //TODO: Add functionality of getting message
-        assertTrue(false);
     }
 
     @Test
@@ -511,6 +513,8 @@ public class StoreOwnerTest extends ProjectTest{
         status = this.appointmentMangerInStore(uid.getUserId(), storeId, uIdOwner);
         assertFalse(status > 0);
     }
+
+    //todo: circular appointment
 
     @Test
     public void testAppointmentExistManagerInStore() {

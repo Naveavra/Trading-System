@@ -370,6 +370,14 @@ public class GuestTest extends ProjectTest{
         int id = register("hello123@gmail.com", "hello123", "01/01/2002");
         assertTrue(id < 0);
     }
+
+    @Test
+    public void testRegisterIllegalPasswordSystemBar(){
+        int id = register("hello123@gmail.com", "hello123A", "01/01/2002");
+        int id2 = register("hello123@gmail.com", "hello123AA", "01/01/2002");
+        assertTrue(id > 0);
+        assertTrue(id2 < 0);
+    }
     @Test
     public void testRegisterIllegalBrithdaySystem(){
         int id = register("hello123@gmail.com", "hello123", "01/01/100");

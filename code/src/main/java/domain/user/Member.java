@@ -454,7 +454,7 @@ public class Member {
             if(state.checkPermission(Action.closeStore)){
                 Store store = activeStores.get(storeId);
                 if(store != null) {
-                    changeToInactive(storeId);
+                    //changeToInactive(storeId);
                     return store.closeStoreTemporary(id);
                 }
                 else
@@ -474,7 +474,7 @@ public class Member {
             if(state.checkPermission(Action.reopenStore)){
                 Store store = inActiveStores.get(storeId);
                 if(store != null) {
-                    changeToActive(storeId);
+                    //changeToActive(storeId);
                     return store.reopenStore(id);
                 }
                 else
