@@ -30,7 +30,6 @@ public class Store {
     private final Inventory inventory; //<productID,<product, quantity>>
     private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
     private final ConcurrentHashMap<Integer, Message> storeReviews; //<messageid, message>
-
     private final ConcurrentHashMap<Integer, Message> questions;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
