@@ -2,7 +2,6 @@ package bridge;
 
 import data.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProxyBridge implements Bridge {
@@ -195,14 +194,30 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int changeStoreManagerPermissions(int user, int store, List<Integer> permissionsIds) {
+    public int addStoreManagerPermissions(int user, int store, int managerId, int permissionsIds) {
         if (real != null)
-            return real.changeStoreManagerPermissions(user, store, permissionsIds);
+            return real.addStoreManagerPermissions(user, store, managerId, permissionsIds);
         return -1;
     }
 
     @Override
-    public List<PermissionInfo> getManagerPermissionInStore(int user, int store, int manager) {
+    public int removeStoreManagerPermissions(int user, int store, int managerId, int permissionsIds) {
+        if (real != null)
+            return real.removeStoreManagerPermissions(user, store, managerId, permissionsIds);
+        return -1;
+    }
+
+    @Override
+    public int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
+        if (real != null)
+            return real.addStoreManagerPermissions(user, store, managerId, permissionsIds);
+        return -1;
+    }
+
+
+
+    @Override
+    public PermissionInfo getManagerPermissionInStore(int user, int store, int manager) {
         if (real != null)
             return real.getManagerPermissionInStore(user, store, manager);
         return null;
@@ -318,5 +333,12 @@ public class ProxyBridge implements Bridge {
         if (real != null)
             return real.changeQuantityInCart(userId, storeId, productId, change);
         return -1;
+    }
+
+    @Override
+    public List<String> getNotifications(int userId) {
+        if(real != null)
+            return real.getNotifications(userId);
+        return null;
     }
 }

@@ -16,9 +16,9 @@ class AppHistoryTest {
     static Pair<Integer, Role> node4;
     static Pair<Integer, Role> node5;
     static AppHistory root;
+
     @BeforeEach
-    public void setup()
-    {
+    public void setup() {
         node0 = new Pair<>(0, Role.Creator);
         node1 = new Pair<>(1, Role.Owner);
         node2 = new Pair<>(2, Role.Manager);
@@ -29,8 +29,7 @@ class AppHistoryTest {
     }
 
     @Test
-    void getNodeExists()
-    {
+    void getNodeExists() {
         Assertions.assertNotNull(root.getNode(0));
 
     }
@@ -47,11 +46,11 @@ class AppHistoryTest {
 
 
     @Test
-    void getNodeNotExists()
-    {
+    void getNodeNotExists() {
         Assertions.assertNull(root.getNode(2));
 
     }
+
     @Test
     void addDuplicateNode() throws Exception {
         Exception exception = assertThrows(Exception.class, () -> {
@@ -73,6 +72,7 @@ class AppHistoryTest {
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
+
     @Test
     void removeChildNotInTree() {
         Exception exception = assertThrows(Exception.class, () -> {
@@ -109,6 +109,7 @@ class AppHistoryTest {
         assertTrue(appHistory.isChild(1, 2));
         assertFalse(appHistory.isChild(2, 1));
     }
+
     @Test
     void removeLeafNode() throws Exception {
         root.addNode(node0.getFirst(), node3);
@@ -132,6 +133,7 @@ class AppHistoryTest {
         assertFalse(root.isChild(node1.getFirst(), node2.getFirst()));
         assertFalse(root.isChild(node2.getFirst(), node3.getFirst()));
     }
+
     @Test
     void testRemoveRootNode() {
         Exception exception = assertThrows(Exception.class, () -> {

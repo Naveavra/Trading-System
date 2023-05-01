@@ -68,21 +68,9 @@ public class UserHistory {
         return false;
     }
 
-    public String getUserPurchaseHistory() { //NAVE
+    public  HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>getUserPurchaseHistory() { //NAVE
         Gson gson = new Gson();
-        return gson.toJson(purchaseHistory);
-//        String purchases = "purchase history for user " + name + ":\n";
-//        for(int orderId : purchaseHistory.keySet()){
-//            purchases = purchases+"  orderId: " + orderId +"\n";
-//            for(int storeId : purchaseHistory.get(orderId).keySet()){
-//                purchases = purchases + "    storeId: " + storeId + "\n";
-//                for(int productId : purchaseHistory.get(orderId).get(storeId).keySet()) {
-//                    purchases = purchases + "      proudctId: " + productId + ", quantity: " + purchaseHistory.get(orderId).get(storeId).get(productId) + "\n";
-//                }
-//            }
-//            purchases = purchases + "  the total price was: " + ordersAndPrices.get(orderId) + "\n";
-//        }
-//       return purchases;
+        return purchaseHistory;
     }
 
     public void getInformation(PrivateInfo info) {

@@ -6,6 +6,9 @@ import utils.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
+import utils.orderRelated.OrderInfo;
+import utils.userInfoRelated.Receipt;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,10 +29,11 @@ public class StoreController {
     /**
      * adds a new product to a store.
      */
-    public synchronized int addProduct(int storeid, String name, String desc, int price, int quantity) {
+    public synchronized int addProduct(int storeid, String name, String desc, int price, int quantity) throws Exception {
         Store st;
-        Product prod;
+        //Product prod;
         int id = -1;
+        /* no need to update if product exists, need to throw exception, fixed it
         if ((st = getStore(storeid)) != null && (prod = getExistingProductByName(name)) != null) {
             Product prod_ = prod.clone();
             prod_.setDescription(desc);
@@ -37,7 +41,9 @@ public class StoreController {
             prod_.setQuantity(quantity);
             st.addNewExistingProduct(prod_);
             id = prod_.getID();
-        } else if ((st = getStore(storeid)) != null) {
+        } else
+         */
+            if ((st = getStore(storeid)) != null) {
             Product p = st.addNewProduct(name, desc, productIDs);
             p.setPrice(price);
             p.setQuantity(quantity);
@@ -120,18 +126,18 @@ public class StoreController {
     /**
      * performs the purchasing
      *
-     * @param shoppingcart the client shopping cart
-     * @return if successful returs the store owners ids else null
+     * @param shoppingCart the client shopping cart
+     * @return if successful returns the store owners ids else null
      */
-    public synchronized Set<Integer> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart) {
+    public synchronized Set<Integer> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, Order order) {
         Set<Integer> storeOwnersIDS = new HashSet<>();
-        for (Integer storeid : shoppingcart.keySet()) {
-            Store store = storeList.get(storeid);
-            if (!(store.makeOrder(shoppingcart.get(storeid)))) {
+        for (Integer storeId : shoppingCart.keySet()) {
+            Store store = storeList.get(storeId);
+            if (!(store.makeOrder(shoppingCart.get(storeId)))) {
                 return null;
             }
             storeOwnersIDS.add(store.getCreatorId());
-
+            store.addOrder(order);
         }
         return storeOwnersIDS;
     }
@@ -218,7 +224,7 @@ public class StoreController {
         }
     }
 
-    public ConcurrentHashMap<Integer, Order> getStoreOrderHistory(int storeId) throws Exception {
+    public List<OrderInfo> getStoreOrderHistory(int storeId) throws Exception {
         Store store = storeList.get(storeId);
         if (store != null && store.isActive())
         {
@@ -308,4 +314,15 @@ public class StoreController {
     public ConcurrentHashMap<Integer, Store> getStoresInformation() {
         return storeList;
     }
+
+    public void purchaseMade(Receipt receipt) throws Exception {
+        HashMap<Integer, HashMap<Integer, Integer>> cart = receipt.getProducts();
+        for(int storeId : cart.keySet()){
+            Store store = getStore(storeId);
+            for(int productId : cart.get(storeId).keySet()){
+                store.setProductQuantity(productId, store.getQuantityOfProduct(productId) - cart.get(storeId).get(productId));
+            }
+        }
+    }
+
 }

@@ -96,6 +96,7 @@ public abstract class ProjectTest{
         //Add product to store 4
         pi5s4 = createProduct5();
         pi5s4.setProductId(addProduct(ui1.getUserId(), newStore4.getStoreId(), pi5s4));
+
         logout(ui.getUserId());
         logout(ui1.getUserId());
     }
@@ -192,12 +193,16 @@ public abstract class ProjectTest{
         return bridge.changePurchasePolicy(user, store, policy);
     }
 
-    public int changeStoreManagerPermissions(int user, int store, List<Integer> permissionsIds) {
-        return bridge.changeStoreManagerPermissions(user, store, permissionsIds);
+    public int addStoreManagerPermissions(int user, int store, int manager, List<Integer> permissionsIds) {
+        return bridge.addStoreManagerPermissions(user, store, manager, permissionsIds);
     }
 
     public int closeStore(int user, int store) {
         return bridge.closeStore(user, store);
+    }
+
+    public List<String> getNotifications(int userId){
+        return bridge.getNotifications(userId);
     }
 
     public int reopenStore(int user, int store) {
@@ -212,11 +217,11 @@ public abstract class ProjectTest{
         return bridge.getStorePurchasesHistory(user, store);
     }
 
-    public List<PurchaseInfo> getBuyerPurchasesHistory(int user, int store) {
-        return bridge.getStorePurchasesHistory(user, store);
+    public List<PurchaseInfo> getBuyerPurchasesHistory(int user, int buyer) {
+        return bridge.getBuyerPurchasesHistory(user, buyer);
     }
 
-    public List<PermissionInfo> getManagerPermissionInStore(int user, int store, int manager) {
+    public PermissionInfo getManagerPermissionInStore(int user, int store, int manager) {
         return bridge.getManagerPermissionInStore(user, store, manager);
     }
 

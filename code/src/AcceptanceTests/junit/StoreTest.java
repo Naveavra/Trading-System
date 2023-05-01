@@ -69,11 +69,23 @@ public class StoreTest extends ProjectTest{
     @Test
     public void testGetProductInStoreAfterAddProduct() {
         //TODO:
+        UserInfo ui = users_dict.get(users[0][USER_EMAIL]);
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
+        StoreInfo si = new StoreInfo(ui.getUserId(), "Gong");
+        si.setStoreId(createStore(si));
+        List<ProductInfo> products = getProductInStore(si.getStoreId());
+        assertNotNull(products);
     }
 
     @Test
     public void testGetProductInStoreAfterRemoveProduct() {
         //TODO:
+        UserInfo ui = users_dict.get(users[0][USER_EMAIL]);
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
+        StoreInfo si = new StoreInfo(ui.getUserId(), "Gong");
+        si.setStoreId(createStore(si));
+        List<ProductInfo> products = getProductInStore(si.getStoreId());
+        assertNotNull(products);
     }
 
     //Get Store:

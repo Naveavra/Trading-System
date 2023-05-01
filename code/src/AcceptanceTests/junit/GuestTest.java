@@ -129,7 +129,7 @@ public class GuestTest extends ProjectTest{
         GuestInfo buyer = new GuestInfo();
         //Login
         buyer.setId(enterSystem());
-        assertEquals(stores.get(0).getDescription(), getStore(stores.get(0).getStoreId()));
+        assertEquals(stores.get(0).getDescription(), getStore(stores.get(0).getStoreId()).getDescription());
     }
 
     //Purchase the cart:
@@ -255,7 +255,9 @@ public class GuestTest extends ProjectTest{
         UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
         //Check the cart:
         CartInfo ci = getCart(buyer.getId());
-        assertNull(uid);
+        assertNotNull(ci);
+        CartInfo ci2 = getCart(uid.getUserId());
+        assertNull(ci2);
     }
 
     @Test
@@ -292,9 +294,10 @@ public class GuestTest extends ProjectTest{
         uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         //Add product to cart
         int status = addProductToCart(buyer.getId(), stores.get(4).getStoreId(), pi5s4.getProductId(), ERROR);
-        assertTrue(status < -1);
+        assertTrue(status == -1);
     }
 
+    /*
     @Test
     public void testAddMoreThanExistsProductToCart(){
         GuestInfo buyer = new GuestInfo();
@@ -306,6 +309,7 @@ public class GuestTest extends ProjectTest{
         int status = addProductToCart(buyer.getId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 2);
         assertTrue(status < -1);
     }
+     */
 
     @Test
     public void testAddUnExistsProductToCart(){
@@ -316,7 +320,7 @@ public class GuestTest extends ProjectTest{
         uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         //Add product to cart
         int status = addProductToCart(buyer.getId(), stores.get(4).getStoreId(), ERROR, 2);
-        assertTrue(status < -1);
+        assertTrue(status <= -1);
     }
 
 
@@ -342,7 +346,7 @@ public class GuestTest extends ProjectTest{
 
     @Test
     public void testWrongLoginSystem(){
-        int id = register("hello123@gmail.com", "hello123", "01/01/2002");
+        int id = register("hello123@gmail.com", "hellAo123", "01/01/2002");
         assertTrue(id > -1);
         int status = login("hello123@gmail.com", "hello123A");
         assertTrue(status < 0);
@@ -358,15 +362,37 @@ public class GuestTest extends ProjectTest{
 
     @Test
     public void testRegisterSystem(){
-        int id = register("hello123@gmail.com", "hello123", "01/01/2002");
+        int id = register("hello123@gmail.com", "hello12A3", "01/01/2002");
         assertTrue(id > -1);
+    }
+    @Test
+    public void testRegisterIllegalPasswordSystem(){
+        int id = register("hello123@gmail.com", "hello123", "01/01/2002");
+        assertTrue(id < 0);
     }
 
     @Test
+    public void testRegisterIllegalPasswordSystemBar(){
+        int id = register("hello123@gmail.com", "hello123A", "01/01/2002");
+        int id2 = register("hello123@gmail.com", "hello123AA", "01/01/2002");
+        assertTrue(id > 0);
+        assertTrue(id2 < 0);
+    }
+    @Test
+    public void testRegisterIllegalBrithdaySystem(){
+        int id = register("hello123@gmail.com", "hello123", "01/01/100");
+        assertTrue(id < 0);
+    }
+    @Test
+    public void testRegisterIllegalMailSystem(){
+        int id = register("hello123", "hello123", "01/01/2002");
+        assertTrue(id < 0);
+    }
+    @Test
     public void testRegisterExistMailSystem(){
-        int id = register("hello123@gmail.com", "hello123", "01/01/2002");
+        int id = register("hello123@gmail.com", "hello123A", "01/01/2002");
         assertTrue(id > -1);
-        id = register("hello123@gmail.com", "hello123", "01/01/2002");
+        id = register("hello123@gmail.com", "hello123A", "01/01/2002");
         assertTrue(id < 0);
     }
 

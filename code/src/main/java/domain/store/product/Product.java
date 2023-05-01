@@ -41,7 +41,7 @@ public class Product {
 
 
     public void setQuantity(int amount){
-        if(amount>0){
+        if(quantity + amount>=0){
             quantity += amount;
         }
         //else maybe should throw exception

@@ -17,8 +17,8 @@ public enum Action {
     seeStoreHistory, // manager, owner, creator
     seeStoreOrders, // manager,owner,creator
     checkWorkersStatus, // manager, owner, creator
-    appointManager, // manager, owner, creator
-    fireManager, // manager, owner, creator
+    appointManager, // owner, creator
+    fireManager, // owner, creator
 
     appointOwner, //owner, creator
     fireOwner, // owner, creator

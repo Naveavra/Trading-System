@@ -21,8 +21,7 @@ public class Info {
     public String getBirthday() {
         return birthday;
     }
-
-    public int getAge() {
+    public int getAge(){
         return age;
     }
 
@@ -46,4 +45,10 @@ public class Info {
     public void addManagerActions(List<Action> actions){
         managerActions.addAll(actions);
     }
+
+    public List<Action> getManagerActions(){
+        return managerActions;
+    }
+
+
 }

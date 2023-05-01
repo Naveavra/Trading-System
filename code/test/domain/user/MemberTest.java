@@ -30,10 +30,14 @@ class MemberTest {
     private Gson gson;
     private LinkedList<String> answers;
     @BeforeEach
-    void setUp() {
+    void setUp(){
         m = new Member(1, "ziv@gmail.com", "ziv1234", "22/04/2002");
         s = new Store(0, "", 1);
-        s.addNewProduct("apppe", "pink apple", new AtomicInteger(1));
+        try {
+            s.addNewProduct("apppe", "pink apple", new AtomicInteger(1));
+        }catch (Exception e){
+            assert false;
+        }
         answers = new LinkedList<>();
         gson =new Gson();
     }
@@ -254,11 +258,9 @@ class MemberTest {
         m.login("ziv1234", answers);
         m.addProductToCart(s.getStoreId(),1,100);
         m.purchaseMade(0,10);
-        LinkedTreeMap cart = new LinkedTreeMap<>();
-        String res = m.getUserPurchaseHistory();
-        cart = gson.fromJson(res,cart.getClass());
+        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> res = m.getUserPurchaseHistory();
         System.out.println(res);
-        System.out.println(cart.get(0));
+        System.out.println(res.get(0));
         //assertTrue(cart.get(0).get(0).keySet().contains(1));
 
        // assertTrue(cart.get(0).get(0).get(1)==100);
@@ -272,13 +274,11 @@ class MemberTest {
     void getPrivateInformation() {
         try {
             m.login("ziv1234", answers);
-            String res = m.getPrivateInformation();
-            Info inf ;
-            inf = gson.fromJson(res,Info.class);
-            assertEquals(22,inf.getAge());
-            assertEquals("22/04/2002",inf.getBirthday());
-            assertEquals("ziv@gmail.com",inf.getEmail());
-            assertEquals("ziv",inf.getName());
+            Info res = m.getPrivateInformation();
+            assertEquals(22,res.getAge());
+            assertEquals("22/04/2002",res.getBirthday());
+            assertEquals("ziv@gmail.com",res.getEmail());
+            assertEquals("ziv",res.getName());
 
         }catch (Exception e){
         System.out.println(e.getMessage());
