@@ -9,6 +9,7 @@ import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Pair;
 import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -35,11 +36,6 @@ class MemberTest {
         s.addNewProduct("apppe", "pink apple", new AtomicInteger(1));
         answers = new LinkedList<>();
         gson =new Gson();
-        try {
-            //s.appointUser(1, 1, Role.Manager);
-        } catch (Exception e) {
-
-        }
     }
     @Test
     void connect() {
@@ -283,6 +279,7 @@ class MemberTest {
             assertEquals("22/04/2002",inf.getBirthday());
             assertEquals("ziv@gmail.com",inf.getEmail());
             assertEquals("ziv",inf.getName());
+
         }catch (Exception e){
         System.out.println(e.getMessage());
         assertTrue(false);
@@ -291,42 +288,162 @@ class MemberTest {
 
     @Test
     void addQuestionForLogin() {
+        try {
+            m.addQuestionForLogin("what is the answer to all", "42");
+            m.login("ziv1234", answers);
+        } catch (Exception e) {
+            assertEquals("the wrong answers were given", e.getMessage());
+            answers.add("42");
+            try {
+                m.login("ziv1234", answers);
+                assertTrue(true);
+            } catch (Exception e2) {
+                System.out.println(e2.getMessage());
+                assertTrue(false);
+            }
+        }
     }
 
     @Test
     void changeAnswerForQuestion() {
+        try {
+            m.addQuestionForLogin("what is the answer to all", "42");
+            m.changeAnswerForQuestion("what is the answer to all","believe");
+            m.login("ziv1234", answers);
+        } catch (Exception e) {
+            assertEquals("the wrong answers were given", e.getMessage());
+            answers.add("42");
+            try {
+                m.login("ziv1234", answers);
+                assertTrue(false);
+            } catch (Exception e2) {
+                try{
+                    answers.remove(0);
+                    answers.add("believe");
+                    m.login("ziv1234", answers);
+                    assertTrue(true);
+                }catch (Exception e3){
+                    System.out.println(e3.getMessage());
+                    assertTrue(false);
+                }
+            }
+        }
     }
 
     @Test
     void removeSecurityQuestion() {
+        try {
+            m.addQuestionForLogin("what is the answer to all", "42");
+            m.login("ziv1234", answers);
+        } catch (Exception e) {
+            assertEquals("the wrong answers were given", e.getMessage());
+            try {
+                m.removeSecurityQuestion("what is the answer to all");
+                m.login("ziv1234", answers);
+                assertTrue(true);
+            }catch (Exception e2){
+                System.out.println(e2.getMessage());
+                assertTrue(false);
+            }
+        }
     }
 
     @Test
     void appointToManager() {
-    }
+        try{
+            m.login("ziv1234", answers);
+            m.openStore(s);
+            Store store =  m.appointToManager(2, 0);
+            Pair<Integer,Role> pairs= store.getAppHistory().getNode(2).getData();
+            assertTrue(store.getUsersInStore().contains(2));
+            assertEquals(pairs.getSecond(),Role.Manager);
+    }catch (Exception e) {
+            System.out.println();
+            assertTrue(false);
+        }
+        }
 
     @Test
     void appointToOwner() {
+        try{
+            m.login("ziv1234", answers);
+            m.openStore(s);
+            Store store =  m.appointToManager(2, 0);
+            Pair<Integer,Role> pairs= store.getAppHistory().getNode(2).getData();
+            assertTrue(store.getUsersInStore().contains(2));
+            assertEquals(pairs.getSecond(),Role.Owner);
+        }catch (Exception e) {
+            System.out.println();
+            assertTrue(false);
+        }
     }
 
     @Test
     void checkRoleInStore() {
+        m.openStore(s);
+        assertEquals( m.checkRoleInStore(0) ,Role.Creator);
+        Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
+        try {
+            m.appointToManager(3, 0);
+            newMem1.appointToManager(3,0);
+            assertEquals( newMem1.checkRoleInStore(0) ,Role.Manager);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            assertTrue(false);
+
+        }
     }
 
     @Test
     void fireOwner() {
+        try {
+            m.openStore(s);
+            Store store =  m.appointToOwner(3, 0);
+            m.fireOwner(3, 0);
+           assertEquals(store.getAppHistory().getNode(3),null);
+        }catch (Exception e){
+        System.out.println(e.getMessage());
+        assertTrue(false);
+        }
     }
 
     @Test
     void removeRoleInStore() {
+        m.openStore(s);
+        m.removeRoleInStore(0);
+       Role r =  m.checkRoleInStore(0);
+       assertEquals(r,null);
     }
 
     @Test
     void fireManager() {
+        try{
+            m.login("ziv1234", answers);
+            m.openStore(s);
+            Store store =  m.appointToManager(2, 0);
+            m.fireManager(2,0);
+            assertTrue(!store.getUsersInStore().contains(2));
+            assertEquals(store.getAppHistory().getNode(2 ),null);
+        }catch (Exception e) {
+            System.out.println();
+            assertTrue(false);
+        }
     }
 
     @Test
     void addAction() {
+        try{
+            m.openStore(s);
+            Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
+            for(Action a : Action.values()){
+                m.removeAction(a,0);
+                m.addAction(a,0);
+                assertTrue(m.checkPermission(a,0));
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            assertTrue(false);
+        }
     }
 
     @Test
