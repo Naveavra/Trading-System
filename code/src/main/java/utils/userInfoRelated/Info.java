@@ -6,6 +6,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Info {
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+    public int getAge(){
+        return age;
+    }
+
     private int id;
     private String name;
     private String email;
@@ -31,21 +50,5 @@ public class Info {
         return managerActions;
     }
 
-    public int getId(){
-        return id;
-    }
 
-    public int getAge(){
-        return age;
-    }
-    public String getName(){
-        return name;
-    }
-    public String getEmail(){
-        return email;
-    }
-
-    public String getBirthday(){
-        return birthday;
-    }
 }

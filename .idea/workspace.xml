@@ -5,16 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6ae14e4-fbd0-4323-b4ff-3afa10dfd922" name="Changes" comment="adding new functoins in implementation">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_8_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_8_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/discount/DiscountPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/discount/DiscountPolicy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/product/Product.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/service/MarketController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByRating.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByRating.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByStoreRating.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/FilterProductByStoreRating.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/Filter/ProductFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/Filter/ProductFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/userInfoRelated/Info.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/userInfoRelated/Info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/storeManagement/Store.class" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/classes/domain/store/storeManagement/Store.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/userInfoRelated/Info.class" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/classes/utils/userInfoRelated/Info.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/test-classes/domain/user/MemberTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/test-classes/domain/user/MemberTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/test/domain/user/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/test/domain/user/MemberTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docx/version1/.$archi_.drawio.bkp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docx/version1/.$archi_.drawio.dtmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docx/version1/glossary.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/docx/version1/glossary.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docx/version1/whiteClassDiagram.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/docx/version1/whiteClassDiagram.drawio" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docx/version1/whiteClassDiagram.drawio.png" beforeDir="false" afterPath="$PROJECT_DIR$/docx/version1/whiteClassDiagram.drawio.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docx/version1/whiteClassDiagram.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,11 +81,100 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="JUnit.MemberTest.getUserPurchaseHistory">
+    <configuration name="MemberTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.user" />
+      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MemberTest.canCheckMessages" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.user" />
+      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
+      <option name="METHOD_NAME" value="canCheckMessages" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MemberTest.canGiveFeedback" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.user" />
+      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
+      <option name="METHOD_NAME" value="canGiveFeedback" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MemberTest.getPrivateInformation" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.user" />
+      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
+      <option name="METHOD_NAME" value="getPrivateInformation" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MemberTest.getUserPurchaseHistory" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.user" />
+      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
+      <option name="METHOD_NAME" value="getUserPurchaseHistory" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.MemberTest.getUserPurchaseHistory" />
+        <item itemvalue="JUnit.MemberTest" />
+        <item itemvalue="JUnit.MemberTest.getPrivateInformation" />
+        <item itemvalue="JUnit.MemberTest.canGiveFeedback" />
+        <item itemvalue="JUnit.MemberTest.canCheckMessages" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -136,5 +233,32 @@
     <MESSAGE value="adding new functoins in implementation,changing structure of response" />
     <MESSAGE value="adding new functoins in implementation" />
     <option name="LAST_COMMIT_MESSAGE" value="adding new functoins in implementation" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/test/domain/user/BasketTest.java</url>
+          <line>70</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/test/domain/user/MemberTest.java</url>
+          <line>262</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/test/domain/user/MemberTest.java</url>
+          <line>258</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="domain.user.Basket" memberName="productList" />
+        <PinnedItemInfo parentTag="domain.user.UserHistory" memberName="purchaseHistory" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
 </project>

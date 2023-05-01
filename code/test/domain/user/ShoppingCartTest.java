@@ -1,6 +1,6 @@
 package domain.user;
 
-import org.junit.jupiter.api.AfterEach;
+import domain.store.product.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,24 +8,20 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GuestTest {
-    private Guest guest;
-
+class ShoppingCartTest {
+    Guest g ;
+    ShoppingCart s ;
     @BeforeEach
     void setUp() {
-        guest = new Guest(2);
-
-    }
-
-    @AfterEach
-    void tearDown() {
+        g = new Guest(1);
+        s = new ShoppingCart();
     }
 
     @Test
     void addProductToCart_success() {
         try {
-            guest.addProductToCart(1, 0, 100);
-            HashMap<Integer, HashMap<Integer, Integer>> cart = guest.getCartContent();
+            s.addProductToCart(1, 0, 100);
+            HashMap<Integer, HashMap<Integer, Integer>> cart =  s.getContent();
             assertTrue(cart.get(1) != null);
             HashMap<Integer, Integer> products = new HashMap<>();
             products = cart.get(1);
@@ -37,7 +33,7 @@ class GuestTest {
     @Test
     void addProductToCart_fail() {
         try {
-            guest.addProductToCart(1, 0, -100);
+            s.addProductToCart(1, 0, -100);
             assertTrue(false);
         }catch (Exception e){
             assertTrue(true);
@@ -47,9 +43,9 @@ class GuestTest {
     @Test
     void removeProductFromCart_success() {
         try{
-            guest.addProductToCart(1, 0, 100);
-            guest.removeProductFromCart(1,0);
-            HashMap<Integer, HashMap<Integer, Integer>> cart = guest.getCartContent();
+            s.addProductToCart(1, 0, 100);
+            s.removeProductFromCart(1,0);
+            HashMap<Integer, HashMap<Integer, Integer>> cart = s.getContent();
             assertTrue(cart.get(1)==null);
         }catch (Exception e){
             assertTrue(false);
@@ -58,18 +54,19 @@ class GuestTest {
     @Test
     void removeProductFromCart_fail() {
         try{
-            guest.removeProductFromCart(0,0);
+            s.removeProductFromCart(0,0);
             assertTrue(false);
         }catch (Exception e){
             assertTrue(true);
         }
     }
+
     @Test
     void changeQuantityInCart_success() {
         try{
-            guest.addProductToCart(1, 0, 100);
-            guest.changeQuantityInCart(1,0,10);
-            HashMap<Integer, HashMap<Integer, Integer>> cart = guest.getCartContent();
+            s.addProductToCart(1, 0, 100);
+            s.changeQuantityInCart(1,0,10);
+            HashMap<Integer, HashMap<Integer, Integer>> cart = s.getContent();
             assertTrue(cart.get(1)!=null);
             assertTrue(cart.get(1).get(0)==110);
         }catch (Exception e){
@@ -79,7 +76,7 @@ class GuestTest {
     @Test
     void changeQuantityInCart_fail() {
         try{
-            guest.changeQuantityInCart(0,0,10);
+            s.changeQuantityInCart(0,0,10);
             assertFalse(true);
         }catch (Exception e){
             assertTrue(true);
@@ -87,10 +84,10 @@ class GuestTest {
     }
 
     @Test
-    void getCartContent_success() {
+    void getContent_success() {
         try{
-            guest.addProductToCart(1, 0, 100);
-            HashMap<Integer, HashMap<Integer, Integer>> cart = guest.getCartContent();
+            s.addProductToCart(1, 0, 100);
+            HashMap<Integer, HashMap<Integer, Integer>> cart = s.getContent();
             assertTrue(cart.get(1)!=null);
             assertTrue(cart.get(1).get(0)==100);
         }catch (Exception e){
@@ -98,23 +95,22 @@ class GuestTest {
         }
     }
     @Test
-    void getCartContent_fail() {
+    void getContent_fail() {
         try{
-            guest.addProductToCart(1, 0, 100);
-            HashMap<Integer, HashMap<Integer, Integer>> cart = guest.getCartContent();
+            s.addProductToCart(1, 0, 100);
+            HashMap<Integer, HashMap<Integer, Integer>> cart = s.getContent();
             assertFalse(cart.get(2)!=null);
         }catch (Exception e){
             assertTrue(false);
         }
     }
 
-
     @Test
     void emptyCart_success() {
         try{
-            guest.addProductToCart(1, 0, 100);
-            guest.emptyCart();
-            HashMap<Integer, HashMap<Integer, Integer>> cart = guest.getCartContent();
+            s.addProductToCart(1, 0, 100);
+            s.emptyCart();
+            HashMap<Integer, HashMap<Integer, Integer>> cart = s.getContent();
             assertFalse(cart.get(1)!=null);
         }catch (Exception e){
             assertTrue(false);
@@ -123,9 +119,9 @@ class GuestTest {
     @Test
     void emptyCart_fail() {
         try{
-            guest.addProductToCart(1, 0, 100);
-            guest.emptyCart();
-            HashMap<Integer, HashMap<Integer, Integer>> cart = guest.getCartContent();
+            s.addProductToCart(1, 0, 100);
+            s.emptyCart();
+            HashMap<Integer, HashMap<Integer, Integer>> cart = s.getContent();
             assertFalse(cart.get(1)!=null);
         }catch (Exception e){
             assertTrue(false);
