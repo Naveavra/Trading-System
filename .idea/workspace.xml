@@ -4,25 +4,97 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6ae14e4-fbd0-4323-b4ff-3afa10dfd922" name="Changes" comment="adding new functoins in implementation">
+    <list default="true" id="c6ae14e4-fbd0-4323-b4ff-3afa10dfd922" name="Changes" comment="starting server">
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/utils/Token.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_googlecode_json_simple_json_simple_1_1_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_2.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_8_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/utils/userInfoRelated/Info.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/utils/userInfoRelated/Info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/storeManagement/Store.class" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/classes/domain/store/storeManagement/Store.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/userInfoRelated/Info.class" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/classes/utils/userInfoRelated/Info.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/target/test-classes/domain/user/MemberTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/test-classes/domain/user/MemberTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/test/domain/user/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/test/domain/user/MemberTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docx/version1/.$archi_.drawio.bkp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docx/version1/.$archi_.drawio.dtmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docx/version1/glossary.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/docx/version1/glossary.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docx/version1/whiteClassDiagram.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/docx/version1/whiteClassDiagram.drawio" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docx/version1/whiteClassDiagram.drawio.png" beforeDir="false" afterPath="$PROJECT_DIR$/docx/version1/whiteClassDiagram.drawio.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docx/version1/whiteClassDiagram.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/market/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/server/MainWebSocket.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/bridge/Bridge.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/bridge/BridgeImplement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/data/AdminInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/data/CartInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/data/GuestInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/data/MessageInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/data/PermissionInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/data/PositionInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/data/ProductInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/data/PurchaseInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/data/StoreInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/data/UserInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/states/Permission.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/states/StoreCreator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/states/StoreManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/states/StoreOwner.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/states/UserState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/discount/ConcreteDiscountConstraint.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/discount/DiscountConstraint.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/discount/DiscountPolicy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/order/OrderController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/product/Inventory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/product/Product.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/purchase/ConcrectePurchaseConstraint.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/purchase/PurchaseConstraint.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/purchase/PurchasePolicy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/storeManagement/AppHistory$Node.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/storeManagement/AppHistory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/storeManagement/Store.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/store/storeManagement/StoreController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/user/Basket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/user/Guest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/user/Member.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/user/ShoppingCart.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/domain/user/UserHistory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/market/Admin.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/market/Market.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/market/MarketInterface.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/server/MainWebSocket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/server/Server.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/service/MarketController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/service/UserController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/service/payment/PaymentAdapter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/service/payment/ProxyPayment.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/service/security/ProxySecurity.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/service/security/SecurityAdapter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/service/supplier/ProxySupplier.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/service/supplier/SupplierAdapter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/FilterProductByCategories.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/FilterProductByKeywords.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/FilterProductByPriceMax.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/FilterProductByPriceMin.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/FilterProductByRating.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/FilterProductByStoreRating.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/FilterStrategy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/GetProductOperation.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/ProductFilter$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/ProductFilter$strategies.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Filter/ProductFilter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Logger$logStatus.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Logger.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/Pair.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/ProductInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/StoreInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/marketRelated/MarketInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/marketRelated/Response.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/messageRelated/Message.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/messageRelated/MessageState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/messageRelated/Notification.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/orderRelated/Order.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/orderRelated/OrderInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/orderRelated/Status.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/stateRelated/Action.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/stateRelated/Role.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/userInfoRelated/Info.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/userInfoRelated/PrivateInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/utils/userInfoRelated/Receipt.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/work1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/work1.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,26 +155,25 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true"
+    "WebServerToolWindowFactoryState": "false",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.MemberTest.getUserPurchaseHistory">
-    <configuration name="MemberTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Application.Server">
+    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="domain.user.*" />
+          <option name="PATTERN" value="server.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="domain.user" />
-      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.canCheckMessages" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="MemberTest.checkRoleInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -112,13 +183,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="domain.user" />
       <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
-      <option name="METHOD_NAME" value="canCheckMessages" />
+      <option name="METHOD_NAME" value="checkRoleInStore" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.canGiveFeedback" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="MemberTest.fireManager" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -128,13 +199,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="domain.user" />
       <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
-      <option name="METHOD_NAME" value="canGiveFeedback" />
+      <option name="METHOD_NAME" value="fireManager" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.getPrivateInformation" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="MemberTest.fireOwner" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -144,13 +215,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="domain.user" />
       <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
-      <option name="METHOD_NAME" value="getPrivateInformation" />
+      <option name="METHOD_NAME" value="fireOwner" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.getUserPurchaseHistory" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="MemberTest.removeRoleInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -160,7 +231,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="domain.user" />
       <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
-      <option name="METHOD_NAME" value="getUserPurchaseHistory" />
+      <option name="METHOD_NAME" value="removeRoleInStore" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -168,11 +239,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.MemberTest.getUserPurchaseHistory" />
-        <item itemvalue="JUnit.MemberTest" />
-        <item itemvalue="JUnit.MemberTest.getPrivateInformation" />
-        <item itemvalue="JUnit.MemberTest.canGiveFeedback" />
-        <item itemvalue="JUnit.MemberTest.canCheckMessages" />
+        <item itemvalue="Application.Server" />
+        <item itemvalue="JUnit.MemberTest.removeRoleInStore" />
+        <item itemvalue="JUnit.MemberTest.fireOwner" />
+        <item itemvalue="JUnit.MemberTest.fireManager" />
+        <item itemvalue="JUnit.MemberTest.checkRoleInStore" />
       </list>
     </recent_temporary>
   </component>
@@ -189,6 +260,7 @@
       <workItem from="1682342606410" duration="619000" />
       <workItem from="1682343265358" duration="5465000" />
       <workItem from="1682500733867" duration="18292000" />
+      <workItem from="1683092646127" duration="1837000" />
     </task>
     <task id="LOCAL-00001" summary="adding new functoins in interface">
       <created>1682083957384</created>
@@ -211,7 +283,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682207665981</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="starting server">
+      <created>1683051347250</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1683051347250</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -232,25 +311,26 @@
     <MESSAGE value="adding new functoins in interface" />
     <MESSAGE value="adding new functoins in implementation,changing structure of response" />
     <MESSAGE value="adding new functoins in implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding new functoins in implementation" />
+    <MESSAGE value="starting server" />
+    <option name="LAST_COMMIT_MESSAGE" value="starting server" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/test/domain/user/BasketTest.java</url>
-          <line>70</line>
+          <line>73</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/test/domain/user/MemberTest.java</url>
-          <line>262</line>
-          <option name="timeStamp" value="8" />
+          <line>256</line>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/test/domain/user/MemberTest.java</url>
-          <line>258</line>
-          <option name="timeStamp" value="9" />
+          <line>435</line>
+          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -9,6 +9,7 @@ import market.Market;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import utils.Token;
 import utils.marketRelated.Response;
 import utils.orderRelated.OrderInfo;
 import utils.userInfoRelated.Info;
@@ -56,9 +57,9 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int login(String email, String password) {
-        Response<Integer> res = market.login(email, password, new ArrayList<>());
+        Response<Token> res = market.login(email, password, new ArrayList<>());
         if (res != null && !res.errorOccurred()) {
-            return res.getValue();
+            return res.getValue().getUserId();
         }
         return -1;
     }

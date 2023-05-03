@@ -128,12 +128,13 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<Integer> login(String email, String pass, List<String> answers) {
+    public Response<Token> login(String email, String pass, List<String> answers) {
         try {
             int memberId = userController.login(email, pass, answers);
             marketInfo.addUserCount();
             logger.log(Logger.logStatus.Success, "user " + email + " logged in successfully on " + LocalDateTime.now());
-            return new Response<>(memberId, null, null);
+            Token t = new Token("token", memberId,email);
+            return new Response<Token>(t, null, null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "user cant get log in because " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "log in failed", e.getMessage());
