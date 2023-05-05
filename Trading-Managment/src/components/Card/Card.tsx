@@ -5,6 +5,7 @@ import { Product } from "../../types/systemTypes/Product";
 
 interface CardProps {
     item: Product;
+    canMakeChanges: boolean;
 }
 const Card: React.FC<CardProps> = ({ item }) => {
     console.log(item);
@@ -17,7 +18,6 @@ const Card: React.FC<CardProps> = ({ item }) => {
                         alt=""
                         className="mainImg"
                     />
-
                 </div>
                 <h2>{item.name}</h2>
                 <p>{item.description.substring(0, 100)}...</p>

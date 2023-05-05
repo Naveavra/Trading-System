@@ -5,7 +5,7 @@ import { LoadingButton } from '@mui/lab';
 
 import { useAppDispatch, useAppSelector, RootState } from '../../../redux/store';
 import { LoginFormValues } from '../types';
-import { login } from '../../../reducers/authSlice';
+import { guestEnter, login } from '../../../reducers/authSlice';
 import { useAppStorage } from '../../../hooks/useAppStorage';
 import { localStorage } from '../../../config';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,7 @@ export const LoginForm = ({ }: LoginFormProps) => {
     const isLoginLoading = useAppSelector((state: RootState) => state.auth.isLoginLoading);
     const form = useForm<LoginFormValues>();
     const navigate = useNavigate();
+    const userId = useAppSelector((state: RootState) => state.auth.userId);
     // Form Buttons
     const handleOnSubmit = form.handleSubmit(() => {
         setDefaultChecked(form.getValues().rememberMe);
@@ -32,6 +33,7 @@ export const LoginForm = ({ }: LoginFormProps) => {
         navigate('/auth/forgot-password');
     };
     const handleOnContinueAsGuest = () => {
+        dispatch(guestEnter());
         navigate('/dashboard');
     };
 
