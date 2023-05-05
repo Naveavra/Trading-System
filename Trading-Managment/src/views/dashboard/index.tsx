@@ -4,16 +4,20 @@ import * as React from 'react';
 // // import { useAppSelector } from '../../redux/store';
 //import '../../logos/cartLogo.css'
 import { useEffect } from 'react';
-import { useAppDispatch } from '../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 import DashboardFrame from '../../components/Frame';
+import AlertDialog from '../../components/Dialog/AlertDialog';
+import { clearAuthError } from '../../reducers/authSlice';
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const isLoadingShops = false//useAppSelector((state) => !!state.shops.isLoading);
     const isLoadingProducts = false //useAppSelector((state) => !!state.products.isLoading);
+    const userId = useAppSelector((state) => state.auth.userId);
+    const error = useAppSelector((state) => state.auth.error);
     // const products = useAppSelector((state) => state.products.responseBody);
     // const categories = useAppSelector((state) => state.categories.responseBody);
     // Define variables for the cart elements
-
+    console.log('userId', userId);
     useEffect(() => {
         // dispatch(getShops({}));
         // dispatch(getProducts({ category: 'all' }));
@@ -49,8 +53,9 @@ const DashboardPage: React.FC = () => {
                     </div>
                 </div>
             </div>
+        </> : !!error ? <AlertDialog open={!!error} onClose={() => { dispatch(clearAuthError()) }} text={error} sevirity={'error'} />
+            : <DashboardFrame />
 
-        </> : <DashboardFrame />
     )
 };
 

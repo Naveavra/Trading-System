@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiError } from "../types/apiTypes";
-import { TokenResponseBody, RegisterResponseData } from "../types/responseTypes/authTypes";
+import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData } from "../types/responseTypes/authTypes";
 import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
@@ -57,6 +57,22 @@ export const register = createAsyncThunk<
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
+//guest enter
+export const guestEnter = createAsyncThunk<
+    { responseBody: EnterGuestResponseData },
+    void,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/guestEnter`,
+    async (_, thunkApi) => {
+        return authApi.guestEnter()
+            .then((res) => thunkApi.fulfillWithValue({
+                responseBody: res as EnterGuestResponseData
+            }))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+
+
 const { reducer: authReducer, actions: authActions } = createSlice({
     name: reducrName,
     initialState,
@@ -111,14 +127,28 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.isRegisterLoading = false;
             state.registerMsg = payload.responseBody.answer;
         });
-        builder.addCase(register.rejected, (state, action) => {
+        builder.addCase(register.rejected, (state, { payload }) => {
             state.isRegisterLoading = false;
-            state.error = action.error.message ?? "error during register";
+            state.error = payload?.message.data.errorMsg ?? "error during register";
+        });
+        //guest enter
+        builder.addCase(guestEnter.pending, (state) => {
+            state.isLoginLoading = true;
+            state.error = null;
+        });
+        builder.addCase(guestEnter.fulfilled, (state, { payload }: PayloadAction<{ responseBody: EnterGuestResponseData }>) => {
+            state.isLoginLoading = false;
+            state.token = null;
+            state.userId = payload.responseBody.guestId;
+            state.userName = "guest";
+        });
+        builder.addCase(guestEnter.rejected, (state, { payload }) => {
+            console.log("guestEnter.rejected", payload);
+            state.isLoginLoading = false;
+            state.error = payload?.message.data.errorMsg ?? "error during guest enter";
         });
     }
 });
 // Action creators are generated for each case reducer function
 export const { logout, clearAuthError } = authActions;
 export default authReducer;
-
-
