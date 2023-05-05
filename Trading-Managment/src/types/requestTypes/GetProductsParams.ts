@@ -2,7 +2,7 @@ export interface GetProductsParams {
     id: number,
 };
 export interface PostProductsParams {
-    id: number;
+    id: number; //userid
     storeId: number;
     category: string[];
     name: string;
@@ -12,14 +12,19 @@ export interface PostProductsParams {
     img: string;
     
 }
-export interface PatchCustomerParams {
-    id: number;
+export interface PatchProductsParams {
+    id: number; //userid
     storeId: number;
-    category?: string[];
-    name?: string;
-    description?: string;
-    price?: number;
-    quantity?: number;
-    img?: string;
-    rating?: Number;
+    productId: number;
+    category: string[];
+    name: string;
+    description: string;
+    price: number;
+    quantity: number;
+    img: string;
+}
+export interface DeleteProductsParams {
+    id: number; //userid
+    storeId: number;
+    productId: number;
 }
