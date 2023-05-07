@@ -9,6 +9,8 @@ import { logout } from '../reducers/authSlice';
 //import  Navebar  from '../components/NavBar/Navbar';
 import Bar from './Navbar/Navbar';
 import { SearchBar } from './SearchBar/SearchBar';
+import Categories from './Categories/categories';
+import Categories2 from './Categories/category2';
 
 
 
@@ -28,9 +30,10 @@ const DashboardFrame: React.FC = () => {
 
 
     return (<>
-
         <Bar />
         <SearchBar />
+        {/* <Categories /> */}
+        <Categories2 />
     </>);
 };
 

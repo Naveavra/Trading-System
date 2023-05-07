@@ -14,5 +14,7 @@ export const authApi = {
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/register', credentials)),
     guestEnter: (): Promise<EnterGuestResponseData> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/guest/enter')),
+    ping: (credential: number): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/ping', credential)),
 
 }

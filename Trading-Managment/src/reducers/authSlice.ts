@@ -5,12 +5,16 @@ import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
 import { RegisterPostData } from "../types/requestTypes/authTypes";
+import { StoreRole } from "../types/systemTypes/StoreRole";
 
 interface AuthState {
     token: string | null;
     userId: number;
     userName: string;
-    registerMsg: string | null;
+    isAdmin: boolean;
+    message: string | null;
+    hasQestions: boolean;
+    storeRoles: StoreRole[];
     error: string | null;
     isLoginLoading: boolean;
     isRegisterLoading: boolean;
@@ -20,7 +24,10 @@ const initialState: AuthState = {
     token: window.localStorage.getItem(localStorage.auth.token.name) || '',
     userId: parseInt(window.localStorage.getItem(localStorage.auth.userId.name) || '0'),
     userName: window.localStorage.getItem(localStorage.auth.userName.name) || '',
-    registerMsg: null,
+    isAdmin: window.localStorage.getItem(localStorage.auth.isAdmin.name) === 'true' ? true : false,
+    hasQestions: false,
+    storeRoles: [],
+    message: null,
     error: null,
     isLoginLoading: false,
     isRegisterLoading: false,
@@ -71,6 +78,20 @@ export const guestEnter = createAsyncThunk<
             }))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
+//ping
+export const ping = createAsyncThunk<
+    { responseBody: string },
+    number,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/ping`,
+    async (credential, thunkApi) => {
+        return authApi.ping(credential)
+            .then((res) => thunkApi.fulfillWithValue({
+                responseBody: res as string
+            }))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
 
 
 const { reducer: authReducer, actions: authActions } = createSlice({
@@ -84,10 +105,14 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             window.localStorage.removeItem(localStorage.auth.token.name);
             window.localStorage.removeItem(localStorage.auth.userId.name);
             window.localStorage.removeItem(localStorage.auth.userName.name);
+            window.localStorage.removeItem(localStorage.auth.isAdmin.name);
         },
         clearAuthError: (state) => {
             state.error = null;
         },
+        clearAuthMsg: (state) => {
+            state.message = null;
+        }
     },
     extraReducers: builder => {
         //login
@@ -105,13 +130,14 @@ const { reducer: authReducer, actions: authActions } = createSlice({
                 window.localStorage.setItem(localStorage.auth.token.name, payload.responseBody.token);
                 window.localStorage.setItem(localStorage.auth.userId.name, payload.responseBody.userId.toString());
                 window.localStorage.setItem(localStorage.auth.userName.name, payload.responseBody.userName);
+                window.localStorage.setItem(localStorage.auth.isAdmin.name, payload.responseBody.isAdmin.toString());
             }
             else {
                 window.localStorage.removeItem(localStorage.auth.token.name);
                 window.localStorage.removeItem(localStorage.auth.userId.name);
                 window.localStorage.removeItem(localStorage.auth.userName.name);
+                window.localStorage.removeItem(localStorage.auth.isAdmin.name);
             }
-
         });
         builder.addCase(login.rejected, (state, { payload }) => {
             console.log("payload", payload);
@@ -125,7 +151,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(register.fulfilled, (state, { payload }: PayloadAction<{ responseBody: RegisterResponseData }>) => {
             state.isRegisterLoading = false;
-            state.registerMsg = payload.responseBody.answer;
+            state.message = payload.responseBody.answer;
         });
         builder.addCase(register.rejected, (state, { payload }) => {
             state.isRegisterLoading = false;
@@ -150,5 +176,5 @@ const { reducer: authReducer, actions: authActions } = createSlice({
     }
 });
 // Action creators are generated for each case reducer function
-export const { logout, clearAuthError } = authActions;
+export const { logout, clearAuthError, clearAuthMsg } = authActions;
 export default authReducer;

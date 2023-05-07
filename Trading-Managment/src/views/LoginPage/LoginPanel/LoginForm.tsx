@@ -9,6 +9,7 @@ import { guestEnter, login } from '../../../reducers/authSlice';
 import { useAppStorage } from '../../../hooks/useAppStorage';
 import { localStorage } from '../../../config';
 import { useNavigate } from 'react-router-dom';
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 
 interface LoginFormProps {
 
@@ -21,10 +22,11 @@ export const LoginForm = ({ }: LoginFormProps) => {
     const form = useForm<LoginFormValues>();
     const navigate = useNavigate();
     const userId = useAppSelector((state: RootState) => state.auth.userId);
-    // Form Buttons
+
     const handleOnSubmit = form.handleSubmit(() => {
         setDefaultChecked(form.getValues().rememberMe);
         dispatch(login(form.getValues()));
+        //client.send(JSON.stringify({ "type": "LOGIN", "email": "ziv", "password": '123' }));
     });
     const handleOnRegster = () => {
         navigate('/auth/register');
@@ -122,7 +124,7 @@ export const LoginForm = ({ }: LoginFormProps) => {
                     {'continue as guest'}
                 </LoadingButton >
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} key={1}>
                 <LoadingButton
                     type="submit"
                     fullWidth

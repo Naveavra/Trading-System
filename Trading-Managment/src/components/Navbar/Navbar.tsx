@@ -3,7 +3,7 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css"
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -11,16 +11,19 @@ import Cart from "../Cart/Cart";
 import { Product } from "../../types/systemTypes/Product";
 import { IconButton, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { logout } from "../../reducers/authSlice";
+import { guestEnter, logout } from "../../reducers/authSlice";
 
 const Bar = () => {
     const [open, setOpen] = useState(false)
     const products: Product[] = [];// = useSelector((state) => state.cart.products);
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const handleLogout = () => {
         console.log("logout");
         dispatch(logout());
+        dispatch(guestEnter());
+        navigate('/dashboard');
     };
 
     return (
@@ -53,21 +56,22 @@ const Bar = () => {
                     </div>
 
                     <div className="icons">
-                        <IconButton onClick={() => { console.log("notifications") }}>
-                            <NotificationsOutlinedIcon />
-                        </IconButton>
+                        {isLoggedIn &&
+                            <>
+                                <IconButton onClick={handleLogout}>
+                                    <LogoutIcon />
+                                </IconButton>
+                                <IconButton onClick={() => { console.log("store") }}>
+                                    <StorefrontIcon />
+                                </IconButton>
+                                <IconButton onClick={() => { console.log("notifications") }}>
+                                    <NotificationsOutlinedIcon />
+                                </IconButton>
+                            </>
+                        }
                         <IconButton onClick={() => { console.log("details") }}>
                             <PersonOutlineOutlinedIcon />
                         </IconButton>
-                        {isLoggedIn &&
-                            <IconButton onClick={handleLogout}>
-                                <LogoutIcon />
-                            </IconButton>
-                        }
-                        {isLoggedIn &&
-                            <IconButton onClick={() => { console.log("store") }}>
-                                <StorefrontIcon />
-                            </IconButton>}
                         <IconButton onClick={() => setOpen(!open)}>
                             <div className="cartIcon">
                                 <ShoppingCartOutlinedIcon />

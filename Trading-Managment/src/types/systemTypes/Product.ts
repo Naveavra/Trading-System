@@ -8,5 +8,5 @@ export interface Product {
     quantity: number;
     img: string;
     rating: Number;
-
+    reviewNumber: number;
 }

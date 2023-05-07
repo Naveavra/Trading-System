@@ -1,11 +1,11 @@
-* {
+.cart {
     border: 0;
     box-sizing: border-box;
-    margin: 0;
+    margin: center;
     padding: 0;
 }
 
-:root {
+.cart {
     --hue: 223;
     --bg: hsl(var(--hue), 10%, 90%);
     --fg: hsl(var(--hue), 10%, 10%);
@@ -14,22 +14,23 @@
     font-size: calc(16px + (20 - 16) * (100vw - 320px) / (1280 - 320));
 }
 
-/* body {
+preloader.cart.body {
     background-color: var(--bg);
     color: var(--fg);
     font: 1em/1.5 "DM Sans", sans-serif;
-    height: 100vh;
+    margin: auto;
     display: grid;
     place-items: center;
     transition:
         background-color var(--trans-dur),
         color var(--trans-dur);
-} */
+}
 
 .preloader {
     text-align: center;
     max-width: 20em;
     width: 100%;
+
 }
 
 .preloader__text {
@@ -39,21 +40,31 @@
 
 .preloader__msg {
     animation: msg 0.3s 13.7s linear forwards;
+    animation-delay: 20s;
     position: absolute;
-    width: 100%;
+    margin-left: 80%;
+    width: 50em;
+    font-size: large;
 }
 
 .preloader__msg--last {
     animation-direction: reverse;
-    animation-delay: 14s;
+    animation-delay: 20s;
+    margin-left: 80%;
+    width: 50em;
     visibility: hidden;
+    font-size: large;
 }
 
 .cart {
     display: block;
     margin: 0 auto 1.5em auto;
-    width: 8em;
-    height: 8em;
+    width: 50em;
+    top: 50em;
+    margin-top: 10em;
+    margin-left: 50%;
+    margin-right: 50%;
+    height: 10em;
 }
 
 .cart__lines,

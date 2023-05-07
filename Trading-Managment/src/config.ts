@@ -10,7 +10,7 @@ export interface LocalSorage {
         token: Entry<number | null>;
         userId: Entry<number | null>;
         userName: Entry<string | null>;
-
+        isAdmin: Entry<boolean | null>;
     },
     settings: {
         login_page: {
@@ -30,6 +30,10 @@ export const localStorage: LocalSorage = {
         },
         userName: {
             name: 'auth.userName',
+            value: null,
+        },
+        isAdmin: {
+            name: 'auth.isAdmin',
             value: null,
         },
     },
