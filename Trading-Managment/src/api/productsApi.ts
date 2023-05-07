@@ -1,6 +1,7 @@
 // import { PanoramaSharp } from "@mui/icons-material";
 import { ApiResponse, ApiResponseListData } from "../types/apiTypes";
 import { DeleteProductsParams, GetProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
+import { ProductResponseData } from "../types/responseTypes/productTypes";
 import { Product } from "../types/systemTypes/Product";
 import { getApiClient, noAuthApiClient } from "./apiClient";
 import { apiErrorHandlerWrapper } from "./util";
