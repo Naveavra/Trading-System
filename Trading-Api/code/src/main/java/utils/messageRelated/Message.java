@@ -3,11 +3,11 @@ package utils.messageRelated;
 import domain.user.Member;
 
 public class Message {
-    private int messageId;
+    private transient int messageId;
     private String content;
     private String ownerEmail;
     private int rating;
-    private Member reviewer;
+    private transient Member reviewer;
     private MessageState state;
     private int orderId; //if it is a review then orderId > -1 else orderId == -1
     private int storeId;

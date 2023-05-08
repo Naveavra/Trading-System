@@ -26,6 +26,10 @@ public class Admin {
     public int getAdminId(){
         return adminId;
     }
+
+    public String getEmailAdmin(){
+        return emailAdmin;
+    }
     public void closeStorePermanently(int storeId) throws Exception {
         Set<Integer> userIds = marketController.closeStorePermanently(storeId);
         for(int userId : userIds){
@@ -36,7 +40,7 @@ public class Admin {
         }
     }
     public boolean checkEmail(String email){
-        return Objects.equals(emailAdmin, email);
+        return email.equals(emailAdmin);
     }
     public boolean checkPassword(String pass){
         return Objects.equals(passwordAdmin, pass);

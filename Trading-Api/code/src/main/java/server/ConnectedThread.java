@@ -26,7 +26,8 @@ public class ConnectedThread  extends Thread{
                         api.exitGuest(key);
                     }
                     else {
-                        api.logout(key);
+                        //TODO: logout
+                        //api.logout(key);
                     }
                     System.out.println(key + " removed !!!!!");
                 }
