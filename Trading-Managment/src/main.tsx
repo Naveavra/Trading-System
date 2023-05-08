@@ -1,4 +1,4 @@
-import React, { } from 'react'
+import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -8,6 +8,7 @@ import { RouterProvider } from 'react-router-dom';
 import { store, useAppDispatch, useAppSelector } from './redux/store';
 import { router } from './router';
 import axios from 'axios';
+import { getStores } from './reducers/storesSlice';
 
 
 const App = () => {
@@ -30,7 +31,9 @@ const App = () => {
       // dispatch(ping(userId));
     }
   }
-
+  useEffect(()=>{
+    dispatch(getStores());
+},[dispatch])
   // Call the sendPing function every 2 seconds
   const pingInterval = setInterval(sendPing, PING_INTERVAL);
 

@@ -11,24 +11,24 @@ interface ProductsState {
     productState: {
         isLoading: boolean;
         responseData?: Product;
-        error?: ApiError | ValidationError;
+        error: string | null;
         watchedProduct?: Product;
     },
     isLoading: boolean;
     responseData?: ApiListData<Product>;
-    error?: ApiError;
+    error:  string | null;
 };
 
 const initialState: ProductsState = {
     productState: {
         isLoading: false,
         responseData: undefined,
-        error: undefined,
+        error: null,
         watchedProduct: undefined,
     },
     isLoading: false,
     responseData: undefined,
-    error: undefined,
+    error: null,
 };
 
 export const postProduct = createAsyncThunk<

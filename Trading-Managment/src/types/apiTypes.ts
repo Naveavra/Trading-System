@@ -5,8 +5,7 @@ export interface ApiError {
 };
 
 export interface ApiListData<T> {
-    value: {
-        count: number,
+   data:{
         results: T[]
     }
 }

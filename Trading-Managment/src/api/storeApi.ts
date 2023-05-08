@@ -7,10 +7,8 @@ import { apiErrorHandlerWrapper } from "./util";
 
 export const storeApi = 
 {
-    getStores: (params: GetStoresParams) :Promise<ApiResponseListData<Store>> =>
-        apiErrorHandlerWrapper(noAuthApiClient.get('api/stores', {
-            params: params
-        })),
+    getStores: () :Promise<ApiResponseListData<Store>> =>
+        apiErrorHandlerWrapper(noAuthApiClient.get('api/stores')),
         
     postStore: (params: PostStoreParams) : Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/stores', params)),
@@ -19,7 +17,7 @@ export const storeApi =
         apiErrorHandlerWrapper(getApiClient().patch('api/stores', params)),
 
     deleteStore: (params: DeleteStoreParams) : Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().delete('api/stores', {
+        apiErrorHandlerWrapper(getApiClient().delete(`api/stores/${params.storeId}`, {
             params: params
         })),
 
