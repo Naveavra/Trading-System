@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectedThread  extends Thread{
     private final ConcurrentHashMap<Integer, Boolean> connected;
-    private Market market = Server.market;
+    private API api = Server.api;
 
     public ConnectedThread(ConcurrentHashMap<Integer, Boolean> connected) {
         this.connected = connected;
@@ -23,10 +23,10 @@ public class ConnectedThread  extends Thread{
                 } else {
                     connected.remove(key);
                     if(key%2==0){
-                        market.exitGuest(key);
+                        api.exitGuest(key);
                     }
                     else {
-                        market.logout(key);
+                        api.logout(key);
                     }
                     System.out.println(key + " removed !!!!!");
                 }
