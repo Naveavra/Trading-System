@@ -1,28 +1,41 @@
 package server;
 
-import domain.store.storeManagement.Store;
-import market.Admin;
-import market.Market;
 import org.json.JSONObject;
-import spark.Spark;
-import utils.Token;
-import utils.marketRelated.Response;
+import utils.Pair;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static spark.Spark.*;
 
 public class Server {
-    public static Market market = new Market(new Admin(-1, "hi@co.il", "123Aaa"));
+    public static API api = new API();
     static ConnectedThread connectedThread ;
     static ConcurrentHashMap<Integer,Boolean> connected = new ConcurrentHashMap<>();
+
+    private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes)
+    {
+        if (apiRes.getFirst())
+        {
+            res.status(200);
+            res.body(apiRes.getSecond().get("value").toString());
+        }
+        else
+        {
+            res.status(400);
+            res.body(apiRes.getSecond().get("errorMsg").toString());
+        }
+    }
+
     public static void main(String[] args) {
-        market.register("eli@gmail.com","aA12345","22/02/2002");
+        //api.register("eli@gmail.com","aA12345","22/02/2002");
         //Spark.webSocket("/api/login", MainWebSocket.class);
         //Spark.webSocket("/api/member",  MemberWebSocket.class);
+        //Pair<Boolean, JSONObject> ans2 = api.register("eli@gmail.com", "123Aaa", "24/02/2002");
+        //Pair<Boolean, JSONObject> ans = api.login("eli@gmail.com", "123Aaa");
+        //System.out.println(ans.getSecond().get("value"));
+        //System.out.println(ans2.getSecond().get("value"));
+        //System.out.println(api.getCart(id).getSecond().get("value"));
         init();
         connectedThread = new ConnectedThread(connected);
         connectedThread.start();
@@ -47,13 +60,14 @@ public class Server {
 
                     return "OK";
                 });
-
+        /*
         post("/api/auth/login", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             String email = request.get("email").toString();
             String pass  = request.get("password").toString();
             LinkedList<String> answers = new LinkedList<>();
-            Response<Token> r = market.login(email,pass,answers);
+            Response<Token> r = api.login(email,pass,answers);
+
             // System.out.println(r.getValue().getUserName());
             JSONObject json = new JSONObject();
             if(r.getErrorMessage()==null) {
@@ -74,6 +88,7 @@ public class Server {
             }
             return res.body();
         });
+        */
         post("/api/auth/ping" ,(req,res)->{
             JSONObject request = new JSONObject(req.body());
             String id = request.get("userId").toString();
@@ -84,64 +99,15 @@ public class Server {
             return res.body();
         });
         post("/api/auth/guest/enter", (req, res) -> {
-            Response<Integer> r = market.enterGuest();
-            JSONObject json = new JSONObject();
-            if(r.getErrorMessage()==null) {
-                System.out.println("new user comes in , id: " + r.getValue());
-                res.status(200);
-                json.put("guestId", r.getValue());
-                connected.put(r.getValue(),true);
-                res.body(json.toString());
-            }
-            else{
-                res.status(400);
-                json.put("errorMsg", r.getValue());
-                res.body(json.toString());
-            }
+            toSparkRes(res, api.enterGuest());
             return res.body();
         });
-        post("/api/stores",(req,res)->{
-            JSONObject request = new JSONObject(req.body());
-            String userId = request.get("userId").toString();
-            String desc  = request.get("desc").toString();
-            Response<Integer> r = market.openStore(Integer.parseInt(userId),desc);
-            if(r.getErrorMessage() != null){
-                System.out.println("fail open store");
-                res.status(400);
-                res.body(r.getErrorMessage());
-            }
-            else{
-                System.out.println("success open store");
-                res.status(200);
-                res.body("success open store");
 
-            }
-            return res.body();
-        });
-        delete("/api/stores/:id",(req,res)->{
+        post("/api/auth/login", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            String userId = request.get("userId").toString();
-            String desc  = request.get("desc").toString();
-            Response<Integer> r = market.openStore(Integer.parseInt(userId),desc);
-            if(r.getErrorMessage() != null){
-                System.out.println("success open store");
-                res.status(200);
-                res.body("success open store");
-            }
-            else{
-                System.out.println("fail open store");
-                res.status(400);
-                res.body(r.getErrorMessage());
-            }
-            return res.body();
-        });
-        get("api/stores", (req,res)->{
-            Response<ConcurrentHashMap<Integer, Store>> r = market.getStores();
-            Collection<Store> stores= r.getValue().values();
-            JSONObject json = new JSONObject();
-            json.put("results",stores.toString());
-            System.out.println(json.toString());
-            res.body(json.toString());
+            String email = request.get("email").toString();
+            String pass  = request.get("password").toString();
+            toSparkRes(res, api.login(email,pass));
             return res.body();
         });
 

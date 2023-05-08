@@ -132,15 +132,15 @@ public class Member {
     }
 
 
-    public boolean login(String password, List<String> answers) throws Exception{
+    public boolean login(String password) throws Exception{
         if (this.password.equals(password)) {
             if (!getIsConnected()) {
-                if(checkSecurityAnswers(answers)) {
+                //if(checkSecurityAnswers(answers)) {
                     connect();
                     return true;
-                }
-                else
-                    throw new Exception("the wrong answers were given");
+               // }
+               // else
+               //     throw new Exception("the wrong answers were given");
             }
             else
                 throw new Exception("member is connected already");
@@ -149,13 +149,14 @@ public class Member {
             throw new Exception("wrong password");
     }
 
-    private boolean checkSecurityAnswers(List<String> answers) {
+    public void checkSecurityAnswers(List<String> answers) throws Exception{
         if(answers.size() != securityQuestions.size())
-            return false;
-        for(String answer : securityQuestions.values())
-            if(!answers.contains(answer))
-                return false;
-        return true;
+            throw new Exception("the number of answers given is not the same as the number of questions for the user");
+        for(String question: securityQuestions.keySet()) {
+            String answer = securityQuestions.get(question);
+            if (!answers.contains(answer))
+                throw new Exception("wrong answer for question: " + question);
+        }
     }
 
 
@@ -530,5 +531,18 @@ public class Member {
         Set<Integer> storeIds = activeStores.keySet();
         storeIds.addAll((inActiveRoles.keySet()));
         return storeIds;
+    }
+
+    //used for login information
+    public boolean hasSecQuestions() {
+        return securityQuestions.size() != 0;
+    }
+
+    public HashMap<Integer, Role> getRoles() {
+        HashMap<Integer, Role> ans = new HashMap<>();
+        for(int storeId : activeRoles.keySet()){
+            ans.put(storeId, activeRoles.get(storeId).getRole());
+        }
+        return ans;
     }
 }

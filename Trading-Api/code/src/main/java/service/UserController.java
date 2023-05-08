@@ -91,7 +91,7 @@ public class UserController {
     }
 
     //the answers given are for the security questions, if there are no security questions then put an empty list
-    public synchronized int login(String email, String password, List<String> answers) throws Exception{
+    public synchronized int login(String email, String password) throws Exception{
         if(!checkEmail(email))
             throw new Exception("invalid email");
         if(!checkPassword(password))
@@ -100,7 +100,7 @@ public class UserController {
         if(m == null)
             throw new Exception("no such email");
         try {
-            if(m.login(password, answers)) {
+            if(m.login(password)) {
                 activeMemberList.put(email, inActiveMemberList.remove(email));
                 return m.getId();
             }
@@ -109,6 +109,38 @@ public class UserController {
             throw new Exception(e.getMessage());
         }
         return -1;
+    }
+
+    public void checkSecurityQuestions(int userId, List<String> answers) throws Exception{
+        String email = idToEmail.get(userId);
+        if(email != null) {
+            Member m = inActiveMemberList.get(email);
+            if(m != null){
+                m.checkSecurityAnswers(answers);
+            }
+            else
+                throw new Exception("no member has this email");
+        }
+        else
+            throw new Exception("no member has this id");
+    }
+
+    public boolean hasSecQuestions(int userId) throws Exception{
+        Member m = getMember(userId);
+        if(m != null){
+            return m.hasSecQuestions();
+        }
+        else
+            throw new Exception("no member has this id");
+    }
+
+    public HashMap<Integer, Role> getUserRoles(int userId) throws Exception{
+        Member m = getMember(userId);
+        if(m != null){
+            return m.getRoles();
+        }
+        else
+            throw new Exception("no member has this id");
     }
 
     //when logging out returns to main menu as guest
@@ -1405,4 +1437,5 @@ public class UserController {
         }
         return membersInformation;
     }
+
 }
