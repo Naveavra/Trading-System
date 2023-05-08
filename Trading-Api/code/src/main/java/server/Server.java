@@ -14,11 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import static spark.Spark.*;
 
 public class Server {
-    public static Market market = new Market(new Admin(1, "hi@co.il", "123Aaa"));
+    public static API api = new API();
     static ConnectedThread connectedThread ;
     static ConcurrentHashMap<Integer,Boolean> connected = new ConcurrentHashMap<>();
     public static void main(String[] args) {
-        market.register("eli@gmail.com","aA12345","22/02/2002");
+        api.register("eli@gmail.com","aA12345","22/02/2002");
         //Spark.webSocket("/api/login", MainWebSocket.class);
         //Spark.webSocket("/api/member",  MemberWebSocket.class);
         init();
@@ -51,7 +51,7 @@ public class Server {
             String email = request.get("email").toString();
             String pass  = request.get("password").toString();
             LinkedList<String> answers = new LinkedList<>();
-            Response<Token> r = market.login(email,pass,answers);
+            Response<Token> r = api.login(email,pass,answers);
             // System.out.println(r.getValue().getUserName());
             JSONObject json = new JSONObject();
             if(r.getErrorMessage()==null) {
@@ -82,21 +82,10 @@ public class Server {
             return res.body();
         });
         post("/api/auth/guest/enter", (req, res) -> {
-            Response<Integer> r = market.enterGuest();
-            JSONObject json = new JSONObject();
-            if(r.getErrorMessage()==null) {
-                System.out.println("new user comes in , id: " + r.getValue());
-                res.status(200);
-                json.put("guestId", r.getValue());
-                connected.put(r.getValue(),true);
-                res.body(json.toString());
+            api.enterGuest(res);
+            if(res.status() == 200){
+                connected.put(.getValue(),true);
             }
-            else{
-                res.status(400);
-                json.put("errorMsg", r.getValue());
-                res.body(json.toString());
-            }
-            return res.body();
         });
 
     }
