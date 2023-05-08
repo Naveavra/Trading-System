@@ -1,12 +1,13 @@
-import { Rating } from "@mui/material";
+import { Rating, SxProps, Theme } from "@mui/material";
 
 interface ratingProps {
-    rating: number;
+    rating: Number;
+    style: SxProps<Theme>;
     onChange?: () => void;
 }
-const readOnlyRting: React.FC<ratingProps> = ({ rating }) => {
+const ReadOnlyRating: React.FC<ratingProps> = ({ rating, style }) => {
     return (
-        <Rating name="read-only" value={rating} readOnly />
+        <Rating name="read-only" sx={style} value={rating} readOnly />
     )
 }
-export default readOnlyRting;
+export default ReadOnlyRating;
