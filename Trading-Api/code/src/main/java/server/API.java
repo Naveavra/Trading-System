@@ -13,8 +13,7 @@ public class API {
         market = new Market(admin);
     }
 
-    public Pair<Boolean, JSONObject> enterGuest(){
-        Response<Integer> res = market.enterGuest();
+    public Pair<Boolean, JSONObject> fromResToPair(Response res){
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
         {
@@ -27,18 +26,14 @@ public class API {
         }
     }
 
+    public Pair<Boolean, JSONObject> enterGuest(){
+        Response<Integer> res = market.enterGuest();
+        return fromResToPair(res);
+    }
+
     public Pair<Boolean, JSONObject> register(String email, String password, String birthday){
         Response<String> res = market.register(email, password, birthday);
-        JSONObject json = new JSONObject();
-        if(res.errorOccurred())
-        {
-            json.put("errorMsg", res.getErrorMessage());
-            return new Pair<>(false, json);
-        }
-        else {
-            json.put("value", res.getValue());
-            return new Pair<>(true, json);
-        }
+        return fromResToPair(res);
     }
 
     //TODO: add from manager methods
