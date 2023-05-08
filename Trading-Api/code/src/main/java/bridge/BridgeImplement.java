@@ -1,7 +1,6 @@
 package bridge;
 
 import data.*;
-import domain.store.storeManagement.AppHistory;
 import domain.store.storeManagement.Store;
 import market.Admin;
 import market.Market;
@@ -9,7 +8,7 @@ import market.Market;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import utils.Token;
+import utils.LoginInformation;
 import utils.marketRelated.Response;
 import utils.orderRelated.OrderInfo;
 import utils.userInfoRelated.Info;
@@ -57,7 +56,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int login(String email, String password) {
-        Response<Token> res = market.login(email, password, new ArrayList<>());
+        Response<LoginInformation> res = market.login(email, password);
         if (res != null && !res.errorOccurred()) {
             return res.getValue().getUserId();
         }
@@ -390,10 +389,10 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int adminLogin(String email, String password) {
-        Response<Integer> res = market.adminLogin(email, password);
+        Response<LoginInformation> res = market.adminLogin(email, password);
         if(!res.errorOccurred())
         {
-            return res.getValue();
+            return res.getValue().getUserId();
         }
         return 0;
     }

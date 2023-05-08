@@ -1,14 +1,8 @@
 package server;
 
-import market.Admin;
-import market.Market;
 import org.json.JSONObject;
-import spark.Spark;
 import utils.Pair;
-import utils.Token;
-import utils.marketRelated.Response;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,8 +31,12 @@ public class Server {
         //api.register("eli@gmail.com","aA12345","22/02/2002");
         //Spark.webSocket("/api/login", MainWebSocket.class);
         //Spark.webSocket("/api/member",  MemberWebSocket.class);
+        //Pair<Boolean, JSONObject> ans2 = api.register("eli@gmail.com", "123Aaa", "24/02/2002");
+        //Pair<Boolean, JSONObject> ans = api.login("eli@gmail.com", "123Aaa");
+        //System.out.println(ans.getSecond().get("value"));
+        //System.out.println(ans2.getSecond().get("value"));
+        //System.out.println(api.getCart(id).getSecond().get("value"));
         init();
-
         connectedThread = new ConnectedThread(connected);
         connectedThread.start();
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
@@ -62,13 +60,14 @@ public class Server {
 
                     return "OK";
                 });
-
+        /*
         post("/api/auth/login", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             String email = request.get("email").toString();
             String pass  = request.get("password").toString();
             LinkedList<String> answers = new LinkedList<>();
             Response<Token> r = api.login(email,pass,answers);
+
             // System.out.println(r.getValue().getUserName());
             JSONObject json = new JSONObject();
             if(r.getErrorMessage()==null) {
@@ -89,6 +88,7 @@ public class Server {
             }
             return res.body();
         });
+        */
         post("/api/auth/ping" ,(req,res)->{
             JSONObject request = new JSONObject(req.body());
             String id = request.get("userId").toString();
@@ -100,6 +100,14 @@ public class Server {
         });
         post("/api/auth/guest/enter", (req, res) -> {
             toSparkRes(res, api.enterGuest());
+            return res.body();
+        });
+
+        post("/api/auth/login", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            String email = request.get("email").toString();
+            String pass  = request.get("password").toString();
+            toSparkRes(res, api.login(email,pass));
             return res.body();
         });
 

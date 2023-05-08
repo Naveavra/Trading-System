@@ -16,24 +16,21 @@ public interface MarketInterface {
     public Response exitGuest(int guestId);
     public Response register(String email ,String pass ,String birthday );
     public Response addProductToCart(int userId,int storeId ,int productId, int quantity);
-    public Response addProductToCart(String name, int storeId, int productId, int quantity);
-
     public Response removeProductFromCart(int userId,  int storeId, int productId);
-    public Response removeProductFromCart(String userName,  int storeId, int productId);
     public Response changeQuantityInCart(int userId, int storeId, int productId, int change);
-    public Response changeQuantityInCart(String userName, int storeId, int productId, int change);
-
     public Response getCart(int id);
-    public Response getCart(String userName);
     public Response makePurchase(int userId , String accountNumber);
     public Response getStoreDescription(int storeId);
 
+
+    //TODO: will change when miki adds all changes
     public Response showFilterOptions();
     public Response filterBy(HashMap<String,String> filterOptions);
 
 
     //member methods
-    public Response login(String email , String pass, List<String> answers);
+    public Response login(String email , String pass);
+    public Response checkSecurityQuestions(int userId, List<String> answers);
     public Response addSecurityQuestion(int userId, String question, String answer);
     public Response changeAnswerForLoginQuestion(int userId, String question, String answer);
     public Response removeSecurityQuestion(int userId, String question);
@@ -46,7 +43,7 @@ public interface MarketInterface {
 
     public Response openStore(int userId,String storeDescription);
     public Response getMemberInformation(int userId);
-    public Response getUserPurchaseHistory(int userId, int buyerid);
+    public Response getUserPurchaseHistory(int userId, int buyerId);
     public Response writeReviewToStore(int orderId, int storeId, String content, int grading, int userId);
     public Response writeReviewToProduct(int orderId, int storeId,int productId, String content, int grading, int userId);
     public Response checkReviews(int userId, int storeId);
