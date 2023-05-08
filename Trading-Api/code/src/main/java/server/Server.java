@@ -4,6 +4,7 @@ import market.Admin;
 import market.Market;
 import org.json.JSONObject;
 import spark.Spark;
+import utils.Pair;
 import utils.Token;
 import utils.marketRelated.Response;
 
@@ -17,11 +18,27 @@ public class Server {
     public static API api = new API();
     static ConnectedThread connectedThread ;
     static ConcurrentHashMap<Integer,Boolean> connected = new ConcurrentHashMap<>();
+
+    private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes)
+    {
+        if (apiRes.getFirst())
+        {
+            res.status(200);
+            res.body(apiRes.getSecond().get("value").toString());
+        }
+        else
+        {
+            res.status(400);
+            res.body(apiRes.getSecond().get("errorMsg").toString());
+        }
+    }
+
     public static void main(String[] args) {
-        api.register("eli@gmail.com","aA12345","22/02/2002");
+        //api.register("eli@gmail.com","aA12345","22/02/2002");
         //Spark.webSocket("/api/login", MainWebSocket.class);
         //Spark.webSocket("/api/member",  MemberWebSocket.class);
         init();
+
         connectedThread = new ConnectedThread(connected);
         connectedThread.start();
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
@@ -82,10 +99,8 @@ public class Server {
             return res.body();
         });
         post("/api/auth/guest/enter", (req, res) -> {
-            api.enterGuest(res);
-            if(res.status() == 200){
-                connected.put(.getValue(),true);
-            }
+            toSparkRes(res, api.enterGuest());
+            return res.body();
         });
 
     }
