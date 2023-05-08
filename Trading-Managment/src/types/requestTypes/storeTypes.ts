@@ -10,10 +10,15 @@ export interface PostStoreParams {
 export interface PatchStoreParams {
     userId: number, 
     storeId: number,
-    desc: string
+    desc: string,
+    isActive: boolean
 }
 
 export interface DeleteStoreParams {
     userId: number,
+    storeId: number
+}
+
+export interface GetStoreProducts {
     storeId: number
 }

@@ -1,93 +1,90 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ApiError, ApiListData, ApiResponse, ApiResponseListData, ValidationError } from "../types/apiTypes";
-import { Product } from "../types/systemTypes/Product";
-import { ProductResponseData } from "../types/responseTypes/productTypes";
-import { DeleteProductsParams, GetProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
-import { productsApi } from "../api/productsApi";
+import {createAsyncThunk } from "@reduxjs/toolkit";
+import { ApiError, ApiListData, ApiResponse, ApiResponseListData } from "../types/apiTypes";
 
-const reducerName = 'products';
+import { storeApi } from "../api/storeApi";
+import { DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams } from "../types/requestTypes/storeTypes";
+import { Store } from "../types/systemTypes/Store";
 
-interface ProductsState {
-    productState: {
+const reducerName = 'stores';
+
+interface StoreState {
+    storeState: {
         isLoading: boolean;
-        responseData?: Product;
-        error?: ApiError | ValidationError;
-        watchedProduct?: Product;
+        responseData?: Store;
+        error?: ApiError;
+        watchedStore?: Store;
     },
     isLoading: boolean;
-    responseData?: ApiListData<Product>;
+    responseData?: ApiListData<Store>;
     error?: ApiError;
 };
 
 
 
-const initialState: ProductsState = {
-    productState: {
+const initialState: StoreState = {
+    storeState: {
         isLoading: false,
         responseData: undefined,
         error: undefined,
-        watchedProduct: undefined,
+        watchedStore: undefined,
     },
     isLoading: false,
     responseData: undefined,
     error: undefined,
 };
 
-export const postProduct = createAsyncThunk<
+export const postStore = createAsyncThunk<
     {responseBody: ApiResponse<string> },
-    PostProductsParams,
+    PostStoreParams,
     {rejectValue: ApiError}
 >(
     '${reducerName}/post',
     async (formData, thunkApi) =>{
-        return productsApi.postProduct(formData)
+        return storeApi.postStore(formData)
         .then((res) => thunkApi.fulfillWithValue({
             responseBody: res as ApiResponse<string>
         }))
         .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
-    export const patchProduct = createAsyncThunk<
+    export const patchStore = createAsyncThunk<
     {responseBody: ApiResponse<string> },
-    PatchProductsParams,
+    PatchStoreParams,
     {rejectValue: ApiError}
 >(
     '${reducerName}/patch',
     async (formData, thunkApi) =>{
-        return productsApi.patchProduct(formData)
+        return storeApi.patchStore(formData)
         .then((res) => thunkApi.fulfillWithValue({
             responseBody: res as ApiResponse<string>
         }))
         .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
-export const deleteProduct = createAsyncThunk<
+export const deleteStore = createAsyncThunk<
     {responseBody: ApiResponse<string> },
-    DeleteProductsParams,
+    DeleteStoreParams,
     {rejectValue: ApiError}
 >(
     '${reducerName}/delete',
     async (formData, thunkApi) =>{
-        return productsApi.deleteProduct(formData)
+        return storeApi.deleteStore(formData)
         .then((res) => thunkApi.fulfillWithValue({
             responseBody: res as ApiResponse<string>
         }))
         .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
-export const getProduct = createAsyncThunk<
-    {responseBody: ApiResponseListData<Product> },
-    GetProductsParams,
+export const getStore = createAsyncThunk<
+    {responseBody: ApiResponseListData<Store> },
+    GetStoresParams,
     {rejectValue: ApiError}
 >(
     '${reducerName}/get',
     async (formData, thunkApi) =>{
-        return productsApi.getProducts(formData)
+        return storeApi.getStores(formData)
         .then((res) => thunkApi.fulfillWithValue({
-            responseBody: res as ApiResponseListData<Product>
+            responseBody: res as ApiResponseListData<Store>
         }))
         .catch((res) => thunkApi.rejectWithValue(res as ApiError))
-    }); 
-
-
-
+    });
