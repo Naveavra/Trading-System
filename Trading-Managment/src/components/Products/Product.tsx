@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Card from "../Card/Card";
-import "./Products.css";
+import "./Product.css";
 
 import { Product } from "../../types/systemTypes/Product";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
@@ -10,6 +10,7 @@ import { Box, Chip, Divider, Grid, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import AlertDialog from "../Dialog/AlertDialog";
 import ReadOnlyRating from "../Ratings/readRating";
+import { useNavigate } from "react-router-dom";
 
 const ProductDisplay: React.FC = () => {
     const error = false;//useAppSelector((state) => state.products.error);
@@ -18,6 +19,7 @@ const ProductDisplay: React.FC = () => {
     const [quantity, setQuantity] = useState(0);
     const userId = -1;//useAppSelector((state) => state.auth.userId);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const set = (newVal: number) => {
         if (newVal >= 0) {
             setQuantity(newVal);
@@ -35,12 +37,13 @@ const ProductDisplay: React.FC = () => {
         price: 100,
         quantity: 0,
         img: "https://images.pexels.com/photos/12628400/pexels-photo-12628400.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        rating: [{ value: 5, content: 'great product' }],
+        rating: [{ value: 5, content: 'great product' }, { value: 3, content: 'not so good' }, { value: 2, content: 'bad' }],
         reviewNumber: 10,
     };//useAppSelector((dtate) => state.products.selectedProduct); 
     const avrage = selectedProduct.rating.reduce((acc, curr) => acc + curr.value, 0) / selectedProduct.rating.length;
     const handleOnAddToBasket = () => {
         dispatch(addProductToCart({ userId: userId, StoreId: selectedProduct.storeId, productId: selectedProduct.id, amount: quantity }));
+        navigate(-1);
     }
 
     return (
@@ -68,7 +71,7 @@ const ProductDisplay: React.FC = () => {
                         })}
                     </Grid>
                     <Grid sx={{ paddingTop: '10px', display: 'inline-block' }}>
-                        <ReadOnlyRating rating={avrage} style={{ paddingTop: '10px', display: 'inline-block' }} />
+                        <ReadOnlyRating rating={avrage} style={{ paddingTop: '10px' }} />
                         <Typography variant="h6" component="h6" className="description" fontFamily={"Gill Sans"} color={"black"}>
                             {selectedProduct.reviewNumber} reviews
                         </Typography>
@@ -81,14 +84,17 @@ const ProductDisplay: React.FC = () => {
                     </Grid>
                     <Divider />
                     <Grid sx={{ paddingTop: '10px', marginButton: '10px' }}>
-                        <Typography variant="h6" component="h6" className="description" fontFamily={"Gill Sans"} color={"black"}>
+                        <Typography variant="h6" component="h6" className="description" fontFamily={"Gill Sans"} color={"black"} >
                             Quantity:
                         </Typography>
                     </Grid>
                     <Grid sx={{ paddingTop: '10px', marginButton: '10px', display: 'flex' }}>
-                        <Box>
-                            <RemoveIcon onClick={() => { set(quantity - 1) }} sx={{ paddingRight: '10px', paddingBottom: '3px', marginBottom: 5 }} />
-                        </Box>
+                        {quantity != 0 ?
+                            <Box>
+                                <RemoveIcon onClick={() => { set(quantity - 1) }} sx={{ paddingRight: '10px', paddingBottom: '3px', marginBottom: 5 }} />
+                            </Box> : null
+                        }
+
                         <Box>
                             <Typography variant="h6" component="h6" className="description" color={"black"} sx={{ marginBottom: 10, fontSize: 25 }}>
                                 {quantity}
@@ -116,36 +122,23 @@ const ProductDisplay: React.FC = () => {
             <Box sx={{ display: 'flex' }}>
                 <Box sx={{ width: '50%' }}>
                     <Typography variant="h5" component="h5" className="name" fontSize={50} fontFamily={"Gill Sans"} sx={{ marginTop: '10px', marginRight: 20 }} color={"black"} fontWeight={'bold'} textAlign={'center'} alignContent={'center'}>
-                        {'Customers review'}
+                        {'Top Customer Reviews'}
                     </Typography>
-                    <Box sx={{ display: 'flex', marginLeft: 20, paddingTop: '10px', }} >
-                        <ReadOnlyRating rating={avrage} style={{ marginLeft: 100, paddingTop: '10px', display: 'inline-block', size: 'large' }} />
-                        <Typography variant="h6" component="h6" className="description" fontFamily={"Gill Sans"} color={"black"} sx={{ marginRight: '2px', marginLeft: '15px' }}>
-                            {selectedProduct.reviewNumber} reviews
-                        </Typography>
-                    </Box>
-                </Box>
-                <Box sx={{ width: '50%' }}>
-                    <Divider />
-                    <Typography variant="h5" component="h5" className="name" fontSize={50} fontFamily={"Gill Sans"} sx={{ marginTop: '10px', marginRight: 20 }} color={"black"} fontWeight={'bold'} textAlign={'center'} alignContent={'center'}>
-                        Top Customer Reviews
-                    </Typography>
-                    <Box>
-                        {/* best*/}
-                        <Grid sx={{ paddingTop: '10px', display: 'flex' }}>
-                            <Box sx={{ width: '50%' }}>
-                                <Typography variant="h6" component="h6" className="description" fontFamily={"Gill Sans"} color={"black"} sx={{ marginRight: '2px', marginLeft: '15px' }}>
-                                    {selectedProduct.rating[0].content}
-                                </Typography>
+                    {selectedProduct.rating.map((review: { value: number, content: string }) => {
+                        return (
+                            <Box sx={{ display: 'flex', marginLeft: 20, paddingTop: '10px' }} >
+                                <Box width={'40%'}>
+                                    <Typography variant="h6" component="h6" className="description" fontFamily={"Gill Sans"} color={"black"} sx={{ marginRight: '2px', marginLeft: '10px' }}>
+                                        {review.content}
+                                    </Typography>
+                                </Box>
+                                <ReadOnlyRating rating={review.value} style={{ marginLeft: 10, paddingTop: '5px', size: 'large', display: 'flex' }} />
                             </Box>
-                        </Grid>
+                        )
 
-                    </Box>
+                    })}
                 </Box>
-
             </Box>
-
-
             <AlertDialog sevirity={"error"} text={"quantity cannot be negative"} open={quantityError} onClose={() => {
                 setQuantity(0);
                 setQuantiryError(false)

@@ -8,39 +8,11 @@ import { RouterProvider } from 'react-router-dom';
 import { store, useAppDispatch, useAppSelector } from './redux/store';
 import { router } from './router';
 import axios from 'axios';
-import { getStores } from './reducers/storesSlice';
-
 
 const App = () => {
   const userId = useAppSelector((state) => state.auth.userId);
   const dispatch = useAppDispatch();
-  const [number, setNumber] = React.useState(0)
-  const [open, setOpen] = React.useState(false)
-  const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
-  // Send a ping to the server
-  const sendPing = () => {
-    if (userId != -1) {
-      axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-        .then(response => {
-          // Do something with the response if necessary
-        })
-        .catch(error => {
-          // Handle the error if necessary
-        });
-      // dispatch(ping(userId));
-    }
-  }
-  useEffect(()=>{
-    dispatch(getStores());
-},[dispatch])
-  // Call the sendPing function every 2 seconds
-  const pingInterval = setInterval(sendPing, PING_INTERVAL);
-
-  // Stop the ping interval when the user leaves the app
-  const stopPing = () => {
-    clearInterval(pingInterval);
-  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>

@@ -100,6 +100,10 @@ public class API {
         Response<LoginInformation> res = market.login(email, pass);
         return fromResToPair(res);
     }
+    public Pair<Boolean,JSONObject> logout(int userId){
+        Response<String> res = market.logout(userId);
+        return fromResToPair(res);
+    }
 
     public Pair<Boolean, JSONObject> checkSecurityQuestions(int userId, List<String> answers){
         Response<String> res = market.checkSecurityQuestions(userId, answers);

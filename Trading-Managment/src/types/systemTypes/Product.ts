@@ -7,6 +7,6 @@ export interface Product {
     price: number;
     quantity: number;
     img: string;
-    rating: { value: Number, content: string }[];
+    rating: { value: number, content: string }[];
     reviewNumber: number;
 }

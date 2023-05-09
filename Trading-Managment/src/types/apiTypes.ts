@@ -1,11 +1,11 @@
 export interface ApiError {
     message: {
-        data: { errorMsg: string },
+        data: string,
     };
 };
 
 export interface ApiListData<T> {
-   data:{
+    data: {
         results: T[]
     }
 }
