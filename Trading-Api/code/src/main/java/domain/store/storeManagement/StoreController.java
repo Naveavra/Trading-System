@@ -43,16 +43,16 @@ public class StoreController {
             id = prod_.getID();
         } else
          */
-            if ((st = getStore(storeid)) != null) {
-            Product p = st.addNewProduct(name, desc, productIDs);
-            p.setPrice(price);
+        if ((st = getStore(storeid)) != null) {
+            Product p = st.addNewProduct(name, desc, productIDs,price);
+//            p.setPrice(price);
             p.setQuantity(quantity);
             addToProducts(p.clone());
             id = p.getID();
         }
         return id;
     }
-    public void addToCategory(int storeId, int productId, List<String> categories){
+    public void addToCategory(int storeId, int productId, List<String> categories) throws Exception{
         Store st;
         if((st = getStore(storeId))!= null){
             st.addToCategories(productId,categories);
@@ -129,7 +129,7 @@ public class StoreController {
      * @param shoppingCart the client shopping cart
      * @return if successful returns the store owners ids else null
      */
-    public synchronized Set<Integer> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, Order order) {
+    public synchronized Set<Integer> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, Order order) throws Exception {
         Set<Integer> storeOwnersIDS = new HashSet<>();
         for (Integer storeId : shoppingCart.keySet()) {
             Store store = storeList.get(storeId);
@@ -293,7 +293,7 @@ public class StoreController {
         for(Store st : storeList.values()){
             result.addAll(st.filterBy(filterOptions));
         }
-       return result;
+        return result;
     }
 
     public List<ProductInfo> getProducts(int storeId) throws Exception {

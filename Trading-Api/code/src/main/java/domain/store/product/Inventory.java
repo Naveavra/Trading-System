@@ -5,18 +5,21 @@ import data.PositionInfo;
 import utils.Filter.ProductFilter;
 import utils.ProductInfo;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Inventory {
 
+    private static final int MAXRATING = 5;
     ConcurrentHashMap<Integer, Product> productList; // <id, product>
     // ConcurrentHashMap<Product, ArrayList<String>> categories;
     ConcurrentHashMap<String,ArrayList<Integer>> categories; // <Category String,<List<ProductID>>
-    ConcurrentHashMap<Product, ArrayList<Integer>> productgrading;
+    ConcurrentHashMap<Product, CopyOnWriteArrayList<Integer>> productgrading;
 
     // AtomicInteger prod_id = new AtomicInteger();
     public Inventory(){
@@ -30,12 +33,14 @@ public class Inventory {
      * @param name String
      * @param description String
      * @param prod_id AtomicInteger
+     * @param price int
      */
-    public synchronized Product addProduct(String name,String description,AtomicInteger prod_id) throws Exception {
+    public synchronized Product addProduct(String name,String description,AtomicInteger prod_id,int price) throws Exception {
         Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
             p = new Product(id,name,description);
+            p.setPrice(price);
             for(Product product : productList.values())
                 if(p.getName().equals(product.getName()) && p.getDescription().equals(product.getDescription())) {
                     prod_id.getAndDecrement();
@@ -46,7 +51,7 @@ public class Inventory {
         }
         return p;
     }
-    public synchronized Product addProduct(Product p){
+    public synchronized Product addProduct(Product p) throws Exception{
         if(getProductByName(p.name) == null) productList.put(p.getID(), p);
         return p;
     }
@@ -70,16 +75,15 @@ public class Inventory {
      */
     public ArrayList<Integer> getProductReviews(int productID) throws Exception {
         Product p = getProduct(productID);
-        if (p != null){return productgrading.get(p);}
+        if (p != null){return new ArrayList<>(productgrading.get(p));}
         throw new Exception("product doesnt exist G");
     }
-    public void setDescription(int prodID, String desc){
+    public void setDescription(int prodID, String desc)  throws Exception{
         Product p = getProduct(prodID);
-        if(p != null){
-            p.setDescription(desc);
-        }
+        p.setDescription(desc);
+
     }
-    public void setPrice(int prodID, int price) throws Exception {
+    public synchronized void setPrice(int prodID, int price) throws Exception {
         if (price <= 0)
         {
             throw new Exception("price must be positive");
@@ -92,97 +96,22 @@ public class Inventory {
         throw new Exception("product doesnt exist");
     }
 
-    public void addQuantity(int prodID,int quantity){
+    public void addQuantity(int prodID,int quantity) throws Exception{
         Product p = getProduct(prodID);
-        if(p != null){
-            p.setQuantity(quantity);
-        }
+        p.setQuantity(quantity);
     }
 
-    public Product getProduct(Integer productID){
+    public Product getProduct(Integer productID) throws Exception{
         if(productList.containsKey(productID)){
             return productList.get(productID);
         }
-        return null;
+        throw new Exception("Product not found, ID: "+productID);
     }
 
     public ArrayList<String> getAllCategories(){
         return new ArrayList<>(categories.keySet());
     }
 
-//    /**
-//     * This method takes an ArrayList of categories as input and returns an ArrayList
-//     * of matching products sorted by the number of categories that they match (from most to least)
-//     */
-//    public ArrayList<Product> getProductByCategories(ArrayList<String> categories) {
-//        ArrayList<Product> matchingProducts = new ArrayList<>();
-//        Map<Product, Integer> productToNumMatches = new HashMap<>();
-//        for(String cat: categories){
-//            ArrayList<Integer> prod_ids = this.categories.get(cat);
-//            if(prod_ids!= null){
-//                for(Integer prodid : prod_ids){
-//                    Product p = getProduct(prodid);
-//                    if(p!= null && !matchingProducts.contains(p)){
-//                        matchingProducts.add(p);
-//                        productToNumMatches.put(p,1);
-//                    } else if (p != null) {
-//                        productToNumMatches.put(p,productToNumMatches.get(p)+1);
-//                    }
-//                }
-//            }
-//        }
-//
-//        matchingProducts.sort((p1, p2) -> {
-//            int numMatches1 = productToNumMatches.get(p1);
-//            int numMatches2 = productToNumMatches.get(p2);
-//            return Integer.compare(numMatches2, numMatches1);
-;//        });
-//
-//        return matchingProducts;
-//    }
-
-//    public ArrayList<Product> getProductByKeywords(ArrayList<String> keywords) {
-//        Set<Product> temp = new HashSet<>();
-//        Map<Product, Integer> productToNumMatches = new HashMap<>();
-//        for(String word : keywords) {
-//            String regex = "\\b" + Pattern.quote(word) + "\\b";
-//            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-//            for (Product p : productList.values()) {
-//                Matcher matcher = pattern.matcher(p.getDescription());
-//                if(matcher.find()){
-//                    if(temp.add(p)){
-//                        productToNumMatches.put(p,1);
-//                    }
-//                    else{
-//                        productToNumMatches.put(p,productToNumMatches.get(p)+1);
-//                    }
-//                }
-//            }
-//        }
-//        ArrayList<Product> matchingProducts = new ArrayList<>(temp);
-//
-//        matchingProducts.sort((p1, p2) -> {
-//            int numMatches1 = productToNumMatches.get(p1);
-//            int numMatches2 = productToNumMatches.get(p2);
-//            return Integer.compare(numMatches2, numMatches1);
-//        });
-//
-//        return matchingProducts;
-//    }
-
-//    public ArrayList<Product> getAllFromCategory(String category){
-//        ArrayList<Product> result = new ArrayList<>();
-//        ArrayList<Integer> prod_ids = categories.get(category);
-//        if(prod_ids!= null){
-//            for(Integer id : prod_ids){
-//                Product p = getProduct(id);
-//                if(p!=null){
-//                    result.add(p);
-//                }
-//            }
-//        }
-//        return result;
-//    }
 
     /**
      * @param prodID INTEGER
@@ -198,7 +127,7 @@ public class Inventory {
 
     public Product getProductByName(String name){
         for(Product p : productList.values()){
-            if(Objects.equals(p.name, name)){
+            if(p.getName().equalsIgnoreCase(name)){
                 return p;
             }
         }
@@ -208,7 +137,7 @@ public class Inventory {
     public synchronized HashMap<Integer, Integer> getPrices() {
         HashMap<Integer,Integer> prices = new HashMap<>();
         for(Product p : this.productList.values()){
-            prices.put(p.getID(),p.getQuantity());
+            prices.put(p.getID(),p.getPrice());
         }
         return prices;
     }
@@ -222,15 +151,16 @@ public class Inventory {
         }
         return productInfos;
     }
-    public void addToCategory(String category, int productId){
-        category =category.toLowerCase();
+    public synchronized void addToCategory(String category, int productId) throws Exception {
+        getProduct(productId);
+//        category =category.toLowerCase();
         if(categories.containsKey(category)){
             if(!categories.get(category).contains(productId)){
                 categories.get(category).add(productId);
             }
         }else{
-        categories.put(category,new ArrayList<>());
-        categories.get(category).add(productId);
+            categories.put(category,new ArrayList<>());
+            categories.get(category).add(productId);
         }
     }
 
@@ -277,17 +207,17 @@ public class Inventory {
         }
     }
 
-    private void replaceQuantity(int productId, int quantity) {
+    private void replaceQuantity(int productId, int quantity) throws Exception {
         Product p = getProduct(productId);
         p.replaceQuantity(quantity);
     }
 
-    private void setName(int productId, String name) {
+    private void setName(int productId, String name) throws Exception{
         Product p = getProduct(productId);
         p.setName(name);
     }
 
-    private void replaceCategories(int productId, List<String> categories) {
+    private void replaceCategories(int productId, List<String> categories) throws Exception {
         for(ArrayList<Integer> category: this.categories.values()){
             if(category.contains(productId)){
                 category.remove(Integer.valueOf(productId));
@@ -298,17 +228,30 @@ public class Inventory {
         }
     }
 
-    public void setProductsRatings(){
+    public synchronized void setProductsRatings(){
         for(Product p : productgrading.keySet()){
             double sum = 0;
             for(int rating : productgrading.get(p)){
                 sum += rating;
             }
-            p.setRating(sum/productgrading.get(p).size());
+            double avg = sum/productgrading.get(p).size();
+            DecimalFormat df = new DecimalFormat("#.#");
+            avg = Double.parseDouble(df.format(avg));
+            p.setRating(avg);
         }
     }
+    public synchronized void rateProduct(int productID, int rating) throws Exception{
+        if(rating > MAXRATING)
+            throw new Exception("Product rating is out of bounds, expected 0 to 5 but got: "+rating);
+        Product p = getProduct(productID);
+        if(productgrading.containsKey(p))
+            productgrading.get(p).add(rating);
+        else
+            productgrading.put(p,new CopyOnWriteArrayList<>(List.of(rating)));
+
+    }
     public ArrayList<ProductInfo> filterBy(ProductFilter filter,double storeRating) {
-        filter.setOp(this::getProduct);
+//        filter.setOp(this::getProduct);
         filter.setCategories(categories);
         filter.setStoreRating(storeRating);
         setProductsRatings();

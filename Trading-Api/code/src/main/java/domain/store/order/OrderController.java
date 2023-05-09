@@ -39,7 +39,7 @@ public class OrderController {
         }
     }
     //only a specific user will be the cause of calling this function, so no need to synchronize
-    public void addProductsToOrder(int order_ID,int store_ID,HashMap<Integer,Integer> products){
+    public void addProductsToOrder(int order_ID,int store_ID,HashMap<Integer,Integer> products) throws Exception{
         Order ord;
         if((ord = getOrder(order_ID)) != null){
             ord.addProductsToOrder(store_ID, products);
