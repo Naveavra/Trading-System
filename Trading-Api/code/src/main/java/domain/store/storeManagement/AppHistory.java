@@ -13,7 +13,6 @@ public class AppHistory {
     public static class Node{
         private Pair<Integer, Role> data; //userid and role
         private ArrayList<Node> children; //list of all the users this user appoint in this store
-
         private Set<Integer> dismissed;
         public Node(Pair<Integer, Role> appointment){
             //Assign data to the new node, set left and right children to null
@@ -78,6 +77,10 @@ public class AppHistory {
         Node fatherNode = root.findNode(father);
         if (childNode != null)
         {
+            if (childNode.data.getSecond() == child.getSecond())
+            {
+                throw new Exception("user already have a role in the store");
+            }
             appointToNewRole(father, child);
         }
         if (fatherNode == null)
@@ -90,16 +93,16 @@ public class AppHistory {
     }
 
     public Set<Integer> removeChild(Integer userId) throws Exception {
-       Node childNode = root.findNode(userId);
-       if (childNode == null)
-       {
-           throw new Exception("user isn't part of the store");
-       }
-       if (Objects.equals(childNode.data.getFirst(), root.data.getFirst()))
-       {
-           throw new Exception("Cannot remove store creator");
-       }
-       this.root.dismissed.clear();
+        Node childNode = root.findNode(userId);
+        if (childNode == null)
+        {
+            throw new Exception("user isn't part of the store");
+        }
+        if (Objects.equals(childNode.data.getFirst(), root.data.getFirst()))
+        {
+            throw new Exception("Cannot remove store creator");
+        }
+        this.root.dismissed.clear();
         Set<Integer> dismissedes = new HashSet<>();
         dismissedes.add(userId);
         dismissedes.addAll(Objects.requireNonNull(root.deleteNode(childNode.data)));

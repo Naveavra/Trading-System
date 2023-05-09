@@ -189,20 +189,21 @@ public class Store {
      * creates a new product for this inventory
      * @param name new name of the product
      * @param pid product id
+     * @param price int
      */
-    public synchronized Product addNewProduct(String name, String description, AtomicInteger pid) throws Exception {
-        return inventory.addProduct(name, description, pid);
+    public synchronized Product addNewProduct(String name, String description, AtomicInteger pid,int price) throws Exception {
+        return inventory.addProduct(name, description, pid,price);
     }
-    public synchronized Product addNewExistingProduct(Product p){
+    public synchronized Product addNewExistingProduct(Product p) throws Exception{
         return inventory.addProduct(p);
     }
     /**
      * adds the quantity to the product previous quantity
      * @param pid product quantity
      */
-    public void setProductQuantity(int pid, int quantity)
+    public void setProductQuantity(int pid, int quantity) throws Exception
     {
-       inventory.addQuantity(pid, quantity);
+        inventory.addQuantity(pid, quantity);
     }
 
     /**
@@ -224,7 +225,7 @@ public class Store {
      * @param newprice new price should be a positive integer
      */
     public void setPrice(int pid, int newprice) throws Exception  {
-       inventory.setPrice(pid, newprice);
+        inventory.setPrice(pid, newprice);
     }
 
 
@@ -284,7 +285,7 @@ public class Store {
      * purchasing confirmed so this function adjust the quantity in the store inventory
      * @return true if success else false
      */
-    public boolean makeOrder(HashMap<Integer, Integer> basket){
+    public boolean makeOrder(HashMap<Integer, Integer> basket) throws Exception{
         for (Integer productId : basket.keySet())
         {
             Product p = inventory.getProduct(productId);
@@ -382,16 +383,16 @@ public class Store {
         return questionsToAnswer;
     }
 
-    public void addToCategories(int productId, List<String> categories){
+    public void addToCategories(int productId, List<String> categories) throws Exception{
         for(String category: categories){
             inventory.addToCategory(category,productId);
         }
     }
 
     public void removeProduct(int productId) throws Exception{
-         if(!(inventory.removeProduct(productId)>-1)){
-             throw new Exception("Unable to remove Product, productId doesn't exist.");
-         }
+        if(!(inventory.removeProduct(productId)>-1)){
+            throw new Exception("Unable to remove Product, productId doesn't exist.");
+        }
     }
 
     public void updateProduct(int productId, List<String> categories, String name, String description, int price, int quantity) throws Exception {

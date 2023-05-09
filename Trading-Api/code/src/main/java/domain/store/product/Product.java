@@ -28,6 +28,7 @@ public class Product {
         description = desc;
         price = 0;
         categories = new LinkedList<>();
+        rating = 5;
     }
 
     public String getName(){return name;}
@@ -39,23 +40,30 @@ public class Product {
         this.description = desc;
     }
 
-
-    public void setQuantity(int amount){
+    /**
+     * adds the quantity given (amount) to the current quantity.
+     * @param amount int, to add
+     */
+    public void setQuantity(int amount) throws Exception{
         if(quantity + amount>=0){
             quantity += amount;
+        }else {
+            throw new Exception("Invalid Quantity: New quantity for product <= 0.");
         }
-        //else maybe should throw exception
     }
-    public void replaceQuantity(int newQuantity){
+    public void replaceQuantity(int newQuantity) throws Exception{
         if(newQuantity>0){
             quantity = newQuantity;
+        }else {
+            throw new Exception("Invalid Quantity: New quantity for product <= 0.");
         }
     }
-    public void setPrice(int newPrice){
-        if(newPrice>0){
+    public void setPrice(int newPrice) throws Exception {
+        if (newPrice > 0) {
             price = newPrice;
+        } else {
+            throw new Exception("Invalid Price: New price for product <= 0.");
         }
-        //else maybe should throw exception
     }
 
     /**
@@ -63,9 +71,13 @@ public class Product {
      * should be used when inserting products to the store Inventory.
      * @return new deep copy of the product.
      */
-    public synchronized Product clone(){
+    public synchronized Product clone() {
         Product clone = new Product(id,name,description);
-        clone.setPrice(price);
+        try {
+            clone.setPrice(price);
+        }catch (Exception e){
+            return null;
+        }
 //        clone.setQuantity(quantity);
         return clone;
     }
@@ -94,5 +106,9 @@ public class Product {
 
     public void setRating(double v) {
         rating = v;
+    }
+
+    public double getRating() {
+        return rating;
     }
 }
