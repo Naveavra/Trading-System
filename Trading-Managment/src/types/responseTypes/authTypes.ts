@@ -1,3 +1,4 @@
+import { Permission } from "../systemTypes/Permission";
 import { StoreRole } from "../systemTypes/StoreRole";
 
 export interface TokenResponseBody {
@@ -5,10 +6,11 @@ export interface TokenResponseBody {
     userId: number;
     userName: string;
     isAdmin: boolean;
+    notifications: string[];
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];
-
+    permmisions: Permission[];
 };
 export interface RegisterResponseData {
     answer: string | null;

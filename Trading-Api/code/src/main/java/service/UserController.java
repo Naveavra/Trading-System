@@ -144,27 +144,25 @@ public class UserController {
     }
 
     //when logging out returns to main menu as guest
-    public synchronized int logout(int memberId) throws Exception{
+    public synchronized void logout(int memberId) throws Exception{
         String email = idToEmail.get(memberId);
         if(email != null){
-            return logout(email);
+             logout(email);
         }
         else
             throw new Exception("no such id for a member");
     }
 
-    public synchronized int logout(String email) throws Exception{
+    public synchronized void logout(String email) throws Exception{
         Member m =activeMemberList.get(email);
         if (m != null) {
             {
                 m.disconnect();
                 inActiveMemberList.put(email, activeMemberList.remove(email));
-                return enterGuest();
             }
         }
         else
             throw new Exception("member not found");
-
     }
 
     //adding the productId to the user's cart with the given quantity

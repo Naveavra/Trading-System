@@ -65,7 +65,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int logout(int user) {
-        Response<Integer> res = market.logout(user);
+        Response<String> res = market.logout(user);
         if (res != null && !res.errorOccurred()) {
             return 1;
         }

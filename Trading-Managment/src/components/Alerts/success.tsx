@@ -1,6 +1,8 @@
 import { Alert, AlertTitle } from "@mui/material"
-
-const SuccessAlert = (message: string) => {
+interface SuccessAlertProps {
+    message: string
+}
+const SuccessAlert: React.FC<SuccessAlertProps> = ({ message }) => {
     return (
         <Alert severity="success">
             <AlertTitle>Success</AlertTitle>

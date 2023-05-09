@@ -222,12 +222,12 @@ public class Market implements MarketInterface {
 
     //when logging out the system returns an id of a guest for the now logged-out user to use
     @Override
-    public Response<Integer> logout(int userId) {
+    public Response<String> logout(int userId) {
         try {
-            int guestId = userController.logout(userId);
+            userController.logout(userId);
             marketInfo.reduceUserCount();
             logger.log(Logger.logStatus.Success, "user log out successfully on " + LocalDateTime.now());
-            return new Response<>(guestId, null, null);
+            return new Response<>("user log out successfully", null, null);
         } catch (Exception e) {
             logger.log(Logger.logStatus.Fail, "user cant get log out because " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "log out failed", e.getMessage());

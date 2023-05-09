@@ -20,6 +20,7 @@
     "@types/js-cookie": "^3.0.3",
     "axios": "^1.4.0",
     "busywait": "^4.0.0",
+    "express": "^4.18.2",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-beforeunload": "^2.5.3",
@@ -28,6 +29,7 @@
     "react-hook-form": "^7.43.9",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.0",
+    "socket.io-client": "^4.6.1",
     "websocket": "^1.0.34",
     "ws": "^8.13.0"
   },

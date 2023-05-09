@@ -1,4 +1,4 @@
-import ProductDisplay from "../../../../components/Products/Products";
+import ProductDisplay from "../../../../components/Products/Product";
 
 
 const Visitor: React.FC = () => {
@@ -6,7 +6,8 @@ const Visitor: React.FC = () => {
     return (
         <>
             <div> shop visitor </div>
-            <ProductDisplay />
+            {/* <ProductsDisplay /> */}
+            {/* <ProductDisplay /> */}
         </>
     );
 }

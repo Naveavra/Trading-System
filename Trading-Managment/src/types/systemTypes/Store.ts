@@ -4,25 +4,28 @@ import { Product } from "./Product";
 
 export interface Store {
     id: number;
+    isActive: boolean;
+    creatorId: number;
     name: string;
     description: string;
-    image: string;
+    img: string;
     rating: number;
-    isActive: boolean;
     inventory: Product[];
-    storeQuestions: {questionId: number, question: Message}[];
-    storeOrders: {orderId: number, order: Order}[];
-    storeReviews: {messageId: number, message: Message}[];
+    storeQuestions: { questionId: number, question: Message }[];
+    storeOrders: { orderId: number, order: Order }[];
+    storeReviews: { messageId: number, message: Message }[];
+    //todo add purchase and discount policy
 }
-export const emptyStore:Store ={
+export const emptyStore: Store = {
     id: -1,
+    isActive: false,
+    creatorId: -1,
     name: "",
     description: "",
-    image: "",
+    img: "",
     rating: -1,
-    isActive: false,
     inventory: [],
     storeQuestions: [],
-    storeOrders:[],
-    storeReviews:[],
+    storeOrders: [],
+    storeReviews: [],
 }

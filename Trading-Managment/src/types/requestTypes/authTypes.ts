@@ -5,5 +5,5 @@ export interface LoginPostData {
 export interface RegisterPostData {
     email: string;
     password: string;
-    birthDate: string;
+    birthday: string;
 };

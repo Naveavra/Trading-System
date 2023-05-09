@@ -11,6 +11,9 @@ export interface LocalSorage {
         userId: Entry<number | null>;
         userName: Entry<string | null>;
         isAdmin: Entry<boolean | null>;
+        notifications: Entry<string[] | null>;
+        hasQestions: Entry<boolean | null>;
+        storeRoles: Entry<string[] | null>;
     },
     settings: {
         login_page: {
@@ -36,6 +39,19 @@ export const localStorage: LocalSorage = {
             name: 'auth.isAdmin',
             value: null,
         },
+        notifications: {
+            name: 'auth.notifications',
+            value: null,
+        },
+        hasQestions: {
+            name: 'auth.hasQestions',
+            value: null,
+        },
+        storeRoles: {
+            name: 'auth.storeRoles',
+            value: null,
+        }
+
     },
     settings: {
         login_page: {
