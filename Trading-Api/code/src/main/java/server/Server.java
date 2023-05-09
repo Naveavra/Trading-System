@@ -17,7 +17,6 @@ public class Server {
     public static API api = new API();
     static ConnectedThread connectedThread;
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
-    static ConcurrentHashMap<Session,String> userMap = new ConcurrentHashMap<>();
     static int nextUser =1;
     static Gson gson = new Gson();
 
