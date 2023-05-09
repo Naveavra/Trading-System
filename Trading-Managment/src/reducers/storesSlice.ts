@@ -6,6 +6,7 @@ import { DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams }
 import { Store, emptyStore } from "../types/systemTypes/Store";
 import { StoreInfo, emptyStoreInfo } from "../types/systemTypes/StoreInfo";
 
+//TODO implement the getProducts method from the storeApi
 const reducerName = 'stores';
 
 interface StoreState {
@@ -116,7 +117,7 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.isLoading = true;
             state.error = null;
         });
-        builder.addCase(getStoresInfo.fulfilled, (state, { payload }) => {
+        builder.addCase(getStoresInfo.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
             state.storeInfoResponseData = payload;
             state.error = null;

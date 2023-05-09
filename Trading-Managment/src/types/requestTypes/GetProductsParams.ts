@@ -1,5 +1,5 @@
 export interface GetProductsParams {
-    id: number,
+    //todo  should think about it
 };
 export interface PostProductsParams {
     id: number; //userid

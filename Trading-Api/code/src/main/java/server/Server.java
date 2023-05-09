@@ -148,7 +148,7 @@ public class Server {
         });
         post("api/stores", (req, res) ->
         {
-            System.out.println(req);
+            System.out.println(req.body());
             res.body("success post");
             res.status(200);
             return res.body();
