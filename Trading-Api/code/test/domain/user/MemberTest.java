@@ -56,7 +56,7 @@ class MemberTest {
     @Test
     void changeRoleInStore_success() {
         try{
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
             UserState u = new StoreCreator();
             m.changeRoleInStore(0, u,s);
             assertTrue(m.checkPermission(Action.appointOwner,0));
@@ -67,7 +67,7 @@ class MemberTest {
     @Test
     void changeRoleInStore_fail() {
         try{
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
             UserState u =new StoreManager();
             m.changeRoleInStore(0, u,s);
             assertFalse(m.checkPermission(Action.appointOwner,0));
@@ -81,7 +81,7 @@ class MemberTest {
     void login_success() {
         try {
             LinkedList<String> asnwers = new LinkedList<>();
-            m.login("ziv1234", asnwers);
+            m.login("ziv1234");
             assertTrue(true);
         } catch (Exception e) {
             assertTrue(false);
@@ -92,7 +92,7 @@ class MemberTest {
     @Test
     void login_fail() {
         try {
-            m.login("ziv123", answers);
+            m.login("ziv123");
             assertTrue(false);
         } catch (Exception e) {
             assertEquals("wrong password", e.getMessage());
@@ -117,7 +117,7 @@ class MemberTest {
     @Test
     void openStore() {
         try{
-        m.login("ziv1234", answers);
+        m.login("ziv1234");
         m.openStore(s);
         assertTrue(m.checkPermission(Action.appointOwner, 0));
     }catch (Exception e) {
@@ -127,7 +127,7 @@ class MemberTest {
     @Test
     void writeReview() {
         try{
-            m.login("ziv1234",answers );
+            m.login("ziv1234" );
             m.addProductToCart(0,1,100);
             m.purchaseMade(0,100);
           Message message =  m.writeReview(0,0,0,"good review",2);
@@ -142,7 +142,7 @@ class MemberTest {
     @Test
     void writeReview_fail() {
         try{
-            m.login("ziv1234",answers );
+            m.login("ziv1234" );
             m.addProductToCart(0,1,100);
             m.purchaseMade(0,100);
             Message message =  m.writeReview(0,0,1,"good review",2);
@@ -154,7 +154,7 @@ class MemberTest {
     @Test
     void writeComplaint() {
         try {
-            m.login("ziv1234",answers );
+            m.login("ziv1234");
             m.addProductToCart(0, 1, 100);
             m.purchaseMade(0, 100);
             Message message = m.writeComplaint(0,0,0,"u sacks!!");
@@ -168,7 +168,7 @@ class MemberTest {
     @Test
     void writeComplaint_fail() {
         try{
-            m.login("ziv1234",answers );
+            m.login("ziv1234" );
             m.addProductToCart(0,1,100);
             m.purchaseMade(0,100);
             Message message =  m.writeComplaint(0,0,1,"u sacks!!");
@@ -179,7 +179,7 @@ class MemberTest {
     @Test
     void sendQuestion() {
         try {
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
             Message message = m.sendQuestion(0, 0, "how r u");
             assertEquals(message.getContent(), "how r u");
         }catch (Exception e){
@@ -192,7 +192,7 @@ class MemberTest {
     void displayNotifications() {
         try {
             Notification<String> n = new Notification<>("u have a new message");
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
             m.addNotification(n);
            List<String> notifiy =  m.displayNotifications();
            assertTrue(notifiy.size()==1);
@@ -207,17 +207,17 @@ class MemberTest {
     @Test
     void canCheckMessages() {
         try{
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
             m.openStore(s);
             assertTrue(m.canCheckMessages(s.getStoreId()));
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
-            newMem1.login("Ziv12345",answers);
+            newMem1.login("Ziv12345");
             s.appointUser(m.getId(),newMem1.getId(), Role.Manager);
             StoreManager sm = new StoreManager();
             newMem1.changeRoleInStore(s.getStoreId(),sm, m.appointToManager(newMem1.getId(),s.getStoreId()));
             assertTrue(newMem1.canCheckMessages(s.getStoreId()));
             Member newMem2 = new Member(5,"ziv1@gmail.com","Ziv12345","1/1/2000");
-            newMem2.login("Ziv12345",answers);
+            newMem2.login("Ziv12345");
             s.appointUser(m.getId(),newMem2.getId(), Role.Owner);
             StoreOwner so = new StoreOwner();
             newMem2.changeRoleInStore(s.getStoreId(),so, m.appointToOwner(newMem2.getId(),s.getStoreId()));
@@ -231,17 +231,17 @@ class MemberTest {
     @Test
     void canGiveFeedback() {
         try{
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
             m.openStore(s);
             assertTrue(m.canGiveFeedback(s.getStoreId()));
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
-            newMem1.login("Ziv12345",answers);
+            newMem1.login("Ziv12345");
             s.appointUser(m.getId(),newMem1.getId(), Role.Manager);
             StoreManager sm = new StoreManager();
             newMem1.changeRoleInStore(s.getStoreId(),sm, m.appointToManager(newMem1.getId(),s.getStoreId()));
             assertTrue(newMem1.canGiveFeedback(s.getStoreId()));
             Member newMem2 = new Member(5,"ziv1@gmail.com","Ziv12345","1/1/2000");
-            newMem2.login("Ziv12345",answers);
+            newMem2.login("Ziv12345");
             s.appointUser(m.getId(),newMem2.getId(), Role.Owner);
             StoreOwner so = new StoreOwner();
             newMem2.changeRoleInStore(s.getStoreId(),so, m.appointToOwner(newMem2.getId(),s.getStoreId()));
@@ -255,7 +255,7 @@ class MemberTest {
     @Test
     void getUserPurchaseHistory() {
         try{
-        m.login("ziv1234", answers);
+        m.login("ziv1234");
         m.addProductToCart(s.getStoreId(),1,100);
         m.purchaseMade(0,10);
         HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> res = m.getUserPurchaseHistory();
@@ -273,7 +273,7 @@ class MemberTest {
     @Test
     void getPrivateInformation() {
         try {
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
             Info res = m.getPrivateInformation();
             assertEquals(22,res.getAge());
             assertEquals("22/04/2002",res.getBirthday());
@@ -290,12 +290,12 @@ class MemberTest {
     void addQuestionForLogin() {
         try {
             m.addQuestionForLogin("what is the answer to all", "42");
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
         } catch (Exception e) {
             assertEquals("the wrong answers were given", e.getMessage());
             answers.add("42");
             try {
-                m.login("ziv1234", answers);
+                m.login("ziv1234");
                 assertTrue(true);
             } catch (Exception e2) {
                 System.out.println(e2.getMessage());
@@ -309,18 +309,18 @@ class MemberTest {
         try {
             m.addQuestionForLogin("what is the answer to all", "42");
             m.changeAnswerForQuestion("what is the answer to all","believe");
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
         } catch (Exception e) {
             assertEquals("the wrong answers were given", e.getMessage());
             answers.add("42");
             try {
-                m.login("ziv1234", answers);
+                m.login("ziv1234");
                 assertTrue(false);
             } catch (Exception e2) {
                 try{
                     answers.remove(0);
                     answers.add("believe");
-                    m.login("ziv1234", answers);
+                    m.login("ziv1234");
                     assertTrue(true);
                 }catch (Exception e3){
                     System.out.println(e3.getMessage());
@@ -334,12 +334,12 @@ class MemberTest {
     void removeSecurityQuestion() {
         try {
             m.addQuestionForLogin("what is the answer to all", "42");
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
         } catch (Exception e) {
             assertEquals("the wrong answers were given", e.getMessage());
             try {
                 m.removeSecurityQuestion("what is the answer to all");
-                m.login("ziv1234", answers);
+                m.login("ziv1234");
                 assertTrue(true);
             }catch (Exception e2){
                 System.out.println(e2.getMessage());
@@ -351,7 +351,7 @@ class MemberTest {
     @Test
     void appointToManager() {
         try{
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
             m.openStore(s);
             Store store =  m.appointToManager(2, 0);
             Pair<Integer,Role> pairs= store.getAppHistory().getNode(2).getData();
@@ -366,7 +366,7 @@ class MemberTest {
     @Test
     void appointToOwner() {
         try{
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
             m.openStore(s);
             Store store =  m.appointToManager(2, 0);
             Pair<Integer,Role> pairs= store.getAppHistory().getNode(2).getData();
@@ -418,7 +418,7 @@ class MemberTest {
     @Test
     void fireManager() {
         try{
-            m.login("ziv1234", answers);
+            m.login("ziv1234");
             m.openStore(s);
             Store store =  m.appointToManager(2, 0);
             m.fireManager(2,0);
