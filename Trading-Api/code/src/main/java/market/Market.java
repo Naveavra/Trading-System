@@ -1167,7 +1167,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response watchMarketStatus(int adminId) {
+    public Response<MarketInfo> watchMarketStatus(int adminId) {
         Admin admin = activeAdmins.get(adminId);
         if(admin != null){
             marketInfo.calculateAverages();

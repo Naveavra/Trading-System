@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import domain.store.storeManagement.AppHistory;
+import domain.store.storeManagement.Store;
 import market.Admin;
 import market.Market;
 import org.json.JSONObject;
@@ -10,8 +12,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import utils.marketRelated.MarketInfo;
 import utils.marketRelated.Response;
 import utils.messageRelated.Message;
 import utils.orderRelated.OrderInfo;
@@ -377,28 +381,33 @@ public class API {
         return fromResToPair(res);
     }
 
+    private JSONObject getBasket(Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry){
+        JSONObject basketJson = new JSONObject();
+        basketJson.put("storeId", basketEntry.getKey());
+        List<String> bucketList = new ArrayList();
+        for (Map.Entry<Integer, Integer> productEntry : basketEntry.getValue().entrySet()) {
+            JSONObject productJson = new JSONObject();
+            productJson.put("productId", productEntry.getKey());
+            productJson.put("quantity", productEntry.getValue());
+            bucketList.add(productJson.toString());
+        }
+        String bucket = bucketList.stream()
+                .collect(Collectors.joining(",", "[", "]"));
+        basketJson.put("products", bucket);
+        return basketJson;
+    }
+
     private JSONObject orderToJson(OrderInfo order) {
         JSONObject json = new JSONObject();
         json.put("orderId", order.getOrderId());
         json.put("userId", order.getUserId());
         json.put("price", order.getTotalPrice());
-        List<String> buckets = new ArrayList();
-        for (Map.Entry<Integer, HashMap<Integer, Integer>> bucketEntry : order.getProductsInStores().entrySet()) {
-            JSONObject bucketJson = new JSONObject();
-            bucketJson.put("storeId", bucketEntry.getKey());
-            List<String> bucketList = new ArrayList();
-            for (Map.Entry<Integer, Integer> productEntry : bucketEntry.getValue().entrySet()) {
-                JSONObject productJson = new JSONObject();
-                productJson.put("productId", productEntry.getKey());
-                productJson.put("quantity", productEntry.getValue());
-                bucketList.add(productJson.toString());
-            }
-            String bucket = bucketList.stream()
-                    .collect(Collectors.joining(",", "[", "]"));
-            bucketJson.put("products", bucket);
-            buckets.add(bucketJson.toString());
+        List<String> baskets = new ArrayList();
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry : order.getProductsInStores().entrySet()) {
+            JSONObject basketJson = getBasket(basketEntry);
+            baskets.add(basketJson.toString());
         }
-        String products = buckets.stream()
+        String products = baskets.stream()
                 .collect(Collectors.joining(",", "[", "]"));
         json.put("productsInStores", products);
         return json;
@@ -487,19 +496,20 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> viewQuestions(int userId, int storeId){
-    Response<HashMap<Integer, Message>> res = market.viewQuestions(userId, storeId);
-    JSONObject json = new JSONObject();
-    if(res.errorOccurred())
+    public Pair<Boolean, JSONObject> viewQuestions(int userId, int storeId)
     {
-        json.put("errorMsg", res.getErrorMessage());
-        return new Pair<>(false, json);
+        Response<HashMap<Integer, Message>> res = market.viewQuestions(userId, storeId);
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", questionsToJson(res.getValue()));
+            return new Pair<>(true, json);
+        }
     }
-    else {
-        json.put("value", questionsToJson(res.getValue()));
-        return new Pair<>(true, json);
-    }
-}
 
     private String questionsToJson(HashMap<Integer, Message> questions) {
         List<String> questionsList = new ArrayList<>();
@@ -514,16 +524,34 @@ public class API {
                 .collect(Collectors.joining(",", "[", "]"));
     }
 
-//    public Response getUsersPurchaseHistory(int buyerId);
+    public Pair<Boolean, JSONObject> getUsersPurchaseHistory(int buyerId)
+    {
+        Response<List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>>> res = market.getUsersPurchaseHistory(buyerId);
+        // TODO: cast this to json
+        return fromResToPair(res);
+    }
 
-//    public Response getStores();
-//    public Response seeStoreHistory(int userId,int storeId);
-//    //public Response getStoreOrders(int userId , int storeId);
-//    public Response getAppointments(int userId, int storeId);
-//
-//    //public Response getStore(int storeId);
+    public Pair<Boolean, JSONObject> getStores()
+    {
+        Response<ConcurrentHashMap<Integer, Store>> res = market.getStores();
+        // TODO: cast this to json
+        return fromResToPair(res);
+    }
 
-//    public Response watchMarketStatus(int adminId);
+    public Pair<Boolean, JSONObject> getAppointments(int userId, int storeId)
+    {
+        Response<AppHistory> res = market.getAppointments(userId, storeId);
+        // TODO: cast this to json
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> watchMarketStatus(int adminId)
+    {
+        Response<MarketInfo> res = market.watchMarketStatus(adminId);
+        // TODO: cast this to json
+        return fromResToPair(res);
+    }
+
 
 
 
