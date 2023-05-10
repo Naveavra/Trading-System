@@ -131,6 +131,7 @@ public class StoreController {
      */
     public synchronized Set<Integer> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, Order order) throws Exception {
         Set<Integer> storeOwnersIDS = new HashSet<>();
+        //should apply discounts here
         for (Integer storeId : shoppingCart.keySet()) {
             Store store = storeList.get(storeId);
             if (!(store.makeOrder(shoppingCart.get(storeId)))) {
