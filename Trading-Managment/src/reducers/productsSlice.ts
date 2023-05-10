@@ -10,7 +10,7 @@ const reducerName = 'products';
 interface ProductsState {
     productState: {
         isLoading: boolean;
-        responseData?: Product | null;
+        responseData?: string | Product | null;
         error: string | null;
         watchedProduct?: Product;
     },
@@ -106,21 +106,48 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
         });
         builder.addCase(getProducts.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during getStores";
+            state.error = payload?.message.data ?? "error during getProducts";
         });
-        //patchStore
-        // builder.addCase(patchProduct.pending, (state) => {
-        //     state.storeState.isLoading = true;
-        //     state.storeState.error = null;
-        // });
-        // builder.addCase(patchProduct.fulfilled, (state, { payload }) => {
-        //     state.storeState.isLoading = false;
-        //     state.storeState.responseData = payload;
-        // });
-        // builder.addCase(patchProduct.rejected, (state, { payload }) => {
-        //     state.storeState.error = payload?.message.data ?? "error during patchStore";
-        //     state.storeState.isLoading = false;
-        // });
+        //patchProduct
+        builder.addCase(patchProduct.pending, (state) => {
+            state.productState.isLoading = true;
+            state.productState.error = null;
+        });
+        builder.addCase(patchProduct.fulfilled, (state, { payload }) => {
+            state.productState.isLoading = false;
+            state.productState.responseData = payload;
+        });
+        builder.addCase(patchProduct.rejected, (state, { payload }) => {
+            state.productState.error = payload?.message.data ?? "error during patchProducts";
+            state.productState.isLoading = false;
+        });
+        //postProduct
+        builder.addCase(postProduct.pending, (state) => {
+            state.productState.isLoading = true;
+            state.productState.error = null;
+        });
+        builder.addCase(postProduct.fulfilled, (state, { payload }) => {
+            state.productState.isLoading = false;
+            state.productState.responseData = payload;
+        });
+        builder.addCase(postProduct.rejected, (state, { payload }) => {
+            state.productState.isLoading = false;
+            state.productState.error = payload?.message.data ?? "error during postProduct";
+        });
+        //deleteProduct
+        builder.addCase(deleteProduct.pending, (state) => {
+            state.productState.isLoading = true;
+            state.productState.error = null;
+        });
+        builder.addCase(deleteProduct.fulfilled, (state, { payload }) => {
+            state.productState.isLoading = false;
+            state.productState.responseData = payload;
+        });
+        builder.addCase(deleteProduct.rejected, (state, { payload }) => {
+            state.productState.error = payload?.message.data ?? "error during deleteProduct";
+            state.productState.isLoading = false;
+        });
+        
 
 
     }
