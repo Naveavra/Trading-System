@@ -160,5 +160,13 @@ public class Server {
             res.status(200);
             return res.body();
         });
+        // delete
+        post("api/products", (req, res) ->
+        {
+            System.out.println(req.body());
+            res.body("success post");
+            res.status(200);
+            return res.body();
+        });
     }
 }
