@@ -17,6 +17,13 @@ public class OrderInfo {
         this.totalPrice = totalPrice;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
 
     public HashMap<Integer, HashMap<Integer,Integer>> getProductsInStores(){
         return productsInStores;
