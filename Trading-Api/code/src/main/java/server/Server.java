@@ -118,7 +118,9 @@ public class Server {
         post("api/auth/logout", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             String userId = request.get("userId").toString();
-            toSparkRes(res, api.logout(Integer.parseInt(userId)));
+            String token = req.headers("Authorization");
+            System.out.println(token);
+            toSparkRes(res, api.logout(Integer.parseInt(userId), token));
             return res.body();
         });
         post("api/auth/register", (req, res) -> {

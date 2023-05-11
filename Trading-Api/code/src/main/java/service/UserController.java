@@ -35,7 +35,7 @@ public class UserController {
 
     public UserController(){
         guestList = new ConcurrentHashMap<>();
-        guestIds = 0;
+        guestIds = 2;
         activeMemberList = new ConcurrentHashMap<>();
         inActiveMemberList = new ConcurrentHashMap<>();
         idToEmail = new ConcurrentHashMap<>();
@@ -79,8 +79,6 @@ public class UserController {
         for (Member m : inActiveMemberList.values())
             if(m.getEmail().equals(email))
                 throw new Exception("the email is already taken");
-        if(!checkPassword(password))
-            throw new Exception("password not meeting requirements");
         if(!checkBirthday(birthday))
             throw new Exception("birthday not legal");
 
@@ -94,8 +92,6 @@ public class UserController {
     public synchronized int login(String email, String password) throws Exception{
         if(!checkEmail(email))
             throw new Exception("invalid email");
-        if(!checkPassword(password))
-            throw new Exception("invalid password");
         Member m = inActiveMemberList.get(email);
         if(m == null)
             throw new Exception("no such email");
@@ -668,7 +664,7 @@ public class UserController {
             throw new Exception("guest does not have a name");
         else{
             String email = idToEmail.get(userId);
-            if(email != null && checkPassword(newPassword))
+            if(email != null)
                 changeUserPassword(email, oldPassword, newPassword);
             else
                 throw new Exception("no member has this id");
@@ -1314,12 +1310,12 @@ public class UserController {
 
     //the password length is between 6 and 20, need 1 small letter, 1 big letter and 1 number at least.
     // all other characters are not allowed
-    public boolean checkPassword(String password){
+    public void checkPassword(String password) throws Exception{
         int countSmall = 0;
         int countBig = 0;
         int countNum = 0;
         if(password.length()<6 || password.length() > 20)
-            return false;
+            throw new Exception("the password length needs to be between 6 and 20");
         for(int i = 0; i<password.length(); i++){
             if(password.charAt(i)>=48 && password.charAt(i)<=57)
                 countNum++;
@@ -1328,9 +1324,10 @@ public class UserController {
             else if(password.charAt(i)>=97 && password.charAt(i)<=122)
                 countSmall++;
             else
-                return false;
+                throw new Exception("the password can only include letters and numbers");
         }
-        return countNum != 0 && countBig != 0 && countSmall != 0;
+        if(countNum == 0 || countBig == 0 || countSmall == 0)
+            throw new Exception("the password must include at least 1 small letter, 1 big letter and 1 number");
     }
 
     //birthdays are written in the format: dd/mm/yyyy. only integers and '/'

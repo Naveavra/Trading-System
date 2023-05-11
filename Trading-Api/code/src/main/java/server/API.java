@@ -1,20 +1,24 @@
 package server;
 
 import com.google.gson.Gson;
+import domain.store.storeManagement.AppHistory;
+import domain.store.storeManagement.Store;
 import market.Admin;
 import market.Market;
 import org.json.JSONObject;
-import utils.Pair;
-import utils.ProductInfo;
+import utils.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import utils.LoginInformation;
-import utils.StoreInfo;
+import utils.marketRelated.MarketInfo;
 import utils.marketRelated.Response;
 import utils.messageRelated.Message;
+import utils.orderRelated.OrderInfo;
 import utils.userInfoRelated.Info;
 import utils.userInfoRelated.Receipt;
 
@@ -100,83 +104,83 @@ public class API {
         Response<LoginInformation> res = market.login(email, pass);
         return fromResToPair(res);
     }
-    public Pair<Boolean,JSONObject> logout(int userId){
-        Response<String> res = market.logout(userId);
+    public Pair<Boolean,JSONObject> logout(int userId, String token){
+        Response<String> res = market.logout(userId, token);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> checkSecurityQuestions(int userId, List<String> answers){
-        Response<String> res = market.checkSecurityQuestions(userId, answers);
+    public Pair<Boolean, JSONObject> checkSecurityQuestions(int userId, String token, List<String> answers){
+        Response<String> res = market.checkSecurityQuestions(userId, token, answers);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> addSecurityQuestion(int userId, String question, String answer){
-        Response<String> res = market.addSecurityQuestion(userId, question, answer);
+    public Pair<Boolean, JSONObject> addSecurityQuestion(int userId, String token, String question, String answer){
+        Response<String> res = market.addSecurityQuestion(userId, token, question, answer);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> changeAnswerForLoginQuestion(int userId, String question, String answer){
-        Response<String> res = market.changeAnswerForLoginQuestion(userId, question, answer);
+    public Pair<Boolean, JSONObject> changeAnswerForLoginQuestion(int userId, String token, String question, String answer){
+        Response<String> res = market.changeAnswerForLoginQuestion(userId, token, question, answer);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> removeSecurityQuestion(int userId, String question){
-        Response<String> res = market.removeSecurityQuestion(userId, question);
+    public Pair<Boolean, JSONObject> removeSecurityQuestion(int userId, String token, String question){
+        Response<String> res = market.removeSecurityQuestion(userId, token, question);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> displayNotifications(int userId){
-        Response<List<String>> res = market.displayNotifications(userId);
+    public Pair<Boolean, JSONObject> displayNotifications(int userId, String token){
+        Response<List<String>> res = market.displayNotifications(userId, token);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> changePassword(int userId,String oldPass ,String newPass){
-        Response<String> res = market.changePassword(userId, oldPass, newPass);
+    public Pair<Boolean, JSONObject> changePassword(int userId, String token, String oldPass, String newPass){
+        Response<String> res = market.changePassword(userId, token, oldPass, newPass);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> changeName(int userId, String newUserName){
-        Response<String> res = market.changeName(userId, newUserName);
+    public Pair<Boolean, JSONObject> changeName(int userId, String token, String newUserName){
+        Response<String> res = market.changeName(userId, token, newUserName);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> changeEmail(int userId, String newEmail){
-        Response<String> res = market.changeEmail(userId, newEmail);
+    public Pair<Boolean, JSONObject> changeEmail(int userId, String token, String newEmail){
+        Response<String> res = market.changeEmail(userId, token, newEmail);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> openStore(int userId,String storeDescription){
-        Response<Integer> res = market.openStore(userId, storeDescription);
+    public Pair<Boolean, JSONObject> openStore(int userId, String token, String storeDescription){
+        Response<Integer> res = market.openStore(userId, token, storeDescription);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> getMemberInformation(int userId){
-        Response<Info> res = market.getMemberInformation(userId);
+    public Pair<Boolean, JSONObject> getMemberInformation(int userId, String token){
+        Response<Info> res = market.getMemberInformation(userId, token);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> getUserPurchaseHistory(int userId, int buyerId){
+    public Pair<Boolean, JSONObject> getUserPurchaseHistory(int userId, String token, int buyerId){
         //               orderId,         storeId,       productId, quantity
-        Response<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> res = market.getUserPurchaseHistory(userId, buyerId);
+        Response<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> res = market.getUserPurchaseHistory(userId, token, buyerId);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> writeReviewToStore(int orderId, int storeId, String content, int grading, int userId){
-        Response<String> res = market.writeReviewToStore(orderId, storeId, content, grading, userId);
+    public Pair<Boolean, JSONObject> writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading){
+        Response<String> res = market.writeReviewToStore(userId, token, orderId, storeId, content, grading);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> writeReviewToProduct(int orderId, int storeId,int productId, String content, int grading, int userId){
-        Response<String> res = market.writeReviewToProduct(orderId, storeId, productId, content, grading, userId);
+    public Pair<Boolean, JSONObject> writeReviewToProduct(int userId, String token, int orderId, int storeId,int productId, String content, int grading){
+        Response<String> res = market.writeReviewToProduct(userId, token, orderId, storeId, productId, content, grading);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> checkReviews(int userId, int storeId){
-        Response<HashMap<Integer, Message>> res = market.checkReviews(userId, storeId);
+    public Pair<Boolean, JSONObject> checkReviews(int userId, String token, int storeId){
+        Response<HashMap<Integer, Message>> res = market.checkReviews(userId, token, storeId);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> getProductInformation(int storeId , int productId){
+    public Pair<Boolean, JSONObject> getProductInformation(int storeId, int productId){
         Response<ProductInfo> res = market.getProductInformation(storeId, productId);
         return fromResToPair(res);
     }
@@ -191,46 +195,46 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> sendQuestion(int userId,int storeId,String msg){
-        Response<String> res = market.sendQuestion(userId, storeId, msg);
+    public Pair<Boolean, JSONObject> sendQuestion(int userId, String token, int storeId,String msg){
+        Response<String> res = market.sendQuestion(userId, token, storeId, msg);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> sendComplaint(int userId,int orderId,int storeId,String msg){
-        Response<String> res = market.sendComplaint(userId, orderId, storeId, msg);
+    public Pair<Boolean, JSONObject> sendComplaint(int userId, String token, int orderId, int storeId, String msg){
+        Response<String> res = market.sendComplaint(userId, token, orderId, storeId, msg);
         return fromResToPair(res);
     }
 
 
 //TODO: add from manager methods
 
-    public Pair<Boolean, JSONObject> appointManager(int userId, int storeId, int managerIdToAppoint){
-        Response<String> res = market.appointManager(userId, storeId, managerIdToAppoint);
+    public Pair<Boolean, JSONObject> appointManager(int userId, String token, int managerIdToAppoint, int storeId){
+        Response<String> res = market.appointManager(userId, token, managerIdToAppoint, storeId);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> changeStoreDescription(int userId, int storeId, String description){
-        Response<String> res = market.changeStoreDescription(userId, storeId, description);
+    public Pair<Boolean, JSONObject> changeStoreDescription(int userId, String token, int storeId, String description){
+        Response<String> res = market.changeStoreDescription(userId, token, storeId, description);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> changePurchasePolicy(int userId, int storeId, String policy){
-        Response<String> res = market.changePurchasePolicy(userId, storeId, policy);
+    public Pair<Boolean, JSONObject> changePurchasePolicy(int userId, String token, int storeId, String policy){
+        Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> changeDiscountPolicy(int userId, int storeId, String policy){
-        Response<String> res = market.changePurchasePolicy(userId, storeId, policy);
+    public Pair<Boolean, JSONObject> changeDiscountPolicy(int userId, String token, int storeId, String policy){
+        Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> addPurchaseConstraint(int userId, int storeId, String policy){
-        Response<String> res = market.addPurchaseConstraint(userId, storeId, policy);
+    public Pair<Boolean, JSONObject> addPurchaseConstraint(int userId, String token, int storeId, String policy){
+        Response<String> res = market.addPurchaseConstraint(userId, token, storeId, policy);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> fireManager(int userId, int storeId, int managerToFire){
-        Response<String> res = market.fireManager(userId, storeId, managerToFire);
+    public Pair<Boolean, JSONObject> fireManager(int userId, String token, int managerToFire, int storeId){
+        Response<String> res = market.fireManager(userId, token, managerToFire, storeId);
         return fromResToPair(res);
     }
 
@@ -249,8 +253,8 @@ public class API {
         return json;
     }
 
-    public Pair<Boolean, JSONObject> checkWorkerStatus(int userId, int workerId, int storeId) {
-        Response<Info> res = market.checkWorkerStatus(userId, workerId, storeId);
+    public Pair<Boolean, JSONObject> checkWorkerStatus(int userId, String token, int workerId, int storeId) {
+        Response<Info> res = market.checkWorkerStatus(userId, token, workerId, storeId);
         JSONObject json = new JSONObject();
         if (res.errorOccurred()) {
             json.put("errorMsg", res.getErrorMessage());
@@ -269,8 +273,8 @@ public class API {
     }
 
 
-    public Pair<Boolean, JSONObject> checkWorkersStatus(int userId, int workerId){
-        Response<List<Info>> res = market.checkWorkersStatus(userId, workerId);
+    public Pair<Boolean, JSONObject> checkWorkersStatus(int userId, String token, int workerId){
+        Response<List<Info>> res = market.checkWorkersStatus(userId, token, workerId);
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
         {
@@ -283,18 +287,18 @@ public class API {
         }
     }
 
-    public Pair<Boolean, JSONObject> closeStore(int userId, int storeId){
-        Response<String> res = market.closeStore(userId, storeId);
+    public Pair<Boolean, JSONObject> closeStore(int userId, String token, int storeId){
+        Response<String> res = market.closeStore(userId, token, storeId);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> reopenStore(int userId, int storeId){
-        Response<String> res = market.reopenStore(userId, storeId);
+    public Pair<Boolean, JSONObject> reopenStore(int userId, String token, int storeId){
+        Response<String> res = market.reopenStore(userId, token, storeId);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> addProduct(int userId, int storeId, List<String> categories, String name , String description , int price , int quantity){
-        Response<Integer> res = market.addProduct(userId, storeId, categories, name, description, price, quantity);
+    public Pair<Boolean, JSONObject> addProduct(int userId, String token, int storeId, List<String> categories, String name , String description , int price , int quantity){
+        Response<Integer> res = market.addProduct(userId, token, storeId, categories, name, description, price, quantity);
         return fromResToPair(res);
     }
 
@@ -334,88 +338,224 @@ public class API {
 
     }
 
-    public Pair<Boolean, JSONObject> closeStorePermanently(int adminId, int storeId){
-        Response<String> res = market.closeStorePermanently(adminId, storeId);
+    public Pair<Boolean, JSONObject> closeStorePermanently(int adminId, String token, int storeId){
+        Response<String> res = market.closeStorePermanently(adminId, token, storeId);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> appointOwner(int userId , int storeId,int ownerId)
+    public Pair<Boolean, JSONObject> appointOwner(int userId, String token, int ownerId, int storeId)
     {
-        Response<String> res = market.appointOwner(userId, storeId, ownerId);
+        Response<String> res = market.appointOwner(userId, token, ownerId, storeId);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> fireOwner(int userId , int storeId, int ownerId)
+    public Pair<Boolean, JSONObject> fireOwner(int userId, String token, int ownerId, int storeId)
     {
-        Response<String> res = market.fireOwner(userId, storeId, ownerId);
+        Response<String> res = market.fireOwner(userId, token, ownerId, storeId);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> addManagerPermission(int ownerId, int userId,int storeId, int permissionsId)
+    public Pair<Boolean, JSONObject> addManagerPermission(int ownerId, String token, int userId,int storeId, int permissionsId)
     {
-        Response<String> res = market.addManagerPermission(ownerId, userId, storeId, permissionsId);
+        Response<String> res = market.addManagerPermission(ownerId, token, userId, storeId, permissionsId);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> addManagerPermissions(int ownerId, int userId,int storeId, List<Integer> permissionsIds)
+    public Pair<Boolean, JSONObject> addManagerPermissions(int ownerId, String token, int userId,int storeId, List<Integer> permissionsIds)
     {
-        Response<String> res = market.addManagerPermissions(ownerId, userId, storeId, permissionsIds);
+        Response<String> res = market.addManagerPermissions(ownerId, token, userId, storeId, permissionsIds);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> removeManagerPermissions(int ownerId, int userId,int storeId, List<Integer> permissionsIds)
+    public Pair<Boolean, JSONObject> removeManagerPermissions(int ownerId, String token, int userId,int storeId, List<Integer> permissionsIds)
     {
-        Response<String> res = market.removeManagerPermissions(ownerId, userId, storeId, permissionsIds);
+        Response<String> res = market.removeManagerPermissions(ownerId, token, userId, storeId, permissionsIds);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> removeManagerPermission(int ownerId, int userId,int storeId, int permissionsId)
+    public Pair<Boolean, JSONObject> removeManagerPermission(int ownerId, String token, int userId,int storeId, int permissionsId)
     {
-        Response<String> res = market.removeManagerPermission(ownerId, userId, storeId, permissionsId);
+        Response<String> res = market.removeManagerPermission(ownerId, token, userId, storeId, permissionsId);
         return fromResToPair(res);
     }
 
-//    public Response answerQuestion(int userId,int storeId ,int questionId,String answer);
-//    public Response seeStoreHistory(int userId,int storeId);
-//    public Response addProduct(int useIid, int storeId,List<String> categories, String name , String description , int price , int quantity);
-//    public Response deleteProduct(int userId,int storeId,int productId);
-//    public Response updateProduct(int userId, int storeId,int productId, List<String> categories, String name , String description , int price , int quantity);
-//    //public Response getStoreOrders(int userId , int storeId);
-//
-//    public Response getAppointments(int userId, int storeId);
-//
-//    //store methods
-//    //todo: decide if getStore will bring every thing togheter , products , orders , ..statistics
-//    //public Response getStore(int storeId);
-//
-//    // admin methods
-//    public Response adminLogin(String email ,String pass);
-//    public Response adminLogout(int adminId);
-//    public Response getAdmins(int adminId);
-//    public Response getStores();
-//    public Response addAdmin(int userId, String email , String pass);
-//    public Response removeAdmin(int adminId);
-//    public Response getUsersPurchaseHistory(int buyerId);
-//    public Response answerComplaint(int adminId,int complaintId,String ans);
-//    public Response cancelMembership(int adminId,int userToRemove);
-//    public Response watchLog(int adminId);
-//
-//    public Response watchMarketStatus(int adminId);
+    public Pair<Boolean, JSONObject> answerQuestion(int userId,int storeId ,int questionId,String answer)
+    {
+        Response<String> res = market.answerQuestion(userId, storeId, questionId, answer);
+        return fromResToPair(res);
+    }
 
-//    public Pair<Boolean, JSONObject> viewQuestions(int userId, int storeId){
-//        Response<HashMap<Integer, Message>> res = market.viewQuestions(userId, storeId);
-//        JSONObject json = new JSONObject();
-//        if(res.errorOccurred())
-//        {
-//            json.put("errorMsg", res.getErrorMessage());
-//            return new Pair<>(false, json);
-//        }
-//        else {
-//            json.put("value", questionsToJson(res.getValue()));
-//            return new Pair<>(true, json);
-//        }
-//    }
-//    public Response viewQuestions(int userId,int storeId);
+    private JSONObject getBasket(Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry){
+        JSONObject basketJson = new JSONObject();
+        basketJson.put("storeId", basketEntry.getKey());
+        List<String> bucketList = new ArrayList();
+        for (Map.Entry<Integer, Integer> productEntry : basketEntry.getValue().entrySet()) {
+            JSONObject productJson = new JSONObject();
+            productJson.put("productId", productEntry.getKey());
+            productJson.put("quantity", productEntry.getValue());
+            bucketList.add(productJson.toString());
+        }
+        String bucket = bucketList.stream()
+                .collect(Collectors.joining(",", "[", "]"));
+        basketJson.put("products", bucket);
+        return basketJson;
+    }
+
+    private JSONObject orderToJson(OrderInfo order) {
+        JSONObject json = new JSONObject();
+        json.put("orderId", order.getOrderId());
+        json.put("userId", order.getUserId());
+        json.put("price", order.getTotalPrice());
+        List<String> baskets = new ArrayList();
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry : order.getProductsInStores().entrySet()) {
+            JSONObject basketJson = getBasket(basketEntry);
+            baskets.add(basketJson.toString());
+        }
+        String products = baskets.stream()
+                .collect(Collectors.joining(",", "[", "]"));
+        json.put("productsInStores", products);
+        return json;
+    }
+
+    private String ordersToJson(List<OrderInfo> orders) {
+        return orders.stream()
+                .map(order -> orderToJson(order).toString())
+                .collect(Collectors.joining(",", "[", "]"));
+    }
+
+    public Pair<Boolean, JSONObject> seeStoreHistory(int userId,int storeId)
+    {
+        Response<List<OrderInfo>> res = market.seeStoreHistory(userId, storeId);
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", ordersToJson(res.getValue()));
+            return new Pair<>(true, json);
+        }
+    }
+
+    public Pair<Boolean, JSONObject> deleteProduct(int userId,int storeId,int productId)
+    {
+        Response<String> res = market.deleteProduct(userId, storeId, productId);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> updateProduct(int userId, int storeId, int productId, List<String> categories, String name , String description , int price , int quantity)
+    {
+        Response<String> res = market.updateProduct(userId, storeId, productId, categories, name, description, price, quantity);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> adminLogin(String email, String password)
+    {
+        Response<LoginInformation> res = market.adminLogin(email, password);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> adminLogout(int adminId)
+    {
+        Response<String> res = market.adminLogout(adminId);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> getAdmins(int adminId)
+    {
+        Response<HashMap<Integer, Admin>> res = market.getAdmins(adminId);
+        //TODO: fix that
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> addAdmin(int adminId, String email , String pass)
+    {
+        Response<String> res = market.addAdmin(adminId, email, pass);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> removeAdmin(int adminId)
+    {
+        Response<String> res = market.removeAdmin(adminId);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> answerComplaint(int adminId, int complaintId, String ans)
+    {
+        Response<String> res = market.answerComplaint(adminId, complaintId, ans);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> cancelMembership(int adminId, int userToRemove)
+    {
+        Response<String> res = market.cancelMembership(adminId, userToRemove);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> watchLog(int adminId)
+    {
+        Response<HashMap<Logger.logStatus, List<String>>> res = market.watchLog(adminId);
+        //TODO: fix that return value
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> viewQuestions(int userId, int storeId)
+    {
+        Response<HashMap<Integer, Message>> res = market.viewQuestions(userId, storeId);
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", questionsToJson(res.getValue()));
+            return new Pair<>(true, json);
+        }
+    }
+
+    private String questionsToJson(HashMap<Integer, Message> questions) {
+        List<String> questionsList = new ArrayList<>();
+        for (Map.Entry<Integer, Message> question: questions.entrySet())
+        {
+            JSONObject questionJson = new JSONObject();
+            questionJson.put("questionId", question.getKey());
+            questionJson.put("message", question.getValue());
+            questionsList.add(questionJson.toString());
+        }
+        return questionsList.stream()
+                .collect(Collectors.joining(",", "[", "]"));
+    }
+
+    public Pair<Boolean, JSONObject> getUsersPurchaseHistory(int buyerId)
+    {
+        Response<List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>>> res = market.getUsersPurchaseHistory(buyerId);
+        // TODO: cast this to json
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> getStores()
+    {
+        Response<ConcurrentHashMap<Integer, Store>> res = market.getStores();
+        // TODO: cast this to json
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> getAppointments(int userId, int storeId)
+    {
+        Response<AppHistory> res = market.getAppointments(userId, storeId);
+        // TODO: cast this to json
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> watchMarketStatus(int adminId)
+    {
+        Response<MarketInfo> res = market.watchMarketStatus(adminId);
+        // TODO: cast this to json
+        return fromResToPair(res);
+    }
+
 
 
 
