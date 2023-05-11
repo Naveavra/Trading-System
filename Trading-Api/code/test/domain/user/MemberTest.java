@@ -34,7 +34,7 @@ class MemberTest {
         m = new Member(1, "ziv@gmail.com", "ziv1234", "22/04/2002");
         s = new Store(0, "", 1);
         try {
-            s.addNewProduct("apppe", "pink apple", new AtomicInteger(1));
+            s.addNewProduct("apppe", "pink apple", new AtomicInteger(1), 5);
         }catch (Exception e){
             assert false;
         }
