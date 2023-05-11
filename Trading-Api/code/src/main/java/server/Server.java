@@ -6,6 +6,7 @@ import domain.store.storeManagement.Store;
 import org.json.JSONObject;
 import spark.Session;
 import utils.Pair;
+import utils.marketRelated.Response;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -31,16 +32,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        api.register("eli@gmail.com", "aA12345", "22/02/2002");
-        //Spark.webSocket("/api/login", MainWebSocket.class);
-        //Spark.webSocket("/api/member",  MemberWebSocket.class);
-        //Pair<Boolean, JSONObject> ans2 = api.register("eli@gmail.com", "123Aaa", "24/02/2002");
-        //Pair<Boolean, JSONObject> ans = api.login("eli@gmail.com", "123Aaa");
-        //System.out.println(ans.getSecond().get("value"));
-        //System.out.println(ans2.getSecond().get("value"));
-        //System.out.println(api.getCart(id).getSecond().get("value"));
-//        staticFileLocation("/public"); //index.html is served at localhost:4567 (default port)
-//        webSocket("chat", NotificationWebSocket.class);
+//        api.register("eli@gmail.com", "aA12345", "22/02/2002");
         init();
         connectedThread = new ConnectedThread(connected);
         connectedThread.start();
@@ -65,35 +57,6 @@ public class Server {
 
                     return "OK";
                 });
-        /*
-        post("/api/auth/login", (req, res) -> {
-            JSONObject request = new JSONObject(req.body());
-            String email = request.get("email").toString();
-            String pass  = request.get("password").toString();
-            LinkedList<String> answers = new LinkedList<>();
-            Response<Token> r = api.login(email,pass,answers);
-
-            // System.out.println(r.getValue().getUserName());
-            JSONObject json = new JSONObject();
-            if(r.getErrorMessage()==null) {
-                System.out.println("new user comes in , id: " + r.getValue().getUserId());
-                json.put("token", r.getValue().getToken());
-                json.put("userId", r.getValue().getUserId());
-                json.put("userName", r.getValue().getUserName());
-                json.put("isAdmin",false);
-                connected.put( r.getValue().getUserId() ,true);
-                System.out.println(json);
-                res.status(200);
-                res.body(json.toString());
-            }
-            else {
-                json.put("errorMsg", r.getErrorMessage());
-                res.status(400);
-                res.body(json.toString());
-            }
-            return res.body();
-        });
-        */
         post("api/auth/ping", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             String id = request.get("userId").toString();
@@ -129,6 +92,8 @@ public class Server {
             toSparkRes(res, api.register(email, pass, bday));
             return res.body();
         });
+
+        //Store:
         get("api/stores", (req, res) ->
         {
             System.out.println("get store");
@@ -153,12 +118,54 @@ public class Server {
             res.status(200);
             return res.body();
         });
-       // delete
-        delete("api/stores/:id",(req,res)->{
-            System.out.println(req);
-            res.body("success delete");
-            res.status(200);
+        delete("", (req, res)-> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = (int) (request.get("userId"));
+            int storeId = (int) (request.get("storeId"));
+            toSparkRes(res, api.closeStore(userId, storeId));
             return res.body();
         });
+        //---Admin-------------------------------:
+
+        //---Cart-------------------------------:
+        //---------Guest-------------------------:
+        //Could be also for any user....
+        get("api/guest/:id/cart",(req,res)->{
+            JSONObject request = new JSONObject(req.body());
+            int userId = (int) (request.get("userId"));
+            toSparkRes(res, api.getCart(userId));
+            return res.body();
+        });
+
+        post("api/guest/:id/cart/:storeId/:productId", (req, res)->{
+            JSONObject request = new JSONObject(req.body());
+            int userId = (int) (request.get("userId"));
+            int storeId = (int) (request.get("storeId"));
+            int productId = (int) (request.get("productId"));
+            int quantity = (int) (request.get("newQuantity"));
+            toSparkRes(res, api.addProductToCart(userId, storeId, productId, quantity));
+            return res.body();
+        });
+
+        patch("api/guest/:id/cart/:storeId/:productId", (req, res)->{
+            JSONObject request = new JSONObject(req.body());
+            int userId = (int) (request.get("userId"));
+            int storeId = (int) (request.get("storeId"));
+            int productId = (int) (request.get("productId"));
+            int quantity = (int) (request.get("newQuantity"));
+            toSparkRes(res, api.changeQuantityInCart(userId, storeId, productId, quantity));
+            return res.body();
+        });
+
+        delete("api/guest/:id/cart/:storeId/:productId", (req, res)->{
+            JSONObject request = new JSONObject(req.body());
+            int userId = (int) (request.get("userId"));
+            int storeId = (int) (request.get("storeId"));
+            int productId = (int) (request.get("productId"));
+            toSparkRes(res, api.removeProductFromCart(userId, storeId, productId));
+            return res.body();
+        });
+        //TODO: ---------Member-------------------------:
+
     }
 }
