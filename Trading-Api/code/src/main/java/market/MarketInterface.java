@@ -30,83 +30,83 @@ public interface MarketInterface {
 
     //member methods
     public Response login(String email , String pass);
-    public Response checkSecurityQuestions(int userId, List<String> answers);
-    public Response addSecurityQuestion(int userId, String question, String answer);
-    public Response changeAnswerForLoginQuestion(int userId, String question, String answer);
-    public Response removeSecurityQuestion(int userId, String question);
-    public Response displayNotifications(int userId);
-    public Response logout(int userId);
-    public Response changePassword(int userId,String oldPass ,String newPass);
+    public Response checkSecurityQuestions(int userId, String token, List<String> answers);
+    public Response addSecurityQuestion(int userId, String token, String question, String answer);
+    public Response changeAnswerForLoginQuestion(int userId, String token, String question, String answer);
+    public Response removeSecurityQuestion(int userId, String token, String question);
+    public Response displayNotifications(int userId, String token);
+    public Response logout(int userId, String token);
+    public Response changePassword(int userId, String token, String oldPass, String newPass);
 
-    public Response changeName(int userId, String newUserName);
-    public Response changeEmail(int userId, String newEmail);
+    public Response changeName(int userId, String token, String newUserName);
+    public Response changeEmail(int userId, String token, String newEmail);
 
-    public Response openStore(int userId,String storeDescription);
-    public Response getMemberInformation(int userId);
-    public Response getUserPurchaseHistory(int userId, int buyerId);
-    public Response writeReviewToStore(int orderId, int storeId, String content, int grading, int userId);
-    public Response writeReviewToProduct(int orderId, int storeId,int productId, String content, int grading, int userId);
-    public Response checkReviews(int userId, int storeId);
+    public Response openStore(int userId,String token, String storeDescription);
+    public Response getMemberInformation(int userId, String token);
+    public Response getUserPurchaseHistory(int userId, String token, int buyerId);
+    public Response writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading);
+    public Response writeReviewToProduct(int userId, String token, int orderId, int storeId,int productId, String content, int grading);
+    public Response checkReviews(int userId, String token, int storeId);
     public Response getProductInformation(int storeId , int productId);
-    public Response getStoreInformation( int storeId);
+    public Response getStoreInformation(int storeId);
     public Response getStoreProducts(int storeId);
 
-    public Response sendQuestion(int userId,int storeId,String msg);
-    public Response sendComplaint(int userId,int orderId,int storeId,String msg);
+    public Response sendQuestion(int userId, String token, int storeId, String msg);
+    public Response sendComplaint(int userId, String token, int orderId, int storeId, String msg);
 
     // manager methods
-    public Response appointManager(int userId, int storeId, int managerIdToAppoint);
-    public Response changeStoreDescription(int userId,int storeId,String description);
-    public Response changePurchasePolicy(int userId,int storeId,String policy);
-    public Response changeDiscountPolicy(int userId,int storeId,String policy);
-    public Response addPurchaseConstraint(int userId,int storeId,String constraint);
-    public Response fireManager(int userId,int storeId,int managerToFire);
-    public Response checkWorkerStatus(int userId, int workerId, int storeId);
-    public Response checkWorkersStatus(int userId,int storeId);
-    public Response viewQuestions(int userId,int storeId);
-    public Response answerQuestion(int userId,int storeId ,int questionId,String answer);
-    public Response seeStoreHistory(int userId,int storeId);
-    public Response addProduct(int useIid, int storeId,List<String> categories, String name , String description , int price , int quantity);
-    public Response deleteProduct(int userId,int storeId,int productId);
-    public Response updateProduct(int userId, int storeId,int productId, List<String> categories, String name , String description , int price , int quantity);
+    public Response appointManager(int userId, String token, int managerIdToAppoint, int storeId);
+    public Response changeStoreDescription(int userId, String token, int storeId, String description);
+    public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
+    public Response changeDiscountPolicy(int userId, String token, int storeId, String policy);
+    public Response addPurchaseConstraint(int userId, String token, int storeId, String constraint);
+    public Response fireManager(int userId, String token, int managerToFire, int storeId);
+    public Response checkWorkerStatus(int userId, String token, int workerId, int storeId);
+    public Response checkWorkersStatus(int userId, String token, int storeId);
+    public Response viewQuestions(int userId, String token, int storeId);
+    public Response answerQuestion(int userId, String token, int storeId, int questionId, String answer);
+    public Response seeStoreHistory(int userId, String token, int storeId);
+    public Response addProduct(int useIid, String token, int storeId,List<String> categories, String name , String description , int price , int quantity);
+    public Response deleteProduct(int userId, String token, int storeId, int productId);
+    public Response updateProduct(int userId, String token, int storeId,int productId, List<String> categories, String name , String description , int price , int quantity);
     //public Response getStoreOrders(int userId , int storeId);
 
     //store owner methods
-    public Response appointOwner(int userId , int storeId,int ownerId);
-    public Response fireOwner(int userId , int storeId, int ownerId);
-    public Response addManagerPermission (int ownerId, int userId,int storeId, int permissionsId);
+    public Response appointOwner(int userId , String token,int ownerId, int storeId);
+    public Response fireOwner(int userId , String token, int ownerId, int storeId);
+    public Response addManagerPermission (int ownerId, String token, int userId,int storeId, int permissionsId);
 
-    Response<String> addManagerPermissions(int ownerId, int userId, int storeId, List<Integer> permissionsIds);
+    Response<String> addManagerPermissions(int ownerId, String token, int userId, int storeId, List<Integer> permissionsIds);
 
-    public Response removeManagerPermission (int ownerId, int userId, int storeId, int permissionsId);
+    public Response removeManagerPermission (int ownerId, String token, int userId, int storeId, int permissionsId);
 
-    Response<String> removeManagerPermissions(int ownerId, int userId, int storeId, List<Integer> permissionsIds);
+    Response<String> removeManagerPermissions(int ownerId, String token, int userId, int storeId, List<Integer> permissionsIds);
 
-    public Response getAppointments(int userId, int storeId);
+    public Response getAppointments(int userId, String token, int storeId);
 
     //store creator methods
-    public Response closeStore(int userId,int storeId);
-    public Response reopenStore(int userId,int storeId);
+    public Response closeStore(int userId, String token, int storeId);
+    public Response reopenStore(int userId, String token, int storeId);
 
-    public Response closeStorePermanently(int adminId, int storeId);
+    public Response closeStorePermanently(int adminId, String token, int storeId);
 
     //store methods
-    //todo: decide if getStore will bring every thing togheter , products , orders , ..statistics
+    //todo: decide if getStore will bring every thing together , products , orders , ..statistics
     //public Response getStore(int storeId);
     public Response getProducts(int storeId);
 
     // admin methods
-    public Response adminLogin(String email ,String pass);
-    public Response adminLogout(int adminId);
-    public Response getAdmins(int adminId);
+    public Response adminLogin(String email, String pass);
+    public Response adminLogout(int adminId ,String token);
+    public Response getAdmins(int adminId, String token);
     public Response getStores();
-    public Response addAdmin(int userId, String email , String pass);
-    public Response removeAdmin(int adminId);
-    public Response getUsersPurchaseHistory(int buyerId);
-    public Response answerComplaint(int adminId,int complaintId,String ans);
-    public Response cancelMembership(int adminId,int userToRemove);
-    public Response watchLog(int adminId);
+    public Response addAdmin(int userId, String token, String email , String pass);
+    public Response removeAdmin(int adminId, String token);
+    public Response getUsersPurchaseHistory(int buyerId, String token);
+    public Response answerComplaint(int adminId, String token, int complaintId, String ans);
+    public Response cancelMembership(int adminId, String token, int userToRemove);
+    public Response watchLog(int adminId, String token);
 
-    public Response watchMarketStatus(int adminId);
+    public Response watchMarketStatus(int adminId, String token);
 
 }

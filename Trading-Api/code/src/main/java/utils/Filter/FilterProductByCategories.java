@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * filters by categories, need to set categories first with setCategories() function;
