@@ -4,7 +4,7 @@ import { deleteStore, getStore, postStore } from "../../reducers/storesSlice";
 import { Button } from "@mui/material";
 import ErrorAlert from "../../components/Alerts/error";
 import SuccessAlert from "../../components/Alerts/success";
-import { postProduct } from "../../reducers/productsSlice";
+import { getProducts, postProduct } from "../../reducers/productsSlice";
 
 const Tests: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -28,6 +28,10 @@ const Tests: React.FC = () => {
     const handleOnAddProduct = () => {
         console.log("front add product")
         dispatch(postProduct({id: 1, storeId: 1, category: [], name: "mazda 3", description: "ziv's mazda", price: 5, quantity: 5, img: ""}))
+    }
+    const handleOnGetProducts = () => {
+        console.log("front get products")
+        dispatch(getProducts({storeId: 1}))
     }
     useEffect(() => {
         //dispatch(getStores());
@@ -60,6 +64,14 @@ const Tests: React.FC = () => {
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
                 {'add product'}
+            </Button ><Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={handleOnGetProducts}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'get product'}
             </Button >
             {error ? <ErrorAlert message={error} /> : null}
             {message ? <SuccessAlert message={message} /> : null}

@@ -6,7 +6,6 @@ import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
 import { RegisterPostData } from "../types/requestTypes/authTypes";
 import { StoreRole } from "../types/systemTypes/StoreRole";
-import { log } from "console";
 import { Permission } from "../types/systemTypes/Permission";
 
 interface AuthState {

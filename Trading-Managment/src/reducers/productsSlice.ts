@@ -2,7 +2,7 @@ import { Action, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiError, ApiListData, ApiResponse, ApiResponseListData} from "../types/apiTypes";
 import { EmptyProduct, Product } from "../types/systemTypes/Product";
 import { ProductResponseData } from "../types/responseTypes/productTypes";
-import { DeleteProductsParams, GetProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
+import { DeleteProductsParams, GetStoreProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
 import { productsApi } from "../api/productsApi";
 
 const reducerName = 'products';
@@ -69,7 +69,7 @@ export const deleteProduct = createAsyncThunk<
 
 export const getProducts = createAsyncThunk<
     ApiListData<Product>,
-    GetProductsParams,
+    GetStoreProductsParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/get`,
@@ -102,6 +102,7 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
         builder.addCase(getProducts.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
             state.responseData = payload;
+            console.log(payload);
             state.error = null;
         });
         builder.addCase(getProducts.rejected, (state, { payload }) => {

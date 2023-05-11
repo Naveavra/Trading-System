@@ -1,5 +1,5 @@
-export interface GetProductsParams {
-    //todo  should think about it
+export interface GetStoreProductsParams {
+    storeId: number
 };
 export interface PostProductsParams {
     id: number; //userid
