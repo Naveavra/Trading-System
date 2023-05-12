@@ -35,7 +35,7 @@ const Tests: React.FC = () => {
     }
     const handleOnPatchProducts = () => {
         console.log("front get products")
-        dispatch(patchProduct({id: 1, storeId: 1, productId: 0, category: [], name: "mazda 6", description: "new", price: 50, quantity: 10, img: ""}))
+        dispatch(patchProduct({id: 1, storeId: 1, productId: 0, category: [], name: "mazda 6", description: null, price: 50, quantity: 10, img: ""}))
     }
     useEffect(() => {
         //dispatch(getStores());
@@ -84,7 +84,7 @@ const Tests: React.FC = () => {
                 onClick={handleOnPatchProducts}
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
-                {'remove store'}
+                {'patch product'}
             </Button >
             {error ? <ErrorAlert message={error} /> : null}
             {message ? <SuccessAlert message={message} /> : null}

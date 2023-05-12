@@ -1,7 +1,6 @@
-import { Action, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ApiError, ApiListData, ApiResponse, ApiResponseListData} from "../types/apiTypes";
+import {  createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { ApiError, ApiListData} from "../types/apiTypes";
 import { EmptyProduct, Product } from "../types/systemTypes/Product";
-import { ProductResponseData } from "../types/responseTypes/productTypes";
 import { DeleteProductsParams, GetStoreProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
 import { productsApi } from "../api/productsApi";
 
@@ -10,7 +9,7 @@ const reducerName = 'products';
 interface ProductsState {
     productState: {
         isLoading: boolean;
-        responseData?: string | Product | null;
+        responseData?: string | null;
         error: string | null;
         watchedProduct?: Product;
     },
@@ -45,7 +44,7 @@ export const postProduct = createAsyncThunk<
 
 export const patchProduct = createAsyncThunk<
     string,
-    PatchProductsParams,
+    PatchProductsParams ,
     { rejectValue: ApiError }
 >(
     `${reducerName}/patch`,

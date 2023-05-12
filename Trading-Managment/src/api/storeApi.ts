@@ -26,5 +26,5 @@ export const storeApi =
         })),
     getStore: (params: GetStoresParams): Promise<ApiResponse<Store>> =>
         apiErrorHandlerWrapper(getApiClient().get('api/stores', { params: params })),
-
+    
 }   

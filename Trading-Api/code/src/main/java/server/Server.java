@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import data.StoreInfo;
+import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import org.json.JSONObject;
 import spark.Session;
@@ -10,6 +11,7 @@ import utils.Pair;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static spark.Spark.*;
 
@@ -162,13 +164,71 @@ public class Server {
             res.status(200);
             return res.body();
         });
-        // delete
+        //--PRODUCTS---
+        // post
         post("api/products", (req, res) ->
         {
+            //params
+            //    id: number;
+            //    storeId: number;
+            //    category: string[];
+            //    name: string;
+            //    description: string;
+            //    price: number;
+            //    quantity: number;
+            //    img: string;
             System.out.println(req.body());
             res.body("success post");
             res.status(200);
             return res.body();
         });
+        delete("api/products", (req, res) ->
+                {
+                    //params-
+                    //    id: number; //userid
+                    //    storeId: number;
+                    //    productId: number;
+                   return res.body();
+                }
+                );
+        //patch
+        patch("api/products", (req, res) ->
+        {
+            //we will send the function with all the product attributes and chai needs to check every one of them an if not empty to call
+            //the appropriate function
+            //these are the params
+            //    id: number; userid
+            //    storeId: number;
+            //    productId: number;
+            //    category: string[]| null;
+            //    name: string | null;
+            //    description: string | null;
+            //    price: number | null;
+            //    quantity: number| null;
+            //    img: string | null;
+            Store s1 = new Store(0,"test", 2);
+            s1.addNewProduct("mazda", "ziv's vehicle", new AtomicInteger(1), 50);
+            JSONObject request = new JSONObject(req.body());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            int pid = Integer.parseInt(request.get("id").toString());
+            String desc = request.get("description").toString();
+            System.out.println(desc);
+            s1.setProductQuantity(pid, quantity);
+            System.out.println(s1.getInventory().getProduct(pid).quantity);
+            System.out.println(req.body());
+            res.body("success patch");
+            res.status(200);
+            return res.body();
+        });
+        get("api/products", (req, res) ->
+        {
+            //params-
+            //storeId: number
+            return res.body();
+        }
+        );
+        //--PRODUCTS---
+        //--CART--
+
     }
 }
