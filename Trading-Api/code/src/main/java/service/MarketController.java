@@ -1,7 +1,6 @@
 package service;
 
 
-import domain.store.product.Product;
 import domain.store.storeManagement.AppHistory;
 import utils.Pair;
 import utils.ProductInfo;
@@ -35,12 +34,12 @@ public class MarketController {
 
     public Pair<Receipt, Set<Integer>> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId, int totalPrice) throws Exception
     {
-        if (totalPrice < 0 )
-        {
-            throw new Exception("could not complete purchase, not enough units in the store");
-        }
-        Order order = orderctrl.createNewOrder(userId,shoppingCart);
-        order.setTotalPrice(totalPrice);
+//        if (totalPrice < 0 )
+//        {
+//            throw new Exception("could not complete purchase, not enough units in the store");
+//        }
+        Order order = orderctrl.createNewOrder(userId,shoppingCart, storectrl :: calculatePrice,storectrl :: setPrices);
+//        order.setTotalPrice(totalPrice);
         Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
         Receipt receipt = new Receipt(userId, order.getOrderId(), shoppingCart, totalPrice);
         Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);
@@ -138,19 +137,19 @@ public class MarketController {
 
 
 
-    public int calculatePrice(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart) {
-        int totalprice = 0;
-        for (Integer storeid : shoppingCart.keySet())
-        {
-            Store store = storectrl.getStore(storeid);
-            try {
-                totalprice += store.caclulatePrice(shoppingCart.get(storeid));
-            } catch (Exception e) {
-                return  -1;
-            }
-        }
-        return totalprice;
-    }
+//    public int calculatePrice(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart) {
+//        int totalprice = 0;
+//        for (Integer storeid : shoppingCart.keySet())
+//        {
+//            Store store = storectrl.getStore(storeid);
+//            try {
+//                totalprice += store.calculatePrice(shoppingCart.get(storeid));
+//            } catch (Exception e) {
+//                return  -1;
+//            }
+//        }
+//        return totalprice;
+//    }
 
     public List<ProductInfo> getStoreProducts(int storeId) throws Exception {
         return storectrl.getProducts(storeId);

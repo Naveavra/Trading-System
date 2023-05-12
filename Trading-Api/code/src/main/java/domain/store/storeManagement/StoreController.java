@@ -103,7 +103,26 @@ public class StoreController {
         throw new Exception("the storeId given does not belong to any active store");
     }
 
-
+    public int calculatePrice(HashMap<Integer,HashMap<Integer,Integer>> basket) throws Exception{
+        int total = 0;
+        for(Integer id : basket.keySet()){
+            total += getStore(id).calculatePrice(basket.get(id));
+        }
+        return total;
+    }
+    public void setPrices(Order or) throws Exception {
+        HashMap<Integer,HashMap<Integer,Integer>> shoppingCart = or.getProductsInStores();
+        HashMap<Integer,HashMap<Integer,Integer>> prices = or.getPrices();
+        for(Integer storeId: shoppingCart.keySet()){
+            prices.put(storeId,new HashMap<>());
+            for(Integer prodId : shoppingCart.get(storeId).keySet()){
+                int quantity = shoppingCart.get(storeId).get(prodId);
+                Store s = getStore(storeId);
+                Product p = s.getInventory().getProduct(prodId);
+                prices.get(storeId).put(prodId,p.getPrice() * quantity);
+            }
+        }
+    }
     /**
      * checks if the purchasing is possible
      *
@@ -125,7 +144,7 @@ public class StoreController {
 
     /**
      * performs the purchasing
-     *
+     *TODO FIX THIS FUNCTION order has all the relevant information
      * @param shoppingCart the client shopping cart
      * @return if successful returns the store owners ids else null
      */
