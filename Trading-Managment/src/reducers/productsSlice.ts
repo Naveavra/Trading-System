@@ -1,7 +1,7 @@
 import {  createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiError, ApiListData} from "../types/apiTypes";
 import { EmptyProduct, Product } from "../types/systemTypes/Product";
-import { DeleteProductsParams, GetStoreProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
+import { DeleteProductsParams, GetStoreProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/productTypes";
 import { productsApi } from "../api/productsApi";
 
 const reducerName = 'products';
