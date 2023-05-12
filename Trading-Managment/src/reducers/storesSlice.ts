@@ -2,7 +2,7 @@ import { Action, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiError, ApiListData, ApiResponse } from "../types/apiTypes";
 
 import { storeApi } from "../api/storeApi";
-import { DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams } from "../types/requestTypes/storeTypes";
+import { AppointOwnerParams, DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams } from "../types/requestTypes/storeTypes";
 import { Store, emptyStore } from "../types/systemTypes/Store";
 import { StoreInfo, emptyStoreInfo } from "../types/systemTypes/StoreInfo";
 
@@ -54,7 +54,7 @@ export const patchStore = createAsyncThunk<
     PatchStoreParams,
     { rejectValue: ApiError }
 >(
-    '${reducerName}/patch',
+    `${reducerName}/patch`,
     async (formData, thunkApi) => {
         return storeApi.patchStore(formData)
             .then((res) => thunkApi.fulfillWithValue(res as string))
@@ -66,7 +66,7 @@ export const deleteStore = createAsyncThunk<
     DeleteStoreParams,
     { rejectValue: ApiError }
 >(
-    '${reducerName}/delete',
+    `${reducerName}/delete`,
     async (formData, thunkApi) => {
         return storeApi.deleteStore(formData)
             .then((res) => thunkApi.fulfillWithValue(res as string))
@@ -96,6 +96,18 @@ export const getStore = createAsyncThunk<
             .then((res) => thunkApi.fulfillWithValue(res as Store))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
+export const appointManager = createAsyncThunk<
+   string,
+    AppointOwnerParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/appointments/post`,
+    async (params, thunkApi) => {
+        return storeApi.appointManager(params)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+    //TODO complete the other functions as well
 
 const { reducer: storesReducer, actions: storesActions } = createSlice({
     name: reducerName,
@@ -174,10 +186,20 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.storeState.isLoading = false;
             state.storeState.watchedStore = payload;
         });
-        builder.addCase(getStore.rejected, (state, { payload }) => {
+        //appointManager
+        builder.addCase(appointManager.rejected, (state, { payload }) => {
             state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
         });
+        builder.addCase(appointManager.pending, (state) => {
+            state.storeState.isLoading = true;
+            state.storeState.error = null;
+        });
+        builder.addCase(appointManager.fulfilled, (state, { payload }) => {
+            state.storeState.isLoading = false;
+            state.storeState.responseData = payload;
+        });
+       
     }
 });
 

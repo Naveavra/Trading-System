@@ -227,6 +227,12 @@ public class Server {
             return res.body();
         }
         );
+        post("api/stores/:id/appointments", (req, res) ->
+                {
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
         //--PRODUCTS---
         //--CART--
 

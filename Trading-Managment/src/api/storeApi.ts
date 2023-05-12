@@ -1,5 +1,5 @@
 import { ApiResponseListData, ApiResponse } from "../types/apiTypes";
-import { DeleteStoreParams, GetStoreProducts, GetStoresParams, PatchStoreParams, PostStoreParams } from "../types/requestTypes/storeTypes";
+import { AppointOwnerParams, DeleteStoreParams, GetStoreProducts, GetStoresParams, PatchStoreParams, PostStoreParams, getAppointmentsHistoryParams } from "../types/requestTypes/storeTypes";
 import { Product } from "../types/systemTypes/Product";
 import { Store } from "../types/systemTypes/Store";
 import { StoreInfo } from "../types/systemTypes/StoreInfo";
@@ -25,6 +25,23 @@ export const storeApi =
             params: params
         })),
     getStore: (params: GetStoresParams): Promise<ApiResponse<Store>> =>
-        apiErrorHandlerWrapper(getApiClient().get('api/stores', { params: params })),
+        apiErrorHandlerWrapper(getApiClient().get('api/stores', { 
+            params: params 
+        })),
+    appointOwner: (params: AppointOwnerParams) : Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/store/${params.storeId}/appointments`, params)),
+
+    appointManager: (params: AppointOwnerParams) : Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/store/${params.storeId}/appointments`, params)),
+
+    getAppointmentHistory: (params: getAppointmentsHistoryParams) : Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().get(`api/store/${params.storeId}/appointments`, { params: params })),
+    
+    fireOwner: (params: AppointOwnerParams) : Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().delete(`api/store/${params.storeId}/appointments`, {params: params})),
+    
+    fireManager: (params: AppointOwnerParams) : Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().delete(`api/store/${params.storeId}/appointments`,  {params: params})),
+    
     
 }   

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/store"
-import { deleteStore, getStore, postStore } from "../../reducers/storesSlice";
+import { appointManager, deleteStore, getStore, postStore } from "../../reducers/storesSlice";
 import { Button } from "@mui/material";
 import ErrorAlert from "../../components/Alerts/error";
 import SuccessAlert from "../../components/Alerts/success";
@@ -34,8 +34,12 @@ const Tests: React.FC = () => {
         dispatch(getProducts({storeId: 1}))
     }
     const handleOnPatchProducts = () => {
-        console.log("front get products")
+        console.log("front patch products")
         dispatch(patchProduct({id: 1, storeId: 1, productId: 0, category: [], name: "mazda 6", description: null, price: 50, quantity: 10, img: ""}))
+    }
+    const handleOnAppointManager = () => {
+        console.log("front appoint products")
+        dispatch(appointManager({storeId: 0,userIncharge: 1, newOwner: 2}))
     }
     useEffect(() => {
         //dispatch(getStores());
@@ -85,6 +89,15 @@ const Tests: React.FC = () => {
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
                 {'patch product'}
+            </Button >
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={handleOnAppointManager}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'appoint mnager'}
             </Button >
             {error ? <ErrorAlert message={error} /> : null}
             {message ? <SuccessAlert message={message} /> : null}

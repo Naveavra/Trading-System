@@ -11,8 +11,8 @@ export interface PostStoreParams {
 export interface PatchStoreParams {
     userId: number,
     storeId: number,
-    desc: string,
-    isActive: boolean
+    desc: string | null,
+    isActive: boolean | null
 }
 
 export interface DeleteStoreParams {
@@ -22,4 +22,15 @@ export interface DeleteStoreParams {
 
 export interface GetStoreProducts {
     storeId: number
+}
+
+export interface  AppointOwnerParams {
+    storeId: number,
+    userIncharge: number, 
+    newOwner: number
+}
+
+export interface getAppointmentsHistoryParams {
+    storeId: number, 
+    userId: number
 }
