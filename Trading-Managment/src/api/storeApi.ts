@@ -28,20 +28,20 @@ export const storeApi =
         apiErrorHandlerWrapper(getApiClient().get('api/stores', { 
             params: params 
         })),
-    appointOwner: (params: AppointOwnerParams) : Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().post(`api/store/${params.storeId}/appointments`, params)),
+    appointOwner: (params: AppointOwnerParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/appointments/owners`, params)),
 
-    appointManager: (params: AppointOwnerParams) : Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().post(`api/store/${params.storeId}/appointments`, params)),
+    appointManager: (params: AppointOwnerParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/appointments/managers`, params)),
 
-    getAppointmentHistory: (params: getAppointmentsHistoryParams) : Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().get(`api/store/${params.storeId}/appointments`, { params: params })),
+    // getAppointmentHistory: (params: getAppointmentsHistoryParams) : Promise<ApiResponse<string>> =>
+    //     apiErrorHandlerWrapper(getApiClient().get(`api/stores/${params.storeId}/appointments`, { params: params })),
+    // we already got it in storeInfo
     
-    fireOwner: (params: AppointOwnerParams) : Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().delete(`api/store/${params.storeId}/appointments`, {params: params})),
+    fireManager: (params: AppointOwnerParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().delete(`api/stores/${params.storeId}/appointments/managers`, {params: params})),
     
-    fireManager: (params: AppointOwnerParams) : Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().delete(`api/store/${params.storeId}/appointments`,  {params: params})),
-    
+    fireOwner: (params: AppointOwnerParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().delete(`api/stores/${params.storeId}/appointments/owners`,{params: params})),
     
 }   

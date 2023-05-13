@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/store"
-import { appointManager, deleteStore, getStore, postStore } from "../../reducers/storesSlice";
+import { appointManager, appointOwner, deleteStore, fireManager, fireOwner, getStore, postStore } from "../../reducers/storesSlice";
 import { Button } from "@mui/material";
 import ErrorAlert from "../../components/Alerts/error";
 import SuccessAlert from "../../components/Alerts/success";
@@ -10,8 +10,7 @@ const Tests: React.FC = () => {
     const dispatch = useAppDispatch();
     const error = useAppSelector((state) => state.store.error);
     const message = useAppSelector((state) => state.store.storeState.responseData);
-    const producterror = useAppSelector((state) => state.product.productState.error); //this is for single product
-    const productmessage = useAppSelector((state) => state.product.productState.responseData);
+    
     //const stores_response = useAppSelector((state) => state.store.responseData);
     //const stores: Store[] = stores_response.data.results ?? [];
     // console.log("stores",stores);
@@ -40,6 +39,18 @@ const Tests: React.FC = () => {
     const handleOnAppointManager = () => {
         console.log("front appoint products")
         dispatch(appointManager({storeId: 0,userIncharge: 1, newOwner: 2}))
+    }
+    const handleOnAppointOwner = () => {
+        console.log("front appoint products")
+        dispatch(appointOwner({storeId: 0,userIncharge: 1, newOwner: 2}))
+    }
+    const handleOnFireManager = () => {
+        console.log("front appoint products")
+        dispatch(fireManager({storeId: 0,userIncharge: 1, newOwner: 2}))
+    }
+    const handleOnFireOwner = () => {
+        console.log("front appoint products")
+        dispatch(fireOwner({storeId: 0,userIncharge: 1, newOwner: 2}))
     }
     useEffect(() => {
         //dispatch(getStores());
@@ -97,7 +108,34 @@ const Tests: React.FC = () => {
                 onClick={handleOnAppointManager}
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
-                {'appoint mnager'}
+                {'appoint manager'}
+            </Button >
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={handleOnAppointOwner}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'appoint owner'}
+            </Button >
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={handleOnFireManager}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'fire manager'}
+            </Button >
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={handleOnFireOwner}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'fire owner'}
             </Button >
             {error ? <ErrorAlert message={error} /> : null}
             {message ? <SuccessAlert message={message} /> : null}

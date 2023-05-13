@@ -101,9 +101,45 @@ export const appointManager = createAsyncThunk<
     AppointOwnerParams,
     { rejectValue: ApiError }
 >(
-    `${reducerName}/appointments/post`,
+    `${reducerName}/appointments/managers/post`,
     async (params, thunkApi) => {
         return storeApi.appointManager(params)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+
+export const appointOwner = createAsyncThunk<
+    string,
+     AppointOwnerParams,
+     { rejectValue: ApiError }
+ >(
+     `${reducerName}/appointments/owners/post`,
+     async (params, thunkApi) => {
+         return storeApi.appointOwner(params)
+             .then((res) => thunkApi.fulfillWithValue(res as string))
+             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+     });
+
+export const fireManager = createAsyncThunk<
+    string,
+    AppointOwnerParams,
+    { rejectValue: ApiError }
+    >(
+    `${reducerName}/appointments/managers/delete`,
+    async (params, thunkApi) => {
+        return storeApi.fireManager(params)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+
+export const fireOwner = createAsyncThunk<
+    string,
+    AppointOwnerParams,
+    { rejectValue: ApiError }
+    >(
+    `${reducerName}/appointments/owners/delete`,
+    async (params, thunkApi) => {
+        return storeApi.fireOwner(params)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
@@ -196,6 +232,45 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.storeState.error = null;
         });
         builder.addCase(appointManager.fulfilled, (state, { payload }) => {
+            state.storeState.isLoading = false;
+            state.storeState.responseData = payload;
+        });
+        //appointOwner
+        builder.addCase(appointOwner.rejected, (state, { payload }) => {
+            state.storeState.error = payload?.message.data ?? "error during getStore";
+            state.storeState.isLoading = false;
+        });
+        builder.addCase(appointOwner.pending, (state) => {
+            state.storeState.isLoading = true;
+            state.storeState.error = null;
+        });
+        builder.addCase(appointOwner.fulfilled, (state, { payload }) => {
+            state.storeState.isLoading = false;
+            state.storeState.responseData = payload;
+        });
+        //fireOwner
+        builder.addCase(fireOwner.rejected, (state, { payload }) => {
+            state.storeState.error = payload?.message.data ?? "error during getStore";
+            state.storeState.isLoading = false;
+        });
+        builder.addCase(fireOwner.pending, (state) => {
+            state.storeState.isLoading = true;
+            state.storeState.error = null;
+        });
+        builder.addCase(fireOwner.fulfilled, (state, { payload }) => {
+            state.storeState.isLoading = false;
+            state.storeState.responseData = payload;
+        });
+        //fireManager
+        builder.addCase(fireManager.rejected, (state, { payload }) => {
+            state.storeState.error = payload?.message.data ?? "error during getStore";
+            state.storeState.isLoading = false;
+        });
+        builder.addCase(fireManager.pending, (state) => {
+            state.storeState.isLoading = true;
+            state.storeState.error = null;
+        });
+        builder.addCase(fireManager.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
             state.storeState.responseData = payload;
         });

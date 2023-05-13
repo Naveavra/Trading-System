@@ -227,12 +227,40 @@ public class Server {
             return res.body();
         }
         );
-        post("api/stores/:id/appointments", (req, res) ->
+        post("api/stores/:id/appointments/owners", (req, res) ->
                 {
+                    //appoint new owner
+                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
                     System.out.println(req.body());
                     return res.body();
                 }
         );
+        post("api/stores/:id/appointments/managers", (req, res) ->
+                {
+                    //appoint new manager
+                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+
+        delete("api/stores/:id/appointments/managers", (req, res) ->
+                {
+                    //fire manager
+                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+        delete("api/stores/:id/appointments/owners", (req, res) ->
+                {
+                    //fire owner
+                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+
         //--PRODUCTS---
         //--CART--
 
