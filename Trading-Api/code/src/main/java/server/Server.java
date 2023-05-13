@@ -2,7 +2,9 @@ package server;
 
 import com.google.gson.Gson;
 import data.StoreInfo;
+import domain.store.product.Product;
 import domain.store.storeManagement.Store;
+import domain.user.ShoppingCart;
 import org.json.JSONObject;
 import spark.Session;
 import utils.Pair;
@@ -11,6 +13,7 @@ import utils.marketRelated.Response;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static spark.Spark.*;
 
@@ -171,14 +174,147 @@ public class Server {
         //TODO: ---------Member-------------------------:
 
 
-        // delete
+
+        //--PRODUCTS---
+        // post
         post("api/products", (req, res) ->
         {
+            //params
+            //    id: number;
+            //    storeId: number;
+            //    category: string[];
+            //    name: string;
+            //    description: string;
+            //    price: number;
+            //    quantity: number;
+            //    img: string;
             System.out.println(req.body());
             res.body("success post");
             res.status(200);
             return res.body();
         });
+        delete("api/products", (req, res) ->
+                {
+                    //params-
+                    //    id: number; //userid
+                    //    storeId: number;
+                    //    productId: number;
+                   return res.body();
+                }
+                );
+        //patch
+        patch("api/products", (req, res) ->
+        {
+            //we will send the function with all the product attributes and chai needs to check every one of them an if not empty to call
+            //the appropriate function
+            //these are the params
+            //    id: number; userid
+            //    storeId: number;
+            //    productId: number;
+            //    category: string[]| null;
+            //    name: string | null;
+            //    description: string | null;
+            //    price: number | null;
+            //    quantity: number| null;
+            //    img: string | null;
+            Store s1 = new Store(0,"test", 2);
+            s1.addNewProduct("mazda", "ziv's vehicle", new AtomicInteger(1), 50);
+            JSONObject request = new JSONObject(req.body());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            int pid = Integer.parseInt(request.get("id").toString());
+            String desc = request.get("description").toString();
+            System.out.println(desc);
+            s1.setProductQuantity(pid, quantity);
+            System.out.println(s1.getInventory().getProduct(pid).quantity);
+            System.out.println(req.body());
+            res.body("success patch");
+            res.status(200);
+            return res.body();
+        });
+        get("api/products", (req, res) ->
+        {
+            //params-
+            //storeId: number
+            return res.body();
+        }
+        );
+        //--PRODUCTS----
+        //--APPOINTMENTS---
+        post("api/stores/:id/appointments/owners", (req, res) ->
+                {
+                    //appoint new owner
+                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+        post("api/stores/:id/appointments/managers", (req, res) ->
+                {
+                    //appoint new manager
+                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+
+        delete("api/stores/:id/appointments/managers", (req, res) ->
+                {
+                    //fire manager
+                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+        delete("api/stores/:id/appointments/owners", (req, res) ->
+                {
+                    //fire owner
+                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+        //--APPOINTMENTS
+        //--CART
+        post("api/cart/:id", (req, res) ->
+                {
+                    //when a user creates a basket for store in the first time this function should handle it
+                    //params {"userId":0,"storeId":5,"basket":{"productsList":[{"productId":1,"quantity":5},{"productId":2,"quantity":3}]}}
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+        patch("api/cart/:id", (req, res) ->
+                {
+                    //when a user change quantity of a product in specific store basket
+                    //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+                    JSONObject json = new JSONObject(req.body());
+                    System.out.println(json.get("userId"));
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+        get("api/cart/:id", (req, res) ->
+                {
+                    //when a user change quantity of a product in specific store basket
+                    //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+                    JSONObject request = new JSONObject(req.raw().toString());
+                    int userId = Integer.parseInt(request.get("userId").toString());
+                    toSparkRes(res, api.getCart(userId));
+                    return res.body();
+                }
+        );
+//        Don't have function for this
+//        delete("api/cart/:id", (req, res) ->
+//                {
+//                    //delete cart
+//                    //params userId
+//                    JSONObject request = new JSONObject(req.body());
+//                    System.out.println(request);
+//                    return res.body();
+//                }
+//        );
+
+        //--CART--
 
     }
 }

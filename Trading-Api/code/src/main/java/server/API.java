@@ -82,9 +82,30 @@ public class API {
         return fromResToPair(res);
     }
 
+    public String getBaskets(HashMap<Integer, HashMap<Integer, Integer>> basketsMaps)
+    {
+        List<String> baskets = new ArrayList();
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry : basketsMaps.entrySet()) {
+            JSONObject basketJson = getBasket(basketEntry);
+            baskets.add(basketJson.toString());
+        }
+        String products = baskets.stream()
+                .collect(Collectors.joining(",", "[", "]"));
+        return products;
+    }
+
     public Pair<Boolean, JSONObject> getCart(int id){
         Response<HashMap<Integer, HashMap<Integer, Integer>>> res = market.getCart(id);
-        return fromResToPair(res);
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", getBaskets(res.getValue()));
+            return new Pair<>(true, json);
+        }
     }
 
 
@@ -205,8 +226,6 @@ public class API {
         return fromResToPair(res);
     }
 
-
-//TODO: add from manager methods
 
     public Pair<Boolean, JSONObject> appointManager(int userId, String token, int managerIdToAppoint, int storeId){
         Response<String> res = market.appointManager(userId, token, managerIdToAppoint, storeId);
@@ -406,14 +425,7 @@ public class API {
         json.put("orderId", order.getOrderId());
         json.put("userId", order.getUserId());
         json.put("price", order.getTotalPrice());
-        List<String> baskets = new ArrayList();
-        for (Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry : order.getProductsInStores().entrySet()) {
-            JSONObject basketJson = getBasket(basketEntry);
-            baskets.add(basketJson.toString());
-        }
-        String products = baskets.stream()
-                .collect(Collectors.joining(",", "[", "]"));
-        json.put("productsInStores", products);
+        json.put("productsInStores", getBaskets(order.getProductsInStores()));
         return json;
     }
 
@@ -493,11 +505,33 @@ public class API {
         return fromResToPair(res);
     }
 
+    private String logsToString(HashMap<Logger.logStatus, List<String>> logs){
+        List<String> logsList = new ArrayList();
+        for (Map.Entry<Logger.logStatus, List<String>> logEntry : logs.entrySet()) {
+            JSONObject productJson = new JSONObject();
+            productJson.put("status", logEntry.getKey());
+            productJson.put("messages", logEntry.getValue().stream()
+                    .collect(Collectors.joining(",", "[", "]")));
+        }
+        String logsMessages = logsList.stream()
+                .collect(Collectors.joining(",", "[", "]"));
+        return logsMessages;
+    }
+
     public Pair<Boolean, JSONObject> watchLog(int adminId, String token)
     {
         Response<HashMap<Logger.logStatus, List<String>>> res = market.watchLog(adminId, token);
-        //TODO: fix that return value
-        return fromResToPair(res);
+        //[{"status": ["log1...", "log2...", ......]}, ...]
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", logsToString(res.getValue()));
+            return new Pair<>(true, json);
+        }
     }
 
     public Pair<Boolean, JSONObject> viewQuestions(int userId, String token, int storeId)

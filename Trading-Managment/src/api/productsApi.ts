@@ -1,7 +1,6 @@
 // import { PanoramaSharp } from "@mui/icons-material";
 import { ApiResponse, ApiResponseListData } from "../types/apiTypes";
-import { DeleteProductsParams, GetStoreProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
-import { ProductResponseData } from "../types/responseTypes/productTypes";
+import { DeleteProductsParams, GetStoreProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/productTypes";
 import { Product } from "../types/systemTypes/Product";
 import { getApiClient, noAuthApiClient } from "./apiClient";
 import { apiErrorHandlerWrapper } from "./util";
@@ -25,7 +24,5 @@ export const productsApi =
         apiErrorHandlerWrapper(getApiClient().delete('api/products', {
             params: params
         }))
-    
-    
     
 }   

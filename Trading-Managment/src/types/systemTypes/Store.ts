@@ -14,6 +14,7 @@ export interface Store {
     storeQuestions: { questionId: number, question: Message }[];
     storeOrders: { orderId: number, order: Order }[];
     storeReviews: { messageId: number, message: Message }[];
+    appHistory: {fatherId: string, childId: string[]} [];
     //todo add purchase and discount policy
 }
 export const emptyStore: Store = {
@@ -28,4 +29,5 @@ export const emptyStore: Store = {
     storeQuestions: [],
     storeOrders: [],
     storeReviews: [],
+    appHistory:[]
 }
