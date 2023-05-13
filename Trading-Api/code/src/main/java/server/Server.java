@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import data.StoreInfo;
 import domain.store.product.Product;
 import domain.store.storeManagement.Store;
+import domain.user.ShoppingCart;
 import org.json.JSONObject;
 import spark.Session;
 import utils.Pair;
@@ -264,9 +265,44 @@ public class Server {
         );
         //--APPOINTMENTS
         //--CART
-        
+        post("api/cart/:id", (req, res) ->
+                {
+                    //when a user creates a basket for store in the first time this function should handle it
+                    //params {"userId":0,"storeId":5,"basket":{"productsList":[{"productId":1,"quantity":5},{"productId":2,"quantity":3}]}}
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+        patch("api/cart/:id", (req, res) ->
+                {
+                    //when a user change quantity of a product in specific store basket
+                    //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+                    JSONObject json = new JSONObject(req.body());
+                    System.out.println(json.get("userId"));
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+        get("api/cart/:id", (req, res) ->
+                {
+                    //when a user change quantity of a product in specific store basket
+                    //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+                    JSONObject json = new JSONObject(req.raw().toString());
+                    System.out.println(json.get("userId"));
+                    System.out.println(req.body());
+                    return res.body();
+                }
+        );
+        delete("api/cart/:id", (req, res) ->
+                {
+                    //delete cart
+                    //params userId
+                    JSONObject request = new JSONObject(req.body());
+                    System.out.println(request);
+                    return res.body();
+                }
+        );
 
-        //--PRODUCTS---
         //--CART--
 
     }

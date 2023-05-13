@@ -5,6 +5,8 @@ import { Button } from "@mui/material";
 import ErrorAlert from "../../components/Alerts/error";
 import SuccessAlert from "../../components/Alerts/success";
 import { getProducts, patchProduct, postProduct } from "../../reducers/productsSlice";
+import { deleteCart, getCart, patchCart, postBasket } from "../../reducers/cartSlice";
+import { Basket } from "../../types/systemTypes/Basket";
 
 const Tests: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -52,6 +54,36 @@ const Tests: React.FC = () => {
         console.log("front appoint products")
         dispatch(fireOwner({storeId: 0,userIncharge: 1, newOwner: 2}))
     }
+    
+    const handleOnPostBasket = () => {
+        const data: { productId: number, quantity: number }[] = [
+            { productId: 1, quantity: 5 },
+            { productId: 2, quantity: 3 },
+            { productId: 3, quantity: 2 }
+          ];
+          const basket: Basket = {
+            storeid : 0,
+            productsList: data
+          };
+        console.log("front appoint products")
+        dispatch(postBasket({userId: 0, storeId: 5, basket : basket}))
+    }
+
+    const handleOnPatchCart = () =>
+    {
+        dispatch(patchCart({userId: 0,storeId: 0, prouctId: 1, quantity: 5}))
+    }
+    const handleOnGetCart = () =>
+    {
+        dispatch(getCart({userId: 0}))
+    }
+    
+    const handleOnDeleteCart = () =>
+    {
+        dispatch(deleteCart({userId: 0}))
+    }
+
+
     useEffect(() => {
         //dispatch(getStores());
     }, [dispatch])
@@ -136,6 +168,42 @@ const Tests: React.FC = () => {
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
                 {'fire owner'}
+            </Button >
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={handleOnPostBasket}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'post basket'}
+            </Button >
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={handleOnPatchCart}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'patch cart'}
+            </Button >
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={handleOnGetCart}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'get cart'}
+            </Button >
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={handleOnDeleteCart}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'delete cart'}
             </Button >
             {error ? <ErrorAlert message={error} /> : null}
             {message ? <SuccessAlert message={message} /> : null}

@@ -2,13 +2,12 @@ import {Basket} from '../systemTypes/Basket'
 
 export interface GetCartParams {
     userId: number;
-    baskets: Basket[];
 }
 
 export interface PostBasketParams {
     userId: number;
     storeId: number;
-    baket: Basket;
+    basket: Basket;
 }
 
 export interface DeleteCartParams{

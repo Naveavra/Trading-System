@@ -34,7 +34,7 @@ export const postBasket = createAsyncThunk<
 >(
     `${reducerName}/post`,
     async (formData, thunkApi) => {
-        return cartApi.postBasket(formData)
+        return cartApi.postBaket(formData)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });

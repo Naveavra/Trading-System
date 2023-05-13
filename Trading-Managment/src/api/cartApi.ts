@@ -12,15 +12,16 @@ export const cartApi =
             params: params
         })),
 
-    patchCart: (params: PatchCartParams) : Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(noAuthApiClient.patch(`api/cart/${params.userId}`, params)),
+    patchCart: (params: PatchCartParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(noAuthApiClient.patch(`api/cart/${params.storeId}`, params)),
 
     deleteCart: (params: DeleteCartParams) : Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.delete(`api/cart/${params.userId}`, {
             params: params
         })),
+    postBaket: (params: PostBasketParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(noAuthApiClient.post(`api/cart/${params.storeId}`, params)),
 
-    postBasket: (params: PostBasketParams) : Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(noAuthApiClient.post(`api/cart/${params.userId}`, params)),
+    
     
 }
