@@ -2,6 +2,7 @@ package domain.store.discount.compositeDiscountTypes;
 
 import domain.store.discount.Discount;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
+import domain.store.discount.predicates.DiscountPredicate;
 import utils.orderRelated.Order;
 
 import java.util.HashMap;
@@ -33,6 +34,11 @@ public class NumericDiscountComposite extends AbstractDiscountComposite{
             }
         }
         return discountValue;
+    }
+
+    @Override
+    public DiscountPredicate getPred() {
+        return predicate;
     }
 
 
