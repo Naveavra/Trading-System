@@ -2,10 +2,8 @@ package domain.store.discount;
 
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
 import domain.store.discount.discountFunctionalInterface.GetProductOperation;
-import domain.store.product.Inventory;
-import utils.orderRelated.Order;
 
-public abstract class SimpleDiscount implements Discount{
+public abstract class AbstractDiscount implements Discount{
     //same for all discounts
     public int discountID;
     private int storeId;
@@ -13,20 +11,19 @@ public abstract class SimpleDiscount implements Discount{
     public DiscountPredicate predicate = null; //if not null it's a conditional discount.
 
 
-    //    private int minBasketPrice;
-    private String discountedCategory;
-    private int discountedProductID = -1;
+    private String discountedCategory; //used in discountOnCategory
+    private int discountedProductID = -1; //used by discount on item
 
     //functional interfaces
     public GetProductOperation getProductOp;
     public GetCategoriesOperation getCategoriesOp;
 
-    public SimpleDiscount(int price,String discountedCategory){
-//        this.minBasketPrice = price;
+    public AbstractDiscount(int discountID,int storeId,double percentage,String discountedCategory){
+        this.discountID = discountID;
+        this.storeId = storeId;
+        this.percentage = percentage;
         this.discountedCategory = discountedCategory;
     }
-
-
 
     // Setters
     public void setOperations(GetProductOperation getP,GetCategoriesOperation getCat){
@@ -35,16 +32,15 @@ public abstract class SimpleDiscount implements Discount{
     }
 
     @Override
-    public void addPredicate(DiscountPredicate pred2Add){
-        if(pred2Add!= null){
-            DiscountPredicate temp = this.predicate;
-            while (temp.next!=null){
-                temp = temp.next;
-            }
-            temp.next = pred2Add;
-            return;
+    public void addPredicate(DiscountPredicate.PredicateTypes type, String params, DiscountPredicate.composore comp){
+        PredicateFactory factory = new PredicateFactory();
+        DiscountPredicate pred = factory.createPredicate(type,params,storeId,getCategoriesOp);
+        if(pred!=null){
+            if(predicate!=null)
+                predicate.setNext(pred,comp);
+            else
+                predicate = pred;
         }
-        this.predicate = pred2Add;
     }
 
 

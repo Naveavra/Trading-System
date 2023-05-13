@@ -5,14 +5,18 @@ import utils.orderRelated.Order;
 
 import java.util.HashMap;
 
-public class DiscountOnCategory extends SimpleDiscount{
+public class DiscountOnCategory extends AbstractDiscount {
 
-    public DiscountOnCategory(int price, String discountedCategory) {
-        super(price, discountedCategory);
+
+    public DiscountOnCategory(int discountID, int storeId, double percentage, String discountedCategory) {
+        super(discountID, storeId, percentage, discountedCategory);
     }
 
     @Override
     public double handleDiscount(HashMap<Integer, Integer> basket, Order order) {
+        if(predicate!=null && !predicate.checkPredicate(order)){
+            return 0;
+        }
         double newPrice = 0;
         String discountedCategory = getDiscountedCategory();
         HashMap<Integer,HashMap<Integer,Integer>> prices = order.getPrices();
