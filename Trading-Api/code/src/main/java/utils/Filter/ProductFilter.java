@@ -1,11 +1,11 @@
 package utils.Filter;
 
 
+import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.product.Product;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 

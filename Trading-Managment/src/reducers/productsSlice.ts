@@ -1,8 +1,8 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ApiError, ApiListData, ApiResponse, ApiResponseListData, ValidationError } from "../types/apiTypes";
-import { Product } from "../types/systemTypes/Product";
+import { Action, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { ApiError, ApiListData, ApiResponse, ApiResponseListData} from "../types/apiTypes";
+import { EmptyProduct, Product } from "../types/systemTypes/Product";
 import { ProductResponseData } from "../types/responseTypes/productTypes";
-import { DeleteProductsParams, GetProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
+import { DeleteProductsParams, GetStoreProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
 import { productsApi } from "../api/productsApi";
 
 const reducerName = 'products';
@@ -10,7 +10,7 @@ const reducerName = 'products';
 interface ProductsState {
     productState: {
         isLoading: boolean;
-        responseData?: Product;
+        responseData?: string | Product | null;
         error: string | null;
         watchedProduct?: Product;
     },
@@ -22,70 +22,140 @@ interface ProductsState {
 const initialState: ProductsState = {
     productState: {
         isLoading: false,
-        responseData: undefined,
+        responseData: null,
         error: null,
         watchedProduct: undefined,
     },
     isLoading: false,
-    responseData: undefined,
+    responseData: { data: {results: []}},
     error: null,
 };
 
 export const postProduct = createAsyncThunk<
-    { responseBody: ApiResponse<string> },
+    string,
     PostProductsParams,
     { rejectValue: ApiError }
 >(
-    '${reducerName}/post',
+    `${reducerName}/post`,
     async (formData, thunkApi) => {
         return productsApi.postProduct(formData)
-            .then((res) => thunkApi.fulfillWithValue({
-                responseBody: res as ApiResponse<string>
-            }))
+            .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
 export const patchProduct = createAsyncThunk<
-    { responseBody: ApiResponse<string> },
+    string,
     PatchProductsParams,
     { rejectValue: ApiError }
 >(
-    '${reducerName}/patch',
+    `${reducerName}/patch`,
     async (formData, thunkApi) => {
         return productsApi.patchProduct(formData)
-            .then((res) => thunkApi.fulfillWithValue({
-                responseBody: res as ApiResponse<string>
-            }))
+            .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
 export const deleteProduct = createAsyncThunk<
-    { responseBody: ApiResponse<string> },
+    string,
     DeleteProductsParams,
     { rejectValue: ApiError }
 >(
-    '${reducerName}/delete',
+    `${reducerName}/delete`,
     async (formData, thunkApi) => {
         return productsApi.deleteProduct(formData)
-            .then((res) => thunkApi.fulfillWithValue({
-                responseBody: res as ApiResponse<string>
-            }))
+            .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
-export const getProduct = createAsyncThunk<
-    { responseBody: ApiResponseListData<Product> },
-    GetProductsParams,
+export const getProducts = createAsyncThunk<
+    ApiListData<Product>,
+    GetStoreProductsParams,
     { rejectValue: ApiError }
 >(
-    '${reducerName}/get',
+    `${reducerName}/get`,
     async (formData, thunkApi) => {
         return productsApi.getProducts(formData)
-            .then((res) => thunkApi.fulfillWithValue({
-                responseBody: res as ApiResponseListData<Product>
-            }))
+            .then((res) => thunkApi.fulfillWithValue(res as ApiListData<Product>))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
+
+const { reducer: productsReducer, actions: productsActions } = createSlice({
+    name: reducerName,
+    initialState,
+    reducers: {
+        clearProductsError: (state) => {
+            state.error = null;
+        },
+        clearProductError: (state) => {
+            state.error = null;
+        },
+        setWatchedProductInfo: (state, action) => {
+            state.productState.watchedProduct = state.responseData?.data.results.find((product) => product.id === action.payload) ?? EmptyProduct;
+        },
+    },
+    extraReducers: (builder) => {
+        //getproducts
+        builder.addCase(getProducts.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(getProducts.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
+            state.isLoading = false;
+            state.responseData = payload;
+            console.log(payload);
+            state.error = null;
+        });
+        builder.addCase(getProducts.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during getProducts";
+        });
+        //patchProduct
+        builder.addCase(patchProduct.pending, (state) => {
+            state.productState.isLoading = true;
+            state.productState.error = null;
+        });
+        builder.addCase(patchProduct.fulfilled, (state, { payload }) => {
+            state.productState.isLoading = false;
+            state.productState.responseData = payload;
+        });
+        builder.addCase(patchProduct.rejected, (state, { payload }) => {
+            state.productState.error = payload?.message.data ?? "error during patchProducts";
+            state.productState.isLoading = false;
+        });
+        //postProduct
+        builder.addCase(postProduct.pending, (state) => {
+            state.productState.isLoading = true;
+            state.productState.error = null;
+        });
+        builder.addCase(postProduct.fulfilled, (state, { payload }) => {
+            state.productState.isLoading = false;
+            state.productState.responseData = payload;
+        });
+        builder.addCase(postProduct.rejected, (state, { payload }) => {
+            state.productState.isLoading = false;
+            state.productState.error = payload?.message.data ?? "error during postProduct";
+        });
+        //deleteProduct
+        builder.addCase(deleteProduct.pending, (state) => {
+            state.productState.isLoading = true;
+            state.productState.error = null;
+        });
+        builder.addCase(deleteProduct.fulfilled, (state, { payload }) => {
+            state.productState.isLoading = false;
+            state.productState.responseData = payload;
+        });
+        builder.addCase(deleteProduct.rejected, (state, { payload }) => {
+            state.productState.error = payload?.message.data ?? "error during deleteProduct";
+            state.productState.isLoading = false;
+        });
+        
+
+
+    }
+});
+
+export const { clearProductError, clearProductsError, setWatchedProductInfo } = productsActions;
+export default productsReducer;
 
 
 

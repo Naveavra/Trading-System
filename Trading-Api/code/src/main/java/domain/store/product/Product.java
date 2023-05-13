@@ -7,12 +7,13 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Product {
     public final int id;
-    private List<String> categories;
+    private ArrayList<String> categories;
     public String name;
     public String description;
     public int price; //for one product
     public int quantity;
     public double rating;
+//    public ArrayList<String> categories;
     //private ConcurrentLinkedDeque<String> categories;
     //private double discount;  no need for discount here, the discount is calculated by the policy
 
@@ -27,7 +28,7 @@ public class Product {
         name = _name;
         description = desc;
         price = 0;
-        categories = new LinkedList<>();
+        categories = new ArrayList<>();
         rating = 5;
     }
 
@@ -100,7 +101,7 @@ public class Product {
         return new ProductInfo(getID(), getName(), getDescription(), getPrice(), getQuantity());
     }
 
-    public List<String> getCategories(){
+    public ArrayList<String> getCategories(){
         return categories;
     }
 
@@ -110,5 +111,14 @@ public class Product {
 
     public double getRating() {
         return rating;
+    }
+
+    public void addCategory(String category) {
+        if(!categories.contains(category))
+            categories.add(category);
+    }
+
+    public boolean belongsToCategory(String discountedCategory) {
+        return getCategories().contains(discountedCategory);
     }
 }

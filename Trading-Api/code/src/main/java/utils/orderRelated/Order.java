@@ -7,14 +7,15 @@ public class Order {
     private int orderId;
     private Status status;
     private int userId;
-    private HashMap<Integer, HashMap<Integer,Integer>> productsInStores;
+    private HashMap<Integer, HashMap<Integer,Integer>> productsInStores;    //<storeID,<productID, quantity>>
+    private HashMap<Integer,HashMap<Integer,Integer>> prices; //storeId,<prodId, price>
     private int totalPrice = 0;
-    //<storeID,<productID, quantity>> 
     public Order(int id, int user_id,HashMap<Integer,HashMap<Integer,Integer>> products){
         orderId = id;
         userId = user_id;
         status = Status.pending;
         productsInStores = products;
+        prices = new HashMap<>();
     }
     public void clean(){
         productsInStores = new HashMap<>();
@@ -78,4 +79,7 @@ public class Order {
     }
 
 
+    public HashMap<Integer, HashMap<Integer,Integer>> getPrices() {
+        return prices;
+    }
 }

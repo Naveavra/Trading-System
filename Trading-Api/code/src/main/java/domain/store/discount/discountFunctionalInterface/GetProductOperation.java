@@ -1,4 +1,4 @@
-package utils.Filter;
+package domain.store.discount.discountFunctionalInterface;
 
 import domain.store.product.Product;
 

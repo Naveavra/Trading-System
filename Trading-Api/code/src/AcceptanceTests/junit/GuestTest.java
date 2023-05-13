@@ -252,6 +252,7 @@ public class GuestTest extends ProjectTest{
     @Test
     public void testGetCartOfUnlogingUser(){
         GuestInfo buyer = new GuestInfo();
+        buyer.setId(enterSystem());
         UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
         //Check the cart:
         CartInfo ci = getCart(buyer.getId());

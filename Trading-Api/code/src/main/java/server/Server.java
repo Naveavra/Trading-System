@@ -81,7 +81,9 @@ public class Server {
         post("api/auth/logout", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             String userId = request.get("userId").toString();
-            toSparkRes(res, api.logout(Integer.parseInt(userId)));
+            String token = req.headers("Authorization");
+            System.out.println(token);
+            toSparkRes(res, api.logout(Integer.parseInt(userId), token));
             return res.body();
         });
         post("api/auth/register", (req, res) -> {
@@ -113,18 +115,19 @@ public class Server {
         });
         post("api/stores", (req, res) ->
         {
-            System.out.println(req);
+            System.out.println(req.body());
             res.body("success post");
             res.status(200);
             return res.body();
         });
-        delete("", (req, res)-> {
-            JSONObject request = new JSONObject(req.body());
-            int userId = (int) (request.get("userId"));
-            int storeId = (int) (request.get("storeId"));
-            toSparkRes(res, api.closeStore(userId, storeId));
-            return res.body();
-        });
+//        delete("", (req, res)-> {
+//            JSONObject request = new JSONObject(req.body());
+//            int userId = (int) (request.get("userId"));
+//            int storeId = (int) (request.get("storeId"));
+//            toSparkRes(res, api.closeStore(userId, storeId));
+//            return res.body();
+//        });
+
         //---Admin-------------------------------:
 
         //---Cart-------------------------------:
@@ -166,6 +169,16 @@ public class Server {
             return res.body();
         });
         //TODO: ---------Member-------------------------:
+
+
+        // delete
+        post("api/products", (req, res) ->
+        {
+            System.out.println(req.body());
+            res.body("success post");
+            res.status(200);
+            return res.body();
+        });
 
     }
 }

@@ -17,6 +17,7 @@ import utils.userInfoRelated.Receipt;
 public class BridgeImplement implements Bridge {
     private Market market;
     private Admin mainAdmin;
+    private String token;
 
     public BridgeImplement() {
         mainAdmin = new Admin(-1, "admin@gmail.com", "admin");
@@ -26,6 +27,7 @@ public class BridgeImplement implements Bridge {
     @Override
     public int initTradingSystem() {
         this.market = new Market(this.mainAdmin);
+        token = market.addTokenForTests();
         return 1;
     }
 
@@ -38,7 +40,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int addAdmin(int adminId, String email, String password) {
-        Response<String> res = market.addAdmin(adminId, email, password);
+        Response<String> res = market.addAdmin(adminId, token, email, password);
         if (res != null && !res.errorOccurred()) {
             return 1;
         }
@@ -65,7 +67,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int logout(int user) {
-        Response<String> res = market.logout(user);
+        Response<String> res = market.logout(user, token);
         if (res != null && !res.errorOccurred()) {
             return 1;
         }
@@ -74,7 +76,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int createStore(int user, String description) {
-        Response<Integer> res = market.openStore(user, description);
+        Response<Integer> res = market.openStore(user, token, description);
         if (res != null && !res.errorOccurred()) {
             return res.getValue();
         }
@@ -123,7 +125,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int addProduct(int userId, int storeId, List<String> categories, String name, String description, int price, int quantity) {
-        Response<Integer> res = market.addProduct(userId, storeId, categories, name, description, price, quantity);
+        Response<Integer> res = market.addProduct(userId, token, storeId, categories, name, description, price, quantity);
         if (res != null && !res.errorOccurred()) {
             return res.getValue();
         }
@@ -132,7 +134,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int removeProduct(int user, int store, int product) {
-        Response<String> res = market.deleteProduct(user, store, product);
+        Response<String> res = market.deleteProduct(user, token, store, product);
         if (res != null && !res.errorOccurred()) {
             return 1;
         }
@@ -141,7 +143,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int updateProduct(int userId, int storeId, int productId, List<String> categories, String name, String description, int price, int quantity) {
-        Response<String> res = market.updateProduct(userId, storeId, productId, categories, name, description, price, quantity);
+        Response<String> res = market.updateProduct(userId, token, storeId, productId, categories, name, description, price, quantity);
         if (res != null && !res.errorOccurred()) {
             return 1;
         }
@@ -179,7 +181,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int appointmentOwnerInStore(int user, int store, int newOwner) {
-        Response<String> res = market.appointOwner(user, store, newOwner);
+        Response<String> res = market.appointOwner(user, token, newOwner, store);
         if(res != null && !res.errorOccurred())
         {
             return 1;
@@ -189,7 +191,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int appointmentMangerInStore(int user, int store, int manger) {
-        Response<String> res = market.appointManager(user, store, manger);
+        Response<String> res = market.appointManager(user, token, manger, store);
         if(res != null && !res.errorOccurred())
         {
             return 1;
@@ -199,7 +201,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int closeStore(int user, int store) {
-        Response<String> res = market.closeStore(user, store);
+        Response<String> res = market.closeStore(user, token, store);
         if(res != null && !res.errorOccurred())
         {
             return 1;
@@ -209,7 +211,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int reopenStore(int user, int store) {
-        Response<String> res = market.reopenStore(user, store);
+        Response<String> res = market.reopenStore(user, token, store);
         if(res != null && !res.errorOccurred())
         {
             return 1;
@@ -219,7 +221,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<PositionInfo> getPositionInStore(int user, int store) {
-        Response<List<Info>> res = market.checkWorkersStatus(user, store);
+        Response<List<Info>> res = market.checkWorkersStatus(user, token, store);
         if(res != null && !res.errorOccurred())
         {
             List<PositionInfo> ans = new LinkedList<>();
@@ -234,7 +236,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int addStoreManagerPermissions(int user, int store, int managerId, int permissionsIds) {
-        Response<String> res = market.addManagerPermission(user, managerId, store, permissionsIds);
+        Response<String> res = market.addManagerPermission(user, token, managerId, store, permissionsIds);
         if(res == null || res.errorOccurred())
         {
             return -1;
@@ -244,7 +246,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int removeStoreManagerPermissions(int user, int store, int managerId,int permissionsIds) {
-        Response<String> res = market.removeManagerPermission(user, managerId, store, permissionsIds);
+        Response<String> res = market.removeManagerPermission(user, token, managerId, store, permissionsIds);
         if(res == null || res.errorOccurred())
         {
             return -1;
@@ -254,7 +256,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
-        Response<String> res = market.addManagerPermissions(user, managerId, store, permissionsIds);
+        Response<String> res = market.addManagerPermissions(user, token, managerId, store, permissionsIds);
         if(res == null || res.errorOccurred())
         {
             return -1;
@@ -264,7 +266,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public PermissionInfo getManagerPermissionInStore(int user, int store, int manager) {
-        Response<Info> res = market.checkWorkerStatus(user, manager, store); //TODO : market.seeStoreHistory(user, store);
+        Response<Info> res = market.checkWorkerStatus(user, token, manager, store); //TODO : market.seeStoreHistory(user, store);
         if(res != null && !res.errorOccurred())
         {
             return new PermissionInfo(res.getValue().getManagerActions());
@@ -274,7 +276,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<PurchaseInfo> getStorePurchasesHistory(int user, int store) {
-        Response<List<OrderInfo>> res = market.seeStoreHistory(user, store);
+        Response<List<OrderInfo>> res = market.seeStoreHistory(user, token, store);
         if(!res.errorOccurred())
         {
             List<PurchaseInfo> purchases = new LinkedList<>();
@@ -297,7 +299,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<PurchaseInfo> getBuyerPurchasesHistory(int user, int buyer) {
-        Response<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> res = market.getUserPurchaseHistory(user, buyer);
+        Response<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> res = market.getUserPurchaseHistory(user, token, buyer);
         if(!res.errorOccurred())
         {
             return toBuyerPurchaseHistoryList(res.getValue());
@@ -319,7 +321,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<AdminInfo> getAllAdmins(int adminId) {
-        Response<HashMap<Integer,Admin>> res = market.getAdmins(adminId);
+        Response<HashMap<Integer,Admin>> res = market.getAdmins(adminId, token);
         if(!res.errorOccurred())
         {
             return toAdminList(res.getValue());
@@ -350,7 +352,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int removeAdmin(int adminId) {
-        Response<String> res = market.removeAdmin(adminId);
+        Response<String> res = market.removeAdmin(adminId, token);
         if(!res.errorOccurred())
         {
             return 1;
@@ -399,7 +401,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int adminLogout(int admin) {
-        Response<String> res = market.adminLogout(admin);
+        Response<String> res = market.adminLogout(admin, token);
         if(!res.errorOccurred())
         {
             return 1;
@@ -479,7 +481,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<String> getNotifications(int userId) {
-        Response<List<String>> res = market.displayNotifications(userId);
+        Response<List<String>> res = market.displayNotifications(userId, token);
         if(!res.errorOccurred())
         {
             return res.getValue();

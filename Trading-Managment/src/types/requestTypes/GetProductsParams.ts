@@ -1,5 +1,5 @@
-export interface GetProductsParams {
-    id: number,
+export interface GetStoreProductsParams {
+    storeId: number
 };
 export interface PostProductsParams {
     id: number; //userid
