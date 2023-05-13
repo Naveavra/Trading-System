@@ -1,8 +1,11 @@
-package domain.store.discount;
-import domain.store.discount.DiscountPredicate.*;
+package domain.store.discount.predicates;
+import domain.store.discount.predicates.DiscountItemPredicate;
+import domain.store.discount.predicates.DiscountPredicate;
+import domain.store.discount.predicates.DiscountPredicate.*;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
+import domain.store.discount.predicates.DiscountCategoryPredicate;
+import domain.store.discount.predicates.DiscountPricePredicate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

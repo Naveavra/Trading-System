@@ -1,4 +1,4 @@
-package domain.store.discount;
+package domain.store.discount.predicates;
 
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
 import utils.orderRelated.Order;
@@ -6,7 +6,7 @@ import utils.orderRelated.Order;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DiscountCategoryPredicate extends DiscountPredicate{
+public class DiscountCategoryPredicate extends DiscountPredicate {
     public PredicateTypes type;
     private String category;
     private int quantity;

@@ -1,4 +1,4 @@
-package domain.store.discount;
+package domain.store.discount.predicates;
 
 import utils.orderRelated.Order;
 

@@ -2,6 +2,8 @@ package domain.store.discount;
 
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
 import domain.store.discount.discountFunctionalInterface.GetProductOperation;
+import domain.store.discount.predicates.DiscountPredicate;
+import domain.store.discount.predicates.PredicateFactory;
 
 public abstract class AbstractDiscount implements Discount{
     //same for all discounts
@@ -45,6 +47,9 @@ public abstract class AbstractDiscount implements Discount{
 
 
     // Getters
+    public DiscountPredicate getPred(){
+        return predicate;
+    }
     public int getStoreId() {
         return storeId;
     }

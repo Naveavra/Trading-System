@@ -1,9 +1,9 @@
-package domain.store.discount;
+package domain.store.discount.predicates;
 
 import utils.orderRelated.Order;
 
 public abstract class DiscountPredicate {
-    //enum for predicates' composore
+    //enum for domain.store.discount.predicates' composore
     public enum composore{And,Or,Xor}
     //enum of predicate types
     public enum PredicateTypes {MinPrice,MaxPrice,MinNumOfItem,MaxNumOfItem,MinNumFromCategory,MaxNumFromCategory}

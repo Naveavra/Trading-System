@@ -6,8 +6,6 @@ import utils.orderRelated.Order;
 import java.util.HashMap;
 
 public class DiscountOnCategory extends AbstractDiscount {
-
-
     public DiscountOnCategory(int discountID, int storeId, double percentage, String discountedCategory) {
         super(discountID, storeId, percentage, discountedCategory);
     }
