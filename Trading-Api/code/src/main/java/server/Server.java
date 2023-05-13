@@ -227,6 +227,8 @@ public class Server {
             return res.body();
         }
         );
+        //--PRODUCTS----
+        //--APPOINTMENTS---
         post("api/stores/:id/appointments/owners", (req, res) ->
                 {
                     //appoint new owner
@@ -260,6 +262,9 @@ public class Server {
                     return res.body();
                 }
         );
+        //--APPOINTMENTS
+        //--CART
+        
 
         //--PRODUCTS---
         //--CART--

@@ -15,11 +15,11 @@ export enum Action {
     seeStoreHistory = "see Store History", // manager, owner, creator
     seeStoreOrders = "see Store Orders", // manager,owner,creator
     checkWorkersStatus = "check Workers Status", // manager, owner, creator
-    appointManager = "appoint Manager", // owner, creator
-    fireManager = "fire Manager", // owner, creator
+    appointManager = "appoint Manager", // owner, creator V
+    fireManager = "fire Manager", // owner, creator V
 
-    appointOwner = "appoint Owner", //owner, creator
-    fireOwner = "fire Owner", // owner, creator
+    appointOwner = "appoint Owner", //owner, creator V
+    fireOwner = "fire Owner", // owner, creator V
     changeManagerPermission = "change Manager Permission", // owner, creator
 
     closeStore = "close Store", // creator V
