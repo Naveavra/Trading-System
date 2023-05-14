@@ -1,6 +1,8 @@
 package domain.store.order;
 
+import utils.orderRelated.CalculatePriceOp;
 import utils.orderRelated.Order;
+import utils.orderRelated.SetPricesOp;
 import utils.orderRelated.Status;
 
 import java.util.HashMap;
@@ -17,10 +19,12 @@ public class OrderController {
         orderID = new AtomicInteger();
     }
     
-    public synchronized Order createNewOrder(int userID,HashMap<Integer,HashMap<Integer,Integer>> products){
+    public synchronized Order createNewOrder(int userID, HashMap<Integer,HashMap<Integer,Integer>> products, CalculatePriceOp calcPrice, SetPricesOp setPricesOp) throws Exception {
         int id = orderID.getAndIncrement();
         Order or =  new Order(id,userID,products);
         orders.put(id, or);
+        or.setTotalPrice(calcPrice.calculatePrice(products));
+        setPricesOp.setPrices(or); //sets the initial price values, values are to be changed by each discount
         return or;
     }
     

@@ -1,19 +1,20 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiError } from "../types/apiTypes";
-import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData } from "../types/responseTypes/authTypes";
+import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData, getClientResponseData } from "../types/responseTypes/authTypes";
 import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
 import { RegisterPostData } from "../types/requestTypes/authTypes";
 import { StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
+import { getUserData } from "../types/requestTypes/authTypes";
 
 interface AuthState {
     token: string | null;
     userId: number;
     userName: string;
     isAdmin: boolean;
-    notifications: string[];
+    notifications: string[]; // todo : change to notification type {id , message[] ,}
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];
@@ -101,20 +102,28 @@ export const guestEnter = createAsyncThunk<
     });
 //ping
 export const ping = createAsyncThunk<
-    { responseBody: string },
+    string,
     number,
     { rejectValue: ApiError }
 >(
     `${reducrName}/ping`,
     async (credential, thunkApi) => {
         return authApi.ping(credential)
-            .then((res) => thunkApi.fulfillWithValue({
-                responseBody: res as string
-            }))
+            .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
-
-
+//get client data
+export const getClientData = createAsyncThunk<
+    getClientResponseData,
+    getUserData,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/getClientData`,
+    async (credential, thunkApi) => {
+        return authApi.getClient(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as getClientResponseData))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
 const { reducer: authReducer, actions: authActions } = createSlice({
     name: reducrName,
     initialState,
@@ -196,6 +205,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             window.localStorage.removeItem(localStorage.auth.token.name);
             window.localStorage.removeItem(localStorage.auth.userId.name);
             window.localStorage.removeItem(localStorage.auth.userName.name);
+            state.message = payload;
             // window.localStorage.removeItem(localStorage.auth.isAdmin.name);
         });
         builder.addCase(logout.rejected, (state, { payload }) => {

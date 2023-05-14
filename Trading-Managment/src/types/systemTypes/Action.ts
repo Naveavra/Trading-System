@@ -9,20 +9,25 @@ export enum Action {
     changeDiscountPolicy = "change Discount Policy", // manager, owner, creator
     addPurchaseConstraint = "add Purchase Constraint", // manager, owner, creator
     addDiscountConstraint = "add Discount Constraint", // manager, owner, creator
+    changeStoreDescription = "change Store Description", // manager, owner, creator
+    changePurchasePolicy = "change Purchase Policy", // manager, owner, creator
+    changeDiscountPolicy = "change Discount Policy", // manager, owner, creator
+    addPurchaseConstraint = "add Purchase Constraint", // manager, owner, creator
+    addDiscountConstraint = "add Discount Constraint", // manager, owner, creator
 
-    viewMessages = "view Messages", // manager, owner, creator
-    answerMessage = "view Messages", // manager, owner, creator
-    seeStoreHistory = "see Store History", // manager, owner, creator
-    seeStoreOrders = "see Store Orders", // manager,owner,creator
-    checkWorkersStatus = "check Workers Status", // manager, owner, creator
-    appointManager = "appoint Manager", // owner, creator V
-    fireManager = "fire Manager", // owner, creator V
+    viewMessages, // manager, owner, creator
+    answerMessage, // manager, owner, creator
+    seeStoreHistory, // manager, owner, creator
+    seeStoreOrders, // manager,owner,creator
+    checkWorkersStatus, // manager, owner, creator
+    appointManager, // owner, creator
+    fireManager, // owner, creator
 
-    appointOwner = "appoint Owner", //owner, creator V
-    fireOwner = "fire Owner", // owner, creator V
-    changeManagerPermission = "change Manager Permission", // owner, creator
+    appointOwner, //owner, creator
+    fireOwner, // owner, creator
+    changeManagerPermission, // owner, creator
 
-    closeStore = "close Store", // creator V
-    reopenStore = "reopen Store", // creator V
+    closeStore, // creator
+    reopenStore, // creator
 
 }

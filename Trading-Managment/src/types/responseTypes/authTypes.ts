@@ -18,3 +18,12 @@ export interface RegisterResponseData {
 export interface EnterGuestResponseData {
     guestId: number;
 }
+export interface getClientResponseData {
+    userName: string;
+    isAdmin: boolean;
+    notifications: string[];
+    message: string | null;
+    hasQestions: boolean;
+    storeRoles: StoreRole[];
+    permmisions: Permission[];
+};

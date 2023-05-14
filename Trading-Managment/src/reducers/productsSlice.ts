@@ -3,6 +3,7 @@ import { ApiError, ApiListData} from "../types/apiTypes";
 import { EmptyProduct, Product } from "../types/systemTypes/Product";
 import { DeleteProductsParams, GetStoreProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/productTypes";
 import { productsApi } from "../api/productsApi";
+import { store } from "../redux/store";
 
 const reducerName = 'products';
 
@@ -15,7 +16,7 @@ interface ProductsState {
     },
     isLoading: boolean;
     responseData?: ApiListData<Product>;
-    error:  string | null;
+    error: string | null;
 };
 
 const initialState: ProductsState = {

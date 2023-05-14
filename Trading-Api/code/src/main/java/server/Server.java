@@ -5,7 +5,7 @@ import data.StoreInfo;
 import domain.store.storeManagement.Store;
 import domain.user.ShoppingCart;
 import org.json.JSONObject;
-import spark.Session;
+import spark.Response;
 import utils.Pair;
 
 import java.util.*;
@@ -21,7 +21,7 @@ public class Server {
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
     static int nextUser =1;
     static Gson gson = new Gson();
-
+    private static HashMap< Integer,ArrayBlockingQueue<String>> messageQueue = new HashMap<>();
     private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes) {
         if (apiRes.getFirst()) {
             res.status(200);
@@ -59,6 +59,9 @@ public class Server {
 
 
     public static void main(String[] args) {
+        messageQueue.put(0,new ArrayBlockingQueue<>(20));
+        messageQueue.put(1,new ArrayBlockingQueue<>(20));
+
         api.register("eli@gmail.com", "aA12345", "22/02/2002");
         //Spark.webSocket("/api/login", MainWebSocket.class);
         //Spark.webSocket("/api/member",  MemberWebSocket.class);
@@ -159,8 +162,16 @@ public class Server {
             toSparkRes(res, api.register(email, pass, bday));
             return res.body();
         });
+        get("api/auth/getClient",(req,res)->{
+            JSONObject request = new JSONObject(req.body());
+            String id = request.get("userId").toString();
+            String token = request.get("token").toString();
+            System.out.println(token);
+            return res.body();
+        });
         get("api/stores", (req, res) ->
         {
+
             System.out.println("get store");
             Store store1 = new Store(1, "nike store", 1);
             StoreInfo s1 = new StoreInfo(store1);
@@ -178,7 +189,7 @@ public class Server {
         });
         post("api/stores", (req, res) ->
         {
-            System.out.println(req.body());
+            System.out.println(req);
             res.body("success post");
             res.status(200);
             return res.body();
@@ -335,4 +346,5 @@ public class Server {
 
         //--CART--
     }
+
 }

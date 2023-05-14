@@ -320,7 +320,8 @@ public class Market implements MarketInterface {
     public synchronized Response<Receipt> makePurchase(int userId, String accountNumber) {
         try {
             HashMap<Integer, HashMap<Integer, Integer>> cart = userController.getUserCart(userId);
-            int amount = marketController.calculatePrice(cart);
+//            int amount = marketController.calculatePrice(cart);
+            int amount = 0; //TODO FIX THIS FUNCTION
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userId, amount);
             Receipt receipt = ans.getFirst();
             Set<Integer> creatorIds = ans.getSecond();

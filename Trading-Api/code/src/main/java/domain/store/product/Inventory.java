@@ -152,7 +152,8 @@ public class Inventory {
         return productInfos;
     }
     public synchronized void addToCategory(String category, int productId) throws Exception {
-        getProduct(productId);
+        Product p = getProduct(productId);
+        p.addCategory(category);
 //        category =category.toLowerCase();
         if(categories.containsKey(category)){
             if(!categories.get(category).contains(productId)){

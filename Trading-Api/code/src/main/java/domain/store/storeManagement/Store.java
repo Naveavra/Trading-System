@@ -335,16 +335,16 @@ public class Store {
         throw new Exception("cant get product information");
     }
 
-
-    public synchronized int caclulatePrice(HashMap<Integer, Integer> basket) throws Exception {
+    //TODO HANDLE DISCOUNTS FROM HERE MAYBE?
+    public synchronized int calculatePrice(HashMap<Integer, Integer> basket) throws Exception {
         int purchaseingprice = 0;
         for (Integer productid : basket.keySet())
         {
             Product p = inventory.getProduct(productid);
             if (p != null && basket.get(productid) <= p.getQuantity())
             {
-                int discount = discountPolicy.handleDiscounts(basket,inventory.getPrices());
-                purchaseingprice += p.price * basket.get(productid) -  discount;
+//                int discount = discountPolicy.handleDiscounts(basket,inventory.getPrices());
+                purchaseingprice += p.price * basket.get(productid);
 //                p.setQuantity(p.getQuantity()-basket.get(productid));
             }
             else throw new Exception("product isn't available");

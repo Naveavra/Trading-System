@@ -10,6 +10,8 @@ import Categories2 from './Categories/category2';
 import ShopsBar from './Bars/ShopBar/ShopBar';
 import { Divider } from '@mui/material';
 import axios from 'axios';
+import AppBar from './Bars/Navbar/NavBar2';
+import Bar2 from './Bars/Navbar/NavBar2';
 
 const DashboardFrame: React.FC = () => {
 
@@ -52,7 +54,7 @@ const DashboardFrame: React.FC = () => {
             clearInterval(pingInterval)
         };
 
-    }, [])
+    }, [userId])
     return (<>
         <Bar headLine={"Trading System"} />
         <SearchBar />
