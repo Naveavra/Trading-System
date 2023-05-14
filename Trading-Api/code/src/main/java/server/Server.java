@@ -3,16 +3,16 @@ package server;
 import com.google.gson.Gson;
 import data.StoreInfo;
 import domain.store.storeManagement.Store;
+import domain.user.ShoppingCart;
 import org.json.JSONObject;
 import spark.Response;
 import utils.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static spark.Spark.*;
 
@@ -22,7 +22,7 @@ public class Server {
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
     static int nextUser =1;
     static Gson gson = new Gson();
-    private static HashMap< Integer,ArrayBlockingQueue<String>> messageQueue = new HashMap<>();
+    private static HashMap< Integer, ArrayBlockingQueue<String>> messageQueue = new HashMap<>();
     private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes) {
         if (apiRes.getFirst()) {
             res.status(200);
@@ -32,6 +32,32 @@ public class Server {
             res.body(apiRes.getSecond().get("errorMsg").toString());
         }
     }
+    public static String getBaskets(HashMap<Integer, HashMap<Integer, Integer>> basketsMaps)
+    {
+        List<String> baskets = new ArrayList();
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry : basketsMaps.entrySet()) {
+            JSONObject basketJson = getBasket(basketEntry);
+            baskets.add(basketJson.toString());
+        }
+        String products = baskets.stream()
+                .collect(Collectors.joining(",", "[", "]"));
+        return products;
+    }
+
+    private static JSONObject getBasket(Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry){
+        JSONObject basketJson = new JSONObject();
+        basketJson.put("storeId", basketEntry.getKey());
+        List<JSONObject> bucketList = new ArrayList();
+        for (Map.Entry<Integer, Integer> productEntry : basketEntry.getValue().entrySet()) {
+            JSONObject productJson = new JSONObject();
+            productJson.put("quantity", productEntry.getValue());
+            productJson.put("productId", productEntry.getKey());
+            bucketList.add(productJson);
+        }
+        basketJson.put("products", bucketList);
+        return basketJson;
+    }
+
 
     public static void main(String[] args) {
         messageQueue.put(0,new ArrayBlockingQueue<>(20));
@@ -169,7 +195,7 @@ public class Server {
             res.status(200);
             return res.body();
         });
-       // delete
+        // delete
         delete("api/stores/:id",(req,res)->{
             System.out.println(req);
             res.body("success delete");
@@ -184,30 +210,142 @@ public class Server {
             res.status(200);
             return res.body();
         });
-
-        // Define a GET route that waits for a message and returns it to the client
-        get("api/wait", (req, res) -> {
+        delete("api/products", (req, res) ->
+        {
+            //params-
+            //    id: number; //userid
+            //    storeId: number;
+            //    productId: number;
+            System.out.println(res.body());
+            return res.body();
+        }
+        );
+        //patch
+        patch("api/products", (req, res) ->
+        {
+            //we will send the function with all the product attributes and chai needs to check every one of them an if not empty to call
+            //the appropriate function
+            //these are the params
+            //    id: number; userid
+            //    storeId: number;
+            //    productId: number;
+            //    category: string[]| null;
+            //    name: string | null;
+            //    description: string | null;
+            //    price: number | null;
+            //    quantity: number| null;
+            //    img: string | null;
+            Store s1 = new Store(0,"test", 2);
+            s1.addNewProduct("mazda", "ziv's vehicle", new AtomicInteger(1), 50);
             JSONObject request = new JSONObject(req.body());
-            String id =req.body();
-            String message = messageQueue.get(Integer.parseInt(id)).take();
-            System.out.println(message);
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            int pid = Integer.parseInt(request.get("id").toString());
+            String desc = request.get("description").toString();
+            System.out.println(desc);
+            s1.setProductQuantity(pid, quantity);
+            System.out.println(s1.getInventory().getProduct(pid).quantity);
+            System.out.println(req.body());
+            res.body("success patch");
             res.status(200);
-            res.body(message);
             return res.body();
         });
-
-        // Define a POST route that sends a message to the React client
-        post("api/sendMessage", (req, res) -> {
-            JSONObject request = new JSONObject(req.body());
-            String id = request.get("userId").toString();
-            String msg = request.get("message").toString();
-            messageQueue.get(Integer.parseInt(id)).offer(msg);
-            res.status(200);
-            res.body("success put message");
+        get("api/products", (req, res) ->
+        {
+            //params-
+            //storeId: number
             return res.body();
-        });
+        }
+        );
+        //--APPOINTMENTS---
+        post("api/stores/:id/appointments/owners", (req, res) ->
+        {
+            //appoint new owner
+            //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+            System.out.println(req.body());
+            return res.body();
+        }
+        );
+        post("api/stores/:id/appointments/managers", (req, res) ->
+        {
+            //appoint new manager
+            //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+            System.out.println(req.body());
+            return res.body();
+        }
+        );
 
+        delete("api/stores/:id/appointments/managers", (req, res) ->
+        {
+            //fire manager
+            //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+            JSONObject request = new JSONObject(req.body());
+            System.out.println(request);
+            return res.body();
+        }
+        );
+        delete("api/stores/:id/appointments/owners", (req, res) ->
+        {
+            //fire owner
+            //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+            System.out.println(req.body());
+            return res.body();
+        }
+        );
+        //--APPOINTMENTS
+        //--CART
+        post("api/cart/:id", (req, res) ->
+        {
+            //when a user creates a basket for store in the first time this function should handle it
+            //params {"userId":0,"storeId":5,"basket":{"productsList":[{"productId":1,"quantity":5},{"productId":2,"quantity":3}]}}
+            System.out.println(req.body());
+            return res.body();
+        }
+        );
+        patch("api/cart/:id", (req, res) ->
+        {
+            //when a user change quantity of a product in specific store basket
+            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+            JSONObject request = new JSONObject(req.body());
+            System.out.println(request);
+            res.body("success");
+            res.status(200);
+            return res.body();
+        }
+        );
+        get("api/cart/:id", (req, res) ->
+        {
+            //when a user change quantity of a product in specific store basket
+            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+           // int userId = Integer.parseInt(req.queryParams("userId"));
+           // System.out.println(userId);
+//            ShoppingCart cart = new ShoppingCart();
+//            cart.addProductToCart(1, 1, 5);
+//            cart.addProductToCart(2, 2, 5);
+//            cart.addProductToCart(2, 3, 5);
+//            Gson gson = new Gson();
+//            res.body( gson.toJson(cart));
+//            res.status(200);
+            HashMap<Integer, HashMap<Integer, Integer>> cart = new HashMap<>();
+            cart.put(1, new HashMap<>());
+            cart.get(1).put(1, 1);
+            cart.put(5, new HashMap<>());
+            cart.get(5).put(5, 5);
+            String str = getBaskets(cart);
+            res.body(str);
+            res.status(200);
+            return res.body();
+        }
+        );
+        delete("api/cart/:id", (req, res) ->
+        {
+            //delete cart
+            //params userId
+            int userId = Integer.parseInt(req.queryParams("userId"));
+            return res.body();
+        }
+        );
 
+        //--CART--
     }
 
 }

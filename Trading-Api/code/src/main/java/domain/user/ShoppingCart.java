@@ -31,7 +31,6 @@ public class ShoppingCart {
         }
         else
             throw new Exception("the product isn't in the cart");
-
     }
 
     public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
