@@ -9,6 +9,7 @@ import spark.Response;
 import utils.Pair;
 
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class Server {
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
     static int nextUser =1;
     static Gson gson = new Gson();
-    private static HashMap< Integer,ArrayBlockingQueue<String>> messageQueue = new HashMap<>();
+    private static HashMap< Integer, ArrayBlockingQueue<String>> messageQueue = new HashMap<>();
     private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes) {
         if (apiRes.getFirst()) {
             res.status(200);
