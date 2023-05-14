@@ -1,6 +1,7 @@
 package domain.store.discount.compositeDiscountTypes;
 
 import domain.store.discount.Discount;
+import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.discount.predicates.DiscountPredicate;
 import domain.store.discount.predicates.PredicateFactory;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
@@ -15,18 +16,21 @@ public abstract class AbstractDiscountComposite implements Discount {
     private ArrayList<Discount> discounts;
     private int storeId;
     private  GetCategoriesOperation getCategoriesOp;
+    private GetProductOperation getProductOp;
 
-    public AbstractDiscountComposite(int discountID, int storeId, GetCategoriesOperation op , LogicalDiscountComposite.logical type){
+    public AbstractDiscountComposite(int discountID, int storeId, GetCategoriesOperation op, LogicalDiscountComposite.logical type, GetProductOperation getProductOp){
         discounts = new ArrayList<>();
         this.discountID =discountID;
         this.storeId =storeId;
         this.getCategoriesOp = op;
+        this.getProductOp = getProductOp;
     }
-    public AbstractDiscountComposite(int discountID, int storeId, GetCategoriesOperation op , NumericDiscountComposite.numeric type){
+    public AbstractDiscountComposite(int discountID, int storeId, GetCategoriesOperation op, NumericDiscountComposite.numeric type, GetProductOperation getProductOp){
         discounts = new ArrayList<>();
         this.discountID =discountID;
         this.storeId =storeId;
         this.getCategoriesOp = op;
+        this.getProductOp = getProductOp;
     }
 
     public void addDiscount(Discount dis){
@@ -48,4 +52,7 @@ public abstract class AbstractDiscountComposite implements Discount {
     public ArrayList<Discount> getDiscounts() {
         return discounts;
     }
+    public abstract void setDecidingRule(LogicalDiscountComposite.xorDecidingRules rule);
+    public abstract LogicalDiscountComposite.xorDecidingRules  getDecidingRule();
+
 }

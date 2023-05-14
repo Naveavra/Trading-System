@@ -6,6 +6,8 @@ import domain.store.discount.predicates.DiscountPredicate;
 import domain.store.discount.predicates.PredicateFactory;
 
 public abstract class AbstractDiscount implements Discount{
+    public enum discountTypes{Product,Category,Store}
+
     //same for all discounts
     public int discountID;
     private int storeId;
