@@ -1,33 +1,28 @@
 export enum Action {
 
-    addProduct = "add Product", // manager, owner, creator V
-    removeProduct = "remove Product", //removes a product from store V
-    updateProduct = "update Product", //updates product fields V
+    addProduct = "add Product", // manager, owner, creator 
+    removeProduct = "remove Product", //removes a product from store
+    updateProduct = "update Product", //updates product fields
 
-    changeStoreDescription = "change Store Description", // manager, owner, creator
-    changePurchasePolicy = "change Purchase Policy", // manager, owner, creator
-    changeDiscountPolicy = "change Discount Policy", // manager, owner, creator
-    addPurchaseConstraint = "add Purchase Constraint", // manager, owner, creator
-    addDiscountConstraint = "add Discount Constraint", // manager, owner, creator
-    changeStoreDescription = "change Store Description", // manager, owner, creator
-    changePurchasePolicy = "change Purchase Policy", // manager, owner, creator
-    changeDiscountPolicy = "change Discount Policy", // manager, owner, creator
-    addPurchaseConstraint = "add Purchase Constraint", // manager, owner, creator
-    addDiscountConstraint = "add Discount Constraint", // manager, owner, creator
+    changeStoreDescription = "change Store Description", // manager, owner, creator //todo
+    deletePurchasePolicy = "delete Purchase Policy", // manager, owner, creator //todo
+    deleteDiscountPolicy = "delete Discount Policy", // manager, owner, creator //todo
+    addPurchaseConstraint = "add Purchase Constraint", // manager, owner, creator //todo
+    addDiscountConstraint = "add Discount Constraint", // manager, owner, creator //todo 
 
-    viewMessages, // manager, owner, creator
-    answerMessage, // manager, owner, creator
-    seeStoreHistory, // manager, owner, creator
-    seeStoreOrders, // manager,owner,creator
-    checkWorkersStatus, // manager, owner, creator
-    appointManager, // owner, creator
-    fireManager, // owner, creator
+    viewMessages = "view Messages", // manager, owner, creator //todo
+    answerMessage = "view Messages", // manager, owner, creator //todo
+    seeStoreHistory = "see Store History", // manager, owner, creator //todo
+    seeStoreOrders = "see Store Orders", // manager,owner,creator //todo
+    checkWorkersStatus = "check Workers Status", // manager, owner, creator //todo
+    appointManager = "appoint Manager", // owner, creator //todo
+    fireManager = "fire Manager", // owner, creator//todo - done
 
-    appointOwner, //owner, creator
-    fireOwner, // owner, creator
-    changeManagerPermission, // owner, creator
+    appointOwner = "appoint Owner", //owner, creator //todo
+    fireOwner = "fire Owner", // owner, creator //todo
+    changeManagerPermission = "change Manager Permission", // owner, creator  //todo
 
-    closeStore, // creator
-    reopenStore, // creator
+    closeStore = "close Store", // creator //todo
+    reopenStore = "reopen Store", // creator //todo
 
 }
