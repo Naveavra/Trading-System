@@ -1,9 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ApiError, ApiListData, ApiResponse, ApiResponseListData, ValidationError } from "../types/apiTypes";
+import { ApiError, ApiListData, ApiResponse, ApiResponseListData } from "../types/apiTypes";
 import { Product } from "../types/systemTypes/Product";
 import { ProductResponseData } from "../types/responseTypes/productTypes";
 import { DeleteProductsParams, GetProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
 import { productsApi } from "../api/productsApi";
+import { store } from "../redux/store";
 
 const reducerName = 'products';
 
@@ -16,7 +17,7 @@ interface ProductsState {
     },
     isLoading: boolean;
     responseData?: ApiListData<Product>;
-    error:  string | null;
+    error: string | null;
 };
 
 const initialState: ProductsState = {
@@ -47,7 +48,7 @@ export const postProduct = createAsyncThunk<
 
 export const patchProduct = createAsyncThunk<
     { responseBody: ApiResponse<string> },
-    PatchProductsParams,
+    Partial<PatchProductsParams>,
     { rejectValue: ApiError }
 >(
     '${reducerName}/patch',

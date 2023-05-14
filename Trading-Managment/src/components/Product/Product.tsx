@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Card from "../Card/Card";
+import Card from "../ProductCard/Card";
 import "./Product.css";
 
 import { Product } from "../../types/systemTypes/Product";

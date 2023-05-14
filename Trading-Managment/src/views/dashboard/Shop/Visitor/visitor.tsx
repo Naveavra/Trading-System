@@ -1,4 +1,4 @@
-import ProductDisplay from "../../../../components/Products/Product";
+import ProductDisplay from "../../../../components/Product/Product";
 
 
 const Visitor: React.FC = () => {

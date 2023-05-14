@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import data.StoreInfo;
 import domain.store.storeManagement.Store;
 import org.json.JSONObject;
-import spark.Session;
+import spark.Response;
 import utils.Pair;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static spark.Spark.*;
 
@@ -19,7 +22,7 @@ public class Server {
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
     static int nextUser =1;
     static Gson gson = new Gson();
-
+    private static HashMap< Integer,ArrayBlockingQueue<String>> messageQueue = new HashMap<>();
     private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes) {
         if (apiRes.getFirst()) {
             res.status(200);
@@ -31,6 +34,9 @@ public class Server {
     }
 
     public static void main(String[] args) {
+        messageQueue.put(0,new ArrayBlockingQueue<>(20));
+        messageQueue.put(1,new ArrayBlockingQueue<>(20));
+
         api.register("eli@gmail.com", "aA12345", "22/02/2002");
         //Spark.webSocket("/api/login", MainWebSocket.class);
         //Spark.webSocket("/api/member",  MemberWebSocket.class);
@@ -116,8 +122,8 @@ public class Server {
             return res.body();
         });
         post("api/auth/logout", (req, res) -> {
-            JSONObject request = new JSONObject(req.body());
-            String userId = request.get("userId").toString();
+            //JSONObject request = new JSONObject(req.body());
+            String userId ="1";// request.get("userId").toString();
             toSparkRes(res, api.logout(Integer.parseInt(userId)));
             return res.body();
         });
@@ -129,8 +135,16 @@ public class Server {
             toSparkRes(res, api.register(email, pass, bday));
             return res.body();
         });
+        get("api/auth/getClient",(req,res)->{
+            JSONObject request = new JSONObject(req.body());
+            String id = request.get("userId").toString();
+            String token = request.get("token").toString();
+            System.out.println(token);
+            return res.body();
+        });
         get("api/stores", (req, res) ->
         {
+
             System.out.println("get store");
             Store store1 = new Store(1, "nike store", 1);
             StoreInfo s1 = new StoreInfo(store1);
@@ -148,6 +162,7 @@ public class Server {
         });
         post("api/stores", (req, res) ->
         {
+            System.out.println(req.headers("Authorization"));
             System.out.println(req);
             res.body("success post");
             res.status(200);
@@ -160,5 +175,30 @@ public class Server {
             res.status(200);
             return res.body();
         });
+
+        // Define a GET route that waits for a message and returns it to the client
+        get("api/wait", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            String id =req.body();
+            String message = messageQueue.get(Integer.parseInt(id)).take();
+            System.out.println(message);
+            res.status(200);
+            res.body(message);
+            return res.body();
+        });
+
+        // Define a POST route that sends a message to the React client
+        post("api/sendMessage", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            String id = request.get("userId").toString();
+            String msg = request.get("message").toString();
+            messageQueue.get(Integer.parseInt(id)).offer(msg);
+            res.status(200);
+            res.body("success put message");
+            return res.body();
+        });
+
+
     }
+
 }

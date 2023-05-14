@@ -16,6 +16,7 @@
 }
 
 .navbar .wrapper .left {
+    margin-top: -2%;
     display: flex;
     align-items: center;
     gap: 25px;
@@ -23,10 +24,12 @@
 
 /* i want to put it in the middle*/
 .navbar .wrapper .center {
-    margin-top: 1%;
+    margin-top: 2%;
     display: flex;
     position: relative;
-    left: 50%;
+    align-items: center;
+    margin-left: 50%;
+
     transform: translate(-50%, -50%);
     font-size: 30px;
     letter-spacing: 2px;

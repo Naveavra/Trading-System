@@ -8,24 +8,24 @@ import { apiErrorHandlerWrapper } from "./util";
 
 
 
-export const productsApi = 
+export const productsApi =
 {
-    getProducts: (params: Partial<GetProductsParams>) :Promise<ApiResponseListData<Product>> =>
+    getProducts: (params: Partial<GetProductsParams>): Promise<ApiResponseListData<Product>> =>
         apiErrorHandlerWrapper(noAuthApiClient.get('api/products', {
             params: params
         })),
-        
-    postProduct: (params: PostProductsParams) : Promise<ApiResponse<string>> =>
+
+    postProduct: (params: PostProductsParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/products', params)),
 
-    patchProduct: (params: PatchProductsParams) : Promise<ApiResponse<string>> =>
+    patchProduct: (params: Partial<PatchProductsParams>): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().patch('api/products', params)),
 
-    deleteProduct: (params: DeleteProductsParams) : Promise<ApiResponse<string>> =>
+    deleteProduct: (params: DeleteProductsParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().delete('api/products', {
             params: params
         }))
-    
-    
-    
+
+
+
 }   

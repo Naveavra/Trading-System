@@ -2,7 +2,7 @@ import { Route } from "react-router-dom";
 import DashboardPage from ".";
 import { VisitorShopRoutes } from "./Shop/Visitor/router";
 import { SuperiorShopRoutes } from "./Shop/Superior/router";
-import ProductDisplay from "../../components/Products/Product";
+import ProductDisplay from "../../components/Product/Product";
 import { ShopRoutes } from "./Shop/router";
 
 

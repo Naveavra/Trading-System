@@ -8,6 +8,6 @@ export const noAuthApiClient = axios.create({
 export const getApiClient = () => (axios.create({
     baseURL: backendUrl,
     headers: {
-        Authorization: 'Token ' + store.getState().auth.token ?? ''
+        Authorization: store.getState().auth.token ?? ''
     }
 }));
