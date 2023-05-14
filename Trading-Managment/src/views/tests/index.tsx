@@ -63,7 +63,6 @@ const Tests: React.FC = () => {
             { productId: 3, quantity: 2 }
           ];
           const basket: Basket = {
-            storeid : 0,
             productsList: data
           };
         console.log("front appoint products");
@@ -72,7 +71,10 @@ const Tests: React.FC = () => {
    
     const handleOnPatchCart = () =>
     {  
-        dispatch(patchCart({userId: 0,storeId: 0, productId: 1, quantity: 5}));
+        dispatch(patchCart({userId: 0,storeId: 0, productId: 1, quantity: 5})).then((response =>{
+            const responseData = response.payload;
+            console.log(responseData);
+        }))
     }
     const handleOnGetCart = () =>
     {

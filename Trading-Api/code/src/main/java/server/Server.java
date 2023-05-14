@@ -3,14 +3,15 @@ package server;
 import com.google.gson.Gson;
 import data.StoreInfo;
 import domain.store.storeManagement.Store;
+import domain.user.ShoppingCart;
 import org.json.JSONObject;
 import spark.Session;
 import utils.Pair;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static spark.Spark.*;
 
@@ -30,6 +31,32 @@ public class Server {
             res.body(apiRes.getSecond().get("errorMsg").toString());
         }
     }
+    public static String getBaskets(HashMap<Integer, HashMap<Integer, Integer>> basketsMaps)
+    {
+        List<String> baskets = new ArrayList();
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry : basketsMaps.entrySet()) {
+            JSONObject basketJson = getBasket(basketEntry);
+            baskets.add(basketJson.toString());
+        }
+        String products = baskets.stream()
+                .collect(Collectors.joining(",", "[", "]"));
+        return products;
+    }
+
+    private static JSONObject getBasket(Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry){
+        JSONObject basketJson = new JSONObject();
+        basketJson.put("storeId", basketEntry.getKey());
+        List<JSONObject> bucketList = new ArrayList();
+        for (Map.Entry<Integer, Integer> productEntry : basketEntry.getValue().entrySet()) {
+            JSONObject productJson = new JSONObject();
+            productJson.put("quantity", productEntry.getValue());
+            productJson.put("productId", productEntry.getKey());
+            bucketList.add(productJson);
+        }
+        basketJson.put("products", bucketList);
+        return basketJson;
+    }
+
 
     public static void main(String[] args) {
         api.register("eli@gmail.com", "aA12345", "22/02/2002");
@@ -239,7 +266,8 @@ public class Server {
         {
             //fire manager
             //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
-            System.out.println(req.body());
+            JSONObject request = new JSONObject(req.body());
+            System.out.println(request);
             return res.body();
         }
         );
@@ -265,9 +293,8 @@ public class Server {
         {
             //when a user change quantity of a product in specific store basket
             //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
-            JSONObject json = new JSONObject(req.body());
-            System.out.println(json.get("userId"));
-            System.out.println(req.body());
+            JSONObject request = new JSONObject(req.body());
+            System.out.println(request);
             res.body("success");
             res.status(200);
             return res.body();
@@ -279,8 +306,21 @@ public class Server {
             //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
            // int userId = Integer.parseInt(req.queryParams("userId"));
            // System.out.println(userId);
-
-
+//            ShoppingCart cart = new ShoppingCart();
+//            cart.addProductToCart(1, 1, 5);
+//            cart.addProductToCart(2, 2, 5);
+//            cart.addProductToCart(2, 3, 5);
+//            Gson gson = new Gson();
+//            res.body( gson.toJson(cart));
+//            res.status(200);
+            HashMap<Integer, HashMap<Integer, Integer>> cart = new HashMap<>();
+            cart.put(1, new HashMap<>());
+            cart.get(1).put(1, 1);
+            cart.put(5, new HashMap<>());
+            cart.get(5).put(5, 5);
+            String str = getBaskets(cart);
+            res.body(str);
+            res.status(200);
             return res.body();
         }
         );

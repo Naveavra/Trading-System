@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ApiError, ApiListData} from "../types/apiTypes";
+import { ApiError, ApiListData, ApiResponse} from "../types/apiTypes";
 import { Basket } from "../types/systemTypes/Basket";
 import { DeleteCartParams, GetCartParams, PatchCartParams, PostBasketParams } from "../types/requestTypes/cartTypes";
 import { cartApi } from "../api/cartApi";
+import { Cart } from "../types/systemTypes/Cart";
 
 const reducerName = 'carts';
 
@@ -13,7 +14,7 @@ interface CartState {
         error: string | null;
     },
     isLoading: boolean;
-    responseData?: ApiListData<Basket> ;
+    responseData?: ApiResponse<Cart> | null ;
     error:  string | null;
 };
 
@@ -24,7 +25,7 @@ const initialState: CartState = {
         error: null,
     },
     isLoading: false,
-    responseData: { data: {results: []}},
+    responseData: null,
     error: null,
 };
 export const postBasket = createAsyncThunk<
@@ -64,14 +65,14 @@ export const deleteCart = createAsyncThunk<
     });
 
 export const getCart = createAsyncThunk<
-    ApiListData<Basket>,
+    ApiResponse<Cart>,
     GetCartParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/get`,
     async (formData, thunkApi) => {
         return cartApi.getCart(formData)
-            .then((res) => thunkApi.fulfillWithValue(res as ApiListData<Basket>))
+            .then((res) => thunkApi.fulfillWithValue(res as ApiResponse<Cart>))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
@@ -95,7 +96,7 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         builder.addCase(getCart.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
             state.responseData = payload;
-            console.log(payload);
+            console.log("response: " ,state.responseData);
             state.error = null;
         });
         builder.addCase(getCart.rejected, (state, { payload }) => {
