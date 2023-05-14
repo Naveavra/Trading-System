@@ -7,6 +7,7 @@ import SuccessAlert from "../../components/Alerts/success";
 import { getProducts, patchProduct, postProduct } from "../../reducers/productsSlice";
 import { deleteCart, getCart, patchCart, postBasket } from "../../reducers/cartSlice";
 import { Basket } from "../../types/systemTypes/Basket";
+import { PatchCartParams } from "../../types/requestTypes/cartTypes";
 
 const Tests: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -23,36 +24,36 @@ const Tests: React.FC = () => {
     }
     const handleOnRemove = () => {
         console.log("front remove store");
-        dispatch(deleteStore({ userId: 1, storeId: 0 }))
+        dispatch(deleteStore({ userId: 1, storeId: 0 }));
     }
 
     const handleOnAddProduct = () => {
-        console.log("front add product")
-        dispatch(postProduct({id: 1, storeId: 1, category: [], name: "mazda 3", description: "ziv's mazda", price: 5, quantity: 5, img: ""}))
+        console.log("front add product");
+        dispatch(postProduct({id: 1, storeId: 1, category: [], name: "mazda 3", description: "ziv's mazda", price: 5, quantity: 5, img: ""}));
     }
     const handleOnGetProducts = () => {
-        console.log("front get products")
-        dispatch(getProducts({storeId: 1}))
+        console.log("front get products");
+        dispatch(getProducts({storeId: 1}));
     }
     const handleOnPatchProducts = () => {
-        console.log("front patch products")
-        dispatch(patchProduct({id: 1, storeId: 1, productId: 0, category: [], name: "mazda 6", description: null, price: 50, quantity: 10, img: ""}))
+        console.log("front patch products");
+        dispatch(patchProduct({id: 1, storeId: 1, productId: 0, category: [], name: "mazda 6", description: null, price: 50, quantity: 10, img: ""}));
     }
     const handleOnAppointManager = () => {
-        console.log("front appoint products")
-        dispatch(appointManager({storeId: 0,userIncharge: 1, newOwner: 2}))
+        console.log("front appoint products");
+        dispatch(appointManager({storeId: 0,userIncharge: 1, newOwner: 2}));
     }
     const handleOnAppointOwner = () => {
-        console.log("front appoint products")
-        dispatch(appointOwner({storeId: 0,userIncharge: 1, newOwner: 2}))
+        console.log("front appoint products");
+        dispatch(appointOwner({storeId: 0,userIncharge: 1, newOwner: 2}));
     }
     const handleOnFireManager = () => {
-        console.log("front appoint products")
-        dispatch(fireManager({storeId: 0,userIncharge: 1, newOwner: 2}))
+        console.log("front appoint products");
+        dispatch(fireManager({storeId: 0,userIncharge: 1, newOwner: 2}));
     }
     const handleOnFireOwner = () => {
-        console.log("front appoint products")
-        dispatch(fireOwner({storeId: 0,userIncharge: 1, newOwner: 2}))
+        console.log("front appoint products");
+        dispatch(fireOwner({storeId: 0,userIncharge: 1, newOwner: 2}));
     }
     
     const handleOnPostBasket = () => {
@@ -62,25 +63,32 @@ const Tests: React.FC = () => {
             { productId: 3, quantity: 2 }
           ];
           const basket: Basket = {
-            storeid : 0,
             productsList: data
           };
-        console.log("front appoint products")
-        dispatch(postBasket({userId: 0, storeId: 5, basket : basket}))
+        console.log("front appoint products");
+        dispatch(postBasket({userId: 0, storeId: 5, basket : basket}));
     }
-
+   
     const handleOnPatchCart = () =>
-    {
-        dispatch(patchCart({userId: 0,storeId: 0, prouctId: 1, quantity: 5}))
+    {  
+        dispatch(patchCart({userId: 0,storeId: 0, productId: 1, quantity: 5})).then((response =>{
+            const responseData = response.payload;
+            console.log(responseData);
+        }))
     }
     const handleOnGetCart = () =>
     {
-        dispatch(getCart({userId: 0}))
+        dispatch(getCart({ userId: 0 })).then((response) => {
+            const responseData = response.payload; // Access the response data
+            console.log(responseData);
+            // Perform further operations with the response data
+          });
+        //dispatch(getCart({userId: 0}));
     }
     
     const handleOnDeleteCart = () =>
     {
-        dispatch(deleteCart({userId: 0}))
+        dispatch(deleteCart({userId: 0}));
     }
 
 

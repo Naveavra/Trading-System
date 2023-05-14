@@ -108,8 +108,6 @@ public class API {
         }
     }
 
-
-    //TODO: make a test to check functionality for purchase
     public Pair<Boolean, JSONObject> makePurchase(int userId , String accountNumber){
         Response<Receipt> res = market.makePurchase(userId, accountNumber);
         return fromResToPair(res);
@@ -471,6 +469,7 @@ public class API {
     {
         Response<HashMap<Integer, Admin>> res = market.getAdmins(adminId, token);
         //TODO: fix that
+
         return fromResToPair(res);
     }
 
