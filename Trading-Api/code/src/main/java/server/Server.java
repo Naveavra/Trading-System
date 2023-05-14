@@ -213,19 +213,8 @@ public class Server {
             String description = request.get("description").toString();
             int price = Integer.parseInt(request.get("price").toString());
             int quantity = (int) (request.get("newQuantity"));
-
-            Store s1 = new Store(0,"test", 2);
-            s1.addNewProduct("mazda", "ziv's vehicle", new AtomicInteger(1), 50);
-            JSONObject request = new JSONObject(req.body());
-            int quantity = Integer.parseInt(request.get("quantity").toString());
-            int pid = Integer.parseInt(request.get("id").toString());
-            String desc = request.get("description").toString();
-            System.out.println(desc);
-            s1.setProductQuantity(pid, quantity);
-            System.out.println(s1.getInventory().getProduct(pid).quantity);
-            System.out.println(req.body());
-            res.body("success patch");
-            res.status(200);
+            String img = request.get("newQuantity").toString();//TODO: Add img feature
+            toSparkRes(res, api.updateProduct(userId, token, storeId, productId, categories, name, description, price, quantity));
             return res.body();
         });
         get("api/products", (req, res) ->
@@ -241,15 +230,25 @@ public class Server {
         {
             //appoint new owner
             //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
-            System.out.println(req.body());
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userIncharge").toString());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            String newOwner = request.get("newOwner").toString();
+            toSparkRes(res, api.appointOwner(userId, token, newOwner, storeId));
             return res.body();
         }
         );
         post("api/stores/:id/appointments/managers", (req, res) ->
         {
             //appoint new manager
-            //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
-            System.out.println(req.body());
+            //this function will receive {"storeId":0,"userIncharge":1,"newManager":2}
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userIncharge").toString());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            String newManager = request.get("newManager").toString();
+            toSparkRes(res, api.appointManager(userId, token, newManager, storeId));
             return res.body();
         }
         );
@@ -259,7 +258,11 @@ public class Server {
             //fire manager
             //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
             JSONObject request = new JSONObject(req.body());
-            System.out.println(request);
+            int userId = Integer.parseInt(request.get("userIncharge").toString());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int newManager = Integer.parseInt(request.get("newOwner").toString());
+            toSparkRes(res, api.fireManager(userId, token, newManager, storeId));
             return res.body();
         }
         );
@@ -267,17 +270,28 @@ public class Server {
         {
             //fire owner
             //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
-            System.out.println(req.body());
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userIncharge").toString());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int newOwner = Integer.parseInt(request.get("newOwner").toString());
+            toSparkRes(res, api.fireOwner(userId, token, newOwner, storeId));
             return res.body();
         }
         );
+
         //--APPOINTMENTS
         //--CART
         post("api/cart/:id", (req, res) ->
         {
             //when a user creates a basket for store in the first time this function should handle it
-            //params {"userId":0,"storeId":5,"basket":{"productsList":[{"productId":1,"quantity":5},{"productId":2,"quantity":3}]}}
-            System.out.println(req.body());
+            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userIncharge").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int productId = Integer.parseInt(request.get("productId").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.addProductToCart(userId, storeId, productId, quantity));
             return res.body();
         }
         );
@@ -286,9 +300,12 @@ public class Server {
             //when a user change quantity of a product in specific store basket
             //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
             JSONObject request = new JSONObject(req.body());
-            System.out.println(request);
-            res.body("success");
-            res.status(200);
+            int userId = Integer.parseInt(request.get("userIncharge").toString());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int productId = Integer.parseInt(request.get("productId").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.changeQuantityInCart(userId, storeId, productId, quantity));
             return res.body();
         }
         );

@@ -225,6 +225,11 @@ public class API {
     }
 
 
+    public Pair<Boolean, JSONObject> appointManager(int userId, String token, String managerToAppoint, int storeId){
+        Response<String> res = market.appointManager(userId, token, managerToAppoint, storeId);
+        return fromResToPair(res);
+    }
+
     public Pair<Boolean, JSONObject> appointManager(int userId, String token, int managerIdToAppoint, int storeId){
         Response<String> res = market.appointManager(userId, token, managerIdToAppoint, storeId);
         return fromResToPair(res);
@@ -358,6 +363,12 @@ public class API {
     public Pair<Boolean, JSONObject> appointOwner(int userId, String token, int ownerId, int storeId)
     {
         Response<String> res = market.appointOwner(userId, token, ownerId, storeId);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> appointOwner(int userId, String token, String ownerMail, int storeId)
+    {
+        Response<String> res = market.appointOwner(userId, token, ownerMail, storeId);
         return fromResToPair(res);
     }
 

@@ -590,6 +590,19 @@ public class Market implements MarketInterface {
     }
 
     @Override
+    public Response<String> appointManager(int userId, String token, String managerToAppoint, int storeId) {
+        try {
+            userAuth.checkUser(userId, token);
+            userController.appointManager(userId, managerToAppoint, storeId);
+            logger.log(Logger.logStatus.Success, "user appoint " + managerToAppoint + "to Manager in: " + storeId + " successfully on " + LocalDateTime.now());
+            return new Response<>("user appointManager successfully", null, null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "cant appoint Manager because: " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "appoint Manager failed", e.getMessage());
+        }
+    }
+
+    @Override
     public Response<String> appointManager(int userId, String token, int managerIdToAppoint, int storeId) {
         try {
             userAuth.checkUser(userId, token);
@@ -828,6 +841,19 @@ public class Market implements MarketInterface {
         }catch (Exception e){
             logger.log(Logger.logStatus.Fail, "Cant update product because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "Product Update Failed", e.getMessage());
+        }
+    }
+
+    @Override
+    public Response<String> appointOwner(int userId, String token, String owner, int storeId) {
+        try {
+            userAuth.checkUser(userId, token);
+            userController.appointOwner(userId, owner, storeId);
+            logger.log(Logger.logStatus.Success, "appointed user successfully on " + LocalDateTime.now());
+            return new Response<>("user appointManager successfully", null, null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "cant appoint Manager because: " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "appoint Manager failed", e.getMessage());
         }
     }
 
