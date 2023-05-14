@@ -31,4 +31,5 @@ export const emptyStore: Store = {
     storeQuestions: [],
     storeOrders: [],
     storeReviews: [],
+    storeRoles: [],
 }
