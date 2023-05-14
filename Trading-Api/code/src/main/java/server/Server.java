@@ -11,7 +11,9 @@ import utils.Pair;
 import utils.marketRelated.Response;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -69,6 +71,8 @@ public class Server {
             res.body("ping success");
             return res.body();
         });
+        //--AUTHENTICATION---
+        //-----GUEST-----
         post("api/auth/guest/enter", (req, res) -> {
             toSparkRes(res, api.enterGuest());
             return res.body();
@@ -101,19 +105,7 @@ public class Server {
         //Store:
         get("api/stores", (req, res) ->
         {
-            System.out.println("get store");
-            Store store1 = new Store(1, "nike store", 1);
-            StoreInfo s1 = new StoreInfo(store1);
-            Store store2 = new Store(1, "nike store", 1);
-            StoreInfo s2 = new StoreInfo(store2);
-            ArrayList<StoreInfo> stores = new ArrayList<>();
-            stores.add(s1);
-            stores.add(s2);
-            //JSONObject json = new JSONObject();
-            String response = gson.toJson(stores);
-            // json.put("value" , response);
-            res.body(response);
-            res.status(200);
+            toSparkRes(res, api.getStores());
             return res.body();
         });
         post("api/stores", (req, res) ->
@@ -188,6 +180,14 @@ public class Server {
             //    price: number;
             //    quantity: number;
             //    img: string;
+            JSONObject request = new JSONObject(req.body());
+            int userId = (int) (request.get("id"));
+            int storeId = (int) (request.get("storeId"));
+            String catStr = request.get("category").toString();
+            String[] arr = catStr.substring(1, catStr.length() - 1).split(",");
+            List<String> categories = new ArrayList<>(Arrays.asList(arr));
+            int quantity = (int) (request.get("newQuantity"));
+            //toSparkRes(res, api.addProductToCart(userId, storeId, productId, quantity));
             System.out.println(req.body());
             res.body("success post");
             res.status(200);

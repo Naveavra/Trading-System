@@ -265,10 +265,7 @@ public class API {
         json.put("email", info.getEmail());
         json.put("birthday", info.getBirthday());
         json.put("age", info.getAge());
-        String permissions = info.getManagerActions().stream()
-                .map(act -> String.valueOf(act))
-                .collect(Collectors.joining(",", "[", "]"));
-        json.put("managerPermissions", permissions);
+        json.put("managerPermissions", info.getManagerActions());
         return json;
     }
 
@@ -329,9 +326,7 @@ public class API {
         json.put("description", product.getDescription());
         json.put("price", product.getPrice());
         json.put("quantity", product.getQuantity());
-        String categories = product.getCategories().stream()
-                .collect(Collectors.joining(",", "[", "]"));
-        json.put("categories", categories);
+        json.put("categories", product.getCategories());
         return json;
     }
 
@@ -407,16 +402,14 @@ public class API {
     private JSONObject getBasket(Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry){
         JSONObject basketJson = new JSONObject();
         basketJson.put("storeId", basketEntry.getKey());
-        List<String> bucketList = new ArrayList();
+        List<JSONObject> bucketList = new ArrayList();
         for (Map.Entry<Integer, Integer> productEntry : basketEntry.getValue().entrySet()) {
             JSONObject productJson = new JSONObject();
             productJson.put("productId", productEntry.getKey());
             productJson.put("quantity", productEntry.getValue());
-            bucketList.add(productJson.toString());
+            bucketList.add(productJson);
         }
-        String bucket = bucketList.stream()
-                .collect(Collectors.joining(",", "[", "]"));
-        basketJson.put("products", bucket);
+        basketJson.put("products", bucketList);
         return basketJson;
     }
 
@@ -510,8 +503,7 @@ public class API {
         for (Map.Entry<Logger.logStatus, List<String>> logEntry : logs.entrySet()) {
             JSONObject productJson = new JSONObject();
             productJson.put("status", logEntry.getKey());
-            productJson.put("messages", logEntry.getValue().stream()
-                    .collect(Collectors.joining(",", "[", "]")));
+            productJson.put("messages", logEntry.getValue());
         }
         String logsMessages = logsList.stream()
                 .collect(Collectors.joining(",", "[", "]"));
