@@ -5,6 +5,7 @@ import { storeApi } from "../api/storeApi";
 import { DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams } from "../types/requestTypes/storeTypes";
 import { Store, emptyStore } from "../types/systemTypes/Store";
 import { StoreInfo, emptyStoreInfo } from "../types/systemTypes/StoreInfo";
+import { store } from "../redux/store";
 
 //TODO implement the getProducts method from the storeApi
 const reducerName = 'stores';

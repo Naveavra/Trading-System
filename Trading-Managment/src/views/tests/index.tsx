@@ -34,8 +34,20 @@ const Tests: React.FC = () => {
         dispatch(getProducts({storeId: 1}))
     }
     useEffect(() => {
-        //dispatch(getStores());
-    }, [dispatch])
+        sendPing();
+        // Call the sendPing function every 2 seconds
+        // console.log("message");
+        if (message) {
+            message = null;
+            const pingInterval = setInterval(sendPing, PING_INTERVAL);
+        }
+
+        // // Stop the ping interval when the user leaves the app
+        // return () => {
+        //     console.log("un messgae");
+        //     clearInterval(pingInterval)
+        // };
+    }, [message, dispatch])
     return (
         <>
             <Button

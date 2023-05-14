@@ -1,125 +1,66 @@
-import { Box, IconButton, Toolbar, Typography, styled } from "@mui/material";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import SideDrawer from "../../../../components/Drawer";
-import { useState } from "react";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import MenuIcon from '@mui/icons-material/Menu';
+
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../redux/store";
 
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
-import LogoutIcon from '@mui/icons-material/Logout';
-import Bar from "../../../../components/Bars/Navbar/Navbar";
-import { logout } from "../../../../reducers/authSlice";
+import { getClientData, logout } from "../../../../reducers/authSlice";
+import Bar2 from "../../../../components/Bars/Navbar/NavBar2";
+import { Product } from "../../../../types/systemTypes/Product";
+import { products } from "../../../../mock/products";
+import { Box, CardContent, Typography, Card } from "@mui/material";
+import ProductCard from "../../../../components/ProductCard/Card";
 
-const DRAWER_WIDTH = 240;
-interface MyAppBarProps extends MuiAppBarProps {
-    open?: boolean;
-    drawerWidth: number;
-}
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' && prop !== 'drawerWidth' })<{
-    open?: boolean;
-    drawerWidth: number;
-}>(({ theme, open, drawerWidth }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: `-${drawerWidth}px`,
-    ...(open && {
-        transition: theme.transitions.create('margin', {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
-    }),
-}));
-const MyAppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open' && prop !== 'drawerWidth',
-})<MyAppBarProps>(({ theme, open, drawerWidth }) => ({
-    transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: `${drawerWidth}px`,
-        transition: theme.transitions.create(['margin', 'width'], {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
-}));
+
+
 const Superior: React.FC = () => {
     const params = useParams();
+    const userId = params.id ?? '-1';
+    const token = 'token';//params.token ?? 'token';
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const userId = useAppSelector(state => state.auth.userId);
+    console.log("params", params);
+    const store = useAppSelector((state) => state.store.storeState.watchedStore);
+    const actions = useAppSelector((state) => state);
+    //const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector(state => state.auth.userName);
-    const [open, setOpen] = useState(false);
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
-    const handleLogout = () => {
-        dispatch(logout(userId));
-    };
-
-    const handleSettings = () => {
-        navigate('settings');
-    };
-    const handleProfile = () => {
-        navigate('profile');
-    };
-    const storeId = params.id;
+    const privateName = userName.split('@')[0];
+    const prodiucts: Product[] = products;//useAppSelector((state) => state.store.storeState.watchedStore.inventory);
+    const canRemove = true;// useAppSelector((state) => state.auth.permmisions).filter((perm) => perm.storeId === storeId)[0].actions.includes(Action.removeProduct);
+    const canEdit = true;// useAppSelector((state) => state.auth.permmisions).filter((perm) => perm.storeId === storeId)[0].actions.includes(Action.updateProduct);
+    useEffect(() => {
+        dispatch(getClientData({ userId: parseInt(userId), token: token }));
+    }, []);
 
     return (<>
-        {/* <MyAppBar
-            drawerWidth={DRAWER_WIDTH}
-            sx={{ position: 'sticky', width: '100%', margin: 'center', direction: 'ltr' }}
+        <Bar2 headLine={`wellcome to the store ${privateName}`} />
+        <Box>
+            <Card sx={{ minWidth: 275 }}>
+                <CardContent>
+                    <Typography variant="h4" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 84, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif', textDecoration: 'underline' }}>
+                        about us
+                    </Typography >
+                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
 
-        >
-            <Toolbar >
-                <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={handleDrawerOpen}
-                    edge="start"
-                    sx={{ mr: 2, ...(open && { display: 'none' }) }}
-                >
-                    <MenuIcon />
-                </IconButton>
-                <Typography position={'static'} variant="h4" component="div" sx={{ flexGrow: 2, margin: 'center', ml: 65 }}>
-                    ברוך הבא לחנות {userName} שלום
-                </Typography>
-                <IconButton >
-                    <NotificationsOutlinedIcon />
-                </IconButton>
-                <IconButton onClick={handleSettings}>
-                    <SettingsOutlinedIcon />
-                </IconButton>
-                <IconButton onClick={handleProfile}>
-                    <PersonOutlinedIcon />
-                </IconButton>
-                <IconButton onClick={handleLogout}>
-                    <LogoutIcon color="warning" />
-                </IconButton>
-            </Toolbar>
-        </MyAppBar> */}
-        <Bar headLine={`ברוך הבא לחנות ${userName}`} />
-        <Box sx={{ display: 'flex', flexGrow: 1 }}>
-            <SideDrawer drawerWidth={DRAWER_WIDTH} onDrawerClose={handleDrawerClose} open={open} />
-            <Main open={open} drawerWidth={DRAWER_WIDTH}>
-                <Outlet />
-            </Main>
+                    </Typography>
+                    <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 73, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
+                            {store.description}
+                            decreaption about the store
+                        </Typography >
+                    </Box>
+
+                </CardContent>
+            </Card>
+        </Box >
+        <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >
+            {prodiucts.map((product) => {
+                return (
+                    <ProductCard item={product} canDelete={canRemove} canEdit={canEdit} key={product.id} />
+                );
+            })
+            }
         </Box>
+        <Outlet />
     </>
     );
 }

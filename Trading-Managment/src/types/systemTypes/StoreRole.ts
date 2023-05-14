@@ -1,4 +1,4 @@
-enum StoreRoleEnum {
+export enum StoreRoleEnum {
     CREATOR,
     OWNER,
     MANAGER,

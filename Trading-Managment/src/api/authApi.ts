@@ -1,7 +1,7 @@
-import { noAuthApiClient } from './apiClient';
+import { getApiClient, noAuthApiClient } from './apiClient';
 import { apiErrorHandlerWrapper } from './util';
-import { EnterGuestResponseData, RegisterResponseData, TokenResponseBody } from '../types/responseTypes/authTypes';
-import { LoginPostData, RegisterPostData } from '../types/requestTypes/authTypes';
+import { EnterGuestResponseData, RegisterResponseData, TokenResponseBody, getClientResponseData } from '../types/responseTypes/authTypes';
+import { LoginPostData, RegisterPostData, getUserData } from '../types/requestTypes/authTypes';
 import { ApiResponse } from '../types/apiTypes';
 
 
@@ -13,10 +13,11 @@ export const authApi = {
     register: (credentials: RegisterPostData): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/register', credentials)),
     logout: (credentials: number): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/logout', credentials)),
+        apiErrorHandlerWrapper(getApiClient().post('api/auth/logout', credentials)),
     guestEnter: (): Promise<ApiResponse<number>> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/guest/enter')),
     ping: (credential: number): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/ping', credential)),
-
+    getClient: (credentials: getUserData): Promise<ApiResponse<getClientResponseData>> =>
+        apiErrorHandlerWrapper(noAuthApiClient.get('api/auth/getClient', { params: credentials })),
 }

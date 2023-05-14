@@ -18,6 +18,7 @@
     "@mui/x-date-pickers": "^6.3.0",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/js-cookie": "^3.0.3",
+    "@types/signalr-no-jquery": "^0.1.3",
     "axios": "^1.4.0",
     "busywait": "^4.0.0",
     "express": "^4.18.2",

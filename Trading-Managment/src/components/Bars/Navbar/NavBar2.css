@@ -1,0 +1,22 @@
+ .icon {
+     top: 15%;
+     display: flex;
+     gap: 15px;
+     cursor: pointer;
+     color: inherit;
+     position: relative;
+ }
+
+ .numberIcon span {
+     font-size: 12px;
+     width: 30px;
+     height: 25px;
+     border-radius: 50%;
+     color: white;
+     position: absolute;
+     right: -10px;
+     top: -10px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
