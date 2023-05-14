@@ -2,16 +2,19 @@ package domain.store.discount.compositeDiscountTypes;
 
 import domain.store.discount.Discount;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
+import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.discount.predicates.DiscountPredicate;
 import utils.orderRelated.Order;
 
 import java.util.HashMap;
 
 public class NumericDiscountComposite extends AbstractDiscountComposite{
-    enum numeric {Max,Addition};
+
+
+    public enum numeric {Max,Addition};
     private numeric type;
-    public NumericDiscountComposite(int discountID, int storeId, GetCategoriesOperation op, numeric type) {
-        super(discountID, storeId, op, type);
+    public NumericDiscountComposite(int discountID, int storeId, GetCategoriesOperation op, numeric type, GetProductOperation getProductOp) {
+        super(discountID, storeId, op, type,getProductOp);
         this.type = type;
     }
 
@@ -40,6 +43,14 @@ public class NumericDiscountComposite extends AbstractDiscountComposite{
     public DiscountPredicate getPred() {
         return predicate;
     }
+    @Override
+    public void setDecidingRule(LogicalDiscountComposite.xorDecidingRules rule) {
 
+    }
+
+    @Override
+    public LogicalDiscountComposite.xorDecidingRules getDecidingRule() {
+        return null;
+    }
 
 }

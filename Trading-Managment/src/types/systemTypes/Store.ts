@@ -1,6 +1,7 @@
 import { Message } from "./Message";
 import { Order } from "./Order";
 import { Product } from "./Product";
+import { StoreRoleEnum } from "./StoreRole";
 
 export interface Store {
     id: number;
@@ -14,7 +15,8 @@ export interface Store {
     storeQuestions: { questionId: number, question: Message }[];
     storeOrders: { orderId: number, order: Order }[];
     storeReviews: { messageId: number, message: Message }[];
-    appHistory: {fatherId: string, childId: string[]} [];
+    //todo : check obout store role
+    storeRoles: { userId: number, userName: string, storeRole: StoreRoleEnum }[];
     //todo add purchase and discount policy
 }
 export const emptyStore: Store = {
@@ -29,5 +31,5 @@ export const emptyStore: Store = {
     storeQuestions: [],
     storeOrders: [],
     storeReviews: [],
-    appHistory:[]
+    storeRoles: [],
 }

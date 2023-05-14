@@ -7,26 +7,17 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import Synagogue from '@mui/icons-material/Synagogue';
-import History from '@mui/icons-material/History';
-import Inventory from '@mui/icons-material/Inventory';
-import InsertDriveFile from '@mui/icons-material/InsertDriveFile';
 import SupportAgent from '@mui/icons-material/SupportAgent';
 import ImportContacts from '@mui/icons-material/ImportContacts';
 import { useParams, useNavigate } from 'react-router-dom';
 import Settings from '@mui/icons-material/Settings';
-import PaymentIcon from '@mui/icons-material/Payment';
-import PeopleIcon from '@mui/icons-material/People';
-import InfoIcon from '@mui/icons-material/Info';
-import { SvgIconProps } from '@mui/material';
+import { useAppSelector } from '../redux/store';
+import { Action } from '../types/systemTypes/Action';
 
 interface item {
-    text: string,
-    item: JSX.Element,
+    text: Action,
     onclick: () => void
 }
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -44,54 +35,39 @@ interface SideDrawerProps {
     open: boolean;
 };
 
+const itemsMap: Record<string, item> = {};
+
 const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, open }) => {
     const theme = useTheme();
-    const history = useParams();
     const navigate = useNavigate();
-    const categories: item[] = [
-        {
-            text: 'מתפללים',
-            item: <PeopleIcon />,
-            onclick: () => { navigate('/dashboard/customers') }
-        },
-        {
-            text: 'תרומות',
-            item: <PaymentIcon />,
-            onclick: () => { navigate('/dashboard/payments') }
-        },
-        {
-            text: 'כללי',
-            item: <InfoIcon />,
-            onclick: () => { navigate('/dashboard/general') }
-        },
-    ]
-    const itemList = [
-        {
-            text: 'ארועים',
-            item: <Synagogue />,
-            onclick: () => { navigate('/dashboard/events'); }
-        },
-        {
-            text: 'טפסים',
-            item: <InsertDriveFile />,
-            onclick: () => { navigate('/dashboard/forms'); }
-        },
-        {
-            text: 'היסטוריה',
-            item: <History />,
-            onclick: () => { navigate('/dashboard/history'); }
-        },
-        {
-            text: 'הודעות נכנסות',
-            item: <InboxIcon />,
-            onclick: () => { navigate('/dashboard/inbox'); }
-        },
-        {
-            text: 'איחסון',
-            item: <Inventory />,
-            onclick: () => { navigate('/dashboard/storage'); }
-        },
-    ];
+    const store = useAppSelector((state) => state.store.storeState.watchedStore);
+    const actions: Action[] = [
+        Action.addProduct,
+        Action.removeProduct,
+        Action.updateProduct,
+
+        Action.changeStoreDescription,
+        Action.changePurchasePolicy,
+        Action.changeDiscountPolicy,
+        Action.addPurchaseConstraint,
+        Action.addDiscountConstraint,
+        Action.fireManager,
+    ]//useAppSelector((state) => state.auth.permmisions).filter((permission) => permission.storeId === store.id)[0].actions;
+    for (const a of actions) {
+        itemsMap[a] = {
+            text: a,
+            onclick: () => { navigate(`/dashboard/shops/superior/${a.replace(/\s/g, "")}`) }
+        }
+    }
+    const actinosList: item[] = actions.map((action) => {
+        return (
+            {
+                text: action,
+                onclick: itemsMap[action].onclick
+            }
+        )
+    })
+
     const helpList = [
         {
             text: 'הגדרות',
@@ -138,23 +114,10 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, ope
                 </IconButton>
             </DrawerHeader>
             <List>
-                {categories.map((icon) => {
-                    const { text, item, onclick } = icon;
+                {actinosList.map((icon) => {
+                    const { text, onclick } = icon;
                     return (
                         <ListItem button key={text} onClick={onclick}>
-                            {item && <ListItemIcon>{item}</ListItemIcon>}
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    );
-                })}
-            </List>
-            <Divider />
-            <List>
-                {itemList.map((icon) => {
-                    const { text, item, onclick } = icon;
-                    return (
-                        <ListItem button key={text} onClick={onclick}>
-                            {item && <ListItemIcon>{item}</ListItemIcon>}
                             <ListItemText primary={text} />
                         </ListItem>
                     );
@@ -164,10 +127,9 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, ope
             <List>
                 <List>
                     {helpList.map((icon) => {
-                        const { text, item, onclick } = icon;
+                        const { text, onclick } = icon;
                         return (
                             <ListItem button key={text} onClick={onclick}>
-                                {item && <ListItemIcon>{item}</ListItemIcon>}
                                 <ListItemText primary={text} />
                             </ListItem>
                         );

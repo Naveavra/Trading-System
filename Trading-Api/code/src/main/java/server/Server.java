@@ -7,8 +7,11 @@ import utils.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
+
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -21,7 +24,7 @@ public class Server {
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
     static int nextUser =1;
     static Gson gson = new Gson();
-
+    private static HashMap< Integer, ArrayBlockingQueue<String>> messageQueue = new HashMap<>();
     private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes) {
         if (apiRes.getFirst()) {
             res.status(200);
@@ -34,6 +37,8 @@ public class Server {
 
 
     public static void main(String[] args) {
+//        messageQueue.put(0,new ArrayBlockingQueue<>(20));
+//        messageQueue.put(1,new ArrayBlockingQueue<>(20));
 //        api.register("eli@gmail.com", "aA12345", "22/02/2002");
         init();
         connectedThread = new ConnectedThread(connected);
@@ -98,11 +103,11 @@ public class Server {
             toSparkRes(res, api.register(email, pass, bday));
             return res.body();
         });
-
-        //--STORE---
-        get("api/stores", (req, res) ->
-        {
-            toSparkRes(res, api.getStores());
+        get("api/auth/getClient",(req,res)->{
+            JSONObject request = new JSONObject(req.body());
+            String id = request.get("userId").toString();
+            String token = request.get("token").toString();
+            System.out.println(token);
             return res.body();
         });
         // delete
@@ -330,7 +335,6 @@ public class Server {
             return res.body();
         });
 
-
-        //--CART--
     }
+
 }

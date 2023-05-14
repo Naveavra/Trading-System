@@ -35,8 +35,6 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     const dispatch = useAppDispatch();
 
 
-
-
     const handleLogout = () => {
         console.log("logout");
         dispatch(logout(userId));
