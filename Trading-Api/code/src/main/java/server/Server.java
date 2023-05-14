@@ -2,9 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import data.StoreInfo;
-import domain.store.product.Product;
 import domain.store.storeManagement.Store;
-import domain.user.ShoppingCart;
 import org.json.JSONObject;
 import spark.Session;
 import utils.Pair;
@@ -158,40 +156,31 @@ public class Server {
             res.status(200);
             return res.body();
         });
-       // delete
+        // delete
         delete("api/stores/:id",(req,res)->{
             System.out.println(req);
             res.body("success delete");
             res.status(200);
             return res.body();
         });
-        //--PRODUCTS---
-        // post
+        // delete
         post("api/products", (req, res) ->
         {
-            //params
-            //    id: number;
-            //    storeId: number;
-            //    category: string[];
-            //    name: string;
-            //    description: string;
-            //    price: number;
-            //    quantity: number;
-            //    img: string;
             System.out.println(req.body());
             res.body("success post");
             res.status(200);
             return res.body();
         });
         delete("api/products", (req, res) ->
-                {
-                    //params-
-                    //    id: number; //userid
-                    //    storeId: number;
-                    //    productId: number;
-                   return res.body();
-                }
-                );
+        {
+            //params-
+            //    id: number; //userid
+            //    storeId: number;
+            //    productId: number;
+            System.out.println(res.body());
+            return res.body();
+        }
+        );
         //patch
         patch("api/products", (req, res) ->
         {
@@ -228,82 +217,82 @@ public class Server {
             return res.body();
         }
         );
-        //--PRODUCTS----
         //--APPOINTMENTS---
         post("api/stores/:id/appointments/owners", (req, res) ->
-                {
-                    //appoint new owner
-                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
-                    System.out.println(req.body());
-                    return res.body();
-                }
+        {
+            //appoint new owner
+            //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+            System.out.println(req.body());
+            return res.body();
+        }
         );
         post("api/stores/:id/appointments/managers", (req, res) ->
-                {
-                    //appoint new manager
-                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
-                    System.out.println(req.body());
-                    return res.body();
-                }
+        {
+            //appoint new manager
+            //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+            System.out.println(req.body());
+            return res.body();
+        }
         );
 
         delete("api/stores/:id/appointments/managers", (req, res) ->
-                {
-                    //fire manager
-                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
-                    System.out.println(req.body());
-                    return res.body();
-                }
+        {
+            //fire manager
+            //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+            System.out.println(req.body());
+            return res.body();
+        }
         );
         delete("api/stores/:id/appointments/owners", (req, res) ->
-                {
-                    //fire owner
-                    //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
-                    System.out.println(req.body());
-                    return res.body();
-                }
+        {
+            //fire owner
+            //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
+            System.out.println(req.body());
+            return res.body();
+        }
         );
         //--APPOINTMENTS
         //--CART
         post("api/cart/:id", (req, res) ->
-                {
-                    //when a user creates a basket for store in the first time this function should handle it
-                    //params {"userId":0,"storeId":5,"basket":{"productsList":[{"productId":1,"quantity":5},{"productId":2,"quantity":3}]}}
-                    System.out.println(req.body());
-                    return res.body();
-                }
+        {
+            //when a user creates a basket for store in the first time this function should handle it
+            //params {"userId":0,"storeId":5,"basket":{"productsList":[{"productId":1,"quantity":5},{"productId":2,"quantity":3}]}}
+            System.out.println(req.body());
+            return res.body();
+        }
         );
         patch("api/cart/:id", (req, res) ->
-                {
-                    //when a user change quantity of a product in specific store basket
-                    //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
-                    JSONObject json = new JSONObject(req.body());
-                    System.out.println(json.get("userId"));
-                    System.out.println(req.body());
-                    return res.body();
-                }
+        {
+            //when a user change quantity of a product in specific store basket
+            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+            JSONObject json = new JSONObject(req.body());
+            System.out.println(json.get("userId"));
+            System.out.println(req.body());
+            res.body("success");
+            res.status(200);
+            return res.body();
+        }
         );
         get("api/cart/:id", (req, res) ->
-                {
-                    //when a user change quantity of a product in specific store basket
-                    //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
-                    JSONObject json = new JSONObject(req.raw().toString());
-                    System.out.println(json.get("userId"));
-                    System.out.println(req.body());
-                    return res.body();
-                }
+        {
+            //when a user change quantity of a product in specific store basket
+            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+           // int userId = Integer.parseInt(req.queryParams("userId"));
+           // System.out.println(userId);
+
+
+            return res.body();
+        }
         );
         delete("api/cart/:id", (req, res) ->
-                {
-                    //delete cart
-                    //params userId
-                    JSONObject request = new JSONObject(req.body());
-                    System.out.println(request);
-                    return res.body();
-                }
+        {
+            //delete cart
+            //params userId
+            int userId = Integer.parseInt(req.queryParams("userId"));
+            return res.body();
+        }
         );
 
         //--CART--
-
     }
 }

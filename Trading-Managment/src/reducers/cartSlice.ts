@@ -104,16 +104,18 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         });
         //patchcart
         builder.addCase(patchCart.pending, (state) => {
-            state.basketState.isLoading = true;
-            state.basketState.error = null;
+            state.isLoading = true;
+            state.error = null;
         });
         builder.addCase(patchCart.fulfilled, (state, { payload }) => {
-            state.basketState.isLoading = false;
+            state.isLoading = false;
             state.basketState.responseData = payload;
+            console.log(payload);
+            state.error = null;
         });
         builder.addCase(patchCart.rejected, (state, { payload }) => {
-            state.basketState.error = payload?.message.data ?? "error during patchCart";
-            state.basketState.isLoading = false;
+            state.error = payload?.message.data ?? "error during patchCart";
+            state.isLoading = false;
         });
         //postBaket
         builder.addCase(postBasket.pending, (state) => {

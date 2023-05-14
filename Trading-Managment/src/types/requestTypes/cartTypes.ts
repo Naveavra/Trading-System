@@ -17,6 +17,6 @@ export interface DeleteCartParams{
 export interface PatchCartParams{
     userId: number;
     storeId: number;
-    prouctId: number;
+    productId: number;
     quantity: number;
 }
