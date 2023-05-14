@@ -593,7 +593,7 @@ public class Market implements MarketInterface {
     public Response<String> appointManager(int userId, String token, String managerToAppoint, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.appointManager(userId, managerToAppoint, storeId);
+            userController.appointManager(userController.getUserEmail(userId), managerToAppoint, storeId);
             logger.log(Logger.logStatus.Success, "user appoint " + managerToAppoint + "to Manager in: " + storeId + " successfully on " + LocalDateTime.now());
             return new Response<>("user appointManager successfully", null, null);
         } catch (Exception e) {
@@ -848,7 +848,7 @@ public class Market implements MarketInterface {
     public Response<String> appointOwner(int userId, String token, String owner, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.appointOwner(userId, owner, storeId);
+            userController.appointOwner(userController.getUserEmail(userId), owner, storeId);
             logger.log(Logger.logStatus.Success, "appointed user successfully on " + LocalDateTime.now());
             return new Response<>("user appointManager successfully", null, null);
         } catch (Exception e) {
