@@ -287,7 +287,7 @@ public class Server {
             //when a user creates a basket for store in the first time this function should handle it
             //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
             JSONObject request = new JSONObject(req.body());
-            int userId = Integer.parseInt(request.get("userIncharge").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int productId = Integer.parseInt(request.get("productId").toString());
             int quantity = Integer.parseInt(request.get("quantity").toString());
@@ -300,7 +300,7 @@ public class Server {
             //when a user change quantity of a product in specific store basket
             //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
             JSONObject request = new JSONObject(req.body());
-            int userId = Integer.parseInt(request.get("userIncharge").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int productId = Integer.parseInt(request.get("productId").toString());
@@ -314,7 +314,9 @@ public class Server {
             //when a user change quantity of a product in specific store basket
             //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
            // int userId = Integer.parseInt(req.queryParams("userId"));
-
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            toSparkRes(res, api.getCart(userId));
             return res.body();
         }
         );
@@ -322,7 +324,9 @@ public class Server {
         {
             //delete cart
             //params userId
-            int userId = Integer.parseInt(req.queryParams("userId"));
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            //TODO: toSparkRes(res, api.removeCart(userId));
             return res.body();
         });
 
