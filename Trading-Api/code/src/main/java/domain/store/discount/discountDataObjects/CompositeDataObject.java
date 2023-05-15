@@ -6,7 +6,7 @@ import domain.store.discount.compositeDiscountTypes.NumericDiscountComposite;
 import java.util.ArrayList;
 
 public class CompositeDataObject {
-
+    public double percentage;
     //Composite Discount types
     public NumericDiscountComposite.numeric numericType; // Max, Addition
     public LogicalDiscountComposite.logical logicalType; // Or, And, Xor

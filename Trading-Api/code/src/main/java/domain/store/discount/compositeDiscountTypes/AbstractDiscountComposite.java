@@ -49,6 +49,10 @@ public abstract class AbstractDiscountComposite implements Discount {
     }
 
 
+    public void setOperations(GetProductOperation getProductOp, GetCategoriesOperation getCategoryOp){
+        this.getProductOp = getProductOp;
+        this.getCategoriesOp = getCategoryOp;
+    }
     public ArrayList<Discount> getDiscounts() {
         return discounts;
     }
