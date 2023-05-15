@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { ProductFormValues } from "../../types/formsTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { clearProductError, patchProduct, postProduct } from "../../reducers/productsSlice";
 
 interface Props {
     mode: 'add' | 'edit';
@@ -27,11 +28,14 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
     const storeId = useAppSelector((state) => state.store.storeState.watchedStore.id);
     const handleOnClose = () => {
         setOpen(false);
-        navigate(-1);
+        navigate("/dashboard/shops/superior");
         // dispatch(getStoreData({ storeId: storeId, token: token }));
     }
     const splitCategories = (categoryString: string): string[] => {
         // split the string by commas and remove any leading/trailing whitespace
+        if (categoryString == '') {
+            return [""];
+        }
         const categories = categoryString.split(',').map((category) => category.trim());
         return categories;
     }
@@ -40,25 +44,30 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
         let response;
         form.setValue('storeId', storeId);
         form.setValue('id', parseInt(userId));
-        const categories = splitCategories(form.getValues().category[0]);
-        form.setValue('category', categories);
-        console.log("form values", form.getValues());
-        console.log(form.getValues()); switch (mode) {
+        switch (mode) {
             case 'add':
-                response = dispatch(addProduct(form.getValues()));
+                const categories = splitCategories(form.getValues().category[0]);
+                form.setValue('category', categories);
+                response = dispatch(postProduct(form.getValues()));
+                response.then((res) => {
+                    if (res.meta.requestStatus === 'fulfilled') {
+                        handleOnClose();
+                    }
+                });
                 break;
             case 'edit':
                 //todo : handle null
-                response = dispatch(editProduct(form.getValues()));
+                console.log("before remove", form.getValues().category)
+                response = dispatch(patchProduct(form.getValues()));
+                response.then((res) => {
+                    if (res.meta.requestStatus === 'fulfilled') {
+                        handleOnClose();
+                    }
+                });
                 break;
             default:
                 break;
         }
-        response.then((res) => {
-            if (res.meta.requestStatus === 'fulfilled') {
-                handleOnClose();
-            }
-        });
         handleOnClose();
     };
     const isLoading = false;
@@ -228,7 +237,7 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
                 </Box>
             </Dialog >
             {!!error ?
-                <AlertDialog open={!!error} onClose={() => { dispatch(clearProductsErrors()); }} text={error} sevirity={"error"} />
+                <AlertDialog open={!!error} onClose={() => { dispatch(clearProductError()); }} text={error} sevirity={"error"} />
                 : null}
         </>
     );

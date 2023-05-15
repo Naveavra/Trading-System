@@ -19,3 +19,12 @@ export const apiErrorHandlerWrapper = (promise: Promise<AxiosResponse>): Promise
             })
         });
 }
+export const removeEmptyValues = (obj: any) => {
+    let tmp = { ...obj };
+    Object.keys(tmp).forEach((key) => {
+        if (!tmp[key] || tmp[key] === "") {
+            tmp[key] = null;
+        }
+    });
+    return tmp;
+}

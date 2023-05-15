@@ -18,7 +18,7 @@ const Superior: React.FC = () => {
     const token = 'token';//params.token ?? 'token';
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    console.log("params", params);
+    //console.log("params", params);
     const store = useAppSelector((state) => state.store.storeState.watchedStore);
     const actions = useAppSelector((state) => state);
     //const userId = useAppSelector((state) => state.auth.userId);
@@ -28,7 +28,7 @@ const Superior: React.FC = () => {
     const canRemove = true;// useAppSelector((state) => state.auth.permmisions).filter((perm) => perm.storeId === storeId)[0].actions.includes(Action.removeProduct);
     const canEdit = true;// useAppSelector((state) => state.auth.permmisions).filter((perm) => perm.storeId === storeId)[0].actions.includes(Action.updateProduct);
     useEffect(() => {
-        dispatch(getClientData({ userId: parseInt(userId), token: token }));
+        // dispatch(getClientData({ userId: parseInt(userId), token: token }));
     }, []);
 
     return (<>

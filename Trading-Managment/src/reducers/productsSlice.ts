@@ -1,10 +1,11 @@
 import { Action, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ApiError, ApiListData, ApiResponse, ApiResponseListData} from "../types/apiTypes";
+import { ApiError, ApiListData, ApiResponse, ApiResponseListData } from "../types/apiTypes";
 import { EmptyProduct, Product } from "../types/systemTypes/Product";
 import { ProductResponseData } from "../types/responseTypes/productTypes";
 import { DeleteProductsParams, GetStoreProductsParams, PatchProductsParams, PostProductsParams } from "../types/requestTypes/GetProductsParams";
 import { productsApi } from "../api/productsApi";
 import { store } from "../redux/store";
+import { removeEmptyValues } from "../api/util";
 
 const reducerName = 'products';
 
@@ -28,7 +29,7 @@ const initialState: ProductsState = {
         watchedProduct: undefined,
     },
     isLoading: false,
-    responseData: { data: {results: []}},
+    responseData: { data: { results: [] } },
     error: null,
 };
 
@@ -51,7 +52,9 @@ export const patchProduct = createAsyncThunk<
 >(
     `${reducerName}/patch`,
     async (formData, thunkApi) => {
-        return productsApi.patchProduct(formData)
+        const data = removeEmptyValues(formData);
+        console.log("after remove", data);
+        return productsApi.patchProduct(data)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
@@ -149,7 +152,7 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
             state.productState.error = payload?.message.data ?? "error during deleteProduct";
             state.productState.isLoading = false;
         });
-        
+
 
 
     }

@@ -199,7 +199,7 @@ public class Server {
         // Define a POST route that sends a message to the React client
         post("api/sendMessage", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            String id = request.get("userId").toString();
+            String id = request.get("id").toString();
             String msg = request.get("message").toString();
             messageQueue.get(Integer.parseInt(id)).offer(msg);
             res.status(200);

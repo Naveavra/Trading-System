@@ -9,6 +9,7 @@ import CartLogo from '../../components/Loaders/cartLoader';
 import { clearStoresError } from '../../reducers/storesSlice';
 import axios from 'axios';
 import { Outlet } from 'react-router-dom';
+import { clearProductsError } from '../../reducers/productsSlice';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
