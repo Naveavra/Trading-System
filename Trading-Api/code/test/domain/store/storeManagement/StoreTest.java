@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
 
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -162,6 +162,24 @@ class StoreTest {
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
+
+    @Test
+    void getMessages() throws Exception {
+        Message review = new Message(0, "great store", member, 0, 0, MessageState.reviewStore);
+        Message reviewB = new Message(1, "shitty store", member, 1, 0, MessageState.reviewStore);
+        review.addRating(5);
+        reviewB.addRating(1);
+        store.addReview(0, review);
+        store.addReview(1, reviewB);
+        ArrayList<String> actualMessages = store.checkMessages();
+        ArrayList<String> expectedMessages = new ArrayList<>();
+        expectedMessages.add("great store");
+        expectedMessages.add("shitty store");
+        assertEquals(expectedMessages, actualMessages);
+        assertEquals(0, store.checkMessages().size(), "the messages already been seen");
+    }
+
+
 
 
 
