@@ -1,7 +1,6 @@
 package domain.store.product;
 
 
-import data.PositionInfo;
 import utils.Filter.ProductFilter;
 import utils.ProductInfo;
 
@@ -10,8 +9,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Inventory {
 
@@ -29,18 +26,19 @@ public class Inventory {
     }
 
     /**
-     *
-     * @param name String
+     *  @param name String
      * @param description String
      * @param prod_id AtomicInteger
      * @param price int
+     * @param quantity
      */
-    public synchronized Product addProduct(String name,String description,AtomicInteger prod_id,int price) throws Exception {
+    public synchronized Product addProduct(String name, String description, AtomicInteger prod_id, int price, int quantity) throws Exception {
         Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
             p = new Product(id,name,description);
             p.setPrice(price);
+            p.setQuantity(quantity);
             for(Product product : productList.values())
                 if(p.getName().equals(product.getName()) && p.getDescription().equals(product.getDescription())) {
                     prod_id.getAndDecrement();

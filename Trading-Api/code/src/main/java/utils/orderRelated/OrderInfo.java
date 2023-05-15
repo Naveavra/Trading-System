@@ -7,9 +7,9 @@ public class OrderInfo {
     private int orderId;
     private int userId;
     private HashMap<Integer, HashMap<Integer,Integer>> productsInStores;
-    private int totalPrice;
+    private double totalPrice;
 
-    public OrderInfo(int orderId, int userId, HashMap<Integer, HashMap<Integer,Integer>> productsInStores, int totalPrice){
+    public OrderInfo(int orderId, int userId, HashMap<Integer, HashMap<Integer,Integer>> productsInStores, double totalPrice){
 
         this.orderId = orderId;
         this.userId = userId;
@@ -21,7 +21,7 @@ public class OrderInfo {
         return userId;
     }
 
-    public int getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 

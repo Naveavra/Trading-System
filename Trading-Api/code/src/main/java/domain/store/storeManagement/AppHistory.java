@@ -14,6 +14,8 @@ public class AppHistory {
         private Pair<Integer, Role> data; //userid and role
         private ArrayList<Node> children; //list of all the users this user appoint in this store
         private Set<Integer> dismissed;
+
+        private Node father;
         public Node(Pair<Integer, Role> appointment){
             //Assign data to the new node, set left and right children to null
             this.data = appointment;
@@ -37,6 +39,8 @@ public class AppHistory {
             return null;
         }
 
+        public void setFather(Node n){father=n;}
+
         //added for tests
         public Pair<Integer, Role> getData(){
             return data;
@@ -44,7 +48,9 @@ public class AppHistory {
 
         private void addChild(Pair<Integer, Role> child)
         {
-            children.add(new Node((child)));
+            Node childNode = new Node(child);
+            childNode.setFather(this);
+            children.add(childNode);
         }
 
         //remove the node and all of his descendants
@@ -60,6 +66,13 @@ public class AppHistory {
             children.remove(node);
             return dismissed;
         }
+
+        public boolean isAncestor(Node child, Node father)
+        {
+            if (Objects.equals(child.data.getFirst(), father.data.getFirst())){return true;}
+            if (child.father == null){return false;}
+            return isAncestor(child.father, father);
+        }
     }
     //Represent the root of binary tree
     public Node root;
@@ -69,28 +82,31 @@ public class AppHistory {
     public AppHistory(Pair<Integer, Role> creatorNode){
 
         root = new Node(creatorNode);
+        root.father = null;
         usersInStore = new HashSet<>();
         usersInStore.add(creatorNode.getFirst());
     }
     public boolean addNode(Integer father, Pair<Integer, Role> child) throws Exception {
         Node childNode = root.findNode(child.getFirst());
         Node fatherNode = root.findNode(father);
-        if (childNode != null)
-        {
-            if (childNode.data.getSecond() == child.getSecond())
-            {
-                throw new Exception("user already have a role in the store");
+        if (fatherNode != null) {
+            if (childNode != null) {
+                if (childNode.data.getSecond() == child.getSecond()) {
+                    throw new Exception("user already have a role in the store");
+                }
+                if (childNode.isAncestor(fatherNode, childNode)) {
+                    throw new Exception("circular appointment");
+                }
+                appointToNewRole(father, child);
+                return true;
             }
-            appointToNewRole(father, child);
+            fatherNode.addChild(child);
+            usersInStore.add(child.getFirst());
+            return true;
         }
-        if (fatherNode == null)
-        {
-            throw new Exception("User cant appoint other users in the store");
-        }
-        fatherNode.addChild(child);
-        usersInStore.add(child.getFirst());
-        return true;
+        throw new Exception("User cant appoint other users in the store");
     }
+
 
     public Set<Integer> removeChild(Integer userId) throws Exception {
         Node childNode = root.findNode(userId);
@@ -145,6 +161,7 @@ public class AppHistory {
             throw new Exception("Cannot move a node to its own child");
         }
         childNode.data.setSecond(child.getSecond());
+        childNode.father = fatherNode;
         Set<Integer> dismissedes = new HashSet<>(Objects.requireNonNull(root.deleteNode(childNode.data)));
         fatherNode.addChild(childNode.data);
         dismissedes.remove(child.getFirst());

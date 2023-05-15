@@ -44,7 +44,7 @@ public class StoreController {
         } else
          */
         if ((st = getStore(storeid)) != null) {
-            Product p = st.addNewProduct(name, desc, productIDs,price);
+            Product p = st.addNewProduct(name, desc, productIDs,price,quantity);
 //            p.setPrice(price);
             p.setQuantity(quantity);
             addToProducts(p.clone());
@@ -123,28 +123,27 @@ public class StoreController {
             }
         }
     }
-    /**
-     * checks if the purchasing is possible
-     *
-     * @param shoppingcart the client shopping cart
-     * @return if the purchasing is possible returns the total price else return -1
-     */
-    public int createOrder(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart) {
-        int totalprice = 0;
-        for (Integer storeid : shoppingcart.keySet()) {
-            Store store = storeList.get(storeid);
-            try {
-                totalprice += store.createOrder(shoppingcart.get(storeid));
-            } catch (Exception e) {
-                return -1;
-            }
-        }
-        return totalprice;
-    }
+//    /**
+//     * checks if the purchasing is possible
+//     *
+//     * @param shoppingcart the client shopping cart
+//     * @return if the purchasing is possible returns the total price else return -1
+//     */
+//    public int createOrder(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart) {
+//        int totalprice = 0;
+//        for (Integer storeid : shoppingcart.keySet()) {
+//            Store store = storeList.get(storeid);
+//            try {
+//                totalprice += store.createOrder(shoppingcart.get(storeid));
+//            } catch (Exception e) {
+//                return -1;
+//            }
+//        }
+//        return totalprice;
+//    }
 
     /**
      * performs the purchasing
-     *TODO FIX THIS FUNCTION order has all the relevant information
      * @param shoppingCart the client shopping cart
      * @return if successful returns the store owners ids else null
      */
@@ -153,6 +152,7 @@ public class StoreController {
         //should apply discounts here
         for (Integer storeId : shoppingCart.keySet()) {
             Store store = storeList.get(storeId);
+            store.handleDiscount(order);
             if (!(store.makeOrder(shoppingCart.get(storeId)))) {
                 return null;
             }

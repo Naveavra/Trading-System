@@ -6,6 +6,8 @@ import domain.store.discount.predicates.DiscountPredicate;
 import domain.store.discount.predicates.PredicateFactory;
 
 public abstract class AbstractDiscount implements Discount{
+    public enum discountTypes{Product,Category,Store}
+
     //same for all discounts
     public int discountID;
     private int storeId;
@@ -19,7 +21,7 @@ public abstract class AbstractDiscount implements Discount{
     //functional interfaces
     public GetProductOperation getProductOp;
     public GetCategoriesOperation getCategoriesOp;
-
+    public AbstractDiscount(){}
     public AbstractDiscount(int discountID,int storeId,double percentage,String discountedCategory){
         this.discountID = discountID;
         this.storeId = storeId;
@@ -28,6 +30,7 @@ public abstract class AbstractDiscount implements Discount{
     }
 
     // Setters
+    @Override
     public void setOperations(GetProductOperation getP,GetCategoriesOperation getCat){
         this.getProductOp = getP;
         this.getCategoriesOp = getCat;
@@ -44,7 +47,8 @@ public abstract class AbstractDiscount implements Discount{
                 predicate = pred;
         }
     }
-
+    @Override
+    public void addDiscount(Discount dis){}
 
     // Getters
     public DiscountPredicate getPred(){

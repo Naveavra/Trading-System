@@ -1,4 +1,3 @@
-package store;
 
 import domain.store.storeManagement.AppHistory;
 import org.junit.jupiter.api.Assertions;
@@ -37,6 +36,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         void getNodeExists() {
             Assertions.assertNotNull(root.getNode(0));
 
+        }
+
+        @Test
+        void circularAppointment() throws Exception {
+            AppHistory appHistory = new AppHistory(new Pair<>(1, Role.Owner));
+
+            Exception exception = assertThrows(Exception.class, () -> {
+                appHistory.addNode(1, new Pair<>(2, Role.Manager));
+                appHistory.addNode(2, new Pair<>(3, Role.Manager));
+                appHistory.addNode(3, new Pair<>(4, Role.Manager));
+                appHistory.addNode(4, new Pair<>(2, Role.Owner));
+            });
+            String expectedMessage = "circular appointment";
+            String actualMessage = exception.getMessage();
+
+            assertTrue(actualMessage.contains(expectedMessage));
         }
 
         @Test
