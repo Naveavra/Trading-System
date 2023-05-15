@@ -269,11 +269,16 @@ public class Store {
         for (Integer productid : basket.keySet())
         {
             Product p = inventory.getProduct(productid);
-            if (p != null && basket.get(productid) <= p.getQuantity())
+            if (p != null)
             {
-                int discount = discountPolicy.handleDiscounts(basket,inventory.getPrices());
-                purchaseingprice += p.price * basket.get(productid) -  discount;
-//                p.setQuantity(p.getQuantity()-basket.get(productid));
+                if(basket.get(productid) <= p.getQuantity()) {
+                    int discount = discountPolicy.handleDiscounts(basket, inventory.getPrices());
+                    purchaseingprice += p.price * basket.get(productid) - discount;
+                }
+                else {
+                    throw new Exception("not enough units in store for " + p.getName() +
+                            " there is only " + p.quantity + " in the store");
+                }
             }
             else throw new Exception("product isn't available");
         }
