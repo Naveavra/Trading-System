@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.google.gson.Gson;
 import utils.messageRelated.Message;
 import utils.orderRelated.OrderInfo;
+import utils.orderRelated.Status;
 import utils.userInfoRelated.Receipt;
 
 public class MarketController {
@@ -34,17 +35,13 @@ public class MarketController {
 
     public Pair<Receipt, Set<Integer>> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId, int totalPrice) throws Exception
     {
-//        if (totalPrice < 0 )
-//        {
-//            throw new Exception("could not complete purchase, not enough units in the store");
-//        }
         Order order = orderctrl.createNewOrder(userId,shoppingCart, storectrl :: calculatePrice,storectrl :: setPrices);
-//        order.setTotalPrice(totalPrice);
+        order.setStatus(Status.pending);
         Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
-        Receipt receipt = new Receipt(userId, order.getOrderId(), shoppingCart, totalPrice);
+        order.setStatus(Status.submitted);
+        Receipt receipt = new Receipt(userId, order.getOrderId(), shoppingCart, order.getTotalPrice());
         Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);
         return ans;
-        //TODO SOMETHING WITH ORDER
     }
 
     /**
@@ -155,16 +152,16 @@ public class MarketController {
         return storectrl.getProducts(storeId);
     }
 
-    public void setStoreDiscountPolicy(int storeId, String policy) throws Exception {
-        Store store = storectrl.getStore(storeId);
-        if (store != null )
-        {
-            store.setStoreDiscountPolicy(policy);
-        }
-        else {
-            throw new Exception("store does not exist");
-        }
-    }
+//    public void setStoreDiscountPolicy(int storeId, String policy) throws Exception {
+//        Store store = storectrl.getStore(storeId);
+//        if (store != null )
+//        {
+//            store.setStoreDiscountPolicy(policy);
+//        }
+//        else {
+//            throw new Exception("store does not exist");
+//        }
+//    }
 
     public void addPurchaseConstraint(int storeId, String constraint) throws Exception {
         Store s;

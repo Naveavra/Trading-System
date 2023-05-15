@@ -24,7 +24,7 @@ public class OrderController {
         Order or =  new Order(id,userID,products);
         orders.put(id, or);
         or.setTotalPrice(calcPrice.calculatePrice(products));
-        setPricesOp.setPrices(or); //sets the initial price values, values are to be changed by each discount
+        setPricesOp.setPrices(or); //sets the initial price values
         return or;
     }
     

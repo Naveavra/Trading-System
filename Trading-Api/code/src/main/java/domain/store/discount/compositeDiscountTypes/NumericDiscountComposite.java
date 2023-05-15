@@ -20,7 +20,7 @@ public class NumericDiscountComposite extends AbstractDiscountComposite{
 
 
     @Override
-    public double handleDiscount(HashMap<Integer, Integer> basket, Order order) {
+    public double handleDiscount(HashMap<Integer, Integer> basket, Order order) throws Exception {
         double discountValue = 0;
         switch (type){
             case Max -> {

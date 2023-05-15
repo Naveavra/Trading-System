@@ -1,7 +1,6 @@
 package domain.user;
 
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 import domain.states.StoreCreator;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
@@ -34,7 +33,7 @@ class MemberTest {
         m = new Member(1, "ziv@gmail.com", "ziv1234", "22/04/2002");
         s = new Store(0, "", 1);
         try {
-            s.addNewProduct("apppe", "pink apple", new AtomicInteger(1), 5);
+            s.addNewProduct("apppe", "pink apple", new AtomicInteger(1), 5, 3);
         }catch (Exception e){
             assert false;
         }

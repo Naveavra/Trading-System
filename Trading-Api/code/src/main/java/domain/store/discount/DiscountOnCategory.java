@@ -11,7 +11,7 @@ public class DiscountOnCategory extends AbstractDiscount {
     }
 
     @Override
-    public double handleDiscount(HashMap<Integer, Integer> basket, Order order) {
+    public double handleDiscount(HashMap<Integer, Integer> basket, Order order) throws Exception {
         if(predicate!=null && !predicate.checkPredicate(order)){
             return 0;
         }

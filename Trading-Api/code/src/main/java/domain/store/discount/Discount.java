@@ -15,7 +15,7 @@ public interface Discount {
      * @param order
      * @return
      */
-    public double handleDiscount(HashMap<Integer, Integer> basket, Order order);
+    public double handleDiscount(HashMap<Integer, Integer> basket, Order order) throws Exception;
     public void addPredicate(DiscountPredicate.PredicateTypes type, String params, DiscountPredicate.composore comp);
     public DiscountPredicate getPred();
     public void setOperations(GetProductOperation getP, GetCategoriesOperation getCat);

@@ -1,7 +1,10 @@
 package domain.store.storeManagement;
 
 import com.google.gson.Gson;
-import domain.store.discount.DiscountPolicy;
+import domain.store.discount.Discount;
+import domain.store.discount.DiscountFactory;
+import domain.store.discount.discountDataObjects.CompositeDataObject;
+import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
 import domain.store.purchase.PurchasePolicy;
 
@@ -32,8 +35,10 @@ public class Store {
     private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
     private final ConcurrentHashMap<Integer, Message> storeReviews; //<messageid, message>
     private final ConcurrentHashMap<Integer, Message> questions;
-    private DiscountPolicy discountPolicy;
+//    private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
+    private ArrayList<Discount> discounts;
+    private DiscountFactory discountFactory;
 
     private final ConcurrentHashMap<Integer, Message> productReviews; //maybe need to remove from here, i think this is unnecessary
     Gson gson ;
@@ -46,12 +51,14 @@ public class Store {
         this.inventory = new Inventory();
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
-        this.discountPolicy = new DiscountPolicy();
+//        this.discountPolicy = new DiscountPolicy();
         this.purchasePolicy = new PurchasePolicy();
         this.productReviews = new ConcurrentHashMap<>();//hash map between messageId to message for product
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
         gson = new Gson();
+        discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
+        discounts = new ArrayList<>();
     }
 
 
@@ -80,6 +87,18 @@ public class Store {
         throw new Exception("cant answer question");
     }
 
+    public synchronized void AddDiscount(DiscountDataObject discountData){
+        Discount dis = discountFactory.createDiscount(discountData);
+        if(dis!=null && !discounts.contains(dis)){
+            discounts.add(dis);
+        }
+    }
+    public synchronized void AddDiscount(CompositeDataObject discountData) throws Exception {
+        Discount dis = discountFactory.createDiscount(discountData);
+        if(dis!=null && !discounts.contains(dis)){
+            discounts.add(dis);
+        }
+    }
 
     public int addProductReview(Message m) throws Exception
     {
@@ -190,9 +209,10 @@ public class Store {
      * @param name new name of the product
      * @param pid product id
      * @param price int
+     * @param quantity
      */
-    public synchronized Product addNewProduct(String name, String description, AtomicInteger pid,int price) throws Exception {
-        return inventory.addProduct(name, description, pid,price);
+    public synchronized Product addNewProduct(String name, String description, AtomicInteger pid, int price, int quantity) throws Exception {
+        return inventory.addProduct(name, description, pid,price,quantity);
     }
     public synchronized Product addNewExistingProduct(Product p) throws Exception{
         return inventory.addProduct(p);
@@ -258,32 +278,32 @@ public class Store {
         throw new Exception("user isn't authorized to reopen this store");
     }
 
-    /**
-     * function that gets the basket user wants to buy from the store
-     * @param basket built from productid and quantity
-     * @return the basket's price
-     * @throws Exception if the quantity is higher than the quantity in the inventory of product doesn't exit
-     */
-    public int createOrder(HashMap<Integer, Integer> basket) throws Exception {
-        int purchaseingprice = 0;
-        for (Integer productid : basket.keySet())
-        {
-            Product p = inventory.getProduct(productid);
-            if (p != null)
-            {
-                if(basket.get(productid) <= p.getQuantity()) {
-                    int discount = discountPolicy.handleDiscounts(basket, inventory.getPrices());
-                    purchaseingprice += p.price * basket.get(productid) - discount;
-                }
-                else {
-                    throw new Exception("not enough units in store for " + p.getName() +
-                            " there is only " + p.quantity + " in the store");
-                }
-            }
-            else throw new Exception("product isn't available");
-        }
-        return purchaseingprice;
-    }
+//    /**
+//     * function that gets the basket user wants to buy from the store
+//     * @param basket built from productid and quantity
+//     * @return the basket's price
+//     * @throws Exception if the quantity is higher than the quantity in the inventory of product doesn't exit
+//     */
+//    public int createOrder(HashMap<Integer, Integer> basket) throws Exception {
+//        int purchaseingprice = 0;
+//        for (Integer productid : basket.keySet())
+//        {
+//            Product p = inventory.getProduct(productid);
+//            if (p != null)
+//            {
+//                if(basket.get(productid) <= p.getQuantity()) {
+//                    int discount = handleDiscounts(basket, inventory.getPrices());
+//                    purchaseingprice += p.price * basket.get(productid) - discount;
+//                }
+//                else {
+//                    throw new Exception("not enough units in store for " + p.getName() +
+//                            " there is only " + p.quantity + " in the store");
+//                }
+//            }
+//            else throw new Exception("product isn't available");
+//        }
+//        return purchaseingprice;
+//    }
 
 
     /**
@@ -422,17 +442,25 @@ public class Store {
         return info;
     }
 
-    public void setStoreDiscountPolicy(String policy) throws Exception {
-        try {
-            addDiscountConstraint(policy);
-        } catch (Exception e) {
-            throw new Exception("Couldn't create a new policy");
+    public void handleDiscount(Order order) throws Exception {
+        double totalAmountToBeSubtracted = 0;
+        for(Discount dis: discounts){
+            totalAmountToBeSubtracted += dis.handleDiscount(order.getProductsInStores().get(storeid),order);
         }
+        order.setTotalPrice(order.getTotalPrice() - totalAmountToBeSubtracted);
     }
 
-    private void addDiscountConstraint(String policy) throws Exception {
-        if(!discountPolicy.createConstraint(policy)){
-            throw new Exception("Couldn't create the constraint");
-        }
-    }
+//    public void setStoreDiscountPolicy(String policy) throws Exception {
+//        try {
+//            addDiscountConstraint(policy);
+//        } catch (Exception e) {
+//            throw new Exception("Couldn't create a new policy");
+//        }
+//    }
+//
+//    private void addDiscountConstraint(String policy) throws Exception {
+//        if(!discountPolicy.createConstraint(policy)){
+//            throw new Exception("Couldn't create the constraint");
+//        }
+//    }
 }

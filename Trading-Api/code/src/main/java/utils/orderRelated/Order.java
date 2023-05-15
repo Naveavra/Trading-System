@@ -9,7 +9,7 @@ public class Order {
     private int userId;
     private HashMap<Integer, HashMap<Integer,Integer>> productsInStores;    //<storeID,<productID, quantity>>
     private HashMap<Integer,HashMap<Integer,Integer>> prices; //storeId,<prodId, price>
-    private int totalPrice = 0;
+    private double totalPrice = 0;
     public Order(int id, int user_id,HashMap<Integer,HashMap<Integer,Integer>> products){
         orderId = id;
         userId = user_id;
@@ -20,10 +20,10 @@ public class Order {
     public void clean(){
         productsInStores = new HashMap<>();
     }
-    public synchronized int getTotalPrice(){
+    public synchronized double getTotalPrice(){
         return totalPrice;
     }
-    public synchronized void setTotalPrice(int price){
+    public synchronized void setTotalPrice(double price){
         totalPrice = price;
     }
     public synchronized int getOrderId() {

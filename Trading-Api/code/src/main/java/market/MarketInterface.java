@@ -59,7 +59,7 @@ public interface MarketInterface {
     public Response appointManager(int userId, String token, String managerToAppoint, int storeId);
     public Response changeStoreDescription(int userId, String token, int storeId, String description);
     public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
-    public Response changeDiscountPolicy(int userId, String token, int storeId, String policy);
+    public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
     public Response addPurchaseConstraint(int userId, String token, int storeId, String constraint);
     public Response fireManager(int userId, String token, int managerToFire, int storeId);
     public Response checkWorkerStatus(int userId, String token, int workerId, int storeId);
