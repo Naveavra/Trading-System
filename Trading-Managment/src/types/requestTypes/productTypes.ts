@@ -17,11 +17,11 @@ export interface PatchProductsParams {
     id: number; //userid
     storeId: number;
     productId: number;
-    category: string[]| null;
+    category: string[] | null;
     name: string | null;
     description: string | null;
     price: number | null;
-    quantity: number| null;
+    quantity: number | null;
     img: string | null;
 }
 export interface DeleteProductsParams {

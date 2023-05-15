@@ -48,10 +48,13 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, ope
 
         Action.changeStoreDescription,
         Action.changePurchasePolicy,
-        Action.changeDiscountPolicy,
+        Action.deleteDiscountPolicy,
         Action.addPurchaseConstraint,
         Action.addDiscountConstraint,
         Action.fireManager,
+        Action.appointManager,
+        Action.appointOwner,
+        Action.fireOwner,
     ]//useAppSelector((state) => state.auth.permmisions).filter((permission) => permission.storeId === store.id)[0].actions;
     for (const a of actions) {
         itemsMap[a] = {

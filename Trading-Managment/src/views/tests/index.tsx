@@ -8,9 +8,9 @@ import { getProducts, patchProduct, postProduct } from "../../reducers/productsS
 import { deleteCart, getCart, patchCart, postBasket } from "../../reducers/cartSlice";
 import { Basket } from "../../types/systemTypes/Basket";
 import { PatchCartParams } from "../../types/requestTypes/cartTypes";
-
 const Tests: React.FC = () => {
     const dispatch = useAppDispatch();
+    const id = 1;
     const error = useAppSelector((state) => state.store.error);
     const message = useAppSelector((state) => state.store.storeState.responseData);
     
@@ -28,6 +28,80 @@ const Tests: React.FC = () => {
     }
 
     const handleOnAddProduct = () => {
+        console.log("front add product")
+        dispatch(postProduct({ id: 1, storeId: 1, category: [], name: "mazda 3", description: "ziv's mazda", price: 5, quantity: 5, img: "" }))
+    }
+    const handleOnGetProducts = () => {
+        console.log("front get products")
+        dispatch(getProducts({ storeId: 1 }))
+    }
+    const handleOnPatchProduct = () => {
+        // console.log("frontpatch product")
+        // dispatch(patchProduct({
+        //     id: 1, storeId: 1, productId: 1, category: [""], name: "", cription: "",
+        //     price: number | null;
+        //     quantity: number | null;
+        //     img: string | null;
+        // }))
+    }
+    //const retryConnection = useRef(0);
+
+    // const newConnection = hubConnection('http://localhost:4567/', { logging: true, });
+    // const hubProxy = newConnection.createHubProxy('NotificationHub');
+    // hubProxy.on('firstConnection', () => { });
+    // newConnection.start()
+    //     .done(() => {
+    //         retryConnection.current = 0;
+    //     })
+    //     .fail((e: any) => {
+    //         console.log(e);
+    //         console.log("signalR could not connect")
+    //     })
+    // // set up event listeners i.e. for incoming "message" event
+    // hubProxy.on('SendNotification', function (idToSend, message) {
+
+    //     if (idToSend === id) {
+    //         console.log("messga",message);
+    //         //setNotification(message);
+    //     }
+    // });
+    // newConnection.disconnected(() => {
+    //     if (retryConnection.current <= 10) {
+    //         retryConnection.current++;
+    //         setTimeout(() => {
+    //             newConnection.start().done(() => {
+    //                 retryConnection.current = 0;
+    //             });
+    //         }, 10000)
+    //     }
+    // })
+
+    const [message_notification, setMessage] = useState("");
+
+    useEffect(() => {
+        const waitForMessage = async () => {
+            try {
+                const response = await axios.get("http://localhost:4567/wait");
+                if (response.status === 200) {
+                    setMessage(response.data);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                waitForMessage();
+            }
+        };
+        waitForMessage();
+    }, []);
+
+    const sendMessage = async () => {
+        try {
+            const message = "Hello, world!";
+            await axios.post("http://localhost:4567/api/sendMessage", { message: message, id: id });
+        } catch (error) {
+            console.error(error);
+        }
+    };
         console.log("front add product");
         dispatch(postProduct({id: 1, storeId: 1, category: [], name: "mazda 3", description: "ziv's mazda", price: 5, quantity: 5, img: ""}));
     }
@@ -107,6 +181,7 @@ const Tests: React.FC = () => {
     //     //     clearInterval(pingInterval)
     //     // };
     // }, [message, dispatch])
+>>>>>>> checkingServer
     return (
         <>
             <Button
@@ -135,7 +210,8 @@ const Tests: React.FC = () => {
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
                 {'add product'}
-            </Button ><Button
+            </Button >
+            <Button
                 type="submit"
                 fullWidth
                 variant="contained"
@@ -148,15 +224,28 @@ const Tests: React.FC = () => {
                 type="submit"
                 fullWidth
                 variant="contained"
+<<<<<<< HEAD
+                onClick={handleOnGetProducts}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'patch store'}
+=======
                 onClick={handleOnPatchProducts}
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
                 {'patch product'}
+>>>>>>> checkingServer
             </Button >
             <Button
                 type="submit"
                 fullWidth
                 variant="contained"
+<<<<<<< HEAD
+                onClick={sendMessage}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'send message'}
+=======
                 onClick={handleOnAppointManager}
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
@@ -224,6 +313,7 @@ const Tests: React.FC = () => {
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
                 {'delete cart'}
+>>>>>>> checkingServer
             </Button >
             {error ? <ErrorAlert message={error} /> : null}
             {message ? <SuccessAlert message={message} /> : null}
