@@ -17,6 +17,7 @@ import utils.marketRelated.Response;
 import utils.messageRelated.Message;
 import utils.orderRelated.Order;
 import utils.orderRelated.OrderInfo;
+import utils.stateRelated.Role;
 import utils.userInfoRelated.Info;
 import utils.userInfoRelated.Receipt;
 
@@ -119,6 +120,30 @@ public class API {
         return fromResToPair(res);
     }
 
+    private String getStoreInfoHM(HashMap<Integer, String> hashMap, String key, String value){
+        List<String> jsonList = new ArrayList();
+        for (Map.Entry<Integer, String> entry : hashMap.entrySet()) {
+            JSONObject jsonO = new JSONObject();
+            jsonO.put(key, entry.getKey());
+            jsonO.put(value, entry.getValue());
+            jsonList.add(jsonO.toString());
+        }
+        return jsonList.stream()
+                .collect(Collectors.joining(",", "[", "]"));
+    }
+
+    private String getStoreRole(HashMap<Integer, Role> hashMap, String key, String value){
+        List<String> jsonList = new ArrayList();
+        for (Map.Entry<Integer, Role> entry : hashMap.entrySet()) {
+            JSONObject jsonO = new JSONObject();
+            jsonO.put(key, entry.getKey());
+            jsonO.put(value, entry.getValue());
+            jsonList.add(jsonO.toString());
+        }
+        return jsonList.stream()
+                .collect(Collectors.joining(",", "[", "]"));
+    }
+
     private JSONObject loginToJson(LoginInformation login)
     {
         JSONObject json = new JSONObject();
@@ -126,9 +151,12 @@ public class API {
         json.put("userId", login.getUserId());
         json.put("name", login.getUserName());
         json.put("isAdmin", login.getIsAdmin());
-        json.put("notifications", login.getNotifications());
-        json.put("hasQuestions", store.getRating());
-        json.put("img", store.getUrl());
+        json.put("hasQuestions", login.HasQuestions());
+        json.put("notifications", login.getNotifications().stream()
+                .collect(Collectors.joining(",", "[", "]")));
+        json.put("StoreNames", getStoreInfoHM(login.getStoreNames(), "storeId", "name"));
+        json.put("StoreRoles", getStoreRole(login.getStoreRoles(), "storeId", "role"));
+        json.put("StoreImages", getStoreInfoHM(login.getStoreImg(), "storeId", "imageUrl"));
         return json;
     }
 
@@ -143,10 +171,8 @@ public class API {
         }
         else {
             json.put("value", loginToJson(res.getValue()));
-            return new Pair<>(true, json);
+            return new Pair<>(true, loginToJson(res.getValue()));
         }
-        loginToJson(res.getValue());
-        return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> getClient(int userId, String token) {
         Response<LoginInformation> res = market.getMember(userId, token);
@@ -558,6 +584,7 @@ public class API {
             JSONObject productJson = new JSONObject();
             productJson.put("status", logEntry.getKey());
             productJson.put("messages", logEntry.getValue());
+            logsList.add(productJson.toString());
         }
         String logsMessages = logsList.stream()
                 .collect(Collectors.joining(",", "[", "]"));
