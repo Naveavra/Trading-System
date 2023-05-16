@@ -25,10 +25,12 @@ public class ConnectedThread  extends Thread{
                     if(key%2==0){
                         api.exitGuest(key);
                     }
-                    else {
+                    else if (key % 2 == 1){
                         //TODO: logout
-                        //api.logout(key);
+                        api.logout(key);
                     }
+                    else
+                        api.adminLogout(key);
                     System.out.println(key + " removed !!!!!");
                 }
             }

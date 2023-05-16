@@ -96,9 +96,9 @@ public class MemberTest extends ProjectTest{
         buyer2.setUserId(login(buyer2.getEmail(), buyer2.getPassword()));
         //uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         //Check the cart:
-        int status = addProductToCart(buyer1.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
+        int status = addProductToCart(buyer1.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), pi5s4.getQuantity());
         assertTrue(status > -1);
-        status = addProductToCart(buyer2.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
+        status = addProductToCart(buyer2.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 2);
         assertTrue(status > -1);
         //Check the cart:
         CartInfo ci = getCart(buyer1.getUserId());

@@ -81,6 +81,10 @@ public class API {
         Response<String> res = market.changeQuantityInCart(userId, storeId, productId, change);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> removeCart(int userId) {
+        Response<String> res = market.removeCart(userId);
+        return fromResToPair(res);
+    }
 
     public String getBaskets(HashMap<Integer, HashMap<Integer, Integer>> basketsMaps)
     {
@@ -127,11 +131,12 @@ public class API {
         Response<LoginInformation> res = market.getMember(userId, token);
         return fromResToPair(res);
     }
-    public Pair<Boolean,JSONObject> logout(int userId, String token){
-        Response<String> res = market.logout(userId, token);
+    public Pair<Boolean,JSONObject> logout(int userId){
+        Response<String> res = market.logout(userId);
         return fromResToPair(res);
     }
 
+    //TODO: add to front and server security questions
     public Pair<Boolean, JSONObject> checkSecurityQuestions(int userId, String token, List<String> answers){
         Response<String> res = market.checkSecurityQuestions(userId, token, answers);
         return fromResToPair(res);
@@ -152,11 +157,14 @@ public class API {
         return fromResToPair(res);
     }
 
+    //TODO: check that works in getClient and login
     public Pair<Boolean, JSONObject> displayNotifications(int userId, String token){
         Response<List<String>> res = market.displayNotifications(userId, token);
         return fromResToPair(res);
     }
 
+
+    //TODO: add to front a way to change user info
     public Pair<Boolean, JSONObject> changePassword(int userId, String token, String oldPass, String newPass){
         Response<String> res = market.changePassword(userId, token, oldPass, newPass);
         return fromResToPair(res);
@@ -241,6 +249,15 @@ public class API {
 
     public Pair<Boolean, JSONObject> changeStoreDescription(int userId, String token, int storeId, String description){
         Response<String> res = market.changeStoreDescription(userId, token, storeId, description);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> changeStoreImg(int userId, String token, int storeId, String img) {
+        Response<String> res = market.changeStoreImg(userId, token, storeId, img);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> changeStoreName(int userId, String token, int storeId, String name) {
+        Response<String> res = market.changeStoreName(userId, token, storeId, name);
         return fromResToPair(res);
     }
 
@@ -463,9 +480,10 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> updateProduct(int userId, String token, int storeId, int productId, List<String> categories, String name , String description , int price , int quantity)
+    public Pair<Boolean, JSONObject> updateProduct(int userId, String token, int storeId, int productId, List<String> categories, String name , String description ,
+                                                   int price , int quantity, String img)
     {
-        Response<String> res = market.updateProduct(userId, token, storeId, productId, categories, name, description, price, quantity);
+        Response<String> res = market.updateProduct(userId, token, storeId, productId, categories, name, description, price, quantity, img);
         return fromResToPair(res);
     }
 
@@ -475,9 +493,9 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> adminLogout(int adminId, String token)
+    public Pair<Boolean, JSONObject> adminLogout(int adminId)
     {
-        Response<String> res = market.adminLogout(adminId, token);
+        Response<String> res = market.adminLogout(adminId);
         return fromResToPair(res);
     }
 
@@ -525,18 +543,29 @@ public class API {
         return logsMessages;
     }
 
-    public Pair<Boolean, JSONObject> watchLog(int adminId, String token)
+    public Pair<Boolean, JSONObject> watchEventLog(int adminId, String token)
     {
-        Response<HashMap<Logger.logStatus, List<String>>> res = market.watchLog(adminId, token);
+        Response<List<String>> res1 = market.watchEventLog(adminId, token);
+        Response<List<String>> res2 = market.watchFailLog(adminId, token);
         //[{"status": ["log1...", "log2...", ......]}, ...]
         JSONObject json = new JSONObject();
-        if(res.errorOccurred())
+        if(res1.errorOccurred())
         {
-            json.put("errorMsg", res.getErrorMessage());
+            json.put("errorMsg", res1.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else if(res2.errorOccurred())
+        {
+            json.put("errorMsg", res2.getErrorMessage());
             return new Pair<>(false, json);
         }
         else {
-            json.put("value", logsToString(res.getValue()));
+            List<String> event = res1.getValue();
+            List<String> fail = res2.getValue();
+            HashMap<Logger.logStatus, List<String>> ans = new HashMap<>();
+            ans.put(Logger.logStatus.Fail, fail);
+            ans.put(Logger.logStatus.Success, event);
+            json.put("value", logsToString(ans));
             return new Pair<>(true, json);
         }
     }
@@ -578,9 +607,14 @@ public class API {
 
     public Pair<Boolean, JSONObject> getStores()
     {
-        Response<ConcurrentHashMap<Integer, Store>> res = market.getStores();
+        Response<List<StoreInfo>> res = market.getStoresInformation();
         // TODO: cast this to json
         return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> getStore(int userId, String token, int storeId) {
+        Response<Store> res =  market.getStore(userId, token, storeId);
+        return fromResToPair(res);
+
     }
     public Pair<Boolean, JSONObject> getStoresInformation(){
         Response<List<StoreInfo>> res = market.getStoresInformation();
@@ -601,6 +635,4 @@ public class API {
         // TODO: cast this to json
         return fromResToPair(res);
     }
-
-
 }

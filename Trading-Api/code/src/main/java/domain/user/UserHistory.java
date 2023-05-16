@@ -14,7 +14,7 @@ public class UserHistory {
 
     //the hashmap shows from orderId to the shopping cart content
     private HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> purchaseHistory;
-    private HashMap <Integer, Integer> ordersAndPrices;
+    private HashMap <Integer, Double> ordersAndPrices;
     private List<String> names;
     private transient List<String> passwords;
     private List<String> emails;
@@ -29,7 +29,7 @@ public class UserHistory {
         securityQuestions = new HashMap<>();
     }
 
-    public void addPurchaseMade(int orderId, int totalPrice, HashMap<Integer, HashMap<Integer, Integer>> purchase){
+    public void addPurchaseMade(int orderId, double totalPrice, HashMap<Integer, HashMap<Integer, Integer>> purchase){
         purchaseHistory.put(orderId, purchase);
         ordersAndPrices.put(orderId, totalPrice);
     }

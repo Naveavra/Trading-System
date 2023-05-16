@@ -1,10 +1,9 @@
 package market;
 
-import utils.ProductInfo;
+import domain.store.storeManagement.Store;
 import utils.LoginInformation;
 import utils.marketRelated.Response;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,6 +20,7 @@ public interface MarketInterface {
     public Response removeProductFromCart(int userId,  int storeId, int productId);
     public Response changeQuantityInCart(int userId, int storeId, int productId, int change);
     public Response getCart(int id);
+    Response<String> removeCart(int userId);
     public Response makePurchase(int userId , String accountNumber);
     public Response getStoreDescription(int storeId);
 
@@ -38,7 +38,7 @@ public interface MarketInterface {
     public Response changeAnswerForLoginQuestion(int userId, String token, String question, String answer);
     public Response removeSecurityQuestion(int userId, String token, String question);
     public Response displayNotifications(int userId, String token);
-    public Response logout(int userId, String token);
+    public Response logout(int userId);
     public Response changePassword(int userId, String token, String oldPass, String newPass);
 
     public Response changeName(int userId, String token, String newUserName);
@@ -53,6 +53,7 @@ public interface MarketInterface {
     public Response checkReviews(int userId, String token, int storeId);
     public Response getProductInformation(int storeId , int productId);
     public Response getStoreInformation(int storeId);
+    Response<Store> getStore(int userId, String token, int storeId);
     public Response getStoreProducts(int storeId);
 
     public Response sendQuestion(int userId, String token, int storeId, String msg);
@@ -62,6 +63,8 @@ public interface MarketInterface {
     public Response appointManager(int userId, String token, int managerIdToAppoint, int storeId);
     public Response appointManager(int userId, String token, String managerToAppoint, int storeId);
     public Response changeStoreDescription(int userId, String token, int storeId, String description);
+    Response<String> changeStoreImg(int userId, String token, int storeId, String img);
+    Response<String> changeStoreName(int userId, String token, int storeId, String name);
     public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
     public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
     public Response addPurchaseConstraint(int userId, String token, int storeId, String constraint);
@@ -76,11 +79,13 @@ public interface MarketInterface {
     public Response<Integer> addProduct(int userId, String token, int storeId, List<String> categories, String name, String description,
                                         int price, int quantity, String img);
     public Response deleteProduct(int userId, String token, int storeId, int productId);
-    public Response updateProduct(int userId, String token, int storeId,int productId, List<String> categories, String name , String description , int price , int quantity);
-    //public Response getStoreOrders(int userId , int storeId);
-
     //store owner methods
     public Response appointOwner(int userId , String token,int ownerId, int storeId);
+
+    //TODO: need to use supplierProxy for changing the quantity
+    Response<String> updateProduct(int userId, String token, int storeId, int productId, List<String> categories, String name, String description,
+                                   int price, int quantity, String img);
+
     public Response<String> appointOwner(int userId, String token, String owner, int storeId);
     public Response fireOwner(int userId , String token, int ownerId, int storeId);
     public Response addManagerPermission (int ownerId, String token, int userId,int storeId, int permissionsId);
@@ -107,15 +112,15 @@ public interface MarketInterface {
 
     // admin methods
     public Response adminLogin(String email, String pass);
-    public Response adminLogout(int adminId ,String token);
+    public Response adminLogout(int adminId);
     public Response getAdmins(int adminId, String token);
-    public Response getStores();
     public Response addAdmin(int userId, String token, String email , String pass);
     public Response removeAdmin(int adminId, String token);
     public Response getUsersPurchaseHistory(int buyerId, String token);
     public Response answerComplaint(int adminId, String token, int complaintId, String ans);
     public Response cancelMembership(int adminId, String token, int userToRemove);
-    public Response watchLog(int adminId, String token);
+    public Response watchEventLog(int adminId, String token);
+    public Response watchFailLog(int adminId, String token);
 
     public Response watchMarketStatus(int adminId, String token);
 

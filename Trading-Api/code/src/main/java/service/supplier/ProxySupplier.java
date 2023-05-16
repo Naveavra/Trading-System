@@ -10,7 +10,9 @@ public class ProxySupplier implements SupplierAdapter {
         if(real == null)
             real = supplierAdapter;
     }
-    public void orderSupplies(){}
+    public boolean orderSupplies(int storeId, int productId, int quantity){
+        return true;
+    }
 
 
 
