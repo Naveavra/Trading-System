@@ -1455,8 +1455,17 @@ public Response<List<ProductInfo>> getProducts(int storeId){
     }
 
     @Override
-    public Response setPaymentService(int adminId, String token, String paymentService) {
-        return null;
+    public Response setPaymentService(int guestId, String paymentService) {
+        try{
+            logger.log(Logger.logStatus.Success, "set payment service successfully on " + LocalDateTime.now());
+            proxyPayment.setRealPayment(paymentService);
+            return new Response<>("Set Payment Service successfully", null, null);
+        }
+        catch (Exception e)
+        {
+            logger.log(Logger.logStatus.Fail, e.getMessage() + LocalDateTime.now());
+            return new Response<>(null, "Set Payment Service", e.getMessage());
+        }
     }
 
     @Override
@@ -1468,7 +1477,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
             return new Response<>(null, "watch market status failed", e.getMessage());
         }
         Admin admin = activeAdmins.get(adminId);
-        if(admin !=null){
+        if(admin == null){
             logger.log(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now());
             return new Response<>(logger.getFailMap(), null, null);
         }

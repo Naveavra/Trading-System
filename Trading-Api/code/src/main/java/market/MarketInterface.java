@@ -124,7 +124,7 @@ public interface MarketInterface {
 
     public Response watchMarketStatus(int adminId, String token);
 
-    public Response setPaymentService(int adminId, String token, String paymentService);
+    public Response setPaymentService(int guestId, String paymentService);
     public Response getPaymentServiceOptions(int adminId, String token, String paymentService);
     public Response addPaymentService(int adminId, String token, String paymentService);
     public Response removePaymentService(int adminId, String token, String paymentService);
