@@ -88,6 +88,15 @@ public class Server {
             toSparkRes(res, api.login(email, pass));
             return res.body();
         });
+
+        //getClient
+        post("api/auth/getClient", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.getClient(userId, token));
+            return res.body();
+        });
         post("api/auth/logout", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
@@ -177,7 +186,7 @@ public class Server {
                     int price = Integer.parseInt(request.get("price").toString());
                     int quantity = (int) (request.get("newQuantity"));
                     String img = request.get("newQuantity").toString();//TODO: Add img feature
-                    toSparkRes(res, api.addProduct(userId, token, storeId, categories, name, description, price, quantity));
+                    toSparkRes(res, api.addProduct(userId, token, storeId, categories, name, description, price, quantity, img));
                     return res.body();
                 });
         delete("api/products", (req, res) ->

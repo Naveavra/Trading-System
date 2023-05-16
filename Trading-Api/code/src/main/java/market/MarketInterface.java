@@ -1,6 +1,7 @@
 package market;
 
 import utils.ProductInfo;
+import utils.LoginInformation;
 import utils.marketRelated.Response;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public interface MarketInterface {
 
     //member methods
     public Response login(String email , String pass);
+    Response<LoginInformation> getMember(int userId, String token);
     public Response checkSecurityQuestions(int userId, String token, List<String> answers);
     public Response addSecurityQuestion(int userId, String token, String question, String answer);
     public Response changeAnswerForLoginQuestion(int userId, String token, String question, String answer);
@@ -43,6 +45,7 @@ public interface MarketInterface {
     public Response changeEmail(int userId, String token, String newEmail);
 
     public Response openStore(int userId,String token, String storeDescription);
+    public Response openStore(int userId, String token, String storeName, String des, String img);
     public Response getMemberInformation(int userId, String token);
     public Response getUserPurchaseHistory(int userId, String token, int buyerId);
     public Response writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading);
@@ -69,6 +72,9 @@ public interface MarketInterface {
     public Response answerQuestion(int userId, String token, int storeId, int questionId, String answer);
     public Response seeStoreHistory(int userId, String token, int storeId);
     public Response addProduct(int useIid, String token, int storeId,List<String> categories, String name , String description , int price , int quantity);
+
+    public Response<Integer> addProduct(int userId, String token, int storeId, List<String> categories, String name, String description,
+                                        int price, int quantity, String img);
     public Response deleteProduct(int userId, String token, int storeId, int productId);
     public Response updateProduct(int userId, String token, int storeId,int productId, List<String> categories, String name , String description , int price , int quantity);
     //public Response getStoreOrders(int userId , int storeId);

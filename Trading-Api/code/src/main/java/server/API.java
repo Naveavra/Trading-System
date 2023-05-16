@@ -123,6 +123,10 @@ public class API {
         Response<LoginInformation> res = market.login(email, pass);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> getClient(int userId, String token) {
+        Response<LoginInformation> res = market.getMember(userId, token);
+        return fromResToPair(res);
+    }
     public Pair<Boolean,JSONObject> logout(int userId, String token){
         Response<String> res = market.logout(userId, token);
         return fromResToPair(res);
@@ -168,8 +172,8 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> openStore(int userId, String token, String storeDescription){
-        Response<Integer> res = market.openStore(userId, token, storeDescription);
+    public Pair<Boolean, JSONObject> openStore(int userId, String token, String name, String storeDescription, String img){
+        Response<Integer> res = market.openStore(userId, token, name, storeDescription, img);
         return fromResToPair(res);
     }
 
@@ -316,8 +320,9 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> addProduct(int userId, String token, int storeId, List<String> categories, String name , String description , int price , int quantity){
-        Response<Integer> res = market.addProduct(userId, token, storeId, categories, name, description, price, quantity);
+    public Pair<Boolean, JSONObject> addProduct(int userId, String token, int storeId, List<String> categories, String name , String description,
+                                                int price , int quantity, String img){
+        Response<Integer> res = market.addProduct(userId, token, storeId, categories, name, description, price, quantity, img);
         return fromResToPair(res);
     }
 
@@ -596,8 +601,6 @@ public class API {
         // TODO: cast this to json
         return fromResToPair(res);
     }
-
-
 
 
 }

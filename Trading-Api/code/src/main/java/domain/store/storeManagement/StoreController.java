@@ -33,19 +33,21 @@ public class StoreController {
         Store st;
         //Product prod;
         int id = -1;
-        /* no need to update if product exists, need to throw exception, fixed it
-        if ((st = getStore(storeid)) != null && (prod = getExistingProductByName(name)) != null) {
-            Product prod_ = prod.clone();
-            prod_.setDescription(desc);
-            prod_.setPrice(price);
-            prod_.setQuantity(quantity);
-            st.addNewExistingProduct(prod_);
-            id = prod_.getID();
-        } else
-         */
         if ((st = getStore(storeid)) != null) {
             Product p = st.addNewProduct(name, desc, productIDs,price,quantity);
-//            p.setPrice(price);
+            p.setQuantity(quantity);
+            addToProducts(p.clone());
+            id = p.getID();
+        }
+        return id;
+    }
+
+    public synchronized int addProduct(int storeid, String name, String desc, int price, int quantity, String img) throws Exception {
+        Store st;
+        //Product prod;
+        int id = -1;
+        if ((st = getStore(storeid)) != null) {
+            Product p = st.addNewProduct(name, desc, productIDs,price,quantity, img);
             p.setQuantity(quantity);
             addToProducts(p.clone());
             id = p.getID();
@@ -80,6 +82,12 @@ public class StoreController {
 
     public Store openStore(String desc, int userID) {
         Store store = new Store(storescounter.getAndIncrement(), desc, userID);
+        storeList.put(store.getStoreId(), store);
+        return store;
+    }
+
+    public Store openStore(String name, String desc, String img, int userID) {
+        Store store = new Store(storescounter.getAndIncrement(), name, desc, img, userID);
         storeList.put(store.getStoreId(), store);
         return store;
     }

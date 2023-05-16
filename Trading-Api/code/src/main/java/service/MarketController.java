@@ -54,6 +54,12 @@ public class MarketController {
        return store;
     }
 
+    public Store openStore(int userID, String name, String description, String img) throws Exception
+    {
+        Store store = storectrl.openStore(name, description, img, userID);
+        return store;
+    }
+
     public String getProductName(int storeId ,int  productId) throws Exception {
         return storectrl.getProductName(storeId , productId);
     }
@@ -73,6 +79,16 @@ public class MarketController {
     }
 
     public int addProduct(int storeId, String name, String description, int price, int quantity, List<String> categories) throws Exception{
+        int id = storectrl.addProduct(storeId,name,description,price,quantity);
+        if(id == -1){
+            throw new Exception("Something went wrong in adding product");
+        }
+        storectrl.addToCategory(storeId,id,categories);
+        return id;
+    }
+
+    public int addProduct(int storeId, String name, String description, int price, int quantity,
+                          List<String> categories, String img) throws Exception{
         int id = storectrl.addProduct(storeId,name,description,price,quantity);
         if(id == -1){
             throw new Exception("Something went wrong in adding product");
