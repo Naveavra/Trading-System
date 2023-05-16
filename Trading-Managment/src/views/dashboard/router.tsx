@@ -9,6 +9,7 @@ import { ShopRoutes } from "./Shop/router";
 export const dashboardRoutes = [
     <Route key="routes" path="dashboard" >
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/dashboard/store/new" element={<ProductDisplay />} />
         {/*todo : add routes here*/}
         {ShopRoutes}
     </Route>
