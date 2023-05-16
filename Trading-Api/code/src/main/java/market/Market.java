@@ -431,6 +431,25 @@ public class Market implements MarketInterface {
     }
 
     @Override
+    public Response<Integer> openStore(int userId, String token, String storeName, String des, String img) {
+        try {
+            userAuth.checkUser(userId, token);
+            if (userController.canOpenStore(userId)) {
+                Store store = marketController.openStore(userId, storeName, des, img);
+                userController.openStore(userId, store);
+                String name = userController.getUserName(userId);
+                logger.log(Logger.logStatus.Success, "user" + name + "open store successfully on " + LocalDateTime.now());
+                return new Response<>(store.getStoreId(), null, null);
+            } else {
+                return new Response<>(null, "open store failed", "user is not allowed to open store");
+            }
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "user cant open store  because " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "open store failed", e.getMessage());
+        }
+    }
+
+    @Override
     public Response<Info> getMemberInformation(int userId, String token) {
         try {
             userAuth.checkUser(userId, token);
@@ -805,6 +824,27 @@ public class Market implements MarketInterface {
             logger.log(Logger.logStatus.Fail, "cant  get store history  because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, " get store history failed", e.getMessage());
         }
+    }
+
+    @Override
+    public Response<Integer> addProduct(int userId, String token, int storeId, List<String> categories, String name, String description,
+                                        int price, int quantity, String img) {
+        try {
+            userAuth.checkUser(userId, token);
+            int productId = -1;
+            if (userController.checkPermission(userId, Action.addProduct, storeId)) {
+                productId = marketController.addProduct(storeId, name, description, price, quantity, categories, img);
+            } else {
+                logger.log(Logger.logStatus.Fail, "Product Addition Failed, Because: User doesn't have necessary permissions. on: " + LocalDateTime.now());
+                return new Response<>(null, "Product Addition Failed", "User doesn't have necessary permissions");
+            }
+            logger.log(Logger.logStatus.Success, "Add product successfull on: " + LocalDateTime.now());
+            return new Response<>(productId, null, null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "Cant add product because: " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "Product Addition Failed", e.getMessage());
+        }
+
     }
 
     @Override

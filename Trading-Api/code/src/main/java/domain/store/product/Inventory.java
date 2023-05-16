@@ -45,7 +45,24 @@ public class Inventory {
                     throw new Exception("the product already exists in the system, aborting add");
                 }
             productList.put(id,p);
-// categories.put(p,new ArrayList<>());
+        }
+        return p;
+    }
+
+    public synchronized Product addProduct(String name, String description, AtomicInteger prod_id,
+                                           int price, int quantity, String img) throws Exception {
+        Product p = null;
+        if(getProductByName(name)==null){
+            int id = prod_id.getAndIncrement();
+            p = new Product(id,name,description, img);
+            p.setPrice(price);
+            p.setQuantity(quantity);
+            for(Product product : productList.values())
+                if(p.getName().equals(product.getName()) && p.getDescription().equals(product.getDescription())) {
+                    prod_id.getAndDecrement();
+                    throw new Exception("the product already exists in the system, aborting add");
+                }
+            productList.put(id,p);
         }
         return p;
     }

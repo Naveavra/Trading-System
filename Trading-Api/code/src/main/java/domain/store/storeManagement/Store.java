@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Store {
     private final int storeid;
+    private String storeName;
     private boolean isActive;
     private final transient int creatorId;
     private String storeDescription;
@@ -35,6 +36,8 @@ public class Store {
     private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
     private final ConcurrentHashMap<Integer, Message> storeReviews; //<messageid, message>
     private final ConcurrentHashMap<Integer, Message> questions;
+
+    private String imgUrl;
 //    private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
     private ArrayList<Discount> discounts;
@@ -61,6 +64,34 @@ public class Store {
         discounts = new ArrayList<>();
     }
 
+    public Store(int storeid, String storeName, String description, String imgUrl, int creatorId){
+        Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
+        appHistory = new AppHistory(creatorNode);
+        this.storeid = storeid;
+        this.storeDescription = description;
+        this.creatorId = creatorId;
+        this.inventory = new Inventory();
+        this.storeReviews = new ConcurrentHashMap<>();
+        this.storeOrders = new ConcurrentHashMap<>();
+//        this.discountPolicy = new DiscountPolicy();
+        this.purchasePolicy = new PurchasePolicy();
+        this.productReviews = new ConcurrentHashMap<>();//hash map between messageId to message for product
+        this.questions = new ConcurrentHashMap<>();
+        this.isActive = true;
+        gson = new Gson();
+        discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
+        discounts = new ArrayList<>();
+        this.storeName = storeName;
+        this.imgUrl = imgUrl;
+    }
+
+    public void changeName(String storeName){
+        this.storeName = storeName;
+    }
+
+    public void changeImg(String imgUrl){
+        this.imgUrl = imgUrl;
+    }
 
     public double getStoreRating(){
         double sum = 0.0;
@@ -213,6 +244,11 @@ public class Store {
      */
     public synchronized Product addNewProduct(String name, String description, AtomicInteger pid, int price, int quantity) throws Exception {
         return inventory.addProduct(name, description, pid,price,quantity);
+    }
+
+    public synchronized Product addNewProduct(String name, String description, AtomicInteger pid, int price,
+                                              int quantity, String img) throws Exception {
+        return inventory.addProduct(name, description, pid,price,quantity, img);
     }
     public synchronized Product addNewExistingProduct(Product p) throws Exception{
         return inventory.addProduct(p);

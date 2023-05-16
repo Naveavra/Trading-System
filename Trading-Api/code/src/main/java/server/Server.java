@@ -114,9 +114,9 @@ public class Server {
         });
         get("api/auth/getClient",(req,res)->{
             JSONObject request = new JSONObject(req.body());
-            String id = request.get("userId").toString();
+            int id = Integer.parseInt(request.get("userId").toString());
             String token = request.get("token").toString();
-            System.out.println(token);
+            toSparkRes(res, api.getClient(id, token));
             return res.body();
         });
         // delete
@@ -186,7 +186,7 @@ public class Server {
                     int price = Integer.parseInt(request.get("price").toString());
                     int quantity = (int) (request.get("newQuantity"));
                     String img = request.get("newQuantity").toString();//TODO: Add img feature
-                    toSparkRes(res, api.addProduct(userId, token, storeId, categories, name, description, price, quantity));
+                    toSparkRes(res, api.addProduct(userId, token, storeId, categories, name, description, price, quantity, img));
                     return res.body();
                 });
         delete("api/products", (req, res) ->
