@@ -57,7 +57,7 @@ public class Market implements MarketInterface {
         userController = new UserController();
         marketController = new MarketController();
         gson = new Gson();
-        proxyPayment = new ProxyPayment();
+        proxyPayment = new ProxyPayment("Apple Pay");
         userAuth = new UserAuth();
         proxySupplier = new ProxySupplier();
         complaints = new ConcurrentHashMap<>();
@@ -1451,6 +1451,79 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         else{
             logger.log(Logger.logStatus.Fail, "cant get admin on" + LocalDateTime.now());
             return new Response<>(null, "watch market status", "admin wasn't found");
+        }
+    }
+
+    @Override
+    public Response setPaymentService(int adminId, String token, String paymentService) {
+        return null;
+    }
+
+    @Override
+    public Response getPaymentServiceOptions(int adminId, String token, String paymentService) {
+        try{
+            userAuth.checkUser(adminId, token);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail, "cant watch market status because: " + e.getMessage() +" on time: " + LocalDateTime.now());
+            return new Response<>(null, "watch market status failed", e.getMessage());
+        }
+        Admin admin = activeAdmins.get(adminId);
+        if(admin !=null){
+            logger.log(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now());
+            return new Response<>(logger.getFailMap(), null, null);
+        }
+        return new Response<>(proxyPayment.getPaymentServicesOptions(), null, null);
+    }
+
+    @Override
+    public Response addPaymentService(int adminId, String token, String paymentService) {
+        try{
+            userAuth.checkUser(adminId, token);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail, "cant watch market status because: " + e.getMessage() +" on time: " + LocalDateTime.now());
+            return new Response<>(null, "Add Payment Service", e.getMessage());
+        }
+        Admin admin = activeAdmins.get(adminId);
+        if(admin == null){
+            logger.log(Logger.logStatus.Fail, "Admin not log successfully on " + LocalDateTime.now());
+            return new Response<>(null, "Add Payment Service", "admin wasn't found");
+        }
+        try {
+            proxyPayment.addPaymentService(paymentService);
+            logger.log(Logger.logStatus.Success, "add payment service " + paymentService +  " " + LocalDateTime.now());
+            return new Response<>("Success to add payment service " + paymentService, null, null);
+        }
+        catch (Exception e)
+        {
+            logger.log(Logger.logStatus.Fail, "cant add payment service because: " + e.getMessage() +" on time: " + LocalDateTime.now());
+            return new Response<>(null, "Add Payment Service", e.getMessage());
+        }
+
+    }
+
+    @Override
+    public Response removePaymentService(int adminId, String token, String paymentService) {
+        String commandType = "Remove Payment Service";
+        try{
+            userAuth.checkUser(adminId, token);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail, "cant remove payment service because: " + e.getMessage() +" on time: " + LocalDateTime.now());
+            return new Response<>(null, commandType, e.getMessage());
+        }
+        Admin admin = activeAdmins.get(adminId);
+        if(admin == null){
+            logger.log(Logger.logStatus.Fail, "Admin not log successfully on " + LocalDateTime.now());
+            return new Response<>(null, commandType, "admin wasn't found");
+        }
+        try {
+            proxyPayment.removePaymentService(paymentService);
+            logger.log(Logger.logStatus.Success, "remove payment service " + paymentService +  " " + LocalDateTime.now());
+            return new Response<>("Success to add payment service " + paymentService, null, null);
+        }
+        catch (Exception e)
+        {
+            logger.log(Logger.logStatus.Fail, "cant remove payment service because: " + e.getMessage() +" on time: " + LocalDateTime.now());
+            return new Response<>(null, commandType, e.getMessage());
         }
     }
 
