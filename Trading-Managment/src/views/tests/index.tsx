@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 import ErrorAlert from "../../components/Alerts/error";
 import SuccessAlert from "../../components/Alerts/success";
 import { getProducts, patchProduct, postProduct } from "../../reducers/productsSlice";
-import { deleteCart, getCart, patchCart, postBasket } from "../../reducers/cartSlice";
+import { deleteCart, getCart, patchCart } from "../../reducers/cartSlice";
 import { Basket } from "../../types/systemTypes/Basket";
 import { PatchCartParams } from "../../types/requestTypes/cartTypes";
 import axios from "axios";
@@ -20,7 +20,7 @@ const Tests: React.FC = () => {
     // console.log("stores",stores);
     const handleOnAddStore = () => {
         console.log("front add store");
-        dispatch(postStore({ userId: 1, desc: "new store" }));
+        // dispatch(postStore({ userId: 1, desc: "new store" }));
         // dispatch(getStores());
     }
     const handleOnRemove = () => {
@@ -102,7 +102,7 @@ const Tests: React.FC = () => {
 
     const handleOnGetProducts = () => {
         console.log("front get products");
-        dispatch(getProducts({ storeId: 1 }));
+        //dispatch(getProducts({ storeId: 1 }));
     }
     const handleOnPatchProducts = () => {
         console.log("front patch products");
@@ -135,7 +135,7 @@ const Tests: React.FC = () => {
             productsList: data
         };
         console.log("front appoint products");
-        dispatch(postBasket({ userId: 0, storeId: 5, basket: basket }));
+        //dispatch(postBasket({ userId: 0, storeId: 5, basket: basket }));
     }
 
     const handleOnPatchCart = () => {

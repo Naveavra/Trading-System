@@ -26,6 +26,8 @@ export type appointManagerFormValues = {
 }
 export type storeFormValues = {
     userId: number,
+    storeId: number,
+    isActive: boolean,
     name: string,
     desc: string,
     img: string, //description

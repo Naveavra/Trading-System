@@ -48,6 +48,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     }
 
 
+
     return (
         <div className="navbar">
             <div className="wrapper">
@@ -173,7 +174,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                             <DialogActions>
                                 <Button
                                     onClick={() => {
-                                        navigate('/dashboard/stores');
+                                        navigate('/dashboard/store/new');
                                     }}
                                 >
                                     add new store

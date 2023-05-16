@@ -13,7 +13,7 @@ import SupportAgent from '@mui/icons-material/SupportAgent';
 import ImportContacts from '@mui/icons-material/ImportContacts';
 import { useParams, useNavigate } from 'react-router-dom';
 import Settings from '@mui/icons-material/Settings';
-import { useAppSelector } from '../redux/store';
+import { RootState, useAppSelector } from '../redux/store';
 import { Action } from '../types/systemTypes/Action';
 
 interface item {
@@ -41,21 +41,8 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, ope
     const theme = useTheme();
     const navigate = useNavigate();
     const store = useAppSelector((state) => state.store.storeState.watchedStore);
-    const actions: Action[] = [
-        Action.addProduct,
-        Action.removeProduct,
-        Action.updateProduct,
-
-        Action.changeStoreDescription,
-        Action.changePurchasePolicy,
-        Action.deleteDiscountPolicy,
-        Action.addPurchaseConstraint,
-        Action.addDiscountConstraint,
-        Action.fireManager,
-        Action.appointManager,
-        Action.appointOwner,
-        Action.fireOwner,
-    ]//useAppSelector((state) => state.auth.permmisions).filter((permission) => permission.storeId === store.id)[0].actions;
+    const permmisions = useAppSelector((state: RootState) => state.auth.permmisions).filter((perm) => perm.storeId === store.id);
+    const actions = permmisions.length > 0 ? permmisions[0].actions : [];
     for (const a of actions) {
         itemsMap[a] = {
             text: a,

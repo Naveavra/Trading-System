@@ -2,10 +2,11 @@ import { Action, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiError, ApiListData, ApiResponse } from "../types/apiTypes";
 
 import { storeApi } from "../api/storeApi";
-import { AppointOwnerParams, DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams } from "../types/requestTypes/storeTypes";
+import { AppointOwnerParams, DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
 import { Store, emptyStore } from "../types/systemTypes/Store";
 import { StoreInfo, emptyStoreInfo } from "../types/systemTypes/StoreInfo";
 import { store } from "../redux/store";
+import { removeEmptyValues } from "../api/util";
 
 //TODO implement the getProducts method from the storeApi
 const reducerName = 'stores';
@@ -57,7 +58,8 @@ export const patchStore = createAsyncThunk<
 >(
     `${reducerName}/patch`,
     async (formData, thunkApi) => {
-        return storeApi.patchStore(formData)
+        const data = removeEmptyValues(formData);
+        return storeApi.patchStore(data)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
@@ -98,7 +100,7 @@ export const getStore = createAsyncThunk<
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 export const appointManager = createAsyncThunk<
-   string,
+    string,
     AppointOwnerParams,
     { rejectValue: ApiError }
 >(
@@ -111,21 +113,21 @@ export const appointManager = createAsyncThunk<
 
 export const appointOwner = createAsyncThunk<
     string,
-     AppointOwnerParams,
-     { rejectValue: ApiError }
- >(
-     `${reducerName}/appointments/owners/post`,
-     async (params, thunkApi) => {
-         return storeApi.appointOwner(params)
-             .then((res) => thunkApi.fulfillWithValue(res as string))
-             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
-     });
+    AppointOwnerParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/appointments/owners/post`,
+    async (params, thunkApi) => {
+        return storeApi.appointOwner(params)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
 
 export const fireManager = createAsyncThunk<
     string,
     AppointOwnerParams,
     { rejectValue: ApiError }
-    >(
+>(
     `${reducerName}/appointments/managers/delete`,
     async (params, thunkApi) => {
         return storeApi.fireManager(params)
@@ -137,14 +139,26 @@ export const fireOwner = createAsyncThunk<
     string,
     AppointOwnerParams,
     { rejectValue: ApiError }
-    >(
+>(
     `${reducerName}/appointments/owners/delete`,
     async (params, thunkApi) => {
         return storeApi.fireOwner(params)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
-    //TODO complete the other functions as well
+
+export const patchPermissions = createAsyncThunk<
+    string,
+    patchPermissionsParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/permissions/patch`,
+    async (params, thunkApi) => {
+        return storeApi.patchPermissions(params)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+//TODO complete the other functions as well
 
 const { reducer: storesReducer, actions: storesActions } = createSlice({
     name: reducerName,
@@ -275,7 +289,19 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.storeState.isLoading = false;
             state.storeState.responseData = payload;
         });
-       
+        //patchPermmision
+        builder.addCase(patchPermissions.pending, (state) => {
+            state.storeState.isLoading = true;
+            state.storeState.error = null;
+        });
+        builder.addCase(patchPermissions.rejected, (state, { payload }) => {
+            state.storeState.error = payload?.message.data ?? "error during getStore";
+            state.storeState.isLoading = false;
+        });
+        builder.addCase(patchPermissions.fulfilled, (state, { payload }) => {
+            state.storeState.isLoading = false;
+            state.storeState.responseData = payload;
+        });
     }
 });
 

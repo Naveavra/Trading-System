@@ -13,11 +13,11 @@ import ReadOnlyRating from "../Ratings/readRating";
 import { useNavigate } from "react-router-dom";
 
 const ProductDisplay: React.FC = () => {
-    const error = false;//useAppSelector((state) => state.products.error);
-    const loading = false;//useAppSelector((state) => state.products.loading);
+    const error = useAppSelector((state) => state.product.error);
+    const loading = useAppSelector((state) => state.product.isLoading);
     const [quantityError, setQuantiryError] = useState(false);
     const [quantity, setQuantity] = useState(0);
-    const userId = -1;//useAppSelector((state) => state.auth.userId);
+    const userId = useAppSelector((state) => state.auth.userId);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const set = (newVal: number) => {

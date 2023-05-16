@@ -1,21 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ApiError, ApiListData, ApiResponse} from "../types/apiTypes";
+import { ApiError, ApiListData, ApiResponse } from "../types/apiTypes";
 import { Basket } from "../types/systemTypes/Basket";
 import { DeleteCartParams, GetCartParams, PatchCartParams, PostBasketParams } from "../types/requestTypes/cartTypes";
 import { cartApi } from "../api/cartApi";
-import { Cart } from "../types/systemTypes/Cart";
+import { Cart, emptyCart } from "../types/systemTypes/Cart";
 
 const reducerName = 'carts';
 
 interface CartState {
     basketState: {
         isLoading: boolean;
-        responseData?: string  | null;
+        responseData?: string | null;
         error: string | null;
     },
     isLoading: boolean;
-    responseData?: ApiResponse<Cart> | null ;
-    error:  string | null;
+    responseData: Cart;
+    error: string | null;
 };
 
 const initialState: CartState = {
@@ -25,24 +25,24 @@ const initialState: CartState = {
         error: null,
     },
     isLoading: false,
-    responseData: null,
+    responseData: emptyCart,
     error: null,
 };
-export const postBasket = createAsyncThunk<
-    string,
-    PostBasketParams,
-    { rejectValue: ApiError }
->(
-    `${reducerName}/post`,
-    async (formData, thunkApi) => {
-        return cartApi.postBaket(formData)
-            .then((res) => thunkApi.fulfillWithValue(res as string))
-            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
-    });
+// export const postBasket = createAsyncThunk<
+//     string,
+//     PostBasketParams,
+//     { rejectValue: ApiError }
+// >(
+//     `${reducerName}/post`,
+//     async (formData, thunkApi) => {
+//         return cartApi.postBaket(formData)
+//             .then((res) => thunkApi.fulfillWithValue(res as string))
+//             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+//     });
 
 export const patchCart = createAsyncThunk<
     string,
-    PatchCartParams ,
+    PatchCartParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/patch`,
@@ -65,14 +65,14 @@ export const deleteCart = createAsyncThunk<
     });
 
 export const getCart = createAsyncThunk<
-    ApiResponse<Cart>,
+    Cart,
     GetCartParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/get`,
     async (formData, thunkApi) => {
         return cartApi.getCart(formData)
-            .then((res) => thunkApi.fulfillWithValue(res as ApiResponse<Cart>))
+            .then((res) => thunkApi.fulfillWithValue(res as Cart))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
@@ -96,7 +96,7 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         builder.addCase(getCart.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
             state.responseData = payload;
-            console.log("response: " ,state.responseData);
+            console.log("response: ", state.responseData);
             state.error = null;
         });
         builder.addCase(getCart.rejected, (state, { payload }) => {
@@ -119,18 +119,18 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
             state.isLoading = false;
         });
         //postBaket
-        builder.addCase(postBasket.pending, (state) => {
-            state.basketState.isLoading = true;
-            state.basketState.error = null;
-        });
-        builder.addCase(postBasket.fulfilled, (state, { payload }) => {
-            state.basketState.isLoading = false;
-            state.basketState.responseData = payload;
-        });
-        builder.addCase(postBasket.rejected, (state, { payload }) => {
-            state.basketState.isLoading = false;
-            state.basketState.error = payload?.message.data ?? "error during postBasket";
-        });
+        // builder.addCase(postBasket.pending, (state) => {
+        //     state.basketState.isLoading = true;
+        //     state.basketState.error = null;
+        // });
+        // builder.addCase(postBasket.fulfilled, (state, { payload }) => {
+        //     state.basketState.isLoading = false;
+        //     state.basketState.responseData = payload;
+        // });
+        // builder.addCase(postBasket.rejected, (state, { payload }) => {
+        //     state.basketState.isLoading = false;
+        //     state.basketState.error = payload?.message.data ?? "error during postBasket";
+        // });
         //deleteProduct
         builder.addCase(deleteCart.pending, (state) => {
             state.basketState.isLoading = true;
@@ -144,13 +144,10 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
             state.basketState.error = payload?.message.data ?? "error during deleteCart";
             state.basketState.isLoading = false;
         });
-        
-
-
     }
 });
 
-export const { clearBasketError, clearCartError} = cartActions;
+export const { clearBasketError, clearCartError } = cartActions;
 export default cartReducer;
 
 

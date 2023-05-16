@@ -23,7 +23,7 @@ interface Props {
     headLine: string;
 }
 const DRAWER_WIDTH = 240;
-const Bar2: React.FC<Props> = ({ headLine }) => {
+const Bar3: React.FC<Props> = ({ headLine }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [storeOpen, setStoreOpen] = React.useState(false);
@@ -36,7 +36,8 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const userName = useAppSelector((state) => state.auth.userName);
     const stores = useAppSelector((state) => state.auth.storeRoles);
     const storeInfo = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
-    const managerInStore = useAppSelector((state) => state.auth.storeRoles).filter(store => store.storeId == storeInfo.id).length > 0;
+    const managerInStore = useAppSelector((state) => state.auth.storeRoles).filter(store => store.storeId == storeInfo.id);
+    //reduce on cart.basket
     const numProductsIncart = cart?.baskets?.reduce((acc, item) => acc + item.products.productsList.length, 0) ?? 0;
     const handleLogout = () => {
         console.log("logout");
@@ -62,39 +63,10 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
-                        {managerInStore &&
-                            <IconButton
-                                size="large"
-                                edge="start"
-                                color="inherit"
-                                aria-label="menu"
-                                className="icon"
-                                onClick={handleDrawerOpen}
-                                sx={{ mr: 2, ...(openDrawer && { display: 'none' }) }}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                        }
-
                         <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
                             {headLine}
                         </Typography>
-                        {isLoggedIn &&
-                            <>
-                                <IconButton className="icon" color="inherit" onClick={handleLogout}>
-                                    <LogoutIcon />
-                                </IconButton>
-                                <IconButton className="icon" color="inherit" onClick={() => setStoreOpen(true)}>
-                                    <StorefrontIcon />
-                                </IconButton>
-                                <IconButton className="icon" sx={{ mt: 0.5 }} color="inherit" onClick={() => { console.log("notifications") }}>
-                                    <div className="numberIcon">
-                                        <NotificationsOutlinedIcon />
-                                        <span>{notifications.length}</span>
-                                    </div>
-                                </IconButton>
-                            </>
-                        }
+
                         <IconButton className="icon" color="inherit" onClick={() => {
                             setProfileDialogOpen(true);
                         }}>
@@ -116,56 +88,34 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                     setProfileDialogOpen(false);
                 }}
             >
-                {isLoggedIn ?
-                    <>
-                        <DialogTitle>Profile</DialogTitle>
-                        <DialogContent dividers>
-                            <Box display="flex" alignItems="center">
-                                <Avatar />
-                                <Box ml={3}>
-                                    <Typography>{userName}</Typography>
-                                </Box>
-                            </Box>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button
-                                onClick={() => {
-                                    setProfileDialogOpen(false);
-                                    dispatch(logout(userId));
-                                    navigate('/auth/login')
-                                }}
-                            >
-                                logout
-                            </Button>
-                            <Button
-                                onClick={() => {
-                                    setProfileDialogOpen(false);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                        </DialogActions>
-                    </> :
-                    <DialogActions>
-                        <Button
-                            onClick={() => {
-                                setProfileDialogOpen(false);
-                                navigate('/auth/login')
-                            }}
-                        >
-                            login
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                setProfileDialogOpen(false);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                    </DialogActions>
-                }
+                <DialogTitle>Profile</DialogTitle>
+                <DialogContent dividers>
+                    <Box display="flex" alignItems="center">
+                        <Avatar />
+                        <Box ml={3}>
+                            <Typography>{userName}</Typography>
+                        </Box>
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => {
+                            setProfileDialogOpen(false);
+                            dispatch(logout(userId));
+                            navigate('/auth/login')
+                        }}
+                    >
+                        logout
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            setProfileDialogOpen(false);
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                </DialogActions>
             </Dialog>
-
             <Dialog
                 open={storeOpen}
                 onClose={() => {
@@ -200,7 +150,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                     <Button
                         onClick={() => {
                             setStoreOpen(false);
-                            navigate('/dashboard/store/new');
+                            navigate('/dashboard/stores/new');
                         }}
                     >
                         add new store
@@ -213,4 +163,4 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
         </>
     );
 }
-export default Bar2;
+export default Bar3;

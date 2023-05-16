@@ -2,6 +2,7 @@ import './ShopBar.css'; // Import the CSS file
 import { useAppSelector } from '../../../redux/store';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { setWhatchedStoreInfo } from '../../../reducers/storesSlice';
 
 const ShopsBar: React.FC = () => {
     const store_response = useAppSelector((state) => state.store.storeInfoResponseData);
@@ -55,6 +56,7 @@ const ShopsBar: React.FC = () => {
                         onClick={(e) => {
                             e.preventDefault();
                             console.log('shop', shop);
+                            setWhatchedStoreInfo(shop.id);
                             navigate(`shops/${shop.id}/visitor`);
                         }}
                     >
