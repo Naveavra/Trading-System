@@ -20,7 +20,7 @@ const Tests: React.FC = () => {
     // console.log("stores",stores);
     const handleOnAddStore = () => {
         console.log("front add store");
-        dispatch(postStore({ userId: 1, desc: "new store" }));
+        dispatch(postStore({ userId: 1, desc: "new store", img: "", name: "nike" }));
         // dispatch(getStores());
     }
     const handleOnRemove = () => {
@@ -102,7 +102,7 @@ const Tests: React.FC = () => {
 
     const handleOnGetProducts = () => {
         console.log("front get products");
-        dispatch(getProducts({ storeId: 1 }));
+        dispatch(getProducts());
     }
     const handleOnPatchProducts = () => {
         console.log("front patch products");
