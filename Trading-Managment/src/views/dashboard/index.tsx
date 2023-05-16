@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
 import DashboardFrame from '../../components/Frame';
 import AlertDialog from '../../components/Dialog/AlertDialog';
@@ -21,6 +21,8 @@ import { Product } from '../../types/systemTypes/Product';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
+
+    const [text, setText] = useState('');
     const isLoadingShops = useAppSelector((state) => !!state.store.isLoading);
     const isLoadingProducts = useAppSelector((state) => !!state.product.isLoading);
     const userId = useAppSelector((state) => state.auth.userId);

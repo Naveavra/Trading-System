@@ -1,5 +1,5 @@
 import { Permission } from "../systemTypes/Permission";
-import { StoreRole } from "../systemTypes/StoreRole";
+import { StoreRole, StoreName, StoreImg } from "../systemTypes/StoreRole";
 
 export interface TokenResponseBody {
     token: string;
@@ -10,6 +10,8 @@ export interface TokenResponseBody {
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];
+    storeNames: StoreName[];
+    storeImgs: StoreImg[];
     permmisions: Permission[];
 };
 export interface RegisterResponseData {
@@ -25,5 +27,7 @@ export interface getClientResponseData {
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];
+    storeNames: StoreName[];
+    storeImgs: StoreImg[];
     permmisions: Permission[];
 };

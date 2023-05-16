@@ -39,6 +39,12 @@ public class LoginInformation {
     }
 
     public String getUserName() {
-        return userName;
-    }
+        return userName;}
+    public boolean getIsAdmin(){return isAdmin;}
+    public List<String> getNotifications(){return notifications;}
+    public boolean HasQuestions(){return hasQuestions;}
+    public HashMap<Integer, Role> getStoreRoles(){return storeRoles;}
+    public HashMap<Integer, String> getStoreNames(){return storeNames;}
+    public HashMap<Integer, String> getStoreImg(){return storeImg;}
+
 }

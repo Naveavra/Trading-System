@@ -5,7 +5,7 @@ import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
 import { RegisterPostData } from "../types/requestTypes/authTypes";
-import { StoreRole } from "../types/systemTypes/StoreRole";
+import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
 import { getUserData } from "../types/requestTypes/authTypes";
 
@@ -18,6 +18,8 @@ interface AuthState {
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];
+    storeNames: StoreName[];
+    storeImgs: StoreImg[];
     permmisions: Permission[];
     error: string | null;
     isLoginLoading: boolean;
@@ -38,6 +40,8 @@ const initialState: AuthState = {
     isAdmin: false,
     hasQestions: false,
     storeRoles: [],
+    storeNames: [],
+    storeImgs: [],
     notifications: [],
     permmisions: [],
     message: null,
@@ -151,6 +155,8 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.isAdmin = payload.responseBody.isAdmin;
             state.hasQestions = payload.responseBody.hasQestions;
             state.storeRoles = payload.responseBody.storeRoles;
+            state.storeNames = payload.responseBody.storeNames;
+            state.storeImgs = payload.responseBody.storeImgs;
             state.notifications = payload.responseBody.notifications;
             state.permmisions = payload.responseBody.permmisions;
             console.log(payload.responseBody);

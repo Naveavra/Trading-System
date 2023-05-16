@@ -8,16 +8,14 @@ import market.Market;
 import org.json.JSONObject;
 import utils.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import utils.marketRelated.MarketInfo;
 import utils.marketRelated.Response;
 import utils.messageRelated.Message;
+import utils.orderRelated.Order;
 import utils.orderRelated.OrderInfo;
 import utils.userInfoRelated.Info;
 import utils.userInfoRelated.Receipt;
@@ -121,10 +119,33 @@ public class API {
         return fromResToPair(res);
     }
 
+    private JSONObject loginToJson(LoginInformation login)
+    {
+        JSONObject json = new JSONObject();
+        json.put("token", login.getToken());
+        json.put("userId", login.getUserId());
+        json.put("name", login.getUserName());
+        json.put("isAdmin", login.getIsAdmin());
+        json.put("notifications", login.getNotifications());
+        json.put("hasQuestions", store.getRating());
+        json.put("img", store.getUrl());
+        return json;
+    }
 
     //member functions
     public Pair<Boolean, JSONObject> login(String email , String pass){
         Response<LoginInformation> res = market.login(email, pass);
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", loginToJson(res.getValue()));
+            return new Pair<>(true, json);
+        }
+        loginToJson(res.getValue());
         return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> getClient(int userId, String token) {
@@ -605,21 +626,43 @@ public class API {
         return fromResToPair(res);
     }
 
+    private JSONObject storeToJson(StoreInfo store)
+    {
+        JSONObject json = new JSONObject();
+        json.put("storeId", store.getStoreId());
+        json.put("name", store.getName());
+        json.put("description", store.getDescription());
+        json.put("isActive", store.getIsActive());
+        json.put("creatorId", store.getCreatorId());
+        json.put("rating", store.getRating());
+        json.put("img", store.getUrl());
+        return json;
+    }
+
+    private String storesToJson(List<StoreInfo> stores)
+    {
+        return stores.stream()
+                .map(info -> storeToJson(info).toString())
+                .collect(Collectors.joining(",", "[", "]"));
+    }
     public Pair<Boolean, JSONObject> getStores()
     {
         Response<List<StoreInfo>> res = market.getStoresInformation();
-        // TODO: cast this to json
-        return fromResToPair(res);
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", storesToJson(res.getValue()));
+            return new Pair<>(true, json);
+        }
     }
     public Pair<Boolean, JSONObject> getStore(int userId, String token, int storeId) {
         Response<Store> res =  market.getStore(userId, token, storeId);
         return fromResToPair(res);
 
-    }
-    public Pair<Boolean, JSONObject> getStoresInformation(){
-        Response<List<StoreInfo>> res = market.getStoresInformation();
-        // TODO: cast this to json
-        return fromResToPair(res);
     }
 
     public Pair<Boolean, JSONObject> getAppointments(int userId, String token, int storeId)
@@ -634,5 +677,33 @@ public class API {
         Response<MarketInfo> res = market.watchMarketStatus(adminId, token);
         // TODO: cast this to json
         return fromResToPair(res);
+    }
+
+    public void mockData(){
+        market.register("eli@gmail.com", "123Aaa", "24/02/2002");
+        market.register("ziv@gmail.com", "456Bbb", "01/01/2002");
+        market.register("nave@gmail.com", "789Ccc", "01/01/1996");
+        Response<LoginInformation> res = market.login("eli@gmail.com", "123Aaa");
+        int id1 = res.getValue().getUserId();
+        String token1 = res.getValue().getToken();
+        res = market.login("ziv@gmail.com", "456Bbb");
+        int id2 = res.getValue().getUserId();
+        String token2 = res.getValue().getToken();
+        Response<Integer> res2 = market.openStore(id1, token1, "nike", "shoe store", "https://www.pexels.com/photo/close-up-photography-of-red-and-black-nike-running-shoe-786003/");
+        int sid1 = res2.getValue();
+        res2 = market.openStore(id2, token2, "rollups", "candy store", "https://www.pexels.com/photo/m-m-s-chocolates-in-bowl-65547/");
+        int sid2 = res2.getValue();
+        List<String> categories = new LinkedList<>();
+        categories.add("shoes");
+        categories.add("new");
+        categories.add("fresh");
+        res2 = market.addProduct(id1, token1, sid1, categories, "air1", "comfy", 100, 4, "https://www.pexels.com/photo/white-yellow-and-black-sneakers-in-close-up-shot-13691727/");
+        int pid1 = res2.getValue();
+        res2 = market.addProduct(id1, token1, sid1, categories, "air2", "more comfy", 300, 1,"https://www.pexels.com/photo/person-wearing-air-jordan-1-4215840/");
+        int pid2 = res2.getValue();
+        market.addProductToCart(id1, sid1, pid1, 1);
+        market.makePurchase(id1, "9999999");
+        market.logout(id1);
+        market.logout(id2);
     }
 }

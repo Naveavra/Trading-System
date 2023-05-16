@@ -103,7 +103,10 @@ public class Store {
         for(Message msg: storeReviews.values()){
             sum+= msg.getRating();
         }
-        return sum/storeReviews.size();
+        if(storeReviews.size() == 0)
+            return 0.0;
+        else
+            return sum / storeReviews.size();
     }
     public AppHistory getAppHistory(){return appHistory;}
 

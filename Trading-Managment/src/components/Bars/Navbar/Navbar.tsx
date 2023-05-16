@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -6,17 +6,12 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css"
 import LogoutIcon from '@mui/icons-material/Logout';
-import PersonIcon from '@mui/icons-material/Person';
-import AddIcon from '@mui/icons-material/Add';
-import Cart from "../../Cart/Cart";
 import { Product } from "../../../types/systemTypes/Product";
-import { Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, MenuItem, Typography } from "@mui/material";
+import { Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
 import { guestEnter, logout } from "../../../reducers/authSlice";
-import { Server as WebSocketServer, get } from 'http';
-import { useSocket } from "../../../hooks/useSocket";
-import { blue } from "@mui/material/colors";
 import { getStore } from "../../../reducers/storesSlice";
+import { StoreRole } from "../../../types/systemTypes/StoreRole";
 
 interface Props {
     headLine: string;
@@ -29,11 +24,20 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
     const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector((state) => state.auth.userName);
-    const stores = [{ number: 1, name: 'nike', role: 'manager', src: 'https://images.pexels.com/photos/8176112/pexels-photo-8176112.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
-    { number: 2, name: 'apple', role: 'creator', src: 'https://images.pexels.com/photos/13748756/pexels-photo-13748756.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }]//useAppSelector((state) => state.auth.storeRoles);
+    const stores_roles: StoreRole[] = useAppSelector((state) => state.auth.storeRoles);
+    const stores_names = useAppSelector((state) => state.auth.storeNames);
+    const store_images = useAppSelector((state) => state.auth.storeImgs);
+    const stores = stores_roles ? stores_roles.map((role, index) => {
+        return {
+            storeId: index,
+            storeRole: role,
+            storeName: stores_names[index],
+            sroteImg: store_images[index],
+        }
+    }) : [];
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-
+    console.log("stores", stores);
 
     const handleLogout = () => {
         console.log("logout");
@@ -158,12 +162,12 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                             <>
                                 {stores.map((store) => {
                                     return (
-                                        <DialogContent dividers key={store.name}>
-                                            <Button onClick={handleChooseStore(store.number)}>
-                                                <Avatar src={store.src} />
-                                                <Box ml={3} display={'flex'} key={store.name}>
-                                                    <Typography sx={{ ml: 2, mr: 3 }}>{store.name}</Typography>
-                                                    <Typography>{store.role}</Typography>
+                                        <DialogContent dividers key={store.storeId}>
+                                            <Button onClick={handleChooseStore(store.storeId)}>
+                                                <Avatar src={store.sroteImg} />
+                                                <Box ml={3} display={'flex'} key={store.storeId}>
+                                                    <Typography sx={{ ml: 2, mr: 3 }}>{store.storeName}</Typography>
+                                                    <Typography>{store.storeRole}</Typography>
                                                 </Box>
                                             </Button>
                                         </DialogContent>

@@ -41,6 +41,7 @@ public class Server {
 //        messageQueue.put(1,new ArrayBlockingQueue<>(20));
 //        api.register("eli@gmail.com", "aA12345", "22/02/2002");
         init();
+        api.mockData();
         connectedThread = new ConnectedThread(connected);
         connectedThread.start();
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
@@ -110,7 +111,8 @@ public class Server {
 
         //stores
         get("api/stores/info" , (req,res)->{
-            toSparkRes(res, api.getStoresInformation());
+            toSparkRes(res, api.getStores());
+            System.out.println(res.body());
             return res.body();
         });
         get("api/stores", (req, res) -> {
@@ -129,6 +131,7 @@ public class Server {
             return res.body();
         });
         post("api/stores", (req, res) -> {
+            System.out.println("new store");
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String name = request.getString("name");
@@ -199,6 +202,7 @@ public class Server {
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int managerId = Integer.parseInt(request.get("managerId").toString());
             List<String> permissions = (List<String>) request.get("permissions");
+            return res.body();
         });
         delete("api/stores/:id", (req, res)-> {
             JSONObject request = new JSONObject(req.body());
@@ -360,7 +364,6 @@ public class Server {
             toSparkRes(res, api.removeCart(userId));
             return res.body();
         });
-
     }
 
 }

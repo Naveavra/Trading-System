@@ -41,8 +41,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const handleLogout = () => {
         console.log("logout");
         dispatch(logout(userId));
-        dispatch(guestEnter());
-        navigate('/dashboard');
+        navigate('/dashboard/auth/login');
     };
     const handleChooseStore = (storeNumber: number) => () => {
         console.log("choose store", storeNumber);

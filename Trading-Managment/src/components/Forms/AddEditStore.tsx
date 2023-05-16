@@ -33,6 +33,7 @@ const AddEditStore: React.FC<storeProps> = ({ mode }) => {
         let response;
         switch (mode) {
             case 'add':
+                console.log(form.getValues());
                 response = dispatch(postStore(form.getValues()));
                 break;
             case 'edit':
@@ -46,7 +47,7 @@ const AddEditStore: React.FC<storeProps> = ({ mode }) => {
     }
     const handleOnClose = () => {
         setOpen(false);
-        navigate("/dashboard");
+        navigate(-1);
         dispatch(getStore({ userId: userId, storeId: store_id }));
     }
     return (
