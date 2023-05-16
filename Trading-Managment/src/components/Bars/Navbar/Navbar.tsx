@@ -157,10 +157,10 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                             <>
                                 {stores.map((store) => {
                                     return (
-                                        <DialogContent dividers>
+                                        <DialogContent dividers key={store.name}>
                                             <Button onClick={handleChooseStore(store.number)}>
                                                 <Avatar src={store.src} />
-                                                <Box ml={3} display={'flex'} >
+                                                <Box ml={3} display={'flex'} key={store.name}>
                                                     <Typography sx={{ ml: 2, mr: 3 }}>{store.name}</Typography>
                                                     <Typography>{store.role}</Typography>
                                                 </Box>
@@ -171,6 +171,13 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                                 )}
                             </>
                             <DialogActions>
+                                <Button
+                                    onClick={() => {
+                                        navigate('/dashboard/stores');
+                                    }}
+                                >
+                                    add new store
+                                </Button>
                                 <Button
                                     onClick={() => {
                                         setStoreOpen(false);
