@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/store"
 import { appointManager, appointOwner, deleteStore, fireManager, fireOwner, getStore, postStore } from "../../reducers/storesSlice";
 import { Button } from "@mui/material";
@@ -8,12 +8,13 @@ import { getProducts, patchProduct, postProduct } from "../../reducers/productsS
 import { deleteCart, getCart, patchCart, postBasket } from "../../reducers/cartSlice";
 import { Basket } from "../../types/systemTypes/Basket";
 import { PatchCartParams } from "../../types/requestTypes/cartTypes";
+import axios from "axios";
 const Tests: React.FC = () => {
     const dispatch = useAppDispatch();
     const id = 1;
     const error = useAppSelector((state) => state.store.error);
     const message = useAppSelector((state) => state.store.storeState.responseData);
-    
+
     //const stores_response = useAppSelector((state) => state.store.responseData);
     //const stores: Store[] = stores_response.data.results ?? [];
     // console.log("stores",stores);
@@ -30,10 +31,6 @@ const Tests: React.FC = () => {
     const handleOnAddProduct = () => {
         console.log("front add product")
         dispatch(postProduct({ id: 1, storeId: 1, category: [], name: "mazda 3", description: "ziv's mazda", price: 5, quantity: 5, img: "" }))
-    }
-    const handleOnGetProducts = () => {
-        console.log("front get products")
-        dispatch(getProducts({ storeId: 1 }))
     }
     const handleOnPatchProduct = () => {
         // console.log("frontpatch product")
@@ -102,67 +99,62 @@ const Tests: React.FC = () => {
             console.error(error);
         }
     };
-        console.log("front add product");
-        dispatch(postProduct({id: 1, storeId: 1, category: [], name: "mazda 3", description: "ziv's mazda", price: 5, quantity: 5, img: ""}));
-    }
+
     const handleOnGetProducts = () => {
         console.log("front get products");
-        dispatch(getProducts({storeId: 1}));
+        dispatch(getProducts({ storeId: 1 }));
     }
     const handleOnPatchProducts = () => {
         console.log("front patch products");
-        dispatch(patchProduct({id: 1, storeId: 1, productId: 0, category: [], name: "mazda 6", description: null, price: 50, quantity: 10, img: ""}));
+        dispatch(patchProduct({ id: 1, storeId: 1, productId: 0, category: [], name: "mazda 6", description: null, price: 50, quantity: 10, img: "" }));
     }
     const handleOnAppointManager = () => {
         console.log("front appoint products");
-        dispatch(appointManager({storeId: 0,userIncharge: 1, newOwner: 2}));
+        dispatch(appointManager({ storeId: 0, userIncharge: 1, newOwner: 2 }));
     }
     const handleOnAppointOwner = () => {
         console.log("front appoint products");
-        dispatch(appointOwner({storeId: 0,userIncharge: 1, newOwner: 2}));
+        dispatch(appointOwner({ storeId: 0, userIncharge: 1, newOwner: 2 }));
     }
     const handleOnFireManager = () => {
         console.log("front appoint products");
-        dispatch(fireManager({storeId: 0,userIncharge: 1, newOwner: 2}));
+        dispatch(fireManager({ storeId: 0, userIncharge: 1, newOwner: 2 }));
     }
     const handleOnFireOwner = () => {
         console.log("front appoint products");
-        dispatch(fireOwner({storeId: 0,userIncharge: 1, newOwner: 2}));
+        dispatch(fireOwner({ storeId: 0, userIncharge: 1, newOwner: 2 }));
     }
-    
+
     const handleOnPostBasket = () => {
         const data: { productId: number, quantity: number }[] = [
             { productId: 1, quantity: 5 },
             { productId: 2, quantity: 3 },
             { productId: 3, quantity: 2 }
-          ];
-          const basket: Basket = {
+        ];
+        const basket: Basket = {
             productsList: data
-          };
+        };
         console.log("front appoint products");
-        dispatch(postBasket({userId: 0, storeId: 5, basket : basket}));
+        dispatch(postBasket({ userId: 0, storeId: 5, basket: basket }));
     }
-   
-    const handleOnPatchCart = () =>
-    {  
-        dispatch(patchCart({userId: 0,storeId: 0, productId: 1, quantity: 5})).then((response =>{
+
+    const handleOnPatchCart = () => {
+        dispatch(patchCart({ userId: 0, storeId: 0, productId: 1, quantity: 5 })).then((response => {
             const responseData = response.payload;
             console.log(responseData);
         }))
     }
-    const handleOnGetCart = () =>
-    {
+    const handleOnGetCart = () => {
         dispatch(getCart({ userId: 0 })).then((response) => {
             const responseData = response.payload; // Access the response data
             console.log(responseData);
             // Perform further operations with the response data
-          });
+        });
         //dispatch(getCart({userId: 0}));
     }
-    
-    const handleOnDeleteCart = () =>
-    {
-        dispatch(deleteCart({userId: 0}));
+
+    const handleOnDeleteCart = () => {
+        dispatch(deleteCart({ userId: 0 }));
     }
 
 
@@ -181,7 +173,6 @@ const Tests: React.FC = () => {
     //     //     clearInterval(pingInterval)
     //     // };
     // }, [message, dispatch])
->>>>>>> checkingServer
     return (
         <>
             <Button
@@ -224,28 +215,15 @@ const Tests: React.FC = () => {
                 type="submit"
                 fullWidth
                 variant="contained"
-<<<<<<< HEAD
-                onClick={handleOnGetProducts}
-                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
-            >
-                {'patch store'}
-=======
                 onClick={handleOnPatchProducts}
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
                 {'patch product'}
->>>>>>> checkingServer
             </Button >
             <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-<<<<<<< HEAD
-                onClick={sendMessage}
-                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
-            >
-                {'send message'}
-=======
                 onClick={handleOnAppointManager}
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
@@ -313,7 +291,6 @@ const Tests: React.FC = () => {
                 sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
             >
                 {'delete cart'}
->>>>>>> checkingServer
             </Button >
             {error ? <ErrorAlert message={error} /> : null}
             {message ? <SuccessAlert message={message} /> : null}

@@ -1,5 +1,6 @@
 package market;
 
+import utils.ProductInfo;
 import utils.LoginInformation;
 import utils.marketRelated.Response;
 
@@ -102,6 +103,7 @@ public interface MarketInterface {
     //todo: decide if getStore will bring every thing together , products , orders , ..statistics
     //public Response getStore(int storeId);
     public Response getProducts(int storeId);
+    public Response getProducts();
 
     // admin methods
     public Response adminLogin(String email, String pass);

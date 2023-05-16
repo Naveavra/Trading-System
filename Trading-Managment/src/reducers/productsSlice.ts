@@ -47,7 +47,7 @@ export const postProduct = createAsyncThunk<
 
 export const patchProduct = createAsyncThunk<
     string,
-    PatchProductsParams ,
+    PatchProductsParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/patch`,
@@ -73,12 +73,12 @@ export const deleteProduct = createAsyncThunk<
 
 export const getProducts = createAsyncThunk<
     ApiListData<Product>,
-    GetStoreProductsParams,
+    void,
     { rejectValue: ApiError }
 >(
     `${reducerName}/get`,
-    async (formData, thunkApi) => {
-        return productsApi.getProducts(formData)
+    async (_, thunkApi) => {
+        return productsApi.getProducts()
             .then((res) => thunkApi.fulfillWithValue(res as ApiListData<Product>))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });

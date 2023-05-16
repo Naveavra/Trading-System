@@ -24,3 +24,9 @@ export type appointManagerFormValues = {
     storeId: number;
     emailOfManager: string;
 }
+export type storeFormValues = {
+    userId: number,
+    name: string,
+    desc: string,
+    img: string, //description
+}

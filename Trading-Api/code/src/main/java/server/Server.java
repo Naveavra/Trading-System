@@ -233,9 +233,8 @@ public class Server {
         });
         get("api/products", (req, res) ->
         {
-            JSONObject request = new JSONObject(req.body());
-            int storeId = Integer.parseInt(request.get("storeId").toString());
-            toSparkRes(res, api.getProducts(storeId));
+            System.out.println("get products");
+            toSparkRes(res, api.getProducts());
             return res.body();
         }
         );
@@ -293,7 +292,11 @@ public class Server {
             return res.body();
         }
         );
-
+        //------STORES----------//
+        get("api/stores/info" , (req,res)->{
+            toSparkRes(res, api.getStoresInformation());
+            return res.body();
+        });
         //--APPOINTMENTS
         //--CART
         post("api/cart/:id", (req, res) ->

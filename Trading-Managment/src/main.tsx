@@ -8,12 +8,14 @@ import { RouterProvider } from 'react-router-dom';
 import { store, useAppDispatch, useAppSelector } from './redux/store';
 import { router } from './router';
 import axios from 'axios';
+import { persistor } from './redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
 //import { hubConnection } from 'signalr-no-jquery';
 
 const App = () => {
   const userId = useAppSelector((state) => state.auth.userId);
   const dispatch = useAppDispatch();
-  const retryConnection = useRef(0);
+  //const retryConnection = useRef(0);
 
   // const newConnection = hubConnection('http://localhost:4567/api/signalR', { logging: true, });
   // const hubProxy = newConnection.createHubProxy('NotificationHub');
@@ -54,7 +56,11 @@ const App = () => {
 };
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <Provider store={store}>
-    <App />
-  </Provider>
+  <React.StrictMode>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
+    </Provider>
+  </React.StrictMode>
 );
