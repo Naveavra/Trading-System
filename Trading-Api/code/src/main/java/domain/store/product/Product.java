@@ -13,6 +13,7 @@ public class Product {
     public int price; //for one product
     public int quantity;
     public double rating;
+    private String imgUrl;
 //    public ArrayList<String> categories;
     //private ConcurrentLinkedDeque<String> categories;
     //private double discount;  no need for discount here, the discount is calculated by the policy
@@ -30,6 +31,20 @@ public class Product {
         price = 0;
         categories = new ArrayList<>();
         rating = 5;
+    }
+
+    public Product(int prod_id, String _name, String desc, String imgUrl){
+        id = prod_id;
+        name = _name;
+        description = desc;
+        price = 0;
+        categories = new ArrayList<>();
+        rating = 5;
+        this.imgUrl = imgUrl;
+    }
+
+    public void changeImg(String imgUrl){
+        this.imgUrl = imgUrl;
     }
 
     public String getName(){return name;}

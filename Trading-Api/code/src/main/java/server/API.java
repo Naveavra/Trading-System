@@ -172,8 +172,8 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> openStore(int userId, String token, String storeDescription){
-        Response<Integer> res = market.openStore(userId, token, storeDescription);
+    public Pair<Boolean, JSONObject> openStore(int userId, String token, String name, String storeDescription, String img){
+        Response<Integer> res = market.openStore(userId, token, name, storeDescription, img);
         return fromResToPair(res);
     }
 
@@ -320,8 +320,9 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> addProduct(int userId, String token, int storeId, List<String> categories, String name , String description , int price , int quantity){
-        Response<Integer> res = market.addProduct(userId, token, storeId, categories, name, description, price, quantity);
+    public Pair<Boolean, JSONObject> addProduct(int userId, String token, int storeId, List<String> categories, String name , String description,
+                                                int price , int quantity, String img){
+        Response<Integer> res = market.addProduct(userId, token, storeId, categories, name, description, price, quantity, img);
         return fromResToPair(res);
     }
 
