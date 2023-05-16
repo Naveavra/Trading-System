@@ -6,20 +6,24 @@ import DashboardFrame from '../../components/Frame';
 import AlertDialog from '../../components/Dialog/AlertDialog';
 import { clearAuthError } from '../../reducers/authSlice';
 import CartLogo from '../../components/Loaders/cartLoader';
-import { clearStoresError } from '../../reducers/storesSlice';
+import { clearStoresError, getStoresInfo } from '../../reducers/storesSlice';
 import axios from 'axios';
 import { Outlet } from 'react-router-dom';
-import { clearProductsError } from '../../reducers/productsSlice';
+import { clearProductsError, getProducts } from '../../reducers/productsSlice';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
-    const isLoadingShops = false//useAppSelector((state) => !!state.shops.isLoading);
-    const isLoadingProducts = false //useAppSelector((state) => !!state.products.isLoading);
+    const isLoadingShops = useAppSelector((state) => !!state.store.isLoading);
+    const isLoadingProducts = useAppSelector((state) => !!state.product.isLoading);
     const userId = useAppSelector((state) => state.auth.userId);
     const error = useAppSelector((state) => state.auth.error);
-    const shopError = false//useAppSelector((state) => state.shops.error);
-    const productError = false//useAppSelector((state) => state.products.error);
+    const shopError = useAppSelector((state) => state.store.error);
+    const productError = useAppSelector((state) => state.product.error);
 
+    useEffect(() => {
+        dispatch(getStoresInfo());
+        dispatch(getProducts());
+    }, [dispatch]);
     return (
         <>
             {isLoadingShops || isLoadingProducts ?

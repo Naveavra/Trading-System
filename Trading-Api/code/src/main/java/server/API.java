@@ -340,8 +340,8 @@ public class API {
                 .collect(Collectors.joining(",", "[", "]"));
     }
 
-    public Pair<Boolean, JSONObject> getProducts(int storeId){
-        Response<List<ProductInfo>> res = market.getProducts(storeId);
+    public Pair<Boolean, JSONObject> getProducts(){
+        Response<List<ProductInfo>> res = market.getProducts();
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
         {
@@ -574,6 +574,11 @@ public class API {
     public Pair<Boolean, JSONObject> getStores()
     {
         Response<ConcurrentHashMap<Integer, Store>> res = market.getStores();
+        // TODO: cast this to json
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> getStoresInformation(){
+        Response<List<StoreInfo>> res = market.getStoresInformation();
         // TODO: cast this to json
         return fromResToPair(res);
     }

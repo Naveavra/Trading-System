@@ -505,6 +505,16 @@ public class Market implements MarketInterface {
     }
 
 
+    public Response<List<StoreInfo>> getStoresInformation() {
+        try {
+            List<StoreInfo> res = marketController.getStorseInformation();
+            logger.log(Logger.logStatus.Success, "user get store information successfully on " + LocalDateTime.now());
+            return new Response<>(res, null, null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "cant get store information because: " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "get product information failed", e.getMessage());
+        }
+    }
     @Override
     public Response<StoreInfo> getStoreInformation(int storeId) {
         try {
@@ -1049,9 +1059,20 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<List<ProductInfo>> getProducts(int storeId) {
+public Response<List<ProductInfo>> getProducts(int storeId){
+    try{
+        List<ProductInfo> products = marketController.getStoreProducts(storeId);
+        logger.log(Logger.logStatus.Success, "store get products successfully on " + LocalDateTime.now());
+        return new Response<>(products, null, null);
+    }catch(Exception e){
+        logger.log(Logger.logStatus.Fail, "cant get store products because: " + e.getMessage() + "on " + LocalDateTime.now());
+        return new Response<>(null, "get store products failed", e.getMessage());
+    }
+}
+    @Override
+    public Response<List<ProductInfo>> getProducts() {
         try{
-            List<ProductInfo> products = marketController.getStoreProducts(storeId);
+            List<ProductInfo> products = marketController.getAllProducts();
             logger.log(Logger.logStatus.Success, "store get products successfully on " + LocalDateTime.now());
             return new Response<>(products, null, null);
         }catch(Exception e){

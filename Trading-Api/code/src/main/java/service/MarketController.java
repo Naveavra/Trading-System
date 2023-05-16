@@ -94,6 +94,14 @@ public class MarketController {
     public StoreInfo getStoreInformation(int storeId) throws Exception {
         return storectrl.getStoreInformation(storeId);
     }
+    public List<StoreInfo> getStorseInformation() throws Exception {
+        List<StoreInfo> stores = new ArrayList<>();
+        for(Store s:storectrl.storeList.values()){
+            stores.add(s.getStoreInformation());
+        }
+        return stores;
+    }
+
 
     public String getStoreDescription(int storeId) throws Exception{
         Store store = storectrl.getStore(storeId);
@@ -235,5 +243,9 @@ public class MarketController {
 
     public void purchaseMade(Receipt receipt) throws Exception {
         storectrl.purchaseMade(receipt);
+    }
+
+    public List<ProductInfo> getAllProducts() {
+        return storectrl.getAllProducts();
     }
 }
