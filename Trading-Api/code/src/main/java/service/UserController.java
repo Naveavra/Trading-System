@@ -138,6 +138,22 @@ public class UserController {
         else
             throw new Exception("no member has this id");
     }
+    public HashMap<Integer, String> getStoreNames(int memberId) throws Exception{
+        Member m = getMember(memberId);
+        if(m != null){
+            return m.getNames();
+        }
+        else
+            throw new Exception("no member has this id");
+    }
+    public HashMap<Integer, String> getStoreImgs(int memberId) throws Exception{
+        Member m = getMember(memberId);
+        if(m != null){
+            return m.getImgs();
+        }
+        else
+            throw new Exception("no member has this id");
+    }
 
     //when logging out returns to main menu as guest
     public synchronized void logout(int memberId) throws Exception{
@@ -165,7 +181,10 @@ public class UserController {
     public synchronized void addProductToCart(int userId, int storeId, int productId, int quantity) throws Exception{
         if(userId % 2 == 0) {
             Guest g = guestList.get(userId);
-            g.addProductToCart(storeId, productId, quantity);
+            if(g != null)
+                g.addProductToCart(storeId, productId, quantity);
+            else
+                throw new Exception("no guest has this id");
         }
         else {
             String email = idToEmail.get(userId);
@@ -174,7 +193,6 @@ public class UserController {
             else
                 throw new Exception("no such member exists");
         }
-
     }
 
     public synchronized void addProductToCart(String email, int storeId, int productId, int quantity) throws Exception{
@@ -273,7 +291,7 @@ public class UserController {
             throw new Exception("no such member exists");
     }
 
-    public synchronized void purchaseMade(int userId, int orderId, int totalPrice) throws Exception{
+    public synchronized void purchaseMade(int userId, int orderId, double totalPrice) throws Exception{
         if (userId % 2 == 1) {
             String email = idToEmail.get(userId);
             if(email != null)
@@ -290,7 +308,7 @@ public class UserController {
         }
     }
 
-    public synchronized void purchaseMade(int orderId, String email, int totalPrice) throws Exception{
+    public synchronized void purchaseMade(int orderId, String email, double totalPrice) throws Exception{
         Member m = activeMemberList.get(email);
         if(m != null) {
                 m.purchaseMade(orderId, totalPrice);
@@ -1437,4 +1455,25 @@ public class UserController {
         return activeMemberList.containsKey(userId);
     }
 
+    public void removeCart(int userId) throws Exception{
+        if(userId % 2 == 0) {
+            Guest g = guestList.get(userId);
+            if(g != null)
+                g.emptyCart();
+            else
+                throw new Exception("no guest has this id");
+        }
+        else {
+            String email = idToEmail.get(userId);
+            if (email != null) {
+                Member m = activeMemberList.get(email);
+                if(m != null)
+                    m.removeCart();
+                else
+                    throw new Exception("no member has this cart");
+            }
+            else
+                throw new Exception("no such member exists");
+        }
+    }
 }

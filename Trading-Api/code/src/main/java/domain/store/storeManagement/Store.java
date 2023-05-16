@@ -93,6 +93,11 @@ public class Store {
         this.imgUrl = imgUrl;
     }
 
+    public String getName(){return storeName;}
+    public String getImgUrl(){
+        return imgUrl;
+    }
+
     public double getStoreRating(){
         double sum = 0.0;
         for(Message msg: storeReviews.values()){
@@ -456,8 +461,9 @@ public class Store {
         }
     }
 
-    public void updateProduct(int productId, List<String> categories, String name, String description, int price, int quantity) throws Exception {
-        inventory.updateProduct(productId,categories,name,description,price,quantity);
+    public void updateProduct(int productId, List<String> categories, String name, String description,
+                              int price, int quantity, String img) throws Exception {
+        inventory.updateProduct(productId,categories,name,description,price,quantity, img);
     }
 
 
@@ -474,7 +480,7 @@ public class Store {
     }
 
     public StoreInfo getStoreInformation() {
-        StoreInfo info = new StoreInfo(storeid, storeDescription, isActive, creatorId, getStoreRating());
+        StoreInfo info = new StoreInfo(storeid, storeName, storeDescription, isActive, creatorId, getStoreRating(), imgUrl);
         return info;
     }
 

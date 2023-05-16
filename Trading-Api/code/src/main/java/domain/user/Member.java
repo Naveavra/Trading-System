@@ -163,6 +163,9 @@ public class Member {
     public void addProductToCart(int storeId, int productId, int quantity) throws Exception{
             g.addProductToCart(storeId, productId, quantity);
     }
+    public void removeCart(){
+        g.emptyCart();
+    }
 
     public void removeProductFromCart(int storeId, int productId) throws Exception{
         g.removeProductFromCart(storeId, productId);
@@ -185,7 +188,7 @@ public class Member {
      * if the purchase was successful then add it to history
      * @param orderId
      */
-    public void purchaseMade(int orderId, int totalPrice){
+    public void purchaseMade(int orderId, double totalPrice){
         userHistory.addPurchaseMade(orderId, totalPrice, g.getCartContent());
         g.emptyCart();
 
@@ -542,6 +545,31 @@ public class Member {
         HashMap<Integer, Role> ans = new HashMap<>();
         for(int storeId : activeRoles.keySet()){
             ans.put(storeId, activeRoles.get(storeId).getRole());
+        }
+        for(int storeId : inActiveRoles.keySet()){
+            ans.put(storeId, inActiveRoles.get(storeId).getRole());
+        }
+        return ans;
+    }
+
+    public HashMap<Integer, String> getNames() {
+        HashMap<Integer, String> ans = new HashMap<>();
+        for(int storeId : activeStores.keySet()){
+            ans.put(storeId, activeStores.get(storeId).getName());
+        }
+        for(int storeId : inActiveStores.keySet()){
+            ans.put(storeId, inActiveStores.get(storeId).getName());
+        }
+        return ans;
+    }
+
+    public HashMap<Integer, String> getImgs(){
+        HashMap<Integer, String> ans = new HashMap<>();
+        for(int storeId : activeStores.keySet()){
+            ans.put(storeId, activeStores.get(storeId).getImgUrl());
+        }
+        for(int storeId : inActiveStores.keySet()){
+            ans.put(storeId, inActiveStores.get(storeId).getImgUrl());
         }
         return ans;
     }

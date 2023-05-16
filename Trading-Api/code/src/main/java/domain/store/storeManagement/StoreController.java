@@ -35,7 +35,7 @@ public class StoreController {
         int id = -1;
         if ((st = getStore(storeid)) != null) {
             Product p = st.addNewProduct(name, desc, productIDs,price,quantity);
-            p.setQuantity(quantity);
+            p.replaceQuantity(quantity);
             addToProducts(p.clone());
             id = p.getID();
         }
@@ -48,7 +48,7 @@ public class StoreController {
         int id = -1;
         if ((st = getStore(storeid)) != null) {
             Product p = st.addNewProduct(name, desc, productIDs,price,quantity, img);
-            p.setQuantity(quantity);
+            p.replaceQuantity(quantity);
             addToProducts(p.clone());
             id = p.getID();
         }
@@ -291,10 +291,11 @@ public class StoreController {
         }
     }
 
-    public void updateProduct(int storeId, int productId, List<String> categories, String name, String description, int price, int quantity) throws Exception {
+    public void updateProduct(int storeId, int productId, List<String> categories, String name, String description,
+                              int price, int quantity, String img) throws Exception {
         Store st;
         if((st = storeList.get(storeId))!=null){
-            st.updateProduct(productId, categories, name,  description, price, quantity);
+            st.updateProduct(productId, categories, name,  description, price, quantity, img);
         }
         else{
             throw new Exception("Store id doesn't exist.");

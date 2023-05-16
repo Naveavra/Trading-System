@@ -33,7 +33,7 @@ public class MarketController {
         gson = new Gson();
     }
 
-    public Pair<Receipt, Set<Integer>> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId, int totalPrice) throws Exception
+    public Pair<Receipt, Set<Integer>> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId) throws Exception
     {
         Order order = orderctrl.createNewOrder(userId,shoppingCart, storectrl :: calculatePrice,storectrl :: setPrices);
         order.setStatus(Status.pending);
@@ -107,13 +107,19 @@ public class MarketController {
         }
     }
 
-    public StoreInfo getStoreInformation(int storeId) throws Exception {
+    public StoreInfo getStoreInformation(int storeId){
         return storectrl.getStoreInformation(storeId);
     }
-    public List<StoreInfo> getStorseInformation() throws Exception {
+    public Store getStore(int storeId) throws Exception {
+        if(storectrl.storeList.containsKey(storeId))
+            return storectrl.storeList.get(storeId);
+        throw new Exception("the storeId given does not belong to any store");
+    }
+    public List<StoreInfo> getStoresInformation(){
         List<StoreInfo> stores = new ArrayList<>();
         for(Store s:storectrl.storeList.values()){
-            stores.add(s.getStoreInformation());
+            if(s.isActive())
+                stores.add(s.getStoreInformation());
         }
         return stores;
     }
@@ -138,6 +144,27 @@ public class MarketController {
         if (store != null )
         {
              store.setStoreDescription(des);
+        }
+        else {
+            throw new Exception("store does not exist");
+        }
+    }
+    public void setStoreImg(int storeId, String img) throws Exception{
+        Store store = storectrl.getStore(storeId);
+        if (store != null )
+        {
+            store.changeImg(img);
+        }
+        else {
+            throw new Exception("store does not exist");
+        }
+    }
+
+    public void setStoreName(int storeId, String name) throws Exception{
+        Store store = storectrl.getStore(storeId);
+        if (store != null )
+        {
+            store.changeName(name);
         }
         else {
             throw new Exception("store does not exist");
@@ -217,17 +244,6 @@ public class MarketController {
         return storectrl.getAppointments(storeId);
     }
 
-    public ConcurrentHashMap<Integer, Store> getStoresInformation() {
-        HashMap<Integer, Store> toReturn = new HashMap<>();
-        for (Map.Entry<Integer, Store> store: storectrl.getStoresInformation().entrySet())
-        {
-            if(store.getValue().isActive()) {
-                toReturn.put(store.getKey(), store.getValue());
-            }
-        }
-        return storectrl.getStoresInformation();
-    }
-
     public Set<Integer> closeStorePermanently(int storeId) throws Exception {
         return storectrl.closeStorePermanently(storeId);
     }
@@ -236,8 +252,9 @@ public class MarketController {
         storectrl.removeProduct(storeId,productId);
     }
 
-    public void updateProduct(int storeId, int productId, List<String> categories, String name, String description, int price, int quantity) throws Exception {
-        storectrl.updateProduct(storeId,productId,categories,name,description,price,quantity);
+    public void updateProduct(int storeId, int productId, List<String> categories, String name, String description,
+                              int price, int quantity, String img) throws Exception {
+        storectrl.updateProduct(storeId,productId,categories,name,description,price,quantity, img);
     }
 
     public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
@@ -264,4 +281,6 @@ public class MarketController {
     public List<ProductInfo> getAllProducts() {
         return storectrl.getAllProducts();
     }
+
+
 }

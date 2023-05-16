@@ -15,7 +15,7 @@ public class StoreCreator extends UserState {
 
 
         actions.add(Action.appointManager);
-        actions.add(Action.changeStoreDescription);
+        actions.add(Action.changeStoreDetails);
         actions.add(Action.changePurchasePolicy);
         actions.add(Action.changeDiscountPolicy);
         actions.add(Action.addPurchaseConstraint);

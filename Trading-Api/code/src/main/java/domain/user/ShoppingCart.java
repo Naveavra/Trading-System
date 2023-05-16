@@ -38,10 +38,9 @@ public class ShoppingCart {
             boolean check = baskets.get(storeId).changeQuantityInCart(productId, change);
             if(!check)
                 baskets.remove(storeId);
-
         }
         else
-            throw new Exception("the user's cart does not contain the store");
+            addProductToCart(storeId, productId, change);
 
 
     }

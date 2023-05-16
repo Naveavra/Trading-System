@@ -28,13 +28,10 @@ public class Basket {
 
     public boolean changeQuantityInCart(int productId, int change) throws RuntimeException{
         if(productList.containsKey(productId)) {
-            int quantity = productList.get(productId);
-            quantity = quantity + change;
-            if(quantity == 0)
+            if(change == 0)
                 return removeProductFromCart(productId);
             else
-                productList.put(productId, quantity);
-
+                productList.put(productId, change);
         }
         else
             throw new RuntimeException("the product isn't in the user's cart");

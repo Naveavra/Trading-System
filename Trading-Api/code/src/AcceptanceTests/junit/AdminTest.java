@@ -185,8 +185,7 @@ public class AdminTest extends ProjectTest {
         assertTrue(closeStore(ui.getUserId(), stores.get(0).getStoreId()) > 0);
         allStores = this.getAllStores();
         assertNotNull(allStores);
-        //TODO: assertEquals(stores.size() - 1, allStores.size());
-        assertEquals(stores.size(), allStores.size());
+        assertEquals(stores.size() -1, allStores.size());
         status = adminLogout(mainAdmin.getAdminId());
         assertTrue(status > 0);
     }

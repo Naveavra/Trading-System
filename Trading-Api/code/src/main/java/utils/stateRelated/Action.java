@@ -6,7 +6,7 @@ public enum Action {
     removeProduct, //removes a product from store
     updateProduct, //updates product fields
 
-    changeStoreDescription, // manager, owner, creator
+    changeStoreDetails, // manager, owner, creator
     changePurchasePolicy, // manager, owner, creator
     changeDiscountPolicy, // manager, owner, creator
     addPurchaseConstraint, // manager, owner, creator

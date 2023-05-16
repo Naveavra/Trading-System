@@ -67,7 +67,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int logout(int user) {
-        Response<String> res = market.logout(user, token);
+        Response<String> res = market.logout(user);
         if (res != null && !res.errorOccurred()) {
             return 1;
         }
@@ -143,7 +143,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int updateProduct(int userId, int storeId, int productId, List<String> categories, String name, String description, int price, int quantity) {
-        Response<String> res = market.updateProduct(userId, token, storeId, productId, categories, name, description, price, quantity);
+        Response<String> res = market.updateProduct(userId, token, storeId, productId, categories, name, description, price, quantity, null);
         if (res != null && !res.errorOccurred()) {
             return 1;
         }
@@ -329,12 +329,12 @@ public class BridgeImplement implements Bridge {
         return null;
     }
 
-    private List<StoreInfo> toStoresList(ConcurrentHashMap<Integer, Store> stores)
+    private List<StoreInfo> toStoresList(List<utils.StoreInfo> stores)
     {
         List<StoreInfo> storeInfos = new ArrayList<>();
-        for (ConcurrentHashMap.Entry<Integer, Store> entry : stores.entrySet())
+        for (utils.StoreInfo store : stores)
         {
-            storeInfos.add(new StoreInfo(entry.getValue()));
+            storeInfos.add(new StoreInfo(store));
         }
         return storeInfos;
     }
@@ -342,7 +342,8 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<StoreInfo> getAllStores() {
-        Response<ConcurrentHashMap<Integer, Store>> res = market.getStores();
+
+        Response<List<utils.StoreInfo>> res = market.getStoresInformation();
         if(!res.errorOccurred())
         {
             return toStoresList(res.getValue());
@@ -401,7 +402,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int adminLogout(int admin) {
-        Response<String> res = market.adminLogout(admin, token);
+        Response<String> res = market.adminLogout(admin);
         if(!res.errorOccurred())
         {
             return 1;

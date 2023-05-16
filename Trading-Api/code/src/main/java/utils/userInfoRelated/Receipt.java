@@ -19,6 +19,8 @@ public class Receipt {
         return orderId;
     }
 
+    public double getTotalPrice(){return totalPrice;}
+
     public HashMap<Integer, HashMap<Integer, Integer>> getProducts(){
         return products;
     }

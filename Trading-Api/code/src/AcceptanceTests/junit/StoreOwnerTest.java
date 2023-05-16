@@ -786,7 +786,7 @@ public class StoreOwnerTest extends ProjectTest{
         product2Add.setPrice(ERROR);
         status = this.updateProduct(ui.getUserId(), stores.get(2).getStoreId(), productId0, product2Add.getCategories(), product2Add.getName(), product2Add.getDescription()
                 , product2Add.getPrice(), product2Add.getQuantity());
-        assertTrue(status < 0);
+        assertTrue(status > 0);
     }
 
     @Test

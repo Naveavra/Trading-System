@@ -38,7 +38,7 @@ public class Inventory {
             int id = prod_id.getAndIncrement();
             p = new Product(id,name,description);
             p.setPrice(price);
-            p.setQuantity(quantity);
+            p.replaceQuantity(quantity);
             for(Product product : productList.values())
                 if(p.getName().equals(product.getName()) && p.getDescription().equals(product.getDescription())) {
                     prod_id.getAndDecrement();
@@ -56,7 +56,7 @@ public class Inventory {
             int id = prod_id.getAndIncrement();
             p = new Product(id,name,description, img);
             p.setPrice(price);
-            p.setQuantity(quantity);
+            p.replaceQuantity(quantity);
             for(Product product : productList.values())
                 if(p.getName().equals(product.getName()) && p.getDescription().equals(product.getDescription())) {
                     prod_id.getAndDecrement();
@@ -193,34 +193,32 @@ public class Inventory {
         return -1;
     }
 
-    public void updateProduct(int productId, List<String> categories,String name, String description, int price, int quantity) throws Exception{
+    public void updateProduct(int productId, List<String> categories,String name, String description,
+                              int price, int quantity, String img) throws Exception{
         if(productList.containsKey(productId)){
             if(categories!=null){
                 replaceCategories(productId,categories);
             }
-            else
-                throw new Exception("categories empty");
             if(name!=null){
                 setName(productId,name);
             }
-            else
-                throw new Exception("name is empty");
             if(description!=null){
                 setDescription(productId,description);
             }
-            else
-                throw new Exception("description is empty");
             if(price > 0){
                 setPrice(productId,price);
             }
-            else
-                throw new Exception("price is illegal");
             if(quantity > 0){
                 replaceQuantity(productId,quantity);
             }
-            else
-                throw new Exception("quantity is illegal");
+            if(img != null)
+                changeImg(productId, img);
         }
+    }
+
+    private void changeImg(int productId, String img) throws Exception{
+        Product p = getProduct(productId);
+        p.changeImg(img);
     }
 
     private void replaceQuantity(int productId, int quantity) throws Exception {

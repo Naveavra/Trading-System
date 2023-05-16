@@ -2,5 +2,5 @@ package service.supplier;
 
 public interface SupplierAdapter {
 
-    public void orderSupplies();
+    public boolean orderSupplies(int storeId, int productId, int quantity);
 }
