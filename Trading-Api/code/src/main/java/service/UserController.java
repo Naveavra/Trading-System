@@ -1433,4 +1433,8 @@ public class UserController {
         return membersInformation;
     }
 
+    public boolean isActiveUser(int userId){
+        return activeMemberList.containsKey(userId);
+    }
+
 }

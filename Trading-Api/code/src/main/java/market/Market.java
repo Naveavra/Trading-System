@@ -159,6 +159,28 @@ public class Market implements MarketInterface {
     }
 
     @Override
+    public Response<LoginInformation> getMember(int userId, String token) {
+        try {
+            userAuth.checkUser(userId, token);
+            LoginInformation loginInformation;
+            if (userId % 2 == 1 && userController.isActiveUser(userId)) {
+                loginInformation = new LoginInformation(token, userId, userController.getUserEmail(userId), true, displayNotifications(userId, token).getValue(),
+                        userController.hasSecQuestions(userId), userController.getUserRoles(userId));
+                return new Response<LoginInformation>(loginInformation, null, null);
+            }
+            else if(activeAdmins.containsKey(userId)){
+                loginInformation = new LoginInformation(token, userId, activeAdmins.get(userId).getEmailAdmin(), true, null,
+                        false, null);
+                return new Response<LoginInformation>(loginInformation, null, null);
+            }
+            else
+                return new Response<>(null, "get member failed", "the userId given does not belong to any user");
+        }catch (Exception e){
+            return new Response<>(null, "get member failed", e.getMessage());
+        }
+    }
+
+    @Override
     public Response<String> checkSecurityQuestions(int userId, String token, List<String> answers) {
         try {
             userAuth.checkUser(userId, token);

@@ -123,6 +123,10 @@ public class API {
         Response<LoginInformation> res = market.login(email, pass);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> getClient(int userId, String token) {
+        Response<LoginInformation> res = market.getMember(userId, token);
+        return fromResToPair(res);
+    }
     public Pair<Boolean,JSONObject> logout(int userId, String token){
         Response<String> res = market.logout(userId, token);
         return fromResToPair(res);
@@ -591,8 +595,6 @@ public class API {
         // TODO: cast this to json
         return fromResToPair(res);
     }
-
-
 
 
 }

@@ -1,5 +1,6 @@
 package market;
 
+import utils.LoginInformation;
 import utils.marketRelated.Response;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public interface MarketInterface {
 
     //member methods
     public Response login(String email , String pass);
+    Response<LoginInformation> getMember(int userId, String token);
     public Response checkSecurityQuestions(int userId, String token, List<String> answers);
     public Response addSecurityQuestion(int userId, String token, String question, String answer);
     public Response changeAnswerForLoginQuestion(int userId, String token, String question, String answer);

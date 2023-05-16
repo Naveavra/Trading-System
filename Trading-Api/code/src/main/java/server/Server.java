@@ -88,6 +88,15 @@ public class Server {
             toSparkRes(res, api.login(email, pass));
             return res.body();
         });
+
+        //getClient
+        post("api/auth/getClient", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.getClient(userId, token));
+            return res.body();
+        });
         post("api/auth/logout", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
