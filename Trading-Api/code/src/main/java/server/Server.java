@@ -192,6 +192,14 @@ public class Server {
             res.body(ret);
             return res.body();
         });
+        patch("api/stores/:storeId/permissions", (req, res) ->{
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int managerId = Integer.parseInt(request.get("managerId").toString());
+            List<String> permissions = (List<String>) request.get("permissions");
+        });
         delete("api/stores/:id", (req, res)-> {
             JSONObject request = new JSONObject(req.body());
             int adminId = Integer.parseInt(request.get("adminId").toString());
@@ -353,51 +361,6 @@ public class Server {
             return res.body();
         });
 
-
-
-
-
-
-
-
-        //---Cart-------------------------------:
-        //---------Guest-------------------------:
-
-        post("api/guest/:id/cart/:storeId/:productId", (req, res)->{
-            JSONObject request = new JSONObject(req.body());
-            int userId = (int) (request.get("userId"));
-            int storeId = (int) (request.get("storeId"));
-            int productId = (int) (request.get("productId"));
-            int quantity = (int) (request.get("newQuantity"));
-            toSparkRes(res, api.addProductToCart(userId, storeId, productId, quantity));
-            return res.body();
-        });
-
-        patch("api/guest/:id/cart/:storeId/:productId", (req, res)->{
-            JSONObject request = new JSONObject(req.body());
-            int userId = (int) (request.get("userId"));
-            int storeId = (int) (request.get("storeId"));
-            int productId = (int) (request.get("productId"));
-            int quantity = (int) (request.get("newQuantity"));
-            toSparkRes(res, api.changeQuantityInCart(userId, storeId, productId, quantity));
-            return res.body();
-        });
-
-        delete("api/guest/:id/cart/:storeId/:productId", (req, res)->{
-            JSONObject request = new JSONObject(req.body());
-            int userId = (int) (request.get("userId"));
-            int storeId = (int) (request.get("storeId"));
-            int productId = (int) (request.get("productId"));
-            toSparkRes(res, api.removeProductFromCart(userId, storeId, productId));
-            return res.body();
-        });
-        //TODO: ---------Member-------------------------:
-
-
-
-        //------STORES----------//
-        //--APPOINTMENTS
-        //--CART
     }
 
 }

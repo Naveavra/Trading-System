@@ -9,12 +9,12 @@ public class Logger {
         Fail,
     }
     private static Logger instance;
-    private HashMap<logStatus,List<String>> logMap;
+    private List<String> eventMap;
+    private List<String> failMap;
     
     private Logger() {
-        logMap = new HashMap<>();
-        logMap.put(logStatus.Success, new ArrayList<>());
-        logMap.put(logStatus.Fail, new ArrayList<>());
+        eventMap = new LinkedList<>();
+        failMap = new LinkedList<>();
     }
     
     public static synchronized Logger getInstance() {
@@ -30,9 +30,15 @@ public class Logger {
      * @param message String
      */
     public void log(logStatus type,String message) {
-        logMap.get(type).add(message);
+        if(type == logStatus.Success)
+            eventMap.add(message);
+        else
+            failMap.add(message);
     }
-    public HashMap<logStatus,List<String>> getLogMap(){
-        return logMap;
+    public List<String> getEventMap(){
+        return eventMap;
+    }
+    public List<String> getFailMap(){
+        return failMap;
     }
 }

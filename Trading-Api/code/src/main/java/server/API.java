@@ -543,18 +543,29 @@ public class API {
         return logsMessages;
     }
 
-    public Pair<Boolean, JSONObject> watchLog(int adminId, String token)
+    public Pair<Boolean, JSONObject> watchEventLog(int adminId, String token)
     {
-        Response<HashMap<Logger.logStatus, List<String>>> res = market.watchLog(adminId, token);
+        Response<List<String>> res1 = market.watchEventLog(adminId, token);
+        Response<List<String>> res2 = market.watchFailLog(adminId, token);
         //[{"status": ["log1...", "log2...", ......]}, ...]
         JSONObject json = new JSONObject();
-        if(res.errorOccurred())
+        if(res1.errorOccurred())
         {
-            json.put("errorMsg", res.getErrorMessage());
+            json.put("errorMsg", res1.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else if(res2.errorOccurred())
+        {
+            json.put("errorMsg", res2.getErrorMessage());
             return new Pair<>(false, json);
         }
         else {
-            json.put("value", logsToString(res.getValue()));
+            List<String> event = res1.getValue();
+            List<String> fail = res2.getValue();
+            HashMap<Logger.logStatus, List<String>> ans = new HashMap<>();
+            ans.put(Logger.logStatus.Fail, fail);
+            ans.put(Logger.logStatus.Success, event);
+            json.put("value", logsToString(ans));
             return new Pair<>(true, json);
         }
     }

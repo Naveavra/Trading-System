@@ -1401,7 +1401,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
     }
 
     @Override
-    public Response<HashMap<Logger.logStatus,List<String>>> watchLog(int adminId, String token){
+    public Response<List<String>> watchEventLog(int adminId, String token){
         try{
             userAuth.checkUser(adminId, token);
         }catch (Exception e){
@@ -1411,7 +1411,24 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         Admin admin = activeAdmins.get(adminId);
         if(admin !=null){
             logger.log(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now());
-            return new Response<>(logger.getLogMap(), null, null);
+            return new Response<>(logger.getEventMap(), null, null);
+        }
+        logger.log(Logger.logStatus.Fail, "cant get admin on" + LocalDateTime.now());
+        return new Response<>(null, "watch event log failed", "admin wasn't found");
+    }
+
+    @Override
+    public Response<List<String>> watchFailLog(int adminId, String token){
+        try{
+            userAuth.checkUser(adminId, token);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail, "cant watch log because: " + e.getMessage() +" on time: " + LocalDateTime.now());
+            return new Response<>(null, "watch log failed", e.getMessage());
+        }
+        Admin admin = activeAdmins.get(adminId);
+        if(admin !=null){
+            logger.log(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now());
+            return new Response<>(logger.getFailMap(), null, null);
         }
         logger.log(Logger.logStatus.Fail, "cant get admin on" + LocalDateTime.now());
         return new Response<>(null, "watch event log failed", "admin wasn't found");
