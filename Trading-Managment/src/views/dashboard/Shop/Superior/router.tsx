@@ -3,6 +3,7 @@ import Superior from "./superior";
 import AddEditProductForm from "../../../../components/Forms/AddEditProductForm";
 import AppointUser from "../../../../components/Forms/AppointUser";
 import FireUser from "../../../../components/Forms/FireUser";
+import AddEditStore from "../../../../components/Forms/AddEditStore";
 
 export const SuperiorShopRoutes =
     <Route key="routes" path="superior" element={<Superior />}>
@@ -12,6 +13,6 @@ export const SuperiorShopRoutes =
         <Route path="appointOwner" element={<AppointUser role={'owner'} />} />
         <Route path="fireManager" element={<FireUser role={'manager'} />} />
         <Route path="fireOwner" element={<FireUser role={'owner'} />} />
-
+        <Route path="editStore" element={<AddEditStore mode={'edit'} />} />
     </Route>
     ;

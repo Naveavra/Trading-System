@@ -5,7 +5,7 @@ import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
 import { RegisterPostData } from "../types/requestTypes/authTypes";
-import { StoreRole } from "../types/systemTypes/StoreRole";
+import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
 import { getUserData } from "../types/requestTypes/authTypes";
 
@@ -18,7 +18,9 @@ interface AuthState {
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];
-    permmisions: Permission[];
+    storeNames: StoreName[];
+    storeImgs: StoreImg[];
+    permissions: Permission[];
     error: string | null;
     isLoginLoading: boolean;
     isRegisterLoading: boolean;
@@ -38,8 +40,10 @@ const initialState: AuthState = {
     isAdmin: false,
     hasQestions: false,
     storeRoles: [],
+    storeNames: [],
+    storeImgs: [],
     notifications: [],
-    permmisions: [],
+    permissions: [],
     message: null,
     error: null,
     isLoginLoading: false,
@@ -144,16 +148,16 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(login.fulfilled, (state, { payload }: PayloadAction<{ rememberMe: boolean, responseBody: TokenResponseBody }>) => {
             state.isLoginLoading = false;
-            console.log(payload);
             state.token = payload.responseBody.token;
             state.userId = payload.responseBody.userId;
             state.userName = payload.responseBody.userName;
             state.isAdmin = payload.responseBody.isAdmin;
             state.hasQestions = payload.responseBody.hasQestions;
             state.storeRoles = payload.responseBody.storeRoles;
+            state.storeNames = payload.responseBody.storeNames;
+            state.storeImgs = payload.responseBody.storeImgs;
             state.notifications = payload.responseBody.notifications;
-            state.permmisions = payload.responseBody.permmisions;
-            console.log(payload.responseBody);
+            state.permissions = payload.responseBody.permissions;
             if (payload.rememberMe) {
                 window.localStorage.setItem(localStorage.auth.token.name, payload.responseBody.token);
                 window.localStorage.setItem(localStorage.auth.userId.name, payload.responseBody.userId.toString());
@@ -183,7 +187,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.error = null;
         });
         builder.addCase(register.fulfilled, (state, { payload }) => {
-            console.log("reg payload", payload)
             state.isRegisterLoading = false;
             state.message = payload;
         });
@@ -224,10 +227,30 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.userName = "guest";
         });
         builder.addCase(guestEnter.rejected, (state, { payload }) => {
-            console.log("guestEnter.rejected", payload);
             state.isLoginLoading = false;
             state.error = payload?.message.data ?? "error during guest enter";
         });
+        // get client data
+        builder.addCase(getClientData.pending, (state) => {
+            state.isLoginLoading = true;
+            state.error = null;
+        });
+        builder.addCase(getClientData.fulfilled, (state, { payload }) => {
+            state.isLoginLoading = false;
+            state.userName = payload.userName;
+            state.isAdmin = payload.isAdmin;
+            state.hasQestions = payload.hasQestions;
+            state.storeRoles = payload.storeRoles;
+            state.storeNames = payload.storeNames;
+            state.storeImgs = payload.storeImgs;
+            state.notifications = payload.notifications;
+            state.permissions = payload.permissions;
+        });
+        builder.addCase(getClientData.rejected, (state, { payload }) => {
+            state.isLoginLoading = false;
+            state.error = payload?.message.data ?? "error during get client data";
+        });
+
     }
 });
 // Action creators are generated for each case reducer function

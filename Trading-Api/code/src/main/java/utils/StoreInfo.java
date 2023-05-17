@@ -22,6 +22,7 @@ public class StoreInfo {
     public int getStoreId(){
         return storeId;
     }
+    public String getName(){return storeName;}
 
     public String getDescription(){
         return description;
@@ -38,5 +39,6 @@ public class StoreInfo {
     public double getRating(){
         return rating;
     }
+    public String getUrl(){return imgUrl;}
 
 }

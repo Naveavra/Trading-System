@@ -146,6 +146,15 @@ public class UserController {
         else
             throw new Exception("no member has this id");
     }
+
+    public HashMap<Integer, List<Action>> getPermissions(int memberId) throws Exception{
+        Member m = getMember(memberId);
+        if(m != null){
+            return m.getPermissions();
+        }
+        else
+            throw new Exception("no member has this id");
+    }
     public HashMap<Integer, String> getStoreImgs(int memberId) throws Exception{
         Member m = getMember(memberId);
         if(m != null){
@@ -465,13 +474,13 @@ public class UserController {
     }
 
 
-    public Message sendQuestionToStore(int storeId, String question, int userId) throws Exception {
+    public Message sendQuestionToStore(int userId, int storeId, String question) throws Exception {
         if(userId % 2 == 0)
             throw new Exception("guest can't write a question to a store");
         else{
             String email = idToEmail.get(userId);
             if(email != null)
-                return sendQuestionToStore(storeId, question, email);
+                return sendQuestionToStore(email, storeId, question);
             else
                 throw new Exception("no member has this id");
         }
@@ -479,7 +488,7 @@ public class UserController {
 
 
     //TODO:need to check before that the storeId is legal
-    public Message sendQuestionToStore(int storeId, String question, String email) throws Exception {
+    public Message sendQuestionToStore(String email, int storeId, String question) throws Exception {
         Member m = activeMemberList.get(email);
         if(m != null) {
             {
@@ -1452,7 +1461,7 @@ public class UserController {
     }
 
     public boolean isActiveUser(int userId){
-        return activeMemberList.containsKey(userId);
+        return activeMemberList.containsKey(idToEmail.get(userId));
     }
 
     public void removeCart(int userId) throws Exception{
@@ -1476,4 +1485,5 @@ public class UserController {
                 throw new Exception("no such member exists");
         }
     }
+
 }

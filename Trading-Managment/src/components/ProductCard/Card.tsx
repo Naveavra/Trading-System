@@ -29,7 +29,6 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
         setQuantity(quantity + 1);
     }
     const handleClickProduct = () => {
-        console.log("clicked product");
     }
     const handleRemoveFromCart = () => {
         //dispatch(removeFromCart(item.id))

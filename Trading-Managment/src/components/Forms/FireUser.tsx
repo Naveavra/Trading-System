@@ -9,7 +9,7 @@ import error from "../Alerts/error";
 import AlertDialog from "../Dialog/AlertDialog";
 import SelectAutoWidth from "../Selectors/AutoWidth";
 import { StoreRoleEnum } from "../../types/systemTypes/StoreRole";
-import { clearStoreError, getStore } from "../../reducers/storesSlice";
+import { clearStoreError, fireManager, fireOwner, getStore } from "../../reducers/storesSlice";
 
 interface props {
     role: 'owner' | 'manager'
@@ -42,14 +42,14 @@ const FireUser: React.FC<props> = ({ role }) => {
     const handleOnClose = () => {
         setOpen(false);
         navigate(-1);
-        dispatch(getStore({ storeId: storeId, token: token }));
+        dispatch(getStore({ userId: Number(userId), storeId: storeId }));
 
     }
     const handleOnSubmit = () => {
         let response;
         switch (role) {
             case 'owner':
-                response = dispatch(deleteOwner(form.getValues()));
+                response = dispatch(fireOwner(form.getValues()));
                 response.then((res: { meta: { requestStatus: string; }; }) => {
                     if (res.meta.requestStatus === 'fulfilled') {
                         handleOnClose();
@@ -57,7 +57,7 @@ const FireUser: React.FC<props> = ({ role }) => {
                 });
                 break;
             case 'manager':
-                response = dispatch(deleteManager(form.getValues()));
+                response = dispatch(fireManager(form.getValues()));
                 response.then((res: { meta: { requestStatus: string; }; }) => {
                     if (res.meta.requestStatus === 'fulfilled') {
                         handleOnClose();
@@ -71,7 +71,6 @@ const FireUser: React.FC<props> = ({ role }) => {
 
     const handleChange = (event: SelectChangeEvent) => {
         //dispatch(setFontSize(event.target.value as ThemeFontSize));
-        console.log(event.target.value);
         switch (role) {
             case 'owner':
                 setUserToFireId(owners.filter((owner) => owner.userName === event.target.value as string)[0].userId);

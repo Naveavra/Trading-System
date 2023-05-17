@@ -10,11 +10,9 @@ interface LeavePageBlockerProps {
 const LeavePageBlocker: React.FC<LeavePageBlockerProps> = ({ open, onClose }) => {
 
     const close = () => {
-        console.log("close")
         window.close();
     };
     const refresh = () => {
-        console.log("refresh")
         window.location.reload()
     }
     return (

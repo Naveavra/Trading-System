@@ -89,7 +89,7 @@ public class MarketController {
 
     public int addProduct(int storeId, String name, String description, int price, int quantity,
                           List<String> categories, String img) throws Exception{
-        int id = storectrl.addProduct(storeId,name,description,price,quantity);
+        int id = storectrl.addProduct(storeId,name,description,price,quantity, img);
         if(id == -1){
             throw new Exception("Something went wrong in adding product");
         }

@@ -147,7 +147,8 @@ public class Market implements MarketInterface {
                 String token = userAuth.generateToken(memberId);
                 LoginInformation loginInformation = new LoginInformation(token, memberId, email, true, displayNotifications(memberId, token).getValue(),
                         userController.hasSecQuestions(memberId), userController.getUserRoles(memberId),
-                        userController.getStoreNames(memberId), userController.getStoreImgs(memberId));
+                        userController.getStoreNames(memberId), userController.getStoreImgs(memberId),
+                        userController.getPermissions(memberId));
                 return new Response<LoginInformation>(loginInformation, null, null);
             }
             else{
@@ -167,12 +168,13 @@ public class Market implements MarketInterface {
             if (userId % 2 == 1 && userController.isActiveUser(userId)) {
                 loginInformation = new LoginInformation(token, userId, userController.getUserEmail(userId), true, displayNotifications(userId, token).getValue(),
                         userController.hasSecQuestions(userId), userController.getUserRoles(userId),
-                        userController.getStoreNames(userId), userController.getStoreImgs(userId));
+                        userController.getStoreNames(userId), userController.getStoreImgs(userId),
+                        userController.getPermissions(userId));
                 return new Response<LoginInformation>(loginInformation, null, null);
             }
             else if(activeAdmins.containsKey(userId)){
                 loginInformation = new LoginInformation(token, userId, activeAdmins.get(userId).getEmailAdmin(), true, null,
-                        false, null, null, null);
+                        false, null, null, null, null);
                 return new Response<LoginInformation>(loginInformation, null, null);
             }
             else
@@ -641,7 +643,7 @@ public class Market implements MarketInterface {
     public Response<String> sendQuestion(int userId, String token, int storeId, String msg) {
         try {
             userAuth.checkUser(userId, token);
-            Message m = userController.sendQuestionToStore(userId, msg, storeId);
+            Message m = userController.sendQuestionToStore(userId, storeId, msg);
             int creatorId = marketController.addQuestion(m);
             m.addOwnerEmail(userController.getUserEmail(creatorId));
             String notify = "a question of has been added for store: " + storeId;
@@ -1224,7 +1226,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
                     activeAdmins.put(a.getAdminId(), inActiveAdmins.remove(a.getAdminId()));
                     logger.log(Logger.logStatus.Success, "admin logged in successfully on " + LocalDateTime.now());
                     LoginInformation loginInformation = new LoginInformation(userAuth.generateToken(id), id, email, true, null,
-                            false, null, null, null);
+                            false, null, null, null, null);
                     return new Response<>(loginInformation, null, null);
                 }
             }
@@ -1401,7 +1403,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
     }
 
     @Override
-    public Response<HashMap<Logger.logStatus,List<String>>> watchLog(int adminId, String token){
+    public Response<List<String>> watchEventLog(int adminId, String token){
         try{
             userAuth.checkUser(adminId, token);
         }catch (Exception e){
@@ -1411,7 +1413,24 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         Admin admin = activeAdmins.get(adminId);
         if(admin !=null){
             logger.log(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now());
-            return new Response<>(logger.getLogMap(), null, null);
+            return new Response<>(logger.getEventMap(), null, null);
+        }
+        logger.log(Logger.logStatus.Fail, "cant get admin on" + LocalDateTime.now());
+        return new Response<>(null, "watch event log failed", "admin wasn't found");
+    }
+
+    @Override
+    public Response<List<String>> watchFailLog(int adminId, String token){
+        try{
+            userAuth.checkUser(adminId, token);
+        }catch (Exception e){
+            logger.log(Logger.logStatus.Fail, "cant watch log because: " + e.getMessage() +" on time: " + LocalDateTime.now());
+            return new Response<>(null, "watch log failed", e.getMessage());
+        }
+        Admin admin = activeAdmins.get(adminId);
+        if(admin !=null){
+            logger.log(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now());
+            return new Response<>(logger.getFailMap(), null, null);
         }
         logger.log(Logger.logStatus.Fail, "cant get admin on" + LocalDateTime.now());
         return new Response<>(null, "watch event log failed", "admin wasn't found");
