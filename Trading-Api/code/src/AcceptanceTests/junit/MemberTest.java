@@ -1,7 +1,6 @@
 package junit;
 
 import data.CartInfo;
-import data.GuestInfo;
 import data.UserInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,6 +84,51 @@ public class MemberTest extends ProjectTest{
         assertTrue(status > 0);
     }
 
+    @Test
+    public void testPurchaseFromUnAvailablePSCart(){
+        UserInfo buyer = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        //Login
+        buyer.setUserId(login(buyer.getEmail(), buyer.getPassword()));
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        //Add product to cart
+        int status = addProductToCart(buyer.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
+        assertTrue(status > -1);
+        //Check the cart:
+        CartInfo ci = getCart(buyer.getUserId());
+        assertNotNull(ci);
+        assertTrue(ci.getCountOfProduct() > 0);
+        status = this.addExternalPaymentService(mainAdmin.getAdminId(), "Apple Pay");
+        assertTrue(status > 0);
+        status = this.replaceExternalPaymentService(mainAdmin.getAdminId(), "Apple Pay");
+        assertTrue(status > 0);
+        //make purchase
+        status  = makePurchase(buyer.getUserId(), "00000000000");
+        assertTrue(status < 0);
+    }
+
+    @Test
+    public void testPurchaseFromUnAvailableSSCart(){
+        UserInfo buyer = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        //Login
+        buyer.setUserId(login(buyer.getEmail(), buyer.getPassword()));
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        //Add product to cart
+        int status = addProductToCart(buyer.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
+        assertTrue(status > -1);
+        //Check the cart:
+        CartInfo ci = getCart(buyer.getUserId());
+        assertNotNull(ci);
+        assertTrue(ci.getCountOfProduct() > 0);
+        status = this.addExternalSupplierService(mainAdmin.getAdminId(), "UPS");
+        assertTrue(status > 0);
+        status = this.replaceExternalPaymentService(mainAdmin.getAdminId(), "UPS");
+        assertTrue(status > 0);
+        //make purchase
+        status  = makePurchase(buyer.getUserId(), "00000000000");
+        assertTrue(status < 0);
+    }
 
     @Test
     public void testPurchaseCartNoAtSameTime(){

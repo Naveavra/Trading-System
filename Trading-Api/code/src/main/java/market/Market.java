@@ -56,9 +56,9 @@ public class Market implements MarketInterface {
         userController = new UserController();
         marketController = new MarketController();
         gson = new Gson();
-        proxyPayment = new ProxyPayment();
+        proxyPayment = new ProxyPayment("Google Pay");
         userAuth = new UserAuth();
-        proxySupplier = new ProxySupplier();
+        proxySupplier = new ProxySupplier("DHL");
         complaints = new ConcurrentHashMap<>();
         actionIds = new HashMap<>();
         marketInfo = new MarketInfo();
@@ -1485,7 +1485,162 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         }
     }
 
-    //for tests
+    private Admin getAdmin(int adminId) throws Exception {
+        Admin admin = activeAdmins.get(adminId);
+        if(admin == null)
+        {
+            throw new Exception("Can't get admin on");
+        }
+        return admin;
+    }
+
+    @Override
+    public Response setPaymentService(int adminId, String token, String paymentService) {
+        //TODO: ADD logger
+        Admin admin = null;
+        try{
+            userAuth.checkUser(adminId, token);
+            admin = getAdmin(adminId);
+            proxyPayment.setRealPayment(paymentService);
+            return new Response("Set payment service to: " + paymentService + " success", null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Set Payment Service", "Set payment service fail: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response getPaymentServicePossible(int adminId, String token) {
+        //TODO: ADD logger
+        Admin admin = null;
+        try{
+            userAuth.checkUser(adminId, token);
+            admin = getAdmin(adminId);
+            return new Response(proxyPayment.getPaymentServicesPossibleOptions(), null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Get Possible Payment Service", "Get possible payment service fail: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response getPaymentServiceAvailable(int userId) {
+        //TODO: ADD logger
+        Admin admin = null;
+        try{
+            //TODO: userAuth.checkUser(userId);
+            //TODO: admin = getAdmin(adminId);
+            return new Response(proxyPayment.getPaymentServicesAvailableOptions(), null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Get Available Payment Service", "Get available payment service fail: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response addPaymentService(int adminId, String token, String paymentService) {
+        //TODO: ADD logger
+        Admin admin = null;
+        try{
+            userAuth.checkUser(adminId, token);
+            admin = getAdmin(adminId);
+            proxyPayment.addPaymentService(paymentService);
+            return new Response("Add payment service to: " + paymentService + " success", null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Add Payment Service", "Add payment service fail: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response removePaymentService(int adminId, String token, String paymentService) {
+        //TODO: ADD logger
+        Admin admin = null;
+        try{
+            userAuth.checkUser(adminId, token);
+            admin = getAdmin(adminId);
+            proxyPayment.removePaymentService(paymentService);
+            return new Response("Add payment service to: " + paymentService + " success", null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Remove Payment Service", "Remove payment service fail: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response setSupplierService(int adminId, String token, String supplierService) {
+        //TODO: ADD logger
+        Admin admin = null;
+        try{
+            userAuth.checkUser(adminId, token);
+            admin = getAdmin(adminId);
+            proxySupplier.setRealSupplier(supplierService);
+            return new Response("Set supplier service to: " + supplierService + " success", null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Set Supplier Service", "Set supplier service fail: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response getSupplierServicePossible(int adminId, String token) {
+        //TODO: ADD logger
+        Admin admin = null;
+        try{
+            userAuth.checkUser(adminId, token);
+            admin = getAdmin(adminId);
+            return new Response(proxySupplier.getSupplierServicesPossibleOptions(), null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Get Possible Supplier Service", "Get possible supplier service fail: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response getSupplierServiceAvailable(int userId) {
+        //TODO: ADD logger
+        Admin admin = null;
+        try{
+            //TODO: userAuth.checkUser(userId);
+            //TODO: admin = activeAdmins.get(adminId);
+            return new Response(proxySupplier.getSupplierServicesAvailableOptions(), null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Get Available Supplier Service", "Get available supplier service fail: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response addSupplierService(int adminId, String token, String supplierService) {
+        //TODO: ADD logger
+        Admin admin = null;
+        try{
+            userAuth.checkUser(adminId, token);
+            admin = getAdmin(adminId);
+            proxySupplier.addSupplierService(supplierService);
+            return new Response("Add supplier service to: " + supplierService + " success", null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Add Supplier Service", "Add supplier service fail: " + e.getMessage());
+        }
+    }
+
+
+    @Override
+    public Response removeSupplierService(int adminId, String token, String supplierService) {
+        //TODO: ADD logger
+        Admin admin = null;
+        try{
+            userAuth.checkUser(adminId, token);
+            admin = getAdmin(adminId);
+            proxySupplier.removeSupplierService(supplierService);
+            return new Response("Remove supplier service to: " + supplierService + " success", null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Remove Supplier Service", "Remove supplier service fail: " + e.getMessage());
+        }
+    }
+
     public String addTokenForTests() {
         return userAuth.generateToken(0);
     }
