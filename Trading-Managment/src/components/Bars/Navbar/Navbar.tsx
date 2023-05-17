@@ -64,7 +64,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     }
     useEffect(() => {
         dispatch(getClientData({ userId: userId, token: token }));
-    }, [notification, numProductsIncart])
+    }, [])
     return (
         <div className="navbar">
             <div className="wrapper">

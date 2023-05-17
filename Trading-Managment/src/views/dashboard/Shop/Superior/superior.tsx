@@ -14,7 +14,7 @@ import { getProducts } from "../../../../reducers/productsSlice";
 import { getStoresInfo } from "../../../../reducers/storesSlice";
 import { Action } from "../../../../types/systemTypes/Action";
 
-import { DataGrid, GridActionsCellItem, GridColumns, GridRowId, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem, GridColDef, GridRowId, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Dehaze from '@mui/icons-material/Dehaze';
@@ -49,6 +49,7 @@ const Superior: React.FC = () => {
     });
     console.log("orders", orders);
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
+    const PING_INTERVAL2 = 5000; // 10 seconds in milliseconds
 
     const sendPing = () => {
         if (userId != 0) {
@@ -74,17 +75,25 @@ const Superior: React.FC = () => {
         //todo implement 
     };
 
+    const getC = () => {
+        if (token) {
+            dispatch(getClientData({ userId: userId, token: token }));
+        }
+    }
+
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
+        const pingInterval2 = setInterval(getC, PING_INTERVAL2);
+
         dispatch(getStoresInfo());
         dispatch(getProducts());
-        dispatch(getClientData({ userId: userId, token: token }));
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
+            clearInterval(pingInterval2)
         };
     }, []);
-    const columns: GridColumns = React.useMemo(() => {
+    const columns: GridColDef[] = React.useMemo(() => {
         return [
             { field: 'id', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },
 

@@ -81,7 +81,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     useEffect(() => {
         dispatch(getClientData({ userId: userId, token: token }));
 
-    }, [notifications, numProductsIncart])
+    }, [dispatch])
 
     return (
         <>

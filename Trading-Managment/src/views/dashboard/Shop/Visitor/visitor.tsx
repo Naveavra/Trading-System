@@ -16,12 +16,13 @@ const Visitor: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const userId = useAppSelector((state) => state.auth.userId);
-    const token = useAppSelector((state) => state.auth.token) ?? "";
+    const token = useAppSelector((state) => state.auth.token);
     const store = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
-    const products = useAppSelector((state) => state.product.responseData?.data?.results);
+    const products = useAppSelector((state) => state.product.responseData);
 
     const ourProducts = products?.filter((product) => product.storeId === store.id);
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
+    const PING_INTERVAL2 = 5000;
     const sendPing = () => {
         if (userId != 0) {
             axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
@@ -34,16 +35,23 @@ const Visitor: React.FC = () => {
             // dispatch(ping(userId));
         }
     }
+    const getC = () => {
+        if (token) {
+            dispatch(getClientData({ userId: userId, token: token }));
+        }
+    }
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
+        const pingInterval2 = setInterval(getC, PING_INTERVAL2);
         dispatch(getStoresInfo());
         dispatch(getProducts());
-        if (token != "") {
+        if (token) {
             dispatch(getClientData({ userId: userId, token: token }));
         }
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
+            clearInterval(pingInterval2)
         };
     }, [dispatch]);
     return (

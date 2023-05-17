@@ -14,6 +14,7 @@ import ProductCard from './ProductCard/Card';
 import { Product } from '../types/systemTypes/Product';
 import { getStoresInfo } from '../reducers/storesSlice';
 import { getProducts } from '../reducers/productsSlice';
+import { getClientData } from '../reducers/authSlice';
 
 const DashboardFrame: React.FC = () => {
 
@@ -22,13 +23,10 @@ const DashboardFrame: React.FC = () => {
     const dispatch = useAppDispatch();
     const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector((state) => state.auth.userName);
-    const navigate = useNavigate();
-    const [value, setValue] = React.useState(0);
-    const [open, setOpen] = React.useState(false);
-    const [query, setQuery] = useState("");
+    const token = useAppSelector((state) => state.auth.token);
     const products = useAppSelector((state) => state.product.responseData) ?? [];
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-
+    const PING_INTERVAL2 = 5000;
     // Send a ping to the server
     const sendPing = () => {
         if (userId != 0) {
@@ -42,16 +40,22 @@ const DashboardFrame: React.FC = () => {
             // dispatch(ping(userId));
         }
     }
+    const getC = () => {
+        if (token) {
+            dispatch(getClientData({ userId: userId, token: token }));
+        }
+    }
     useEffect(() => {
         // Call the sendPing function every 2 seconds
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-
+        const pingInterval2 = setInterval(getC, PING_INTERVAL2);
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
+            clearInterval(pingInterval2)
         };
 
-    }, [userId])
+    }, [])
 
     const handleSet = (text: string) => {
         setText(text);
@@ -87,4 +91,8 @@ const DashboardFrame: React.FC = () => {
 };
 
 export default DashboardFrame
+
+function getClient(arg0: { userId: number; token: string; }): any {
+    throw new Error('Function not implemented.');
+}
 
