@@ -16,6 +16,7 @@ import ShopsBar from '../../components/Bars/ShopBar/ShopBar';
 import Categories2 from '../../components/Categories/category2';
 import ProductCard from '../../components/ProductCard/Card';
 import { Product } from '../../types/systemTypes/Product';
+import Products from '../../components/Product/Products';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -28,8 +29,9 @@ const DashboardPage: React.FC = () => {
     const error = useAppSelector((state) => state.auth.error);
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
-    const response = useAppSelector((state) => state.product.responseData);
-    const products = response?.data?.results ?? [];
+    const products = useAppSelector((state) => state.product.responseData);
+    console.log("products", products);
+
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
     const sendPing = () => {
         if (userId != 0) {
@@ -57,6 +59,7 @@ const DashboardPage: React.FC = () => {
 
     }, [dispatch]);
     const handleSet = (text: string) => {
+        console.log(text);
         setText(text);
     }
     //for each product check  for ech category if text is in the category
@@ -77,9 +80,8 @@ const DashboardPage: React.FC = () => {
                                 <Divider />
                                 {/* <Categories /> */}
                                 <Categories2 />
-                                {products ? products.filter((product) => product.categories.reduce((acc, curr) => acc || curr.includes(text), false) || product.description.includes(text) || product.name.includes(text)).map((product: Product) => {
-                                    <ProductCard item={product} key={product.productId} canEdit={false} canDelete={false} />
-                                }) : null}
+                                <Divider />
+                                <Products text={text} />
                                 <Outlet />
                             </>
             }

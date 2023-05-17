@@ -8,7 +8,7 @@ interface props {
 }
 export const SearchBar: React.FC<props> = ({ text, set }) => {
     const handleChange = (value: string) => {
-        //set(value);
+        set(value);
     };
     const handleSubmit = (value: string) => {
         set(value);

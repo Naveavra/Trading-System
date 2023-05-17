@@ -1,5 +1,5 @@
 import { ApiResponseListData, ApiResponse } from "../types/apiTypes";
-import { AppointOwnerParams, DeleteStoreParams, GetStoreProducts, GetStoresParams, PatchStoreParams, PostStoreParams, getAppointmentsHistoryParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
+import { AppointUserParams, DeleteStoreParams, GetStoreProducts, GetStoresParams, PatchStoreParams, PostStoreParams, fireUserParams, getAppointmentsHistoryParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
 import { Product } from "../types/systemTypes/Product";
 import { Store } from "../types/systemTypes/Store";
 import { StoreInfo } from "../types/systemTypes/StoreInfo";
@@ -27,16 +27,16 @@ export const storeApi =
             params: params
         })),
 
-    appointOwner: (params: AppointOwnerParams): Promise<ApiResponse<string>> =>
+    appointOwner: (params: AppointUserParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/appointments/owners`, params)),
 
-    appointManager: (params: AppointOwnerParams): Promise<ApiResponse<string>> =>
+    appointManager: (params: AppointUserParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/appointments/managers`, params)),
 
-    fireManager: (params: AppointOwnerParams): Promise<ApiResponse<string>> =>
+    fireManager: (params: fireUserParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().delete(`api/stores/${params.storeId}/appointments/managers`, { params: params })),
 
-    fireOwner: (params: AppointOwnerParams): Promise<ApiResponse<string>> =>
+    fireOwner: (params: fireUserParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().delete(`api/stores/${params.storeId}/appointments/owners`, { params: params })),
 
     patchPermissions: (params: patchPermissionsParams): Promise<ApiResponse<string>> =>

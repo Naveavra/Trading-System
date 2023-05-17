@@ -12,6 +12,8 @@ import { persistor } from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
 //import { hubConnection } from 'signalr-no-jquery';
 
+import './main.css';
+
 const App = () => {
   const userId = useAppSelector((state) => state.auth.userId);
   const dispatch = useAppDispatch();

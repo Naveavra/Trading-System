@@ -26,8 +26,7 @@ const DashboardFrame: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const [open, setOpen] = React.useState(false);
     const [query, setQuery] = useState("");
-    const response = useAppSelector((state) => state.product.responseData);
-    const products = response?.data?.results ?? [];
+    const products = useAppSelector((state) => state.product.responseData) ?? [];
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
     // Send a ping to the server

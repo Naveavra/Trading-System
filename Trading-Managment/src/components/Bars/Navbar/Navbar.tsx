@@ -39,33 +39,16 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     const dispatch = useAppDispatch();
 
     const handleLogout = () => {
-        console.log("logout");
         dispatch(logout(userId));
-        dispatch(guestEnter());
-        navigate('/dashboard');
+        navigate('/auth/login');
     };
     const handleChooseStore = (storeNumber: number) => () => {
         dispatch(getStore({ userId: userId, storeId: storeNumber }));
         navigate('shops/superior');
     }
-
-
-
     return (
         <div className="navbar">
             <div className="wrapper">
-                {/* <div className="left">
-
-                    <div className="item">
-                        <Link className="link" to="/products/1">Women</Link>
-                    </div>
-                    <div className="item">
-                        <Link className="link" to="/products/2">Men</Link>
-                    </div>
-                    <div className="item">
-                        <Link className="link" to="/products/3">Children</Link>
-                    </div>
-                </div> */}
                 <div className="center">
                     <Typography variant="h4" component="h4" className="logo" fontFamily={"Gill Sans"}>
                         {headLine}

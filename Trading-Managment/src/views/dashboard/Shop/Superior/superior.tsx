@@ -33,21 +33,21 @@ const Superior: React.FC = () => {
 
     const userName = useAppSelector(state => state.auth.userName);
     const privateName = userName.split('@')[0];
-    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.id);
+    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
     const products = useAppSelector((state) => state.store.storeState.watchedStore.inventory);
     const permmisions = useAppSelector((state: RootState) => state.auth.permissions).filter((perm) => perm.storeId === storeId);
-    const Actions = permmisions.length > 0 ? permmisions[0].actions : [];
+    const Actions = permmisions.length > 0 ? permmisions[0]?.actions : [];
     const canRemove = Actions.includes(Action.removeProduct);
     const canEdit = Actions.includes(Action.updateProduct);
     const orders = useAppSelector((state) => state.store.storeState.watchedStore.storeOrders).map((order) => {
         return {
             id: order.orderId,
             userId: order.userId,
-            num_products: order.productsInStores.products.reduce((acc, curr) => acc + curr.reduce((acc1, curr1) => acc1 + curr1.quantity, 0), 0),
-            total_price: order.totalPrice,
+            num_products: order.productsInStores.products?.reduce((acc, curr) => acc + curr.reduce((acc1, curr1) => acc1 + curr1.quantity, 0), 0),
+            price: order.totalPrice,
         }
     });
-
+    console.log("orders", orders);
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
     const sendPing = () => {
@@ -88,11 +88,11 @@ const Superior: React.FC = () => {
         return [
             { field: 'id', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },
 
-            { field: 'userId', headerName: 'userId', width: 50, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'userId', headerName: 'userId', width: 150, editable: false, align: 'center', headerAlign: 'center' },
 
-            { field: 'num_products', headerName: 'number of products in order', width: 50, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'num_products', headerName: 'number of products in order', width: 250, editable: false, align: 'center', headerAlign: 'center' },
 
-            { field: 'price', headerName: 'price', width: 50, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'price', headerName: 'price', width: 150, editable: false, align: 'center', headerAlign: 'center' },
             {
                 field: 'actions',
                 type: 'actions',
@@ -140,15 +140,17 @@ const Superior: React.FC = () => {
                     <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 73, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
                             {store.description}
-                            decreaption about the store
                         </Typography >
                     </Box>
 
                 </CardContent>
             </Card>
         </Box >
+        <Typography variant="h4" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 84, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif', textDecoration: 'underline' }}>
+            orders
+        </Typography >
         <Box sx={{
-            height: 550, width: '100%', right: 2, mt: 7
+            height: 550, width: '65%', mt: 7, mb: 2
         }}>
             <DataGrid
                 rows={orders}
@@ -174,7 +176,7 @@ const Superior: React.FC = () => {
         <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >
             {products.map((product) => {
                 return (
-                    <ProductCard item={product.product} canDelete={canRemove} canEdit={canEdit} key={product.id} />
+                    <ProductCard item={{ ...product.product, storeId: storeId }} canDelete={canRemove} canEdit={canEdit} key={product.id} />
                 );
             })
             }
@@ -195,7 +197,6 @@ function EditToolbar() {
     return (
         <div>
             <GridToolbarContainer >
-                <Button onClick={handlerAddUser} sx={{ fontSize: fontSize, mr: 1, ml: 1 }}>הוסף מתפלל חדש </Button>
                 <GridToolbarDensitySelector sx={{ fontSize: fontSize, mr: 2 }} />
                 <GridToolbarFilterButton sx={{ fontSize: fontSize, mr: 2 }} />
                 <GridToolbarExport sx={{ fontSize: fontSize, mr: 2 }} />

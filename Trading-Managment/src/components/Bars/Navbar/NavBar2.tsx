@@ -50,7 +50,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     }) : [];
 
     const storeInfo = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
-    const managerInStore = useAppSelector((state) => state.auth.storeRoles).filter((store) => store.storeId == storeInfo.id).length > 0;
+    const managerInStore = useAppSelector((state) => state.auth.storeRoles)?.filter((store) => store.storeId == storeInfo.id).length > 0;
     const numProductsIncart = cart?.baskets?.reduce((acc, item) => acc + item.products.productsList.length, 0) ?? 0;
     const handleLogout = () => {
         dispatch(logout(userId));
@@ -88,8 +88,10 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
                             {headLine}
                         </Typography>
+
                         {isLoggedIn &&
                             <>
+
                                 <IconButton className="icon" color="inherit" onClick={handleLogout}>
                                     <LogoutIcon />
                                 </IconButton>

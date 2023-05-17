@@ -4,7 +4,7 @@ import { Product } from "./Product";
 import { StoreRoleEnum } from "./StoreRole";
 
 export interface Store {
-    id: number;
+    storeId: number;
     isActive: boolean;
     creatorId: number;
     name: string;
@@ -20,7 +20,7 @@ export interface Store {
     //todo add purchase and discount policy
 }
 export const emptyStore: Store = {
-    id: -1,
+    storeId: -1,
     isActive: false,
     creatorId: -1,
     name: "",

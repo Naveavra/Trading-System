@@ -19,7 +19,7 @@ const FireUser: React.FC<props> = ({ role }) => {
     const dispatch = useAppDispatch();
     const [open, setOpen] = useState(true);
     const [userToFireId, setUserToFireId] = useState(-1);
-    const user_name = '';// useAppSelector((state) => state.store.storeState.watchedStore.storeRoles).filter((role) => role.storeRole === StoreRoleEnum.MANAGER).map((role) => role.user.username);
+    const user_name = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles)?.filter((role) => role.storeRole === StoreRoleEnum.MANAGER)?.map((role) => role.userName);
     const form = useForm<fireUserFormValues>();
     const navigate = useNavigate();
     const params = useParams();
@@ -28,14 +28,14 @@ const FireUser: React.FC<props> = ({ role }) => {
     const error = useAppSelector((state) => state.store.storeState.error);
 
     //maybe by id
-    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.id);
+    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
     const token = useAppSelector((state) => state.auth.token);
 
-    const managers = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles).filter((role) => role.storeRole === StoreRoleEnum.MANAGER);
-    const managers_names = managers.map((role) => role.userName);
+    const managers = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles)?.filter((role) => role.storeRole === StoreRoleEnum.MANAGER);
+    const managers_names = managers?.map((role) => role.userName);
 
-    const owners = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles).filter((role) => role.storeRole === StoreRoleEnum.OWNER);
-    const owners_names = owners.map((role) => role.userName);
+    const owners = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles)?.filter((role) => role.storeRole === StoreRoleEnum.OWNER);
+    const owners_names = owners?.map((role) => role.userName);
 
 
     //maybe take it from params

@@ -29,7 +29,7 @@ const initialState: ProductsState = {
         watchedProduct: undefined,
     },
     isLoading: false,
-    responseData: { data: { results: [] } },
+    responseData: [],
     error: null,
 };
 
@@ -93,7 +93,7 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
             state.error = null;
         },
         setWatchedProductInfo: (state, action) => {
-            state.productState.watchedProduct = state.responseData?.data.results.find((product) => product.productId === action.payload) ?? EmptyProduct;
+            state.productState.watchedProduct = state.responseData?.find((product) => product.productId === action.payload) ?? EmptyProduct;
         },
     },
     extraReducers: (builder) => {
