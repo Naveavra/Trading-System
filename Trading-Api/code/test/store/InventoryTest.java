@@ -19,7 +19,7 @@ public class InventoryTest {
     private AtomicInteger ids;
     @BeforeEach
     void setUp(){
-        inventory = new Inventory();
+        inventory = new Inventory(0);
         ids = new AtomicInteger();
     }
     @Test

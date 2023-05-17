@@ -179,4 +179,17 @@ public class AppHistory {
         }
         add.put(n.data.getFirst(), ans);
     }
+
+    public HashMap<Integer, Role> getRoles(){
+        HashMap<Integer, Role> ans = new HashMap<>();
+        getChildrenRoles(root, ans);
+        return ans;
+    }
+
+    public void getChildrenRoles(Node n, HashMap<Integer, Role> add){
+        for(Node child: n.children) {
+            getChildrenRoles(child, add);
+        }
+        add.put(n.data.getFirst(), n.data.getSecond());
+    }
 }

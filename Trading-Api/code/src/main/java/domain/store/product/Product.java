@@ -105,8 +105,8 @@ public class Product {
     public String getDescription() { return description;
     }
 
-    public int getPrice() { return price;
-    }
+    public int getPrice() { return price;}
+    public String getImgUrl(){return imgUrl;}
 
     public void setName(String name) {
         this.name = name;

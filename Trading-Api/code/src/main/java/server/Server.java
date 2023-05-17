@@ -82,7 +82,7 @@ public class Server {
             toSparkRes(res, api.register(email, pass, bday));
             return res.body();
         });
-        post("api/auth/logout", (req, res) -> {
+        get("api/auth/logout", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             toSparkRes(res, api.logout(userId));
@@ -340,7 +340,19 @@ public class Server {
             toSparkRes(res, api.addProductToCart(userId, storeId, productId, quantity));
             return res.body();
         });
-        patch("api/cart/:id", (req, res) -> {
+//        patch("api/cart/:id", (req, res) -> {
+//            //when a user change quantity of a product in specific store basket
+//            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+//            JSONObject request = new JSONObject(req.body());
+//            int userId = Integer.parseInt(request.get("userId").toString());
+//            int storeId = Integer.parseInt(request.get("storeId").toString());
+//            int productId = Integer.parseInt(request.get("productId").toString());
+//            int quantity = Integer.parseInt(request.get("quantity").toString());
+//            toSparkRes(res, api.changeQuantityInCart(userId, storeId, productId, quantity));
+//            return res.body();
+//        });
+        patch("api/cart/add/:id", (req, res) -> {
+            //addtoart
             //when a user change quantity of a product in specific store basket
             //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
             JSONObject request = new JSONObject(req.body());
@@ -348,9 +360,30 @@ public class Server {
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int productId = Integer.parseInt(request.get("productId").toString());
             int quantity = Integer.parseInt(request.get("quantity").toString());
-            toSparkRes(res, api.changeQuantityInCart(userId, storeId, productId, quantity));
+            toSparkRes(res, api.addQuantityInCart(userId, storeId, productId, quantity));
             return res.body();
         });
+        patch("api/cart/remove/:id", (req, res) -> {
+            //removefromcart
+            //when a user change quantity of a product in specific store basket
+            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int productId = Integer.parseInt(request.get("productId").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.removeQuantityInCart(userId, storeId, productId, quantity));
+            return res.body();
+        });
+        post("api/cart/buy/:id", (req, res) ->{
+            //buycart
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String accountNumber = request.get("accountNumber").toString();
+            toSparkRes(res, api.makePurchase(userId, accountNumber));
+            return res.body();
+        });
+
         delete("api/cart/:id", (req, res) ->
         {
             //delete cart

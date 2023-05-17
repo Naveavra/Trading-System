@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Inventory {
 
     private static final int MAXRATING = 5;
+    private int storeId;
     private ConcurrentHashMap<Integer, Product> productList; // <id, product>
     // ConcurrentHashMap<Product, ArrayList<String>> categories;
     private ConcurrentHashMap<String,ArrayList<Integer>> categories; // <Category String,<List<ProductID>>
@@ -23,7 +24,8 @@ public class Inventory {
 
 
     // AtomicInteger prod_id = new AtomicInteger();
-    public Inventory(){
+    public Inventory(int storeId){
+        this.storeId = storeId;
         productList = new ConcurrentHashMap<>();
         categories = new ConcurrentHashMap<>();
         productgrading = new ConcurrentHashMap<>();
@@ -184,8 +186,8 @@ public class Inventory {
     public List<ProductInfo> getProducts(){
         List<ProductInfo> productInfos = new LinkedList<>();
         for (Product p : productList.values()){
-            ProductInfo info = new ProductInfo(p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
-                    p.getRating(), getProductReviews(p.getID()));
+            ProductInfo info = new ProductInfo(storeId, p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
+                    p.getRating(), getProductReviews(p.getID()), p.getImgUrl());
             info.setCategories(getProductCategories(p.getID()));
             productInfos.add(info);
         }
@@ -307,8 +309,8 @@ public class Inventory {
 
     public ProductInfo getProductInfo(int productId){
         Product p = productList.get(productId);
-        ProductInfo info = new ProductInfo(p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
-                p.getRating(), getProductReviews(p.getID()));
+        ProductInfo info = new ProductInfo(p.getID(), p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
+                p.getRating(), getProductReviews(p.getID()), p.getImgUrl());
         return info;
     }
 

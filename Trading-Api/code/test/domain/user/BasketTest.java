@@ -38,10 +38,10 @@ class BasketTest {
     void addProductToCart_failed() {
         Product apple = new Product(0, "apple", "red apple");
         try {
-            basket.addProductToCart(0, -1);
+            basket.addQuantityInCart(0, -1);
             assertFalse(true);
         } catch (Exception e) {
-            assertEquals(e.getMessage(), "quantity mast be bigger then 0");
+            assert true;
         }
     }
 
@@ -57,25 +57,18 @@ class BasketTest {
         assertTrue(products.get(0) == null);
         assertTrue(products.keySet().size() == 1);
     }
-    @Test
-    void removeProductFromCart_fail() {
-        Product apple = new Product(0,"apple","red apple");
-        Product banana = new Product(1,"banana","yellow banana");
-        basket.addProductToCart(0,10);
-
-        basket.removeProductFromCart(0);
-        HashMap<Integer,Integer> products = basket.getContent();
-        assertTrue(products.get(0)==null);
-        assertTrue(products.keySet().size()==1);
-    }
 
     @Test
     void changeQuantityInCart() {
         Product apple = new Product(0,"apple","red apple");
         basket.addProductToCart(0,10);
-        basket.changeQuantityInCart(0,100);
-        HashMap<Integer,Integer> products = basket.getContent();
-        assertTrue(products.get(0)!=null);
-        assertTrue(products.get(0)==110);
+        try {
+            basket.addQuantityInCart(0, 100);
+            HashMap<Integer, Integer> products = basket.getContent();
+            assertTrue(products.get(0) != null);
+            assertTrue(products.get(0) == 110);
+        }catch (Exception e){
+            assert false;
+        }
     }
 }

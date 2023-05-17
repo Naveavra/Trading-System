@@ -81,6 +81,14 @@ public class API {
         Response<String> res = market.changeQuantityInCart(userId, storeId, productId, change);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> addQuantityInCart(int userId, int storeId, int productId, int change){
+        Response<String> res = market.addQuantityInCart(userId, storeId, productId, change);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> removeQuantityInCart(int userId, int storeId, int productId, int change){
+        Response<String> res = market.removeQuantityInCart(userId, storeId, productId, change);
+        return fromResToPair(res);
+    }
     public Pair<Boolean, JSONObject> removeCart(int userId) {
         Response<String> res = market.removeCart(userId);
         return fromResToPair(res);
@@ -151,7 +159,7 @@ public class API {
             for (Map.Entry<Integer, List<Action>> entry : hashmap.entrySet()) {
                 JSONObject jsonO = new JSONObject();
                 jsonO.put(key, entry.getKey());
-                jsonO.put(value, entry.getValue());
+                jsonO.put(value, fromActionToString(entry.getValue()));
                 jsonList.add(jsonO);
             }
         }
@@ -416,6 +424,7 @@ public class API {
     private JSONObject productToJson(ProductInfo product)
     {
         JSONObject json = new JSONObject();
+        json.put("storeId", product.getId());
         json.put("productId", product.getId());
         json.put("name", product.getName());
         json.put("description", product.getDescription());
@@ -424,6 +433,7 @@ public class API {
         json.put("categories", product.getCategories());
         json.put("rating", product.getRating());
         json.put("reviews", reviewsToJson(product.getReviews(), "messageId", "review"));
+        json.put("img", product.getImg());
         return json;
     }
 
@@ -816,4 +826,20 @@ public class API {
         market.logout(id1);
         market.logout(id2);
     }
+
+    public List<String> fromActionToString(List<Action> actions){
+        List<String> ans = new LinkedList<>();
+        for(Action a : actions){
+            String as = a.toString();
+            for(int i = 0; i<as.length(); i++) {
+                if (40 < as.charAt(i) && as.charAt(i) < 91) {
+                    char add = (char)(as.charAt(i) + 32);
+                    as = as.substring(0, i) + " " + add + as.substring(i + 1);
+                }
+            }
+            ans.add(as);
+        }
+       return ans;
+    }
+
 }
