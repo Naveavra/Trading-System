@@ -501,6 +501,9 @@ public class Store {
     public HashMap<Integer, List<Integer>> getApp(){
         return appHistory.getAppHistory();
     }
+    public HashMap<Integer, Role> getRoles(){
+        return appHistory.getRoles();
+    }
     public AppHistory getAppHistory(){
         return appHistory;
     }

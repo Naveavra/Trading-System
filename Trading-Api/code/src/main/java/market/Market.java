@@ -1482,7 +1482,13 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         }
     }
 
+    //for tests
     public String addTokenForTests() {
         return userAuth.generateToken(0);
     }
+
+    public int getAdminsize(){
+        return activeAdmins.size() + inActiveAdmins.size();
+    }
+
 }
