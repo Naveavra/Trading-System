@@ -5,6 +5,7 @@ import AppointUser from "../../../../components/Forms/AppointUser";
 import FireUser from "../../../../components/Forms/FireUser";
 import AddEditStore from "../../../../components/Forms/AddEditStore";
 import OpenCloseStore from "../../../../components/Forms/OpenCloseStore";
+import UpdatePermissions from "../../../../components/Forms/UpdatePermissions";
 
 export const SuperiorShopRoutes =
     <Route key="routes" path="superior" element={<Superior />}>
@@ -17,6 +18,7 @@ export const SuperiorShopRoutes =
         <Route path="editStore" element={<AddEditStore mode={'edit'} />} />
         <Route path="closeStore" element={<OpenCloseStore />} />
         <Route path="reopenStore" element={<OpenCloseStore />} />
+        <Route path="changemanagerpermission" element={<UpdatePermissions />} />
 
     </Route>
     ;

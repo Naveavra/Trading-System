@@ -25,7 +25,7 @@ const SelectAutoWidth: React.FC<SelectProps> = ({ label, values, labels, value, 
                     autoWidth
                     label={label}
                 >
-                    {values.map((value, index) => {
+                    {values?.map((value, index) => {
                         return <MenuItem key={index} value={value}>{labels[index]}</MenuItem>
                     })
                     }

@@ -36,7 +36,7 @@ public class ConnectedThread  extends Thread{
             }
 
             try {
-                Thread.sleep(15000); // sleep for 15 seconds
+                Thread.sleep(20000); // sleep for 15 seconds
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -14,7 +14,7 @@ import ProductCard from './ProductCard/Card';
 import { Product } from '../types/systemTypes/Product';
 import { getStoresInfo } from '../reducers/storesSlice';
 import { getProducts } from '../reducers/productsSlice';
-import { getClientData } from '../reducers/authSlice';
+import { getClientData, ping } from '../reducers/authSlice';
 
 const DashboardFrame: React.FC = () => {
 
@@ -30,14 +30,15 @@ const DashboardFrame: React.FC = () => {
     // Send a ping to the server
     const sendPing = () => {
         if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(response => {
-                    // Do something with the response if necessary
-                })
-                .catch(error => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
+            // axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
+            //     .then(response => {
+            //         // Do something with the response if necessary
+            //     })
+            //     .catch(error => {
+            //         // Handle the error if necessary
+            //     });
+            console.log("frame");
+            dispatch(ping(userId));
         }
     }
     const getC = () => {

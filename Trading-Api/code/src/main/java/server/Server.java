@@ -272,8 +272,8 @@ public class Server {
             String name = request.get("name").toString();
             String description = request.get("description").toString();
             int price = Integer.parseInt(request.get("price").toString());
-            int quantity = (int) (request.get("newQuantity"));
-            String img = request.get("newQuantity").toString();
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            String img = request.get("img").toString();
             toSparkRes(res, api.addProduct(userId, token, storeId, categories, name, description, price, quantity, img));
             return res.body();
         });
@@ -314,7 +314,7 @@ public class Server {
             String name = request.getString("name");
             String description = request.getString("description");
             int price = Integer.parseInt(request.get("price").toString());
-            int quantity = (int) (request.get("newQuantity"));
+            int quantity = Integer.parseInt(request.get("quantity").toString());
             String img = request.getString("img");
             toSparkRes(res, api.updateProduct(userId, token, storeId, productId, categories, name, description, price, quantity, img));
             return res.body();

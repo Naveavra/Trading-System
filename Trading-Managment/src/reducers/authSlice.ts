@@ -10,7 +10,7 @@ import { Permission } from "../types/systemTypes/Permission";
 import { getUserData } from "../types/requestTypes/authTypes";
 
 interface AuthState {
-    token: string | null;
+    token: string;
     userId: number;
     userName: string;
     isAdmin: boolean;
@@ -205,7 +205,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(logout.fulfilled, (state, { payload }) => {
             state.isLogoutLoading = false;
-            state.token = null;
+            state.token = "";
             state.userId = 0;
             state.userName = '';
             window.localStorage.removeItem(localStorage.auth.token.name);
@@ -225,7 +225,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(guestEnter.fulfilled, (state, { payload }) => {
             state.isLoginLoading = false;
-            state.token = null;
+            state.token = "";
             state.userId = payload;
             state.userName = "guest";
         });

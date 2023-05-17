@@ -12,11 +12,9 @@ import { StoreRoleEnum } from "../../types/systemTypes/StoreRole";
 import { clearStoreError, fireManager, fireOwner, getStore, patchPermissions } from "../../reducers/storesSlice";
 import { patchPermissionsParams } from "../../types/requestTypes/storeTypes";
 
-interface props {
-    role: 'owner' | 'manager'
-}
 
-const FireUser: React.FC<props> = ({ role }) => {
+
+const UpdatePermissions = () => {
     const dispatch = useAppDispatch();
     const [open, setOpen] = useState(true);
     const [userToFireId, setUserToFireId] = useState(-1);
@@ -33,7 +31,7 @@ const FireUser: React.FC<props> = ({ role }) => {
     const token = useAppSelector((state) => state.auth.token);
 
     const managers = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles)?.filter((role) => role.storeRole === StoreRoleEnum.MANAGER);
-    const managers_names = managers?.map((role) => role.userName);
+    const managers_names = managers?.map((role) => role.userName) ?? [];
 
 
 
@@ -73,7 +71,7 @@ const FireUser: React.FC<props> = ({ role }) => {
                         marginTop: 4,
                         top: '50%',
                         left: '50%',
-                        height: 300,
+                        height: 350,
                         width: '80%',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -139,4 +137,4 @@ const FireUser: React.FC<props> = ({ role }) => {
     );
 
 }
-export default FireUser;
+export default UpdatePermissions;

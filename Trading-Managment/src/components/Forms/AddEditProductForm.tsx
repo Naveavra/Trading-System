@@ -4,12 +4,14 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { type } from "os";
 import error from "../Alerts/error";
 import AlertDialog from "../Dialog/AlertDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { ProductFormValues } from "../../types/formsTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { clearProductError, patchProduct, postProduct } from "../../reducers/productsSlice";
+import SuccessAlert from "../Alerts/success";
+import { getClientData, ping } from "../../reducers/authSlice";
 
 interface Props {
     mode: 'add' | 'edit';
@@ -22,32 +24,24 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
     const form = useForm<ProductFormValues>();
     const required = (() => { return mode === 'add' ? true : false })();
     const params = useParams();
-    const userId = params.id ?? '-1';
+    const userId = useAppSelector((state) => state.auth.userId);
     const token = useAppSelector((state) => state.auth.token);
     const error = useAppSelector((state) => state.store.storeState.error);
-    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.id);
+    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
+    const isLoading = useAppSelector((state) => state.product.isLoading)
     const handleOnClose = () => {
         setOpen(false);
         navigate("/dashboard/shops/superior");
         // dispatch(getStoreData({ storeId: storeId, token: token }));
     }
-    const splitCategories = (categoryString: string): string[] => {
-        // split the string by commas and remove any leading/trailing whitespace
-        if (categoryString == '') {
-            return [""];
-        }
-        const categories = categoryString.split(',').map((category) => category.trim());
-        return categories;
-    }
+
     const handleOnSubmit = () => {
         //todo : handle null in edit
         let response;
         form.setValue('storeId', storeId);
-        form.setValue('id', parseInt(userId));
+        form.setValue('id', userId);
         switch (mode) {
             case 'add':
-                const categories = splitCategories(form.getValues().category[0]);
-                form.setValue('category', categories);
                 response = dispatch(postProduct(form.getValues()));
                 response.then((res) => {
                     if (res.meta.requestStatus === 'fulfilled') {
@@ -56,7 +50,6 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
                 });
                 break;
             case 'edit':
-                //todo : handle null
                 response = dispatch(patchProduct(form.getValues()));
                 response.then((res) => {
                     if (res.meta.requestStatus === 'fulfilled') {
@@ -65,11 +58,32 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
                 });
                 break;
             default:
+
                 break;
         }
-        handleOnClose();
     };
-    const isLoading = false;
+
+    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
+    // Send a ping to the server
+    const sendPing = () => {
+        if (userId != 0) {
+            dispatch(ping(userId));
+        }
+    }
+    const getC = () => {
+        if (token) {
+            dispatch(getClientData({ userId: userId, token: token }));
+        }
+    }
+    useEffect(() => {
+        // Call the sendPing function every 2 seconds
+        const pingInterval = setInterval(sendPing, PING_INTERVAL);
+        // Stop the ping interval when the user leaves the app
+        return () => {
+            clearInterval(pingInterval)
+        };
+
+    }, [])
     return (
         <>
             <Dialog onClose={handleOnClose} open={open}>
@@ -236,7 +250,9 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
             </Dialog >
             {!!error ?
                 <AlertDialog open={!!error} onClose={() => { dispatch(clearProductError()); }} text={error} sevirity={"error"} />
-                : null}
+                : mode == "add" ? <SuccessAlert message={"product added successfuly"} /> :
+                    <SuccessAlert message={"product updated successfuly"} />
+            }
         </>
     );
 }

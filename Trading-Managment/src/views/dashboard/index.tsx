@@ -17,6 +17,7 @@ import Categories2 from '../../components/Categories/category2';
 import ProductCard from '../../components/ProductCard/Card';
 import { Product } from '../../types/systemTypes/Product';
 import Products from '../../components/Product/Products';
+import { getCart } from '../../reducers/cartSlice';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -54,6 +55,9 @@ const DashboardPage: React.FC = () => {
         // Call the sendPing function every 2 seconds
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
         const pingInterval2 = setInterval(getC, PING_INTERVAL2);
+        dispatch(getStoresInfo());
+        dispatch(getProducts());
+        dispatch(getCart({ userId: userId }));
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
