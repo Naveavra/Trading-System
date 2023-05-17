@@ -24,21 +24,30 @@ const AddEditStore: React.FC<storeProps> = ({ mode }) => {
     const isLoading = useAppSelector((state: RootState) => state.store.isLoading);
     const error = useAppSelector((state: RootState) => state.store.error);
     const store = useAppSelector((state: RootState) => state.store.storeState.watchedStore);
-    const store_id = store ? store.id : -1;
-    const permmisions = useAppSelector((state: RootState) => state.auth.permmisions).filter((perm) => perm.storeId === store_id);
-    const Actions = permmisions.length > 0 ? permmisions[0].actions : [];
+    const store_id = store ? store.storeId : -1;
+    const permissions = useAppSelector((state: RootState) => state.auth.permissions).filter((perm) => perm.storeId === store_id);
+    const Actions = permissions.length > 0 ? permissions[0].actions : [];
     const canClose = Actions.includes(Action.closeStore);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
         let response;
         switch (mode) {
             case 'add':
-                console.log(form.getValues());
                 response = dispatch(postStore(form.getValues()));
+                response.then((res: { meta: { requestStatus: string; }; }) => {
+                    if (res.meta.requestStatus === 'fulfilled') {
+                        handleOnClose();
+                    }
+                });
                 break;
             case 'edit':
                 form.setValue('storeId', store_id);
                 response = dispatch(patchStore(form.getValues()));
+                response.then((res: { meta: { requestStatus: string; }; }) => {
+                    if (res.meta.requestStatus === 'fulfilled') {
+                        handleOnClose();
+                    }
+                });
                 break;
             default:
                 break;

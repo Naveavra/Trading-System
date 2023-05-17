@@ -29,7 +29,7 @@ const initialState: ProductsState = {
         watchedProduct: undefined,
     },
     isLoading: false,
-    responseData: { data: { results: [] } },
+    responseData: [],
     error: null,
 };
 
@@ -53,7 +53,6 @@ export const patchProduct = createAsyncThunk<
     `${reducerName}/patch`,
     async (formData, thunkApi) => {
         const data = removeEmptyValues(formData);
-        console.log("after remove", data);
         return productsApi.patchProduct(data)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
@@ -94,7 +93,7 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
             state.error = null;
         },
         setWatchedProductInfo: (state, action) => {
-            state.productState.watchedProduct = state.responseData?.data.results.find((product) => product.id === action.payload) ?? EmptyProduct;
+            state.productState.watchedProduct = state.responseData?.find((product) => product.productId === action.payload) ?? EmptyProduct;
         },
     },
     extraReducers: (builder) => {
@@ -106,7 +105,6 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
         builder.addCase(getProducts.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
             state.responseData = payload;
-            console.log(payload);
             state.error = null;
         });
         builder.addCase(getProducts.rejected, (state, { payload }) => {

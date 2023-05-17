@@ -1,7 +1,6 @@
-import { Cart } from "./Cart";
-
-export interface Order 
-{
+export interface Order {
     orderId: number;
-    cart: Cart;
+    userId: number;
+    products: { storeId: number, basket: { productId: number, quantity: number }[] }[];
+    totalPrice: number;
 }

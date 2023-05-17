@@ -2,7 +2,7 @@ import { Action, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiError, ApiListData, ApiResponse } from "../types/apiTypes";
 
 import { storeApi } from "../api/storeApi";
-import { AppointOwnerParams, DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
+import { AppointUserParams, DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams, fireUserParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
 import { Store, emptyStore } from "../types/systemTypes/Store";
 import { StoreInfo, emptyStoreInfo } from "../types/systemTypes/StoreInfo";
 import { store } from "../redux/store";
@@ -35,7 +35,7 @@ const initialState: StoreState = {
         wahtchedStoreInfo: emptyStoreInfo,
     },
     isLoading: false,
-    storeInfoResponseData: { data: { results: [] } },
+    storeInfoResponseData: [],
     error: null,
 };
 
@@ -101,7 +101,7 @@ export const getStore = createAsyncThunk<
     });
 export const appointManager = createAsyncThunk<
     string,
-    AppointOwnerParams,
+    AppointUserParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/appointments/managers/post`,
@@ -113,7 +113,7 @@ export const appointManager = createAsyncThunk<
 
 export const appointOwner = createAsyncThunk<
     string,
-    AppointOwnerParams,
+    AppointUserParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/appointments/owners/post`,
@@ -125,7 +125,7 @@ export const appointOwner = createAsyncThunk<
 
 export const fireManager = createAsyncThunk<
     string,
-    AppointOwnerParams,
+    fireUserParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/appointments/managers/delete`,
@@ -137,7 +137,7 @@ export const fireManager = createAsyncThunk<
 
 export const fireOwner = createAsyncThunk<
     string,
-    AppointOwnerParams,
+    fireUserParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/appointments/owners/delete`,
@@ -171,7 +171,7 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.storeState.error = null;
         },
         setWhatchedStoreInfo: (state, action) => {
-            state.storeState.wahtchedStoreInfo = state.storeInfoResponseData.data.results.find((storeInfo) => storeInfo.id === action.payload) ?? emptyStoreInfo;
+            state.storeState.wahtchedStoreInfo = state.storeInfoResponseData.find((storeInfo) => storeInfo.id === action.payload) ?? emptyStoreInfo;
         },
     },
     extraReducers: (builder) => {
@@ -235,6 +235,7 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         builder.addCase(getStore.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
+            console.log("store!!!!!", payload);
             state.storeState.watchedStore = payload;
         });
         //appointManager

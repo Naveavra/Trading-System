@@ -41,8 +41,11 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, ope
     const theme = useTheme();
     const navigate = useNavigate();
     const store = useAppSelector((state) => state.store.storeState.watchedStore);
-    const permmisions = useAppSelector((state: RootState) => state.auth.permmisions).filter((perm) => perm.storeId === store.id);
-    const actions = permmisions.length > 0 ? permmisions[0].actions : [];
+    const permissions = useAppSelector((state: RootState) => state.auth.permissions);
+    console.log("permissions", permissions);
+    console.log(store.storeId);
+    const actions = permissions.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
+    console.log("actions", actions);
     for (const a of actions) {
         itemsMap[a] = {
             text: a,

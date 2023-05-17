@@ -9,7 +9,7 @@ import error from "../Alerts/error";
 import AlertDialog from "../Dialog/AlertDialog";
 import SelectAutoWidth from "../Selectors/AutoWidth";
 import { StoreRoleEnum } from "../../types/systemTypes/StoreRole";
-import { clearStoreError, getStore } from "../../reducers/storesSlice";
+import { clearStoreError, fireManager, fireOwner, getStore } from "../../reducers/storesSlice";
 
 interface props {
     role: 'owner' | 'manager'
@@ -19,7 +19,7 @@ const FireUser: React.FC<props> = ({ role }) => {
     const dispatch = useAppDispatch();
     const [open, setOpen] = useState(true);
     const [userToFireId, setUserToFireId] = useState(-1);
-    const user_name = '';// useAppSelector((state) => state.store.storeState.watchedStore.storeRoles).filter((role) => role.storeRole === StoreRoleEnum.MANAGER).map((role) => role.user.username);
+    const user_name = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles)?.filter((role) => role.storeRole === StoreRoleEnum.MANAGER)?.map((role) => role.userName);
     const form = useForm<fireUserFormValues>();
     const navigate = useNavigate();
     const params = useParams();
@@ -28,28 +28,28 @@ const FireUser: React.FC<props> = ({ role }) => {
     const error = useAppSelector((state) => state.store.storeState.error);
 
     //maybe by id
-    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.id);
+    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
     const token = useAppSelector((state) => state.auth.token);
 
-    const managers = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles).filter((role) => role.storeRole === StoreRoleEnum.MANAGER);
-    const managers_names = managers.map((role) => role.userName);
+    const managers = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles)?.filter((role) => role.storeRole === StoreRoleEnum.MANAGER);
+    const managers_names = managers?.map((role) => role.userName);
 
-    const owners = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles).filter((role) => role.storeRole === StoreRoleEnum.OWNER);
-    const owners_names = owners.map((role) => role.userName);
+    const owners = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles)?.filter((role) => role.storeRole === StoreRoleEnum.OWNER);
+    const owners_names = owners?.map((role) => role.userName);
 
 
     //maybe take it from params
     const handleOnClose = () => {
         setOpen(false);
         navigate(-1);
-        dispatch(getStore({ storeId: storeId, token: token }));
+        dispatch(getStore({ userId: Number(userId), storeId: storeId }));
 
     }
     const handleOnSubmit = () => {
         let response;
         switch (role) {
             case 'owner':
-                response = dispatch(deleteOwner(form.getValues()));
+                response = dispatch(fireOwner(form.getValues()));
                 response.then((res: { meta: { requestStatus: string; }; }) => {
                     if (res.meta.requestStatus === 'fulfilled') {
                         handleOnClose();
@@ -57,7 +57,7 @@ const FireUser: React.FC<props> = ({ role }) => {
                 });
                 break;
             case 'manager':
-                response = dispatch(deleteManager(form.getValues()));
+                response = dispatch(fireManager(form.getValues()));
                 response.then((res: { meta: { requestStatus: string; }; }) => {
                     if (res.meta.requestStatus === 'fulfilled') {
                         handleOnClose();
@@ -71,7 +71,6 @@ const FireUser: React.FC<props> = ({ role }) => {
 
     const handleChange = (event: SelectChangeEvent) => {
         //dispatch(setFontSize(event.target.value as ThemeFontSize));
-        console.log(event.target.value);
         switch (role) {
             case 'owner':
                 setUserToFireId(owners.filter((owner) => owner.userName === event.target.value as string)[0].userId);

@@ -4,50 +4,38 @@ import AlertDialog from "../Dialog/AlertDialog";
 import { useForm } from "react-hook-form";
 import { appointUserFormValues } from "../../types/formsTypes";
 import { useNavigate } from "react-router-dom";
-import { appointManager, appointOwner, clearStoreError } from "../../reducers/storesSlice";
+import { appointManager, appointOwner, clearStoreError, patchStore } from "../../reducers/storesSlice";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
 import { useState } from "react";
 
-interface props {
-    role: 'manager' | 'owner';
-}
-const AppointUser: React.FC<props> = ({ role }) => {
+
+const OpenCloseStore = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [open, setOpen] = useState(true);
-    const form = useForm<appointUserFormValues>();
     const isLoading = useAppSelector((state: RootState) => state.store.isLoading);
     const error = useAppSelector((state: RootState) => state.store.error);
-    const [emailError, setEmailError] = useState("");
+    const store = useAppSelector((state: RootState) => state.store.storeState.watchedStore);
+    const mode = store.isActive;
+    const storeId = store.storeId;
+    const userId = useAppSelector((state: RootState) => state.auth.userId);
     const handleOnClose = () => {
         setOpen(false);
         navigate(-1);
         // dispatchEvent(getStoreData({}))
     }
-    const validateEmail = (email: string): void => {
-        const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        if (!emailRegex.test(email)) {
-            form.setError("emailOfUser", { type: 'custom', message: 'email isnt valide' }, { shouldFocus: true })
-            setEmailError("email isnt valide")
-        }
-        else {
-            setEmailError("");
-            form.clearErrors("emailOfUser");
-        }
-        // return emailRegex.test(email);
-    }
     const handleOnSubmit = () => {
         let response;
-        switch (role) {
-            case 'manager':
-                response = dispatch(appointManager(form.getValues()));
+        switch (mode) {
+            case true:
+                response = dispatch(patchStore({ isActive: false, storeId: storeId, userId: userId, img: store.img, desc: store.description }));
                 response.then((res: { meta: { requestStatus: string; }; }) => {
                     if (res.meta.requestStatus === 'fulfilled') {
                         handleOnClose();
                     }
                 });
-            case 'owner':
-                response = dispatch(appointOwner(form.getValues()));
+            case false:
+                response = dispatch(patchStore({ isActive: true, storeId: storeId, userId: userId, img: store.img, desc: store.description }));
                 response.then((res: { meta: { requestStatus: string; }; }) => {
                     if (res.meta.requestStatus === 'fulfilled') {
                         handleOnClose();
@@ -81,41 +69,18 @@ const AppointUser: React.FC<props> = ({ role }) => {
                     >
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                please enter the email of the person u want to appoint
+                                {mode ? 'are u shure u want to close the store' : 'are u shure u want to open the store'}
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                name="email"
-                                type="text"
-                                fullWidth
-                                label="email"
-                                sx={{ mt: 1, mb: 1 }}
-                                inputProps={{
-                                    ...form.register('emailOfUser', {
-                                        required: {
-                                            value: true,
-                                            message: "email is required"
-                                        }
-                                    })
-                                }}
-                                error={!!form.formState.errors['emailOfUser'] ?? false}
-                                helperText={form.formState.errors['emailOfUser']?.message ?? undefined}
-                                onChange={(e) => {
-                                    validateEmail(e.target.value)
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
                             <LoadingButton
-                                disabled={emailError != ""}
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                                 loading={isLoading}
                             >
-                                send request
+                                {mode ? 'close' : 'open'}
                             </LoadingButton>
                         </Grid>
                     </Grid >
@@ -127,4 +92,4 @@ const AppointUser: React.FC<props> = ({ role }) => {
         </>
     );
 }
-export default AppointUser;
+export default OpenCloseStore;

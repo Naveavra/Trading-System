@@ -12,7 +12,7 @@ export interface TokenResponseBody {
     storeRoles: StoreRole[];
     storeNames: StoreName[];
     storeImgs: StoreImg[];
-    permmisions: Permission[];
+    permissions: Permission[];
 };
 export interface RegisterResponseData {
     answer: string | null;
@@ -29,5 +29,5 @@ export interface getClientResponseData {
     storeRoles: StoreRole[];
     storeNames: StoreName[];
     storeImgs: StoreImg[];
-    permmisions: Permission[];
+    permissions: Permission[];
 };

@@ -174,6 +174,13 @@ public class Member {
     public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
         g.changeQuantityInCart(storeId, productId, change);
     }
+    public void addQuantityInCart(int storeId, int productId, int change) throws Exception {
+        g.addQuantityInCart(storeId, productId, change);
+    }
+
+    public void removeQuantityInCart(int storeId, int productId, int change) throws Exception {
+        g.removeQuantityInCart(storeId, productId, change);
+    }
 
 
     /**
@@ -573,4 +580,17 @@ public class Member {
         }
         return ans;
     }
+
+    public HashMap<Integer, List<Action>> getPermissions() {
+        HashMap<Integer, List<Action>> ans = new HashMap<>();
+        for(int storeId : activeRoles.keySet()){
+            ans.put(storeId, activeRoles.get(storeId).getActions());
+        }
+        for(int storeId : inActiveRoles.keySet()){
+            ans.put(storeId, inActiveRoles.get(storeId).getActions());
+        }
+        return ans;
+    }
+
+
 }

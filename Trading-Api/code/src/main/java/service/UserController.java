@@ -146,6 +146,15 @@ public class UserController {
         else
             throw new Exception("no member has this id");
     }
+
+    public HashMap<Integer, List<Action>> getPermissions(int memberId) throws Exception{
+        Member m = getMember(memberId);
+        if(m != null){
+            return m.getPermissions();
+        }
+        else
+            throw new Exception("no member has this id");
+    }
     public HashMap<Integer, String> getStoreImgs(int memberId) throws Exception{
         Member m = getMember(memberId);
         if(m != null){
@@ -249,10 +258,58 @@ public class UserController {
                 throw new Exception("no such member exists");
         }
     }
+    public synchronized void addQuantityInCart(int userId, int storeId, int productId, int change) throws Exception{
+        if(userId % 2 == 0) {
+            Guest g = guestList.get(userId);
+            if(g != null)
+                g.addQuantityInCart(storeId, productId, change);
+            else
+                throw new Exception("no such guest exists");
+        }
+        else {
+            String email = idToEmail.get(userId);
+            if (email != null)
+                addQuantityInCart(email, storeId, productId, change);
+            else
+                throw new Exception("no such member exists");
+        }
+    }
+    public synchronized void removeQuantityInCart(int userId, int storeId, int productId, int change) throws Exception{
+        if(userId % 2 == 0) {
+            Guest g = guestList.get(userId);
+            if(g != null)
+                g.removeQuantityInCart(storeId, productId, change);
+            else
+                throw new Exception("no such guest exists");
+        }
+        else {
+            String email = idToEmail.get(userId);
+            if (email != null)
+                removedQuantityInCart(email, storeId, productId, change);
+            else
+                throw new Exception("no such member exists");
+        }
+    }
     public synchronized void changeQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
         Member m = activeMemberList.get(email);
         if(m != null) {
                 m.changeQuantityInCart(storeId, productId, change);
+        }
+        else
+            throw new Exception("no such member exists");
+    }
+    public synchronized void addQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
+        Member m = activeMemberList.get(email);
+        if(m != null) {
+            m.addQuantityInCart(storeId, productId, change);
+        }
+        else
+            throw new Exception("no such member exists");
+    }
+    public synchronized void removedQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
+        Member m = activeMemberList.get(email);
+        if(m != null) {
+            m.removeQuantityInCart(storeId, productId, change);
         }
         else
             throw new Exception("no such member exists");
@@ -465,13 +522,13 @@ public class UserController {
     }
 
 
-    public Message sendQuestionToStore(int storeId, String question, int userId) throws Exception {
+    public Message sendQuestionToStore(int userId, int storeId, String question) throws Exception {
         if(userId % 2 == 0)
             throw new Exception("guest can't write a question to a store");
         else{
             String email = idToEmail.get(userId);
             if(email != null)
-                return sendQuestionToStore(storeId, question, email);
+                return sendQuestionToStore(email, storeId, question);
             else
                 throw new Exception("no member has this id");
         }
@@ -479,7 +536,7 @@ public class UserController {
 
 
     //TODO:need to check before that the storeId is legal
-    public Message sendQuestionToStore(int storeId, String question, String email) throws Exception {
+    public Message sendQuestionToStore(String email, int storeId, String question) throws Exception {
         Member m = activeMemberList.get(email);
         if(m != null) {
             {
@@ -1452,7 +1509,7 @@ public class UserController {
     }
 
     public boolean isActiveUser(int userId){
-        return activeMemberList.containsKey(userId);
+        return activeMemberList.containsKey(idToEmail.get(userId));
     }
 
     public void removeCart(int userId) throws Exception{
@@ -1476,4 +1533,5 @@ public class UserController {
                 throw new Exception("no such member exists");
         }
     }
+
 }

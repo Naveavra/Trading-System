@@ -45,6 +45,9 @@ public class Message {
     }
 
     public int getProductId(){return productId;}
+    public MessageState getMessageState() {
+        return state;
+    }
 
     public Member getReviewer() {
         return reviewer;
@@ -106,4 +109,5 @@ public class Message {
     public boolean getSeen(){
         return seen;
     }
+
 }

@@ -4,11 +4,8 @@ export interface ApiError {
     };
 };
 
-export interface ApiListData<T> {
-    data: {
-        results: T[]
-    }
-}
+export type ApiListData<T> = T[]
+
 
 
 export type ApiResponseListData<T> = ApiListData<T> | ApiError;

@@ -1,4 +1,4 @@
-import {Basket} from '../systemTypes/Basket'
+import { Basket } from '../systemTypes/Basket'
 
 export interface GetCartParams {
     userId: number;
@@ -10,13 +10,17 @@ export interface PostBasketParams {
     basket: Basket;
 }
 
-export interface DeleteCartParams{
+export interface DeleteCartParams {
     userId: number;
-} 
+}
 
-export interface PatchCartParams{
+export interface PatchCartParams {
     userId: number;
     storeId: number;
     productId: number;
     quantity: number;
+}
+export interface buyCartParams {
+    userId: number;
+    accountNumber: string;
 }

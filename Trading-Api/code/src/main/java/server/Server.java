@@ -82,7 +82,7 @@ public class Server {
             toSparkRes(res, api.register(email, pass, bday));
             return res.body();
         });
-        post("api/auth/logout", (req, res) -> {
+        get("api/auth/logout", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             toSparkRes(res, api.logout(userId));
@@ -96,7 +96,6 @@ public class Server {
             JSONObject request = new JSONObject(req.body());
             String id = request.get("userId").toString();
             connected.put(Integer.parseInt(id), true);
-            System.out.println(id + " becomes true");
             res.status(200);
             res.body("ping success");
             return res.body();
@@ -104,7 +103,7 @@ public class Server {
         post("api/auth/getClient", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
-            String token = req.headers("Authorization");
+            String token = request.get("token").toString();
             toSparkRes(res, api.getClient(userId, token));
             return res.body();
         });
@@ -112,17 +111,15 @@ public class Server {
         //stores
         get("api/stores/info" , (req,res)->{
             toSparkRes(res, api.getStores());
-            System.out.println(res.body());
             return res.body();
         });
-        get("api/stores", (req, res) -> {
+        post("api/stores/:storeId", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
             toSparkRes(res, api.getStore(userId, token, storeId));
             return res.body();
-
         });
         get("api/stores/:id/products", (req, res) ->{
             JSONObject request = new JSONObject(req.body());
@@ -131,7 +128,6 @@ public class Server {
             return res.body();
         });
         post("api/stores", (req, res) -> {
-            System.out.println("new store");
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String name = request.getString("name");
@@ -150,50 +146,52 @@ public class Server {
             String desc = request.getString("desc");
             String isActive = request.getString("isActive");
             String img = request.getString("img");
-            String ret = "";
-            if(name != null) {
-                toSparkRes(res, api.changeStoreName(userId, token, storeId, name));
-                ret = res + "\n" + res.body();
-                if(res.status() == 400){
-                    res.body(ret);
-                    return res.body();
-                }
-
-            }
-            if(img != null) {
-                toSparkRes(res, api.changeStoreImg(userId, token, storeId, img));
-                ret = res + "\n" + res.body();
-                if(res.status() == 400){
-                    res.body(ret);
-                    return res.body();
-                }
-            }
-            if(desc != null) {
-                toSparkRes(res, api.changeStoreDescription(userId, token, storeId, desc));
-                ret = res + "\n" + res.body();
-                if(res.status() == 400){
-                    res.body(ret);
-                    return res.body();
-                }
-            }
-            if(isActive.equals("false")) {
-                toSparkRes(res, api.closeStore(userId, token, storeId));
-                ret = res + "\n" + res.body();
-                if(res.status() == 400){
-                    res.body(ret);
-                    return res.body();
-                }
-            }
-            if(isActive.equals("true")) {
-                toSparkRes(res, api.reopenStore(userId, token, storeId));
-                ret = res + "\n" + res.body();
-                if(res.status() == 400){
-                    res.body(ret);
-                    return res.body();
-                }
-            }
-            res.body(ret);
+            toSparkRes(res, api.changeStoreInfo(userId, token, storeId, name, desc, isActive, img));
             return res.body();
+//            String ret = "";
+//            if(name != null) {
+//                toSparkRes(res, api.changeStoreName(userId, token, storeId, name));
+//                ret = res + "\n" + res.body();
+//                if(res.status() == 400){
+//                    res.body(ret);
+//                    return res.body();
+//                }
+//
+//            }
+//            if(img != null) {
+//                toSparkRes(res, api.changeStoreImg(userId, token, storeId, img));
+//                ret = res + "\n" + res.body();
+//                if(res.status() == 400){
+//                    res.body(ret);
+//                    return res.body();
+//                }
+//            }
+//            if(desc != null) {
+//                toSparkRes(res, api.changeStoreDescription(userId, token, storeId, desc));
+//                ret = res + "\n" + res.body();
+//                if(res.status() == 400){
+//                    res.body(ret);
+//                    return res.body();
+//                }
+//            }
+//            if(isActive.equals("false")) {
+//                toSparkRes(res, api.closeStore(userId, token, storeId));
+//                ret = res + "\n" + res.body();
+//                if(res.status() == 400){
+//                    res.body(ret);
+//                    return res.body();
+//                }
+//            }
+//            if(isActive.equals("true")) {
+//                toSparkRes(res, api.reopenStore(userId, token, storeId));
+//                ret = res + "\n" + res.body();
+//                if(res.status() == 400){
+//                    res.body(ret);
+//                    return res.body();
+//                }
+//            }
+//            res.body(ret);
+//            return res.body();
         });
         patch("api/stores/:storeId/permissions", (req, res) ->{
             JSONObject request = new JSONObject(req.body());
@@ -344,7 +342,19 @@ public class Server {
             toSparkRes(res, api.addProductToCart(userId, storeId, productId, quantity));
             return res.body();
         });
-        patch("api/cart/:id", (req, res) -> {
+//        patch("api/cart/:id", (req, res) -> {
+//            //when a user change quantity of a product in specific store basket
+//            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+//            JSONObject request = new JSONObject(req.body());
+//            int userId = Integer.parseInt(request.get("userId").toString());
+//            int storeId = Integer.parseInt(request.get("storeId").toString());
+//            int productId = Integer.parseInt(request.get("productId").toString());
+//            int quantity = Integer.parseInt(request.get("quantity").toString());
+//            toSparkRes(res, api.changeQuantityInCart(userId, storeId, productId, quantity));
+//            return res.body();
+//        });
+        patch("api/cart/add/:id", (req, res) -> {
+            //addtoart
             //when a user change quantity of a product in specific store basket
             //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
             JSONObject request = new JSONObject(req.body());
@@ -352,9 +362,30 @@ public class Server {
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int productId = Integer.parseInt(request.get("productId").toString());
             int quantity = Integer.parseInt(request.get("quantity").toString());
-            toSparkRes(res, api.changeQuantityInCart(userId, storeId, productId, quantity));
+            toSparkRes(res, api.addQuantityInCart(userId, storeId, productId, quantity));
             return res.body();
         });
+        patch("api/cart/remove/:id", (req, res) -> {
+            //removefromcart
+            //when a user change quantity of a product in specific store basket
+            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int productId = Integer.parseInt(request.get("productId").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.removeQuantityInCart(userId, storeId, productId, quantity));
+            return res.body();
+        });
+        post("api/cart/buy/:id", (req, res) ->{
+            //buycart
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String accountNumber = request.get("accountNumber").toString();
+            toSparkRes(res, api.makePurchase(userId, accountNumber));
+            return res.body();
+        });
+
         delete("api/cart/:id", (req, res) ->
         {
             //delete cart

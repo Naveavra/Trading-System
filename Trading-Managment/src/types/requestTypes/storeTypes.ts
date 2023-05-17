@@ -26,10 +26,15 @@ export interface DeleteStoreParams {
 export interface GetStoreProducts {
     storeId: number
 }
-export interface AppointOwnerParams {
-    storeId: number,
-    userIncharge: number,
-    newOwner: number
+export interface AppointUserParams {
+    userId: number;
+    storeId: number;
+    emailOfUser: string;
+}
+export interface fireUserParams {
+    userId: number;
+    storeId: number;
+    userToFire: number;
 }
 export interface getAppointmentsHistoryParams {
     storeId: number,

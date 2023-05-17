@@ -28,9 +28,9 @@ class StoreTest {
     void setUp() throws Exception {
         store = new Store(1, "candy shop", 0);
         store.addNewProduct("gum", "gumigun", new AtomicInteger(0), 10, 3);
-        store.getInventory().getProduct(0).setQuantity(10);
+        store.getInventory().getProduct(0).replaceQuantity(10);
         store.addNewProduct("coke", "diet", new AtomicInteger(1), 10, 3);
-        store.getInventory().getProduct(1).setQuantity(10);
+        store.getInventory().getProduct(1).replaceQuantity(10);
         store.appointUser(0, 1, Role.Manager);
         store.appointUser(1, 2, Role.Manager);
         member = new Member(2, "lala@gmail.com", "aA12345", "31/08/2022");
@@ -124,12 +124,7 @@ class StoreTest {
         HashMap<Integer, Integer> basket = new HashMap<>();
         basket.put(0, 5);
         basket.put(1, 11);
-        Exception exception = assertThrows(Exception.class, () -> {
-//            store.createOrder(basket);
-        });
-        String expectedMessage = "not enough units in store for coke there is only 10 in the store";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage, "store quantity is 10, user wanted 11");
+        assertFalse(store.makeOrder(basket), "store quantity is 10, user wanted 11");
     }
 
     @Test
@@ -137,16 +132,11 @@ class StoreTest {
         HashMap<Integer, Integer> basket = new HashMap<>();
         basket.put(0, 5);
         basket.put(1, 9);
-//        store.createOrder(basket);
+        //store.createOrder(basket);
         store.makeOrder(basket);
         HashMap<Integer, Integer> basket2 = new HashMap<>();
         basket2.put(1, 3);
-        Exception exception = assertThrows(Exception.class, () -> {
-//            store.createOrder(basket2);
-        });
-        String expectedMessage = "not enough units in store for coke there is only 1 in the store";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage, "store quantity is 1, user wanted 3");
+        assertFalse(store.makeOrder(basket2), "store quantity is 1, user wanted 3");
     }
 
     @Test
@@ -155,7 +145,7 @@ class StoreTest {
         basket.put(0, 5);
         basket.put(2, 11);
         Exception exception = assertThrows(Exception.class, () -> {
-//            store.createOrder(basket);
+            store.makeOrder(basket);
         });
         String expectedMessage = "Product not found, ID: 2";
         String actualMessage = exception.getMessage();

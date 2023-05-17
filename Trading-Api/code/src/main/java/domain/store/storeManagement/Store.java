@@ -20,6 +20,7 @@ import domain.store.product.Product;
 import utils.orderRelated.OrderInfo;
 import utils.stateRelated.Role;
 
+import java.awt.desktop.AppHiddenEvent;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,7 +32,7 @@ public class Store {
     private boolean isActive;
     private final transient int creatorId;
     private String storeDescription;
-    private final AppHistory appHistory; //first one is always the store creator
+    private final AppHistory appHistory; //first one is always the store creator //n
     private final Inventory inventory; //<productID,<product, quantity>>
     private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
     private final ConcurrentHashMap<Integer, Message> storeReviews; //<messageid, message>
@@ -42,8 +43,6 @@ public class Store {
     private PurchasePolicy purchasePolicy;
     private ArrayList<Discount> discounts;
     private DiscountFactory discountFactory;
-
-    private final ConcurrentHashMap<Integer, Message> productReviews; //maybe need to remove from here, i think this is unnecessary
     Gson gson ;
     public Store(int id, String description, int creatorId){
         Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
@@ -51,12 +50,11 @@ public class Store {
         this.storeid = id;
         this.storeDescription = description;
         this.creatorId = creatorId;
-        this.inventory = new Inventory();
+        this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
         this.purchasePolicy = new PurchasePolicy();
-        this.productReviews = new ConcurrentHashMap<>();//hash map between messageId to message for product
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
         gson = new Gson();
@@ -70,12 +68,11 @@ public class Store {
         this.storeid = storeid;
         this.storeDescription = description;
         this.creatorId = creatorId;
-        this.inventory = new Inventory();
+        this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
         this.purchasePolicy = new PurchasePolicy();
-        this.productReviews = new ConcurrentHashMap<>();//hash map between messageId to message for product
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
         gson = new Gson();
@@ -108,7 +105,6 @@ public class Store {
         else
             return sum / storeReviews.size();
     }
-    public AppHistory getAppHistory(){return appHistory;}
 
     public int addQuestion(Message m)
     {
@@ -143,7 +139,8 @@ public class Store {
     {
         if (storeOrders.containsKey(m.getOrderId()))
         {
-            productReviews.put(m.getMessageId(), m);
+            inventory.addProductReview(m);
+            //productReviews.put(m.getMessageId(), m);
             return creatorId;
         }
         else
@@ -165,8 +162,14 @@ public class Store {
         HashMap<Integer, Message> ans = new HashMap<>();
         for(int messageId : storeReviews.keySet())
             ans.put(messageId, storeReviews.get(messageId));
-        for(int messageId : productReviews.keySet())
-            ans.put(messageId, productReviews.get(messageId));
+        for(int messageId : inventory.getProductReviews().keySet())
+            ans.put(messageId,  inventory.getProductReviews().get(messageId));
+        return ans;
+    }
+    public HashMap<Integer, Message> getStoreQuestions() {
+        HashMap<Integer, Message> ans = new HashMap<>();
+        for(int messageId : questions.keySet())
+            ans.put(messageId, questions.get(messageId));
         return ans;
     }
     public List<OrderInfo> getOrdersHistory() {
@@ -399,7 +402,7 @@ public class Store {
         if (inventory.getProduct(productId) != null)
         {
             Product p = inventory.getProduct(productId);
-            return new ProductInfo(p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity());
+            return inventory.getProductInfo(productId);
         }
         throw new Exception("cant get product information");
     }
@@ -421,7 +424,7 @@ public class Store {
         return purchaseingprice;
     }
 
-    public List<ProductInfo> getProducts() {
+    public List<ProductInfo> getProducts(){
         return inventory.getProducts();
     }
 
@@ -493,6 +496,16 @@ public class Store {
             totalAmountToBeSubtracted += dis.handleDiscount(order.getProductsInStores().get(storeid),order);
         }
         order.setTotalPrice(order.getTotalPrice() - totalAmountToBeSubtracted);
+    }
+
+    public HashMap<Integer, List<Integer>> getApp(){
+        return appHistory.getAppHistory();
+    }
+    public HashMap<Integer, Role> getRoles(){
+        return appHistory.getRoles();
+    }
+    public AppHistory getAppHistory(){
+        return appHistory;
     }
 
 //    public void setStoreDiscountPolicy(String policy) throws Exception {

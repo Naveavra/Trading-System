@@ -18,6 +18,7 @@ import { getProducts } from '../reducers/productsSlice';
 const DashboardFrame: React.FC = () => {
 
     //const themeColorMode = useAppSelector((state) => state.global.clientSettings.theme.colorMode);
+    const [text, setText] = useState('');
     const dispatch = useAppDispatch();
     const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector((state) => state.auth.userName);
@@ -25,15 +26,12 @@ const DashboardFrame: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const [open, setOpen] = React.useState(false);
     const [query, setQuery] = useState("");
-    const response = useAppSelector((state) => state.product.responseData);
-    const products = response?.data?.results ?? [];
+    const products = useAppSelector((state) => state.product.responseData) ?? [];
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
     // Send a ping to the server
     const sendPing = () => {
-        console.log("pinging", userId);
         if (userId != 0) {
-            console.log("ping", userId);
             axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
                 .then(response => {
                     // Do something with the response if necessary
@@ -46,29 +44,43 @@ const DashboardFrame: React.FC = () => {
     }
     useEffect(() => {
         // Call the sendPing function every 2 seconds
-        console.log("mount");
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
 
         // Stop the ping interval when the user leaves the app
         return () => {
-            console.log("unmount");
             clearInterval(pingInterval)
         };
 
     }, [userId])
 
-
+    const handleSet = (text: string) => {
+        setText(text);
+    }
     return (<>
         <Bar headLine={"Trading System"} />
-        <SearchBar />
+        <SearchBar text={text} set={handleSet} />
         <Divider sx={{ marginTop: 1 }} />
         <ShopsBar />
         <Divider />
         {/* <Categories /> */}
         <Categories2 />
-        {products ? products.map((product: Product) => {
-            <ProductCard item={product} key={product.id} canEdit={false} canDelete={false} />
-        }) : null}
+        {text == '' ?
+            <>
+                {
+                    products.map((product: Product) => {
+                        <ProductCard item={product} key={product.productId} canEdit={false} canDelete={false} />
+                    })
+                }
+            </>
+            :
+            <>
+                {
+                    products.filter((product) => product.description.includes(text) || product.name.includes(text) || product.categories.reduce((acc, curr) => curr.includes(text), false)).map((product: Product) => {
+                        <ProductCard item={product} key={product.productId} canEdit={false} canDelete={false} />
+                    })
+                }
+            </>
+        }
         <Outlet />
 
     </>);

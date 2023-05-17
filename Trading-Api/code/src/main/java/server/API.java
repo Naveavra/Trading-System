@@ -17,6 +17,7 @@ import utils.marketRelated.Response;
 import utils.messageRelated.Message;
 import utils.orderRelated.Order;
 import utils.orderRelated.OrderInfo;
+import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.userInfoRelated.Info;
 import utils.userInfoRelated.Receipt;
@@ -80,21 +81,27 @@ public class API {
         Response<String> res = market.changeQuantityInCart(userId, storeId, productId, change);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> addQuantityInCart(int userId, int storeId, int productId, int change){
+        Response<String> res = market.addQuantityInCart(userId, storeId, productId, change);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> removeQuantityInCart(int userId, int storeId, int productId, int change){
+        Response<String> res = market.removeQuantityInCart(userId, storeId, productId, change);
+        return fromResToPair(res);
+    }
     public Pair<Boolean, JSONObject> removeCart(int userId) {
         Response<String> res = market.removeCart(userId);
         return fromResToPair(res);
     }
 
-    public String getBaskets(HashMap<Integer, HashMap<Integer, Integer>> basketsMaps)
+    public List<JSONObject> getBaskets(HashMap<Integer, HashMap<Integer, Integer>> basketsMaps)
     {
-        List<String> baskets = new ArrayList();
+        List<JSONObject> baskets = new ArrayList();
         for (Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry : basketsMaps.entrySet()) {
             JSONObject basketJson = getBasket(basketEntry);
-            baskets.add(basketJson.toString());
+            baskets.add(basketJson);
         }
-        String products = baskets.stream()
-                .collect(Collectors.joining(",", "[", "]"));
-        return products;
+        return baskets;
     }
 
     public Pair<Boolean, JSONObject> getCart(int id){
@@ -120,43 +127,58 @@ public class API {
         return fromResToPair(res);
     }
 
-    private String getStoreInfoHM(HashMap<Integer, String> hashMap, String key, String value){
-        List<String> jsonList = new ArrayList();
-        for (Map.Entry<Integer, String> entry : hashMap.entrySet()) {
-            JSONObject jsonO = new JSONObject();
-            jsonO.put(key, entry.getKey());
-            jsonO.put(value, entry.getValue());
-            jsonList.add(jsonO.toString());
+    private List<JSONObject> getStoreInfoHM(HashMap<Integer, String> hashMap, String key, String value){
+        List<JSONObject> jsonList = new ArrayList();
+        if(hashMap != null)
+        {
+            for (Map.Entry<Integer, String> entry : hashMap.entrySet()) {
+                JSONObject jsonO = new JSONObject();
+                jsonO.put(key, entry.getKey());
+                jsonO.put(value, entry.getValue());
+                jsonList.add(jsonO);
+            }
         }
-        return jsonList.stream()
-                .collect(Collectors.joining(",", "[", "]"));
+        return jsonList;
     }
 
-    private String getStoreRole(HashMap<Integer, Role> hashMap, String key, String value){
-        List<String> jsonList = new ArrayList();
-        for (Map.Entry<Integer, Role> entry : hashMap.entrySet()) {
-            JSONObject jsonO = new JSONObject();
-            jsonO.put(key, entry.getKey());
-            jsonO.put(value, entry.getValue());
-            jsonList.add(jsonO.toString());
+    private List<JSONObject> getStoreRole(HashMap<Integer, Role> hashMap, String key, String value){
+        List<JSONObject> jsonList = new ArrayList();
+        if(hashMap != null) {
+            for (Map.Entry<Integer, Role> entry : hashMap.entrySet()) {
+                JSONObject jsonO = new JSONObject();
+                jsonO.put(key, entry.getKey());
+                jsonO.put(value, entry.getValue());
+                jsonList.add(jsonO);
+            }
         }
-        return jsonList.stream()
-                .collect(Collectors.joining(",", "[", "]"));
+        return jsonList;
+    }
+    private List<JSONObject> getStorePermissions(HashMap<Integer, List<Action>> hashmap, String key, String value){
+        List<JSONObject> jsonList = new ArrayList();
+        if(hashmap != null) {
+            for (Map.Entry<Integer, List<Action>> entry : hashmap.entrySet()) {
+                JSONObject jsonO = new JSONObject();
+                jsonO.put(key, entry.getKey());
+                jsonO.put(value, fromActionToString(entry.getValue()));
+                jsonList.add(jsonO);
+            }
+        }
+        return jsonList;
     }
 
-    private JSONObject loginToJson(LoginInformation login)
+    public JSONObject loginToJson(LoginInformation login)
     {
         JSONObject json = new JSONObject();
         json.put("token", login.getToken());
         json.put("userId", login.getUserId());
-        json.put("name", login.getUserName());
+        json.put("userName", login.getUserName());
         json.put("isAdmin", login.getIsAdmin());
         json.put("hasQuestions", login.HasQuestions());
-        json.put("notifications", login.getNotifications().stream()
-                .collect(Collectors.joining(",", "[", "]")));
-        json.put("StoreNames", getStoreInfoHM(login.getStoreNames(), "storeId", "name"));
-        json.put("StoreRoles", getStoreRole(login.getStoreRoles(), "storeId", "role"));
-        json.put("StoreImages", getStoreInfoHM(login.getStoreImg(), "storeId", "imageUrl"));
+        json.put("notifications", login.getNotifications());
+        json.put("storeNames", getStoreInfoHM(login.getStoreNames(), "storeId", "storeName"));
+        json.put("storeRoles", getStoreRole(login.getStoreRoles(), "storeId", "storeRole"));
+        json.put("storeImgs", getStoreInfoHM(login.getStoreImg(), "storeId", "storeImg"));
+        json.put("permissions", getStorePermissions(login.getPermissions(), "storeId", "actions"));
         return json;
     }
 
@@ -171,12 +193,21 @@ public class API {
         }
         else {
             json.put("value", loginToJson(res.getValue()));
-            return new Pair<>(true, loginToJson(res.getValue()));
+            return new Pair<>(true, json);
         }
     }
     public Pair<Boolean, JSONObject> getClient(int userId, String token) {
         Response<LoginInformation> res = market.getMember(userId, token);
-        return fromResToPair(res);
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", loginToJson(res.getValue()));
+            return new Pair<>(true, json);
+        }
     }
     public Pair<Boolean,JSONObject> logout(int userId){
         Response<String> res = market.logout(userId);
@@ -293,7 +324,56 @@ public class API {
         Response<String> res = market.appointManager(userId, token, managerIdToAppoint, storeId);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> changeStoreInfo(int userId, String token, int storeId, String name, String desc,
+                                                     String isActive, String img){
+        String ret = "";
+        Response<String> ans;
+        Pair<Boolean, JSONObject> check;
+        if(name != null) {
+            check = changeStoreName(userId, token, storeId, name);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "change name failed", ret);
+                return fromResToPair(ans);
+            }
 
+        }
+        if(img != null) {
+            check = changeStoreImg(userId, token, storeId, img);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "change img failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        if(desc != null) {
+            check = changeStoreDescription(userId, token, storeId, desc);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "change desc failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        if(isActive.equals("false")) {
+            check = closeStore(userId, token, storeId);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "close store failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        if(isActive.equals("true")) {
+            check = reopenStore(userId, token, storeId);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "reopen store failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        ans = new Response<>(ret, null, null);
+        return fromResToPair(ans);
+
+    }
     public Pair<Boolean, JSONObject> changeStoreDescription(int userId, String token, int storeId, String description){
         Response<String> res = market.changeStoreDescription(userId, token, storeId, description);
         return fromResToPair(res);
@@ -393,20 +473,25 @@ public class API {
     private JSONObject productToJson(ProductInfo product)
     {
         JSONObject json = new JSONObject();
+        json.put("storeId", product.getId());
         json.put("productId", product.getId());
         json.put("name", product.getName());
         json.put("description", product.getDescription());
         json.put("price", product.getPrice());
         json.put("quantity", product.getQuantity());
         json.put("categories", product.getCategories());
+        json.put("rating", product.getRating());
+        json.put("reviews", reviewsToJson(product.getReviews(), "messageId", "review"));
+        json.put("img", product.getImg());
         return json;
     }
 
-    private String productsToJson(List<ProductInfo> products)
+    private List<JSONObject> productsToJson(List<ProductInfo> products)
     {
-        return products.stream()
-                .map(info -> productToJson(info).toString())
-                .collect(Collectors.joining(",", "[", "]"));
+        List<JSONObject> ans = new ArrayList<>();
+        for(ProductInfo product : products)
+            ans.add(productToJson(product));
+        return ans;
     }
 
     public Pair<Boolean, JSONObject> getProducts(){
@@ -495,15 +580,16 @@ public class API {
         JSONObject json = new JSONObject();
         json.put("orderId", order.getOrderId());
         json.put("userId", order.getUserId());
-        json.put("price", order.getTotalPrice());
+        json.put("totalPrice", order.getTotalPrice());
         json.put("productsInStores", getBaskets(order.getProductsInStores()));
         return json;
     }
 
-    private String ordersToJson(List<OrderInfo> orders) {
-        return orders.stream()
-                .map(order -> orderToJson(order).toString())
-                .collect(Collectors.joining(",", "[", "]"));
+    private List<JSONObject> ordersToJson(List<OrderInfo> orders) {
+        List<JSONObject> ans = new ArrayList<>();
+        for(OrderInfo order : orders)
+            ans.add(orderToJson(order));
+        return ans;
     }
 
     public Pair<Boolean, JSONObject> seeStoreHistory(int userId, String token, int storeId)
@@ -686,10 +772,64 @@ public class API {
             return new Pair<>(true, json);
         }
     }
+
+    private List<JSONObject> reviewsToJson(HashMap<Integer, Message> hashMap, String key, String value){
+        List<JSONObject> jsonList = new ArrayList();
+        if(hashMap != null) {
+            for (Map.Entry<Integer, Message> entry : hashMap.entrySet()) {
+                JSONObject jsonO = new JSONObject();
+                jsonO.put(key, entry.getKey());
+                jsonO.put(value, messageToJson(entry.getValue()));
+                jsonList.add(jsonO);
+            }
+        }
+        return jsonList;
+
+    }
+
+    private JSONObject messageToJson(Message m){
+        JSONObject json = new JSONObject();
+        json.put("messageId", m.getMessageId());
+        json.put("content", m.getContent());
+        json.put("rating", m.getRating());
+        json.put("state", m.getMessageState());
+        json.put("orderId", m.getOrderId());
+        json.put("storeId", m.getStoreId());
+        json.put("productId", m.getProductId());
+        json.put("gotFeedback", m.gotFeedback());
+        json.put("seen", m.getSeen());
+        return json;
+    }
+    private JSONObject allStoreToJson(Store store)
+    {
+        JSONObject json = new JSONObject();
+        json.put("storeId", store.getStoreId());
+        json.put("storeName", store.getName());
+        json.put("description", store.getStoreDescription());
+        json.put("isActive", store.isActive());
+        json.put("creatorId", store.getCreatorId());
+        json.put("appHistory", store.getApp());
+        json.put("inventory", productsToJson(store.getProducts()));
+        json.put("storeOrders", ordersToJson(store.getOrdersHistory()));
+        json.put("reviews", reviewsToJson(store.getStoreReviews(), "messageId", "review"));
+        json.put("questions", reviewsToJson(store.getStoreQuestions(), "messageId", "question"));
+        json.put("img", store.getImgUrl());
+        json.put("roles", store.getRoles());
+        return json;
+    }
     public Pair<Boolean, JSONObject> getStore(int userId, String token, int storeId) {
         Response<Store> res =  market.getStore(userId, token, storeId);
-        return fromResToPair(res);
-
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", allStoreToJson(res.getValue()));
+            System.out.println(json);
+            return new Pair<>(true, json);
+        }
     }
 
     public Pair<Boolean, JSONObject> getAppointments(int userId, String token, int storeId)
@@ -716,21 +856,40 @@ public class API {
         res = market.login("ziv@gmail.com", "456Bbb");
         int id2 = res.getValue().getUserId();
         String token2 = res.getValue().getToken();
-        Response<Integer> res2 = market.openStore(id1, token1, "nike", "shoe store", "https://www.pexels.com/photo/close-up-photography-of-red-and-black-nike-running-shoe-786003/");
+        Response<Integer> res2 = market.openStore(id1, token1, "nike", "shoe store", "https://images.pexels.com/photos/786003/pexels-photo-786003.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
         int sid1 = res2.getValue();
-        res2 = market.openStore(id2, token2, "rollups", "candy store", "https://www.pexels.com/photo/m-m-s-chocolates-in-bowl-65547/");
+        res2 = market.openStore(id2, token2, "rollups", "candy store", "https://images.pexels.com/photos/65547/pexels-photo-65547.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
         int sid2 = res2.getValue();
         List<String> categories = new LinkedList<>();
         categories.add("shoes");
         categories.add("new");
         categories.add("fresh");
-        res2 = market.addProduct(id1, token1, sid1, categories, "air1", "comfy", 100, 4, "https://www.pexels.com/photo/white-yellow-and-black-sneakers-in-close-up-shot-13691727/");
+        res2 = market.addProduct(id1, token1, sid1, categories, "air1", "comfy", 100, 4, "https://images.pexels.com/photos/13691727/pexels-photo-13691727.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
         int pid1 = res2.getValue();
         res2 = market.addProduct(id1, token1, sid1, categories, "air2", "more comfy", 300, 1,"https://www.pexels.com/photo/person-wearing-air-jordan-1-4215840/");
         int pid2 = res2.getValue();
         market.addProductToCart(id1, sid1, pid1, 1);
-        market.makePurchase(id1, "9999999");
+        Response<Receipt> res3 = market.makePurchase(id1, "9999999");
+        market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), sid1, "bad store", 2);
+        market.sendQuestion(id1, token1, sid1, "why bad?");
+        market.appointManager(id1, token1, id2, sid1);
         market.logout(id1);
         market.logout(id2);
     }
+
+    public List<String> fromActionToString(List<Action> actions){
+        List<String> ans = new LinkedList<>();
+        for(Action a : actions){
+            String as = a.toString();
+            for(int i = 0; i<as.length(); i++) {
+                if (40 < as.charAt(i) && as.charAt(i) < 91) {
+                    char add = (char)(as.charAt(i) + 32);
+                    as = as.substring(0, i) + " " + add + as.substring(i + 1);
+                }
+            }
+            ans.add(as);
+        }
+       return ans;
+    }
+
 }

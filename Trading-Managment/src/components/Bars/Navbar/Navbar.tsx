@@ -29,45 +29,26 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     const store_images = useAppSelector((state) => state.auth.storeImgs);
     const stores = stores_roles ? stores_roles.map((role, index) => {
         return {
-            storeId: index,
-            storeRole: role,
-            storeName: stores_names[index],
-            sroteImg: store_images[index],
+            storeId: role.storeId,
+            storeRole: role.storeRole,
+            storeName: stores_names[index].storeName,
+            storeImg: store_images[index].storeImg,
         }
     }) : [];
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    console.log("stores", stores);
 
     const handleLogout = () => {
-        console.log("logout");
         dispatch(logout(userId));
-        dispatch(guestEnter());
-        navigate('/dashboard');
+        navigate('/auth/login');
     };
     const handleChooseStore = (storeNumber: number) => () => {
-        console.log("choose store", storeNumber);
         dispatch(getStore({ userId: userId, storeId: storeNumber }));
         navigate('shops/superior');
     }
-
-
-
     return (
         <div className="navbar">
             <div className="wrapper">
-                {/* <div className="left">
-
-                    <div className="item">
-                        <Link className="link" to="/products/1">Women</Link>
-                    </div>
-                    <div className="item">
-                        <Link className="link" to="/products/2">Men</Link>
-                    </div>
-                    <div className="item">
-                        <Link className="link" to="/products/3">Children</Link>
-                    </div>
-                </div> */}
                 <div className="center">
                     <Typography variant="h4" component="h4" className="logo" fontFamily={"Gill Sans"}>
                         {headLine}
@@ -164,7 +145,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                                     return (
                                         <DialogContent dividers key={store.storeId}>
                                             <Button onClick={handleChooseStore(store.storeId)}>
-                                                <Avatar src={store.sroteImg} />
+                                                <Avatar src={store.storeImg} />
                                                 <Box ml={3} display={'flex'} key={store.storeId}>
                                                     <Typography sx={{ ml: 2, mr: 3 }}>{store.storeName}</Typography>
                                                     <Typography>{store.storeRole}</Typography>

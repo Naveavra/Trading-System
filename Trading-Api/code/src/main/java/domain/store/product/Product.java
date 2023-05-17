@@ -105,16 +105,13 @@ public class Product {
     public String getDescription() { return description;
     }
 
-    public int getPrice() { return price;
-    }
+    public int getPrice() { return price;}
+    public String getImgUrl(){return imgUrl;}
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public ProductInfo getProductInfo() {
-        return new ProductInfo(getID(), getName(), getDescription(), getPrice(), getQuantity());
-    }
 
     public ArrayList<String> getCategories(){
         return categories;

@@ -1,8 +1,10 @@
 package domain.store.product;
 
 
+import jdk.jfr.Label;
 import utils.Filter.ProductFilter;
 import utils.ProductInfo;
+import utils.messageRelated.Message;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -13,16 +15,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Inventory {
 
     private static final int MAXRATING = 5;
-    ConcurrentHashMap<Integer, Product> productList; // <id, product>
+    private int storeId;
+    private ConcurrentHashMap<Integer, Product> productList; // <id, product>
     // ConcurrentHashMap<Product, ArrayList<String>> categories;
-    ConcurrentHashMap<String,ArrayList<Integer>> categories; // <Category String,<List<ProductID>>
-    ConcurrentHashMap<Product, CopyOnWriteArrayList<Integer>> productgrading;
+    private ConcurrentHashMap<String,ArrayList<Integer>> categories; // <Category String,<List<ProductID>>
+    private ConcurrentHashMap<Product, CopyOnWriteArrayList<Integer>> productgrading;
+    private ConcurrentHashMap<Integer, Message> productReviews;
+
 
     // AtomicInteger prod_id = new AtomicInteger();
-    public Inventory(){
+    public Inventory(int storeId){
+        this.storeId = storeId;
         productList = new ConcurrentHashMap<>();
         categories = new ConcurrentHashMap<>();
         productgrading = new ConcurrentHashMap<>();
+        productReviews = new ConcurrentHashMap<>();
     }
 
     /**
@@ -85,13 +92,32 @@ public class Inventory {
         }
         return relatedCategories;
     }
+
+    public void addProductReview(Message m) throws Exception{
+        if(productList.containsKey(m.getProductId())){
+            productReviews.put(m.getMessageId(), m);
+        }
+        else{
+            throw new Exception("the review given contains an illegal id");
+        }
+    }
     /**
      * gets product id and return list of the grading the product got by buyers
      */
-    public ArrayList<Integer> getProductReviews(int productID) throws Exception {
-        Product p = getProduct(productID);
-        if (p != null){return new ArrayList<>(productgrading.get(p));}
-        throw new Exception("product doesnt exist G");
+    public HashMap<Integer, Message> getProductReviews(int productID){
+        HashMap<Integer, Message> ans = new HashMap<>();
+        Product p;
+        try{
+            p = getProduct(productID);
+        }catch(Exception e){
+            p = null;
+        }
+        if (p != null){
+           for(Message m : productReviews.values())
+                if(m.getProductId() == productID)
+                    ans.put(m.getProductId(), m);
+        }
+        return ans;
     }
     public void setDescription(int prodID, String desc)  throws Exception{
         Product p = getProduct(prodID);
@@ -157,10 +183,11 @@ public class Inventory {
         return prices;
     }
 
-    public List<ProductInfo> getProducts() {
+    public List<ProductInfo> getProducts(){
         List<ProductInfo> productInfos = new LinkedList<>();
         for (Product p : productList.values()){
-            ProductInfo info = new ProductInfo(p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity());
+            ProductInfo info = new ProductInfo(storeId, p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
+                    p.getRating(), getProductReviews(p.getID()), p.getImgUrl());
             info.setCategories(getProductCategories(p.getID()));
             productInfos.add(info);
         }
@@ -273,10 +300,21 @@ public class Inventory {
         ArrayList<Product> filtered = filter.filter(new ArrayList<>(productList.values()));
         ArrayList<ProductInfo> result = new ArrayList<>();
         for(Product p: filtered){
-            ProductInfo info = p.getProductInfo();
+            ProductInfo info = getProductInfo(p.getID());
             info.setCategories(getProductCategories(p.getID()));
             result.add(info);
         }
         return result;
+    }
+
+    public ProductInfo getProductInfo(int productId){
+        Product p = productList.get(productId);
+        ProductInfo info = new ProductInfo(p.getID(), p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
+                p.getRating(), getProductReviews(p.getID()), p.getImgUrl());
+        return info;
+    }
+
+    public ConcurrentHashMap<Integer, Message> getProductReviews(){
+        return productReviews;
     }
 }

@@ -18,6 +18,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import SideDrawer from '../../SideDrawer';
+import { StoreRole } from '../../../types/systemTypes/StoreRole';
 
 interface Props {
     headLine: string;
@@ -34,26 +35,35 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
     const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector((state) => state.auth.userName);
-    const stores = useAppSelector((state) => state.auth.storeRoles);
+
+
+    const stores_roles: StoreRole[] = useAppSelector((state) => state.auth.storeRoles);
+    const stores_names = useAppSelector((state) => state.auth.storeNames);
+    const store_images = useAppSelector((state) => state.auth.storeImgs);
+    const stores = stores_roles ? stores_roles.map((role, index) => {
+        return {
+            storeId: role.storeId,
+            storeRole: role.storeRole,
+            storeName: stores_names[index].storeName,
+            storeImg: store_images[index].storeImg,
+        }
+    }) : [];
+
     const storeInfo = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
-    const managerInStore = useAppSelector((state) => state.auth.storeRoles).filter(store => store.storeId == storeInfo.id).length > 0;
+    const managerInStore = useAppSelector((state) => state.auth.storeRoles)?.filter((store) => store.storeId == storeInfo.id).length > 0;
     const numProductsIncart = cart?.baskets?.reduce((acc, item) => acc + item.products.productsList.length, 0) ?? 0;
     const handleLogout = () => {
-        console.log("logout");
         dispatch(logout(userId));
-        navigate('/dashboard/auth/login');
+        navigate('/auth/login');
     };
     const handleChooseStore = (storeNumber: number) => () => {
-        console.log("choose store", storeNumber);
         dispatch(getStore({ userId: userId, storeId: storeNumber }));
         navigate('shops/superior');
     }
     const handleDrawerClose = () => {
-        console.log("open drawer");
         setOpenDrawer(false);
     }
     const handleDrawerOpen = () => {
-        console.log("close drawer");
         setOpenDrawer(true);
     }
     return (
@@ -78,8 +88,10 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
                             {headLine}
                         </Typography>
+
                         {isLoggedIn &&
                             <>
+
                                 <IconButton className="icon" color="inherit" onClick={handleLogout}>
                                     <LogoutIcon />
                                 </IconButton>
@@ -177,7 +189,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                         return (
                             <DialogContent dividers key={store.storeId}>
                                 <Button onClick={handleChooseStore(store.storeId)}>
-                                    <Avatar src={store.sroteImg} />
+                                    <Avatar src={store.storeImg} />
                                     <Box ml={3} display={'flex'} >
                                         <Typography sx={{ ml: 2, mr: 3 }}>{store.storeName}</Typography>
                                         <Typography>{store.storeRole}</Typography>

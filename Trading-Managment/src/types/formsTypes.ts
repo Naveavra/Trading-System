@@ -9,20 +9,16 @@ export type ProductFormValues = {
     quantity: number;
     img: string;
 };
-export type fireManagerFormValues = {
+
+export type fireUserFormValues = {
     userId: number;
     storeId: number;
-    managerToFireId: number;
-};
-export type fireOwnerFormValues = {
-    userId: number;
-    storeId: number;
-    ownerToFireId: number;
+    userToFire: number;
 }
-export type appointManagerFormValues = {
+export type appointUserFormValues = {
     userId: number;
     storeId: number;
-    emailOfManager: string;
+    emailOfUser: string;
 }
 export type storeFormValues = {
     userId: number,

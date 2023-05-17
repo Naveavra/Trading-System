@@ -14,11 +14,11 @@ export const authApi = {
     register: (credentials: RegisterPostData): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/register', credentials)),
     logout: (credentials: number): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().post('api/auth/logout', credentials)),
+        apiErrorHandlerWrapper(getApiClient().patch('api/auth/logout', credentials)),
     guestEnter: (): Promise<ApiResponse<number>> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/guest/enter')),
     ping: (credential: number): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/ping', credential)),
     getClient: (credentials: getUserData): Promise<ApiResponse<getClientResponseData>> =>
-        apiErrorHandlerWrapper(noAuthApiClient.get('api/auth/getClient', { params: credentials })),
+        apiErrorHandlerWrapper(getApiClient().post('api/auth/getClient', credentials)),
 }

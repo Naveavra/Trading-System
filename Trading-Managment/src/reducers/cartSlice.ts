@@ -76,6 +76,32 @@ export const getCart = createAsyncThunk<
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
+//add to cart 
+export const addToCart = createAsyncThunk<
+    string,
+    PatchCartParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/addToCart`,
+    async (formData, thunkApi) => {
+        return cartApi.addToCart(formData)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+
+//remove from cart
+export const removeFromCart = createAsyncThunk<
+    string,
+    PatchCartParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/removeFromCart`,
+    async (formData, thunkApi) => {
+        return cartApi.removeFromCart(formData)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });//buy
+
 const { reducer: cartReducer, actions: cartActions } = createSlice({
     name: reducerName,
     initialState,
@@ -96,7 +122,6 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         builder.addCase(getCart.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
             state.responseData = payload;
-            console.log("response: ", state.responseData);
             state.error = null;
         });
         builder.addCase(getCart.rejected, (state, { payload }) => {
@@ -111,26 +136,25 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         builder.addCase(patchCart.fulfilled, (state, { payload }) => {
             state.isLoading = false;
             state.basketState.responseData = payload;
-            console.log(payload);
             state.error = null;
         });
         builder.addCase(patchCart.rejected, (state, { payload }) => {
             state.error = payload?.message.data ?? "error during patchCart";
             state.isLoading = false;
         });
-        //postBaket
-        // builder.addCase(postBasket.pending, (state) => {
-        //     state.basketState.isLoading = true;
-        //     state.basketState.error = null;
-        // });
-        // builder.addCase(postBasket.fulfilled, (state, { payload }) => {
-        //     state.basketState.isLoading = false;
-        //     state.basketState.responseData = payload;
-        // });
-        // builder.addCase(postBasket.rejected, (state, { payload }) => {
-        //     state.basketState.isLoading = false;
-        //     state.basketState.error = payload?.message.data ?? "error during postBasket";
-        // });
+        //addToCart
+        builder.addCase(addToCart.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(addToCart.fulfilled, (state, { payload }) => {
+            state.basketState.responseData = payload;
+            state.error = null;
+        });
+        builder.addCase(addToCart.rejected, (state, { payload }) => {
+            state.error = payload?.message.data ?? "error during addCart";
+            state.isLoading = false;
+        });
         //deleteProduct
         builder.addCase(deleteCart.pending, (state) => {
             state.basketState.isLoading = true;
