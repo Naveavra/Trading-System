@@ -58,7 +58,7 @@ public abstract class AbstractDiscount implements Discount{
         return storeId;
     }
     public double getPercentage() {
-        return percentage;
+        return 100 - percentage;
     }
 
     public void setDiscountedProductID(int discountedProductID) {

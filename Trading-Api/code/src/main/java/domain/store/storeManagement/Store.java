@@ -490,12 +490,13 @@ public class Store {
         return info;
     }
 
-    public void handleDiscount(Order order) throws Exception {
+    public double handleDiscount(Order order) throws Exception {
         double totalAmountToBeSubtracted = 0;
         for(Discount dis: discounts){
             totalAmountToBeSubtracted += dis.handleDiscount(order.getProductsInStores().get(storeid),order);
         }
         order.setTotalPrice(order.getTotalPrice() - totalAmountToBeSubtracted);
+        return order.getTotalPrice();
     }
 
     public HashMap<Integer, List<Integer>> getApp(){
