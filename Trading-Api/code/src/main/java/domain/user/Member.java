@@ -174,6 +174,13 @@ public class Member {
     public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
         g.changeQuantityInCart(storeId, productId, change);
     }
+    public void addQuantityInCart(int storeId, int productId, int change) throws Exception {
+        g.addQuantityInCart(storeId, productId, change);
+    }
+
+    public void removeQuantityInCart(int storeId, int productId, int change) throws Exception {
+        g.removeQuantityInCart(storeId, productId, change);
+    }
 
 
     /**
@@ -584,4 +591,6 @@ public class Member {
         }
         return ans;
     }
+
+
 }

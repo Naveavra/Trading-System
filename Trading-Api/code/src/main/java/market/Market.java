@@ -328,6 +328,33 @@ public class Market implements MarketInterface {
         }
     }
 
+    @Override
+    public Response<String> addQuantityInCart(int userId, int storeId, int productId, int change) {
+        try {
+            userController.addQuantityInCart(userId, storeId, productId, change);
+            String name = userController.getUserName(userId);
+            String productName = marketController.getProductName(storeId, productId);
+            logger.log(Logger.logStatus.Success, "user " + name + " change quantity to " + change + " on shopping cart on " + LocalDateTime.now());
+            return new Response<>("user change Quantity of " + productName + " In Cart to " + change + " successfully ", null, null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "user cant remove change quantity in cart because " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "remove product from cart failed", e.getMessage());
+        }
+    }
+    @Override
+    public Response<String> removeQuantityInCart(int userId, int storeId, int productId, int change) {
+        try {
+            userController.removeQuantityInCart(userId, storeId, productId, change);
+            String name = userController.getUserName(userId);
+            String productName = marketController.getProductName(storeId, productId);
+            logger.log(Logger.logStatus.Success, "user " + name + " change quantity to " + change + " on shopping cart on " + LocalDateTime.now());
+            return new Response<>("user change Quantity of " + productName + " In Cart to " + change + " successfully ", null, null);
+        } catch (Exception e) {
+            logger.log(Logger.logStatus.Fail, "user cant remove change quantity in cart because " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "remove product from cart failed", e.getMessage());
+        }
+    }
+
 
     public Response<HashMap<Integer, HashMap<Integer, Integer>>> getCart(int id) {
         try {

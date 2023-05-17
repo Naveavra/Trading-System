@@ -37,6 +37,36 @@ public class Basket {
             throw new RuntimeException("the product isn't in the user's cart");
         return true;
     }
+    public boolean addQuantityInCart(int productId, int change) throws RuntimeException{
+        if(productList.containsKey(productId)) {
+            int prevQuantity = productList.get(productId);
+            if (change != 0) {
+                int newQuantity = prevQuantity + change;
+                productList.put(productId, newQuantity);
+            }
+            return true;
+        }
+        else
+            throw new RuntimeException("the product isn't in the user's cart");
+    }
+
+    public boolean removeQuantityInCart(int productId, int change) throws RuntimeException{
+        if(productList.containsKey(productId)) {
+            int prevQuantity = productList.get(productId);
+            int newQuantity = prevQuantity - change;
+            if (newQuantity < 0){throw new RuntimeException("quantity cant be negative");}
+            else if (newQuantity == 0)
+            {
+                return removeProductFromCart(productId);
+            }
+            else {
+                productList.put(productId, newQuantity);
+                return true;
+            }
+        }
+        else
+            throw new RuntimeException("the product isn't in the user's cart");
+    }
 
     public HashMap<Integer, Integer> getContent() {
         return productList;

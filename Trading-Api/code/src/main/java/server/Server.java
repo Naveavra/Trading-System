@@ -351,6 +351,31 @@ public class Server {
             toSparkRes(res, api.changeQuantityInCart(userId, storeId, productId, quantity));
             return res.body();
         });
+        patch("api/cart/add/:id", (req, res) -> {
+            //addtoart
+            //when a user change quantity of a product in specific store basket
+            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int productId = Integer.parseInt(request.get("productId").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.addQuantityInCart(userId, storeId, productId, quantity));
+            return res.body();
+        });
+        patch("api/cart/remove/:id", (req, res) -> {
+            //removefromcart
+            //when a user change quantity of a product in specific store basket
+            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int productId = Integer.parseInt(request.get("productId").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.removeQuantityInCart(userId, storeId, productId, quantity));
+            return res.body();
+        });
+
         delete("api/cart/:id", (req, res) ->
         {
             //delete cart

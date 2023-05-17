@@ -258,10 +258,58 @@ public class UserController {
                 throw new Exception("no such member exists");
         }
     }
+    public synchronized void addQuantityInCart(int userId, int storeId, int productId, int change) throws Exception{
+        if(userId % 2 == 0) {
+            Guest g = guestList.get(userId);
+            if(g != null)
+                g.addQuantityInCart(storeId, productId, change);
+            else
+                throw new Exception("no such guest exists");
+        }
+        else {
+            String email = idToEmail.get(userId);
+            if (email != null)
+                addQuantityInCart(email, storeId, productId, change);
+            else
+                throw new Exception("no such member exists");
+        }
+    }
+    public synchronized void removeQuantityInCart(int userId, int storeId, int productId, int change) throws Exception{
+        if(userId % 2 == 0) {
+            Guest g = guestList.get(userId);
+            if(g != null)
+                g.removeQuantityInCart(storeId, productId, change);
+            else
+                throw new Exception("no such guest exists");
+        }
+        else {
+            String email = idToEmail.get(userId);
+            if (email != null)
+                removedQuantityInCart(email, storeId, productId, change);
+            else
+                throw new Exception("no such member exists");
+        }
+    }
     public synchronized void changeQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
         Member m = activeMemberList.get(email);
         if(m != null) {
                 m.changeQuantityInCart(storeId, productId, change);
+        }
+        else
+            throw new Exception("no such member exists");
+    }
+    public synchronized void addQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
+        Member m = activeMemberList.get(email);
+        if(m != null) {
+            m.addQuantityInCart(storeId, productId, change);
+        }
+        else
+            throw new Exception("no such member exists");
+    }
+    public synchronized void removedQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
+        Member m = activeMemberList.get(email);
+        if(m != null) {
+            m.removeQuantityInCart(storeId, productId, change);
         }
         else
             throw new Exception("no such member exists");

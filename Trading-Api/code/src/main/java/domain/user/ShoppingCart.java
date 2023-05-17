@@ -45,6 +45,21 @@ public class ShoppingCart {
 
     }
 
+    public void addQuantityInCart(int storeId, int productId, int change) throws Exception {
+        if (baskets.containsKey(storeId)) {
+            boolean check = baskets.get(storeId).addQuantityInCart(productId, change);
+            if (!check)
+                baskets.remove(storeId);
+        }
+    }
+
+    public void removeQuantityInCart(int storeId, int productId, int change) throws Exception {
+        if (baskets.containsKey(storeId)) {
+            boolean check = baskets.get(storeId).removeQuantityInCart(productId, change);
+            if (!check)
+                baskets.remove(storeId);
+        }
+    }
     public HashMap<Integer, HashMap<Integer, Integer>> getContent() {
         HashMap<Integer, HashMap<Integer, Integer>> cartContent = new HashMap<>();
         for(int storeId : baskets.keySet()) {

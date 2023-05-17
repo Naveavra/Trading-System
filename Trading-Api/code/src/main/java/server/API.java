@@ -81,6 +81,14 @@ public class API {
         Response<String> res = market.changeQuantityInCart(userId, storeId, productId, change);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> addQuantityInCart(int userId, int storeId, int productId, int change){
+        Response<String> res = market.addQuantityInCart(userId, storeId, productId, change);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> removeQuantityInCart(int userId, int storeId, int productId, int change){
+        Response<String> res = market.removeQuantityInCart(userId, storeId, productId, change);
+        return fromResToPair(res);
+    }
     public Pair<Boolean, JSONObject> removeCart(int userId) {
         Response<String> res = market.removeCart(userId);
         return fromResToPair(res);
