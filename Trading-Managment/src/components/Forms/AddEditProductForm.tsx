@@ -57,7 +57,6 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
                 break;
             case 'edit':
                 //todo : handle null
-                console.log("before remove", form.getValues().category)
                 response = dispatch(patchProduct(form.getValues()));
                 response.then((res) => {
                     if (res.meta.requestStatus === 'fulfilled') {
@@ -71,7 +70,6 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
         handleOnClose();
     };
     const isLoading = false;
-    console.log(open);
     return (
         <>
             <Dialog onClose={handleOnClose} open={open}>

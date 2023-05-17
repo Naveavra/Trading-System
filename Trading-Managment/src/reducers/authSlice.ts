@@ -20,7 +20,7 @@ interface AuthState {
     storeRoles: StoreRole[];
     storeNames: StoreName[];
     storeImgs: StoreImg[];
-    permmisions: Permission[];
+    permissions: Permission[];
     error: string | null;
     isLoginLoading: boolean;
     isRegisterLoading: boolean;
@@ -43,7 +43,7 @@ const initialState: AuthState = {
     storeNames: [],
     storeImgs: [],
     notifications: [],
-    permmisions: [],
+    permissions: [],
     message: null,
     error: null,
     isLoginLoading: false,
@@ -148,7 +148,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(login.fulfilled, (state, { payload }: PayloadAction<{ rememberMe: boolean, responseBody: TokenResponseBody }>) => {
             state.isLoginLoading = false;
-            console.log(payload);
             state.token = payload.responseBody.token;
             state.userId = payload.responseBody.userId;
             state.userName = payload.responseBody.userName;
@@ -158,8 +157,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.storeNames = payload.responseBody.storeNames;
             state.storeImgs = payload.responseBody.storeImgs;
             state.notifications = payload.responseBody.notifications;
-            state.permmisions = payload.responseBody.permmisions;
-            console.log(payload.responseBody);
+            state.permissions = payload.responseBody.permissions;
             if (payload.rememberMe) {
                 window.localStorage.setItem(localStorage.auth.token.name, payload.responseBody.token);
                 window.localStorage.setItem(localStorage.auth.userId.name, payload.responseBody.userId.toString());
@@ -189,7 +187,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.error = null;
         });
         builder.addCase(register.fulfilled, (state, { payload }) => {
-            console.log("reg payload", payload)
             state.isRegisterLoading = false;
             state.message = payload;
         });
@@ -230,10 +227,30 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.userName = "guest";
         });
         builder.addCase(guestEnter.rejected, (state, { payload }) => {
-            console.log("guestEnter.rejected", payload);
             state.isLoginLoading = false;
             state.error = payload?.message.data ?? "error during guest enter";
         });
+        // get client data
+        builder.addCase(getClientData.pending, (state) => {
+            state.isLoginLoading = true;
+            state.error = null;
+        });
+        builder.addCase(getClientData.fulfilled, (state, { payload }) => {
+            state.isLoginLoading = false;
+            state.userName = payload.userName;
+            state.isAdmin = payload.isAdmin;
+            state.hasQestions = payload.hasQestions;
+            state.storeRoles = payload.storeRoles;
+            state.storeNames = payload.storeNames;
+            state.storeImgs = payload.storeImgs;
+            state.notifications = payload.notifications;
+            state.permissions = payload.permissions;
+        });
+        builder.addCase(getClientData.rejected, (state, { payload }) => {
+            state.isLoginLoading = false;
+            state.error = payload?.message.data ?? "error during get client data";
+        });
+
     }
 });
 // Action creators are generated for each case reducer function

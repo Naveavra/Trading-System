@@ -96,7 +96,6 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         builder.addCase(getCart.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
             state.responseData = payload;
-            console.log("response: ", state.responseData);
             state.error = null;
         });
         builder.addCase(getCart.rejected, (state, { payload }) => {
@@ -111,7 +110,6 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         builder.addCase(patchCart.fulfilled, (state, { payload }) => {
             state.isLoading = false;
             state.basketState.responseData = payload;
-            console.log(payload);
             state.error = null;
         });
         builder.addCase(patchCart.rejected, (state, { payload }) => {

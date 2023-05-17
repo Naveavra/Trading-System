@@ -11,7 +11,6 @@ import RegisterForm from './RegisterForm';
 const RegisterPage: React.FC = () => {
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
     const userId = useAppSelector((state) => state.auth.userId);
-    console.log('isLoggedIn', isLoggedIn);
     return (userId == 0 ?
 
         <>

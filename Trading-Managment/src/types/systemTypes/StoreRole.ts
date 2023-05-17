@@ -7,13 +7,14 @@ export enum StoreRoleEnum {
 export interface StoreRole {
     storeId: number;
     storeRole: StoreRoleEnum;
+
 };
 export interface StoreName {
-    storeId: number;
     storeName: string;
+    storeId: number;
 
 };
 export interface StoreImg {
+    storeImg: string;
     storeId: number;
-    sroteImg: string;
 }

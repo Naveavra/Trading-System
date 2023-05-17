@@ -235,6 +235,7 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         builder.addCase(getStore.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
+            console.log("store!!!!!", payload);
             state.storeState.watchedStore = payload;
         });
         //appointManager

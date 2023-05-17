@@ -25,15 +25,14 @@ const AddEditStore: React.FC<storeProps> = ({ mode }) => {
     const error = useAppSelector((state: RootState) => state.store.error);
     const store = useAppSelector((state: RootState) => state.store.storeState.watchedStore);
     const store_id = store ? store.id : -1;
-    const permmisions = useAppSelector((state: RootState) => state.auth.permmisions).filter((perm) => perm.storeId === store_id);
-    const Actions = permmisions.length > 0 ? permmisions[0].actions : [];
+    const permissions = useAppSelector((state: RootState) => state.auth.permissions).filter((perm) => perm.storeId === store_id);
+    const Actions = permissions.length > 0 ? permissions[0].actions : [];
     const canClose = Actions.includes(Action.closeStore);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
         let response;
         switch (mode) {
             case 'add':
-                console.log(form.getValues());
                 response = dispatch(postStore(form.getValues()));
                 break;
             case 'edit':

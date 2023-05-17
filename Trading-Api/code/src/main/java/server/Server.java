@@ -96,7 +96,6 @@ public class Server {
             JSONObject request = new JSONObject(req.body());
             String id = request.get("userId").toString();
             connected.put(Integer.parseInt(id), true);
-            System.out.println(id + " becomes true");
             res.status(200);
             res.body("ping success");
             return res.body();
@@ -104,7 +103,7 @@ public class Server {
         post("api/auth/getClient", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
-            String token = req.headers("Authorization");
+            String token = request.get("token").toString();
             toSparkRes(res, api.getClient(userId, token));
             return res.body();
         });
@@ -112,17 +111,15 @@ public class Server {
         //stores
         get("api/stores/info" , (req,res)->{
             toSparkRes(res, api.getStores());
-            System.out.println(res.body());
             return res.body();
         });
-        get("api/stores", (req, res) -> {
+        post("api/stores/:storeId", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
             toSparkRes(res, api.getStore(userId, token, storeId));
             return res.body();
-
         });
         get("api/stores/:id/products", (req, res) ->{
             JSONObject request = new JSONObject(req.body());
@@ -131,7 +128,6 @@ public class Server {
             return res.body();
         });
         post("api/stores", (req, res) -> {
-            System.out.println("new store");
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String name = request.getString("name");

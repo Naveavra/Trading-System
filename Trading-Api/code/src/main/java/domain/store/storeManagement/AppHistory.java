@@ -3,10 +3,7 @@ package domain.store.storeManagement;
 import utils.Pair;
 import utils.stateRelated.Role;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 
 public class AppHistory {
@@ -166,5 +163,20 @@ public class AppHistory {
         fatherNode.addChild(childNode.data);
         dismissedes.remove(child.getFirst());
         usersInStore.removeAll(dismissedes);
+    }
+
+    public HashMap<Integer, List<Integer>> getAppHistory(){
+        HashMap<Integer, List<Integer>> ans = new HashMap<>();
+        getChildren(root, ans);
+        return ans;
+    }
+
+    public void getChildren(Node n, HashMap<Integer, List<Integer>> add){
+        List<Integer> ans = new LinkedList<>();
+        for(Node child: n.children) {
+            getChildren(child, add);
+            ans.add(child.data.getFirst());
+        }
+        add.put(n.data.getFirst(), ans);
     }
 }

@@ -29,15 +29,14 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     const store_images = useAppSelector((state) => state.auth.storeImgs);
     const stores = stores_roles ? stores_roles.map((role, index) => {
         return {
-            storeId: index,
-            storeRole: role,
-            storeName: stores_names[index],
-            sroteImg: store_images[index],
+            storeId: role.storeId,
+            storeRole: role.storeRole,
+            storeName: stores_names[index].storeName,
+            storeImg: store_images[index].storeImg,
         }
     }) : [];
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    console.log("stores", stores);
 
     const handleLogout = () => {
         console.log("logout");
@@ -46,7 +45,6 @@ const Bar: React.FC<Props> = ({ headLine }) => {
         navigate('/dashboard');
     };
     const handleChooseStore = (storeNumber: number) => () => {
-        console.log("choose store", storeNumber);
         dispatch(getStore({ userId: userId, storeId: storeNumber }));
         navigate('shops/superior');
     }
@@ -164,7 +162,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                                     return (
                                         <DialogContent dividers key={store.storeId}>
                                             <Button onClick={handleChooseStore(store.storeId)}>
-                                                <Avatar src={store.sroteImg} />
+                                                <Avatar src={store.storeImg} />
                                                 <Box ml={3} display={'flex'} key={store.storeId}>
                                                     <Typography sx={{ ml: 2, mr: 3 }}>{store.storeName}</Typography>
                                                     <Typography>{store.storeRole}</Typography>

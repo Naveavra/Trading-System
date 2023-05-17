@@ -7,7 +7,6 @@ import { Typography } from "@mui/material";
 const Categories2 = () => {
     const categories: Category[] = [{ name: 'nike', img: 'https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg', url: 'nike' }, { name: 'adidas', img: 'https://images.pexels.com/photos/39362/the-ball-stadion-football-the-pitch-39362.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', url: 'adidas' }]//useAppSelector((state) => state.market.categories);
     const navigate = useNavigate();
-    console.log('categories', categories[0].url);
     return (
         <>
             <div className="categories">

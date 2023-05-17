@@ -573,4 +573,15 @@ public class Member {
         }
         return ans;
     }
+
+    public HashMap<Integer, List<Action>> getPermissions() {
+        HashMap<Integer, List<Action>> ans = new HashMap<>();
+        for(int storeId : activeRoles.keySet()){
+            ans.put(storeId, activeRoles.get(storeId).getActions());
+        }
+        for(int storeId : inActiveRoles.keySet()){
+            ans.put(storeId, inActiveRoles.get(storeId).getActions());
+        }
+        return ans;
+    }
 }

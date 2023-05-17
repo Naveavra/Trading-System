@@ -357,7 +357,8 @@ public class StoreController {
     public List<ProductInfo> getAllProducts() {
         List<ProductInfo> products = new ArrayList<>();
         for(Store s : storeList.values()){
-            products.addAll(s.getProducts());
+            if(s.isActive())
+                products.addAll(s.getProducts());
         }
         return products;
     }

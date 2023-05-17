@@ -147,7 +147,8 @@ public class Market implements MarketInterface {
                 String token = userAuth.generateToken(memberId);
                 LoginInformation loginInformation = new LoginInformation(token, memberId, email, true, displayNotifications(memberId, token).getValue(),
                         userController.hasSecQuestions(memberId), userController.getUserRoles(memberId),
-                        userController.getStoreNames(memberId), userController.getStoreImgs(memberId));
+                        userController.getStoreNames(memberId), userController.getStoreImgs(memberId),
+                        userController.getPermissions(memberId));
                 return new Response<LoginInformation>(loginInformation, null, null);
             }
             else{
@@ -167,12 +168,13 @@ public class Market implements MarketInterface {
             if (userId % 2 == 1 && userController.isActiveUser(userId)) {
                 loginInformation = new LoginInformation(token, userId, userController.getUserEmail(userId), true, displayNotifications(userId, token).getValue(),
                         userController.hasSecQuestions(userId), userController.getUserRoles(userId),
-                        userController.getStoreNames(userId), userController.getStoreImgs(userId));
+                        userController.getStoreNames(userId), userController.getStoreImgs(userId),
+                        userController.getPermissions(userId));
                 return new Response<LoginInformation>(loginInformation, null, null);
             }
             else if(activeAdmins.containsKey(userId)){
                 loginInformation = new LoginInformation(token, userId, activeAdmins.get(userId).getEmailAdmin(), true, null,
-                        false, null, null, null);
+                        false, null, null, null, null);
                 return new Response<LoginInformation>(loginInformation, null, null);
             }
             else
@@ -641,7 +643,7 @@ public class Market implements MarketInterface {
     public Response<String> sendQuestion(int userId, String token, int storeId, String msg) {
         try {
             userAuth.checkUser(userId, token);
-            Message m = userController.sendQuestionToStore(userId, msg, storeId);
+            Message m = userController.sendQuestionToStore(userId, storeId, msg);
             int creatorId = marketController.addQuestion(m);
             m.addOwnerEmail(userController.getUserEmail(creatorId));
             String notify = "a question of has been added for store: " + storeId;
@@ -1224,7 +1226,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
                     activeAdmins.put(a.getAdminId(), inActiveAdmins.remove(a.getAdminId()));
                     logger.log(Logger.logStatus.Success, "admin logged in successfully on " + LocalDateTime.now());
                     LoginInformation loginInformation = new LoginInformation(userAuth.generateToken(id), id, email, true, null,
-                            false, null, null, null);
+                            false, null, null, null, null);
                     return new Response<>(loginInformation, null, null);
                 }
             }

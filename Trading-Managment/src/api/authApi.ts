@@ -20,5 +20,5 @@ export const authApi = {
     ping: (credential: number): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/ping', credential)),
     getClient: (credentials: getUserData): Promise<ApiResponse<getClientResponseData>> =>
-        apiErrorHandlerWrapper(noAuthApiClient.get('api/auth/getClient', { params: credentials })),
+        apiErrorHandlerWrapper(getApiClient().post('api/auth/getClient', credentials)),
 }

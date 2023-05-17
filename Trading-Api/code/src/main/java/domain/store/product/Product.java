@@ -112,9 +112,6 @@ public class Product {
         this.name = name;
     }
 
-    public ProductInfo getProductInfo() {
-        return new ProductInfo(getID(), getName(), getDescription(), getPrice(), getQuantity());
-    }
 
     public ArrayList<String> getCategories(){
         return categories;

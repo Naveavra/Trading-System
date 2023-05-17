@@ -4,7 +4,7 @@ import AlertDialog from "../Dialog/AlertDialog";
 import { useForm } from "react-hook-form";
 import { appointUserFormValues } from "../../types/formsTypes";
 import { useNavigate } from "react-router-dom";
-import { clearStoreError } from "../../reducers/storesSlice";
+import { appointManager, appointOwner, clearStoreError } from "../../reducers/storesSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { useState } from "react";
 
@@ -20,23 +20,19 @@ const AppointUser: React.FC<props> = ({ role }) => {
     const error = useAppSelector((state) => state.store.error);
     const [emailError, setEmailError] = useState("");
     const handleOnClose = () => {
-        console.log("close")
         setOpen(false);
         navigate(-1);
         // dispatchEvent(getStoreData({}))
     }
     const validateEmail = (email: string): void => {
-        console.log(email);
         const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (!emailRegex.test(email)) {
-            console.log("failed");
             form.setError("emailOfUser", { type: 'custom', message: 'email isnt valide' }, { shouldFocus: true })
             setEmailError("email isnt valide")
         }
         else {
             setEmailError("");
             form.clearErrors("emailOfUser");
-            console.log(form.formState.errors)
         }
         // return emailRegex.test(email);
     }
@@ -44,14 +40,14 @@ const AppointUser: React.FC<props> = ({ role }) => {
         let response;
         switch (role) {
             case 'manager':
-                response = dispatch(addManager(form.getValues()));
+                response = dispatch(appointManager(form.getValues()));
                 response.then((res: { meta: { requestStatus: string; }; }) => {
                     if (res.meta.requestStatus === 'fulfilled') {
                         handleOnClose();
                     }
                 });
             case 'owner':
-                response = dispatch(addOwner(form.getValues()));
+                response = dispatch(appointOwner(form.getValues()));
                 response.then((res: { meta: { requestStatus: string; }; }) => {
                     if (res.meta.requestStatus === 'fulfilled') {
                         handleOnClose();

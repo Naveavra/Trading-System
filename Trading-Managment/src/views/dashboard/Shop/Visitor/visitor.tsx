@@ -9,19 +9,21 @@ import { useEffect } from "react";
 import { getProducts } from "../../../../reducers/productsSlice";
 import { getStoresInfo } from "../../../../reducers/storesSlice";
 import axios from "axios";
+import { getClientData } from "../../../../reducers/authSlice";
 
 
 const Visitor: React.FC = () => {
     const dispatch = useAppDispatch();
+
+    const userId = useAppSelector((state) => state.auth.userId);
+    const token = useAppSelector((state) => state.auth.token) ?? "";
     const store = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
     const products = useAppSelector((state) => state.product.responseData?.data?.results);
-    const userId = useAppSelector((state) => state.auth.userId);
+
     const ourProducts = products?.filter((product) => product.storeId === store.id);
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
     const sendPing = () => {
-        console.log("pinging", userId);
         if (userId != 0) {
-            console.log("ping", userId);
             axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
                 .then(response => {
                     // Do something with the response if necessary
@@ -33,13 +35,14 @@ const Visitor: React.FC = () => {
         }
     }
     useEffect(() => {
-        console.log("mount");
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
         dispatch(getStoresInfo());
         dispatch(getProducts());
+        if (token != "") {
+            dispatch(getClientData({ userId: userId, token: token }));
+        }
         // Stop the ping interval when the user leaves the app
         return () => {
-            console.log("unmount");
             clearInterval(pingInterval)
         };
     }, [dispatch]);
@@ -68,7 +71,7 @@ const Visitor: React.FC = () => {
             <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >
                 {!!ourProducts && ourProducts.map((product) => {
                     return (
-                        <ProductCard item={product} canDelete={false} canEdit={false} key={product.id} />
+                        <ProductCard item={product} canDelete={false} canEdit={false} key={product.productId} />
                     );
                 })
                 }
