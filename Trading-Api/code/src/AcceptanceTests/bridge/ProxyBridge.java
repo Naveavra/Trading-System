@@ -96,9 +96,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public List<String> getPossibleExternalPaymentService(int admin) {
+    public List<String> getPossibleExternalPaymentService(int user) {
         if (real != null)
-            return real.getPossibleExternalPaymentService(admin);
+            return real.getPossibleExternalPaymentService(user);
         return null;
     }
 

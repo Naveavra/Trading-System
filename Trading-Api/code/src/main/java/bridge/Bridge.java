@@ -89,7 +89,7 @@ public interface Bridge {
     /**
      * System external supplier service management - getting all possible external service
      *
-     * @param user admin Id
+     * @param user user Id
      * @return If succeed returns list of available supplier service. Otherwise,
      *         return null.
      */
@@ -137,7 +137,7 @@ public interface Bridge {
     /**
      * System external payment service management - getting all possible external service
      *
-     * @param user admin Id
+     * @param user user Id
      * @return If succeed returns list of available payment service. Otherwise,
      *         return null.
      */

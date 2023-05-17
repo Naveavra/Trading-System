@@ -21,19 +21,30 @@ public class ProxySupplier implements SupplierAdapter {
         this.real = supplierServices.get(real);
     }
 
-    public List<String> getSupplierServicesOptions()
+    public List<String> getSupplierServicesAvailableOptions()
     {
         return availableSupplierServices;
     }
 
+    public List<String> getSupplierServicesPossibleOptions()
+    {
+        return supplierServices.keySet().stream().toList();
+    }
+
+
     public void addSupplierService(String supplierAdapter) throws Exception
     {
-        if (!availableSupplierServices.contains(supplierAdapter))
+        if (availableSupplierServices.contains(supplierAdapter))
         {
-            availableSupplierServices.add(supplierAdapter);
+            throw new Exception("This supplier service:" + supplierAdapter + "already exists!!!");
+
         }
-        else{
-            throw new IllegalArgumentException("This supplier service:" + supplierAdapter + "already exists!!!");
+        else if(!supplierServices.containsKey(supplierAdapter))
+        {
+            throw new Exception("This supplier service:" + supplierAdapter + "doesn't exists in the possible supplier services!!!");
+        }
+        else {
+            availableSupplierServices.add(supplierAdapter);
         }
     }
 
@@ -54,9 +65,13 @@ public class ProxySupplier implements SupplierAdapter {
     }
 
 
-    public void setRealSupplier(String supplierAdapter){
-        if(availableSupplierServices.contains(supplierAdapter))
+    public void setRealSupplier(String supplierAdapter) throws Exception{
+        if(availableSupplierServices.contains(supplierAdapter)) {
             real = supplierServices.get(supplierAdapter);
+        }
+        else{
+            throw new Exception("The " + supplierAdapter + "doesn't exist!");
+        }
     }
 
     @Override

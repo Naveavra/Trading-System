@@ -5,12 +5,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SystemTests extends ProjectTest{
 
-    private static final int ERROR = -1;
+    private final String ERROR = "ERROR";
     private String[] externalPaymentServices = {"Google Pay", "Apple Pay"};
     private String[] externalSupplierService = {"DHL", "UPS"};
     @Override
@@ -46,16 +48,14 @@ public class SystemTests extends ProjectTest{
     @Test
     public void testReplaceExternalSupplierService(){
         int adminId = this.mainAdmin.getAdminId();
-        int status = this.addExternalSupplierService(adminId, externalSupplierService[1]);
-        assertTrue(status > 0);
-        status = this.replaceExternalSupplierService(adminId, externalSupplierService[1]);
+        int status = this.replaceExternalSupplierService(adminId, externalSupplierService[1]);
         assertTrue(status < 0);
     }
 
     @Test
     public void testReplaceUnExistExternalSupplierService(){
         int adminId = this.mainAdmin.getAdminId();
-        int status = this.replaceExternalSupplierService(adminId, externalSupplierService[0]);
+        int status = this.replaceExternalSupplierService(adminId, "ERROR");
         assertTrue(status < 0);
     }
 
@@ -201,23 +201,29 @@ public class SystemTests extends ProjectTest{
     @Test
     public void testAddExistExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();
-        int status = this.addExternalPaymentService(adminId, externalPaymentServices[0]);
+        int status = this.addExternalPaymentService(adminId, externalPaymentServices[1]);
+        List<String>  availablePaymentServices = this.getAvailableExternalPaymentService(adminId);
+        assertTrue(availablePaymentServices.contains(externalPaymentServices[1]));
         assertTrue(status > 0);
-        status = this.addExternalPaymentService(adminId, externalPaymentServices[0]);
+        status = this.addExternalPaymentService(adminId, externalPaymentServices[1]);
         assertTrue(status < 0);
     }
 
     @Test
     public void testAddIllegalExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();
-        int status = this.addExternalPaymentService(adminId, "ERROR");
+        List<String>  availablePaymentServices = this.getAvailableExternalPaymentService(adminId);
+        assertTrue(!availablePaymentServices.contains(ERROR));
+        int status = this.addExternalPaymentService(adminId, ERROR);
         assertTrue(status < 0);
+        availablePaymentServices = this.getAvailableExternalPaymentService(adminId);
+        assertTrue(!availablePaymentServices.contains(ERROR));
     }
 
     @Test
     public void testNotAdminAddExternalPaymentService(){
         int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
-        int status = this.addExternalPaymentService(uid, externalPaymentServices[0]);
+        int status = this.addExternalPaymentService(uid, externalPaymentServices[1]);
         assertTrue(status < 0);
     }
 

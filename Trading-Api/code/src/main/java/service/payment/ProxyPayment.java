@@ -21,19 +21,29 @@ public class ProxyPayment implements PaymentAdapter {
         this.real = paymentServices.get(real);
     }
 
-    public List<String> getPaymentServicesOptions()
+    public List<String> getPaymentServicesAvailableOptions()
     {
         return availablePaymentServices;
     }
 
+    public List<String> getPaymentServicesPossibleOptions()
+    {
+        return paymentServices.keySet().stream().toList();
+    }
+
     public void addPaymentService(String paymentService) throws Exception
     {
-        if (!availablePaymentServices.contains(paymentService))
+        if (availablePaymentServices.contains(paymentService))
         {
-            availablePaymentServices.add(paymentService);
+            throw new Exception("This payment service:" + paymentService + "already exists!!!");
+
+        }
+        else if(!paymentServices.containsKey(paymentService))
+        {
+            throw new Exception("This payment service:" + paymentService + "doesn't exists in the possible payment services!!!");
         }
         else{
-            throw new IllegalArgumentException("This payment service:" + paymentService + "already exists!!!");
+            availablePaymentServices.add(paymentService);
         }
     }
 
@@ -41,11 +51,11 @@ public class ProxyPayment implements PaymentAdapter {
     {
         if (availablePaymentServices.size() > 1)
         {
-            throw new IllegalArgumentException("Can't remove payment service need at least 1 payment service!");
+            throw new Exception("Can't remove payment service need at least 1 payment service!");
         }
         else if (!availablePaymentServices.contains(paymentService))
         {
-            throw new IllegalArgumentException("This payment service:" + paymentService + " doesn't exists!!!");
+            throw new Exception("This payment service:" + paymentService + " doesn't exists!!!");
         }
         else
         {
@@ -54,9 +64,12 @@ public class ProxyPayment implements PaymentAdapter {
     }
 
 
-    public void setRealPayment(String paymentAdapter){
+    public void setRealPayment(String paymentAdapter) throws Exception{
         if(availablePaymentServices.contains(paymentAdapter))
             real = paymentServices.get(paymentAdapter);
+        else{
+            throw new Exception("The " + paymentAdapter + "doesn't exist!");
+        }
     }
 
     @Override

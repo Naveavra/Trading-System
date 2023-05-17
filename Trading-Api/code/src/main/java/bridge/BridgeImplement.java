@@ -85,7 +85,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<String> getPossibleExternalSupplierService(int admin) {
-        Response<List<String>> res = null;//TODO: market.openStore(user, token, description);
+        Response<List<String>> res = market.getSupplierServicePossible(admin, token);
         if (res != null && !res.errorOccurred()) {
             return res.getValue();
         }
@@ -94,7 +94,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<String> getAvailableExternalSupplierService(int user) {
-        Response<List<String>> res = null;//TODO: market.openStore(user, token, description);
+        Response<List<String>> res = market.getSupplierServiceAvailable(user);
         if (res != null && !res.errorOccurred()) {
             return res.getValue();
         }
@@ -130,7 +130,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<String> getPossibleExternalPaymentService(int admin) {
-        Response<List<String>> res = null;//TODO: market.openStore(user, token, description);
+        Response<List<String>> res = market.getSupplierServicePossible(admin, token);
         if (res != null && !res.errorOccurred()) {
             return res.getValue();
         }
@@ -139,7 +139,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<String> getAvailableExternalPaymentService(int user) {
-        Response<List<String>> res = null;//TODO: market.openStore(user, token, description);
+        Response<List<String>> res = market.getPaymentServiceAvailable(user);
         if (res != null && !res.errorOccurred()) {
             return res.getValue();
         }
