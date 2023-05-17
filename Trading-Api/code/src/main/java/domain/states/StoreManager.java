@@ -25,6 +25,11 @@ public class StoreManager extends UserState {
 
 
         addedActions = new LinkedList<>();
+        addedActions.add(Action.viewMessages);
+        addedActions.add(Action.answerMessage);
+        addedActions.add(Action.seeStoreHistory);
+        addedActions.add(Action.seeStoreOrders);
+        addedActions.add(Action.checkWorkersStatus);
         addedActions.add(Action.changeStoreDetails);
         addedActions.add(Action.changePurchasePolicy);
         addedActions.add(Action.changeDiscountPolicy);

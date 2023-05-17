@@ -50,7 +50,7 @@ public class Store {
         this.storeid = id;
         this.storeDescription = description;
         this.creatorId = creatorId;
-        this.inventory = new Inventory();
+        this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
@@ -68,7 +68,7 @@ public class Store {
         this.storeid = storeid;
         this.storeDescription = description;
         this.creatorId = creatorId;
-        this.inventory = new Inventory();
+        this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();

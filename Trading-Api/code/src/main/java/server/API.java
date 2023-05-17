@@ -424,6 +424,7 @@ public class API {
     private JSONObject productToJson(ProductInfo product)
     {
         JSONObject json = new JSONObject();
+        json.put("storeId", product.getId());
         json.put("productId", product.getId());
         json.put("name", product.getName());
         json.put("description", product.getDescription());
@@ -432,6 +433,7 @@ public class API {
         json.put("categories", product.getCategories());
         json.put("rating", product.getRating());
         json.put("reviews", reviewsToJson(product.getReviews(), "messageId", "review"));
+        json.put("img", product.getImg());
         return json;
     }
 

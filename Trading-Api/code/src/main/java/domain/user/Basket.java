@@ -46,8 +46,10 @@ public class Basket {
             }
             return true;
         }
-        else
-            throw new RuntimeException("the product isn't in the user's cart");
+        else {
+            addProductToCart(productId, change);
+            return true;
+        }
     }
 
     public boolean removeQuantityInCart(int productId, int change) throws RuntimeException{

@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 import ErrorAlert from "../../components/Alerts/error";
 import SuccessAlert from "../../components/Alerts/success";
 import { getProducts, patchProduct, postProduct } from "../../reducers/productsSlice";
-import { deleteCart, getCart, patchCart, postBasket } from "../../reducers/cartSlice";
+import { deleteCart, getCart, patchCart } from "../../reducers/cartSlice";
 import { Basket } from "../../types/systemTypes/Basket";
 import { PatchCartParams } from "../../types/requestTypes/cartTypes";
 import axios from "axios";

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ProductInfo {
+
+    public final int storeId;
     public final int id;
     private List<String> categories;
     public String name;
@@ -14,10 +16,13 @@ public class ProductInfo {
     public int price; //for one product
     public int quantity;
     public double rating;
+    public String img;
     public HashMap<Integer, Message> reviews;
 
 
-    public ProductInfo(int productId ,String name , String desc ,int price , int quantity, double rating, HashMap<Integer, Message> reviews){
+    public ProductInfo(int storeId, int productId ,String name , String desc ,int price , int quantity, double rating, HashMap<Integer, Message> reviews,
+                       String img){
+        this.storeId = storeId;
         this.id = productId;
         this.name =name;
         this.description =desc;
@@ -25,7 +30,9 @@ public class ProductInfo {
         this.quantity =quantity;
         this.rating = rating;
         this.reviews = reviews;
+        this.img = img;
     }
+    public int getStoreId(){return storeId;}
     public void setCategories(ArrayList<String> cat){
         this.categories = cat;
     }
@@ -55,4 +62,5 @@ public class ProductInfo {
     }
     public double getRating(){return rating;}
     public HashMap<Integer, Message> getReviews(){return reviews;}
+    public String getImg(){return img;}
 }

@@ -257,7 +257,6 @@ public class Market implements MarketInterface {
     }
 
 
-    //when logging out the system returns an id of a guest for the now logged-out user to use
     @Override
     public Response<String> logout(int userId) {
         try {
