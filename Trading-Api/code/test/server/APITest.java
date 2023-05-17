@@ -69,6 +69,9 @@ class APITest {
 
 
     @Test
-    void getStore(){
+    void fromActionToString(){
+        StoreCreator sc = new StoreCreator();
+        List<String> s = api.fromActionToString(sc.getActions());
+        System.out.println(s);
     }
 }

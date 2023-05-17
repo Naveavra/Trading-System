@@ -76,7 +76,7 @@ class ShoppingCartTest {
     @Test
     void changeQuantityInCart_fail() {
         try{
-            s.addQuantityInCart(0,0,10);
+            s.addQuantityInCart(0,0,-10);
             assertFalse(true);
         }catch (Exception e){
             assertTrue(true);
