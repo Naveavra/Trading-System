@@ -146,50 +146,52 @@ public class Server {
             String desc = request.getString("desc");
             String isActive = request.getString("isActive");
             String img = request.getString("img");
-            String ret = "";
-            if(name != null) {
-                toSparkRes(res, api.changeStoreName(userId, token, storeId, name));
-                ret = res + "\n" + res.body();
-                if(res.status() == 400){
-                    res.body(ret);
-                    return res.body();
-                }
-
-            }
-            if(img != null) {
-                toSparkRes(res, api.changeStoreImg(userId, token, storeId, img));
-                ret = res + "\n" + res.body();
-                if(res.status() == 400){
-                    res.body(ret);
-                    return res.body();
-                }
-            }
-            if(desc != null) {
-                toSparkRes(res, api.changeStoreDescription(userId, token, storeId, desc));
-                ret = res + "\n" + res.body();
-                if(res.status() == 400){
-                    res.body(ret);
-                    return res.body();
-                }
-            }
-            if(isActive.equals("false")) {
-                toSparkRes(res, api.closeStore(userId, token, storeId));
-                ret = res + "\n" + res.body();
-                if(res.status() == 400){
-                    res.body(ret);
-                    return res.body();
-                }
-            }
-            if(isActive.equals("true")) {
-                toSparkRes(res, api.reopenStore(userId, token, storeId));
-                ret = res + "\n" + res.body();
-                if(res.status() == 400){
-                    res.body(ret);
-                    return res.body();
-                }
-            }
-            res.body(ret);
+            toSparkRes(res, api.changeStoreInfo(userId, token, storeId, name, desc, isActive, img));
             return res.body();
+//            String ret = "";
+//            if(name != null) {
+//                toSparkRes(res, api.changeStoreName(userId, token, storeId, name));
+//                ret = res + "\n" + res.body();
+//                if(res.status() == 400){
+//                    res.body(ret);
+//                    return res.body();
+//                }
+//
+//            }
+//            if(img != null) {
+//                toSparkRes(res, api.changeStoreImg(userId, token, storeId, img));
+//                ret = res + "\n" + res.body();
+//                if(res.status() == 400){
+//                    res.body(ret);
+//                    return res.body();
+//                }
+//            }
+//            if(desc != null) {
+//                toSparkRes(res, api.changeStoreDescription(userId, token, storeId, desc));
+//                ret = res + "\n" + res.body();
+//                if(res.status() == 400){
+//                    res.body(ret);
+//                    return res.body();
+//                }
+//            }
+//            if(isActive.equals("false")) {
+//                toSparkRes(res, api.closeStore(userId, token, storeId));
+//                ret = res + "\n" + res.body();
+//                if(res.status() == 400){
+//                    res.body(ret);
+//                    return res.body();
+//                }
+//            }
+//            if(isActive.equals("true")) {
+//                toSparkRes(res, api.reopenStore(userId, token, storeId));
+//                ret = res + "\n" + res.body();
+//                if(res.status() == 400){
+//                    res.body(ret);
+//                    return res.body();
+//                }
+//            }
+//            res.body(ret);
+//            return res.body();
         });
         patch("api/stores/:storeId/permissions", (req, res) ->{
             JSONObject request = new JSONObject(req.body());

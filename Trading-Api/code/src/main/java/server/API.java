@@ -29,8 +29,7 @@ public class API {
     public Market market;
     Gson gson;
     public API(){
-        Admin admin = new Admin(-1, "elibenshimol6@gmail.com", "123Aaa");
-        market = new Market(admin);
+        market = new Market("elibenshimol6@gmail.com", "123Aaa");
         gson = new Gson();
     }
 
@@ -324,7 +323,56 @@ public class API {
         Response<String> res = market.appointManager(userId, token, managerIdToAppoint, storeId);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> changeStoreInfo(int userId, String token, int storeId, String name, String desc,
+                                                     String isActive, String img){
+        String ret = "";
+        Response<String> ans;
+        Pair<Boolean, JSONObject> check;
+        if(name != null) {
+            check = changeStoreName(userId, token, storeId, name);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "change name failed", ret);
+                return fromResToPair(ans);
+            }
 
+        }
+        if(img != null) {
+            check = changeStoreImg(userId, token, storeId, img);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "change img failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        if(desc != null) {
+            check = changeStoreDescription(userId, token, storeId, desc);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "change desc failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        if(isActive.equals("false")) {
+            check = closeStore(userId, token, storeId);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "close store failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        if(isActive.equals("true")) {
+            check = reopenStore(userId, token, storeId);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "reopen store failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        ans = new Response<>(ret, null, null);
+        return fromResToPair(ans);
+
+    }
     public Pair<Boolean, JSONObject> changeStoreDescription(int userId, String token, int storeId, String description){
         Response<String> res = market.changeStoreDescription(userId, token, storeId, description);
         return fromResToPair(res);
@@ -765,6 +813,7 @@ public class API {
         json.put("reviews", reviewsToJson(store.getStoreReviews(), "messageId", "review"));
         json.put("questions", reviewsToJson(store.getStoreQuestions(), "messageId", "question"));
         json.put("img", store.getImgUrl());
+        json.put("roles", store.getRoles());
         return json;
     }
     public Pair<Boolean, JSONObject> getStore(int userId, String token, int storeId) {
@@ -814,15 +863,19 @@ public class API {
         categories.add("shoes");
         categories.add("new");
         categories.add("fresh");
-        res2 = market.addProduct(id1, token1, sid1, categories, "air1", "comfy", 100, 4, "https://images.pexels.com/photos/13691727/pexels-photo-13691727.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+        res2 = market.addProduct(id1, token1, sid1, categories, "air1", "comfy", 100, 20, "https://images.pexels.com/photos/13691727/pexels-photo-13691727.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
         int pid1 = res2.getValue();
-        res2 = market.addProduct(id1, token1, sid1, categories, "air2", "more comfy", 300, 1,"https://www.pexels.com/photo/person-wearing-air-jordan-1-4215840/");
+        res2 = market.addProduct(id1, token1, sid1, categories, "air2", "more comfy", 300, 10,"https://www.pexels.com/photo/person-wearing-air-jordan-1-4215840/");
         int pid2 = res2.getValue();
-        market.addProductToCart(id1, sid1, pid1, 1);
+        market.addProductToCart(id1, sid2, pid1, 3);
+        market.addProductToCart(id2, sid1, pid1, 5);
         Response<Receipt> res3 = market.makePurchase(id1, "9999999");
-        market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), sid1, "bad store", 2);
+        market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), sid2, "bad store", 2);
+        res3 = market.makePurchase(id2, "111111");
+        market.writeReviewToStore(id2, token2, res3.getValue().getOrderId(), sid1, "good store", 4);
         market.sendQuestion(id1, token1, sid1, "why bad?");
         market.appointManager(id1, token1, id2, sid1);
+        market.appointManager(id2, token2, id1, sid2);
         market.logout(id1);
         market.logout(id2);
     }
