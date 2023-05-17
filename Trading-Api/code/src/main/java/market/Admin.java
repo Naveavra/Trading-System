@@ -30,13 +30,15 @@ public class Admin {
     public String getEmailAdmin(){
         return emailAdmin;
     }
-    public void closeStorePermanently(int storeId) throws Exception {
+    public void closeStorePermanently(int storeId, int creatId) throws Exception {
         Set<Integer> userIds = marketController.closeStorePermanently(storeId);
         for(int userId : userIds){
-            String notify = "the store: " + storeId +" has been permanently closed";
-            Notification<String> notification = new Notification<>(notify);
-            userController.addNotification(userId, notification);
-            userController.removeStoreRole(adminId, userId, storeId);
+            if(creatId != userId) {
+                String notify = "the store: " + storeId + " has been permanently closed";
+                Notification<String> notification = new Notification<>(notify);
+                userController.addNotification(userId, notification);
+                userController.removeStoreRole(adminId, userId, storeId);
+            }
         }
     }
     public boolean checkEmail(String email){
@@ -57,6 +59,6 @@ public class Admin {
     public void cancelMembership(int userToRemove) throws Exception{
         List<Integer> storeIds = userController.cancelMembership(userToRemove);
         for(int storeId : storeIds)
-            closeStorePermanently(storeId);
+            closeStorePermanently(storeId, userToRemove);
     }
 }

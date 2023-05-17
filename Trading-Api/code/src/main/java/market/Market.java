@@ -1193,7 +1193,7 @@ public class Market implements MarketInterface {
             if (admin != null) {
                 try {
                     userAuth.checkUser(adminId, token);
-                    admin.closeStorePermanently(storeId);
+                    admin.closeStorePermanently(storeId, -1);
                     logger.log(Logger.logStatus.Success, "the store: " + storeId + " has been permanently closed by admin: " + adminId + " at time " + LocalDateTime.now());
                     return new Response<String>("close was permanently closed", null, null);
                 }
