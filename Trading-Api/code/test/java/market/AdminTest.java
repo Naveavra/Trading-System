@@ -22,20 +22,21 @@ class AdminTest {
 
     @BeforeEach
     void setUp() {
-        admin = new Admin(-1, "eli@gmail.com", "123Aaa");
-        market = new Market(admin);
+        market = new Market("eli@gmail.com", "123Aaa");
         token = market.addTokenForTests();
     }
 
     @Test
     void addAdmin() {
+        market.adminLogin("eli@gmail.com", "123Aaa");
         market.addAdmin(-1, token, "ziv@gmail", "456Bbb");
         assertEquals(2, market.getAdminsize());
     }
 
     @Test
     void adminLogin(){
-
+        market.addAdmin(-1, token, "ziv@gmail", "456Bbb");
+        market.adminLogin("ziv@gmail", "456Bbb");
     }
     @Test
     void removeAdmin() {

@@ -26,7 +26,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int initTradingSystem() {
-        this.market = new Market(this.mainAdmin);
+        this.market = new Market("admin@gmail.com", "admin");
         token = market.addTokenForTests();
         return 1;
     }
