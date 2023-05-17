@@ -61,44 +61,72 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int addExternalSupplierService(int admin, int esSupplier) {
+    public List<String> getPossibleExternalSupplierService(int admin) {
+        if (real != null)
+            return real.getPossibleExternalSupplierService(admin);
+        return null;
+    }
+
+    @Override
+    public List<String> getAvailableExternalSupplierService(int user) {
+        if (real != null)
+            return real.getPossibleExternalSupplierService(user);
+        return null;
+    }
+
+    @Override
+    public int addExternalSupplierService(int admin, String esSupplier) {
         if (real != null)
             return real.addExternalSupplierService(admin, esSupplier);
         return -1;
     }
 
     @Override
-    public int removeExternalSupplierService(int admin, int es) {
+    public int removeExternalSupplierService(int admin, String es) {
         if (real != null)
             return real.removeExternalSupplierService(admin, es);
         return -1;
     }
 
     @Override
-    public int replaceExternalSupplierService(int admin, int es, int esSupplier) {
+    public int replaceExternalSupplierService(int admin, String esSupplier) {
         if (real != null)
-            return real.replaceExternalSupplierService(admin, es, esSupplier);
+            return real.replaceExternalSupplierService(admin, esSupplier);
         return -1;
     }
 
     @Override
-    public int addExternalPaymentService(int admin, int esPayment) {
+    public List<String> getPossibleExternalPaymentService(int admin) {
+        if (real != null)
+            return real.getPossibleExternalPaymentService(admin);
+        return null;
+    }
+
+    @Override
+    public List<String> getAvailableExternalPaymentService(int user) {
+        if (real != null)
+            return real.getAvailableExternalPaymentService(user);
+        return null;
+    }
+
+    @Override
+    public int addExternalPaymentService(int admin, String esPayment) {
         if (real != null)
             return real.addExternalPaymentService(admin, esPayment);
         return -1;
     }
 
     @Override
-    public int removeExternalPaymentService(int admin, int es) {
+    public int removeExternalPaymentService(int admin, String es) {
         if (real != null)
             return real.removeExternalPaymentService(admin, es);
         return -1;
     }
 
     @Override
-    public int replaceExternalPaymentService(int admin, int es, int esPayment) {
+    public int replaceExternalPaymentService(int admin, String esPayment) {
         if (real != null)
-            return real.replaceExternalPaymentService(admin, es, esPayment);
+            return real.replaceExternalPaymentService(admin, esPayment);
         return -1;
     }
 

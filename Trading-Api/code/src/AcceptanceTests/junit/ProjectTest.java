@@ -275,34 +275,34 @@ public abstract class ProjectTest{
         return bridge.getProductInStore(storeId);
     }
 
-    public int addExternalPaymentService(int adminId, int esPayment)
+    public int addExternalPaymentService(int adminId, String esPayment)
     {
         return bridge.addExternalPaymentService(adminId, esPayment);
     }
 
-    public int removeExternalPaymentService(int adminId, int esPayment)
+    public int removeExternalPaymentService(int adminId, String esPayment)
     {
         return bridge.removeExternalPaymentService(adminId, esPayment);
     }
 
-    public int replaceExternalPaymentService(int adminId, int es, int esPayment)
+    public int replaceExternalPaymentService(int adminId, String esPayment)
     {
-        return bridge.replaceExternalPaymentService(adminId, es, esPayment);
+        return bridge.replaceExternalPaymentService(adminId, esPayment);
     }
 
-    public int addExternalSupplierService(int adminId, int esPayment)
+    public int addExternalSupplierService(int adminId, String esSupplier)
     {
-        return bridge.addExternalSupplierService(adminId, esPayment);
+        return bridge.addExternalSupplierService(adminId, esSupplier);
     }
 
-    public int removeExternalSupplierService(int adminId, int esPayment)
+    public int removeExternalSupplierService(int adminId, String esSupplier)
     {
-        return bridge.removeExternalSupplierService(adminId, esPayment);
+        return bridge.removeExternalSupplierService(adminId, esSupplier);
     }
 
-    public int replaceExternalSupplierService(int adminId, int es, int esPayment)
+    public int replaceExternalSupplierService(int adminId, String esSupplier)
     {
-        return bridge.replaceExternalSupplierService(adminId, es, esPayment);
+        return bridge.replaceExternalSupplierService(adminId, esSupplier);
     }
 
     public int enterSystem()

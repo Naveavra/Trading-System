@@ -78,6 +78,24 @@ public interface Bridge {
     int createStore(int user, String description);
 
     /**
+     * System external supplier service management - getting all possible external service
+     *
+     * @param admin admin Id
+     * @return If succeed returns list of possible supplier service. Otherwise,
+     *         return null.
+     */
+    List<String> getPossibleExternalSupplierService(int admin);
+
+    /**
+     * System external supplier service management - getting all possible external service
+     *
+     * @param user admin Id
+     * @return If succeed returns list of available supplier service. Otherwise,
+     *         return null.
+     */
+    List<String> getAvailableExternalSupplierService(int user);
+
+    /**
      * System external supplier service management - adding external service
      *
      * @param admin admin Id
@@ -85,7 +103,7 @@ public interface Bridge {
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int addExternalSupplierService(int admin,  int esSupplier);
+    int addExternalSupplierService(int admin,  String esSupplier);
 
     /**
      * System external supplier service management - remove external service
@@ -95,18 +113,35 @@ public interface Bridge {
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int removeExternalSupplierService(int admin, int es);
+    int removeExternalSupplierService(int admin, String es);
 
     /**
      * System external supplier service management - replace external service
      *
      * @param admin admin Id
-     * @param es external service
      * @param esSupplier external payment service
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int replaceExternalSupplierService(int admin, int es, int esSupplier);
+    int replaceExternalSupplierService(int admin, String esSupplier);
+
+    /**
+     * System external payment service management - getting all possible external service
+     *
+     * @param admin admin Id
+     * @return If succeed returns list of possible payment service. Otherwise,
+     *         return null.
+     */
+    List<String> getPossibleExternalPaymentService(int admin);
+
+    /**
+     * System external payment service management - getting all possible external service
+     *
+     * @param user admin Id
+     * @return If succeed returns list of available payment service. Otherwise,
+     *         return null.
+     */
+    List<String> getAvailableExternalPaymentService(int user);
 
     /**
      * System external payment service management - adding external service
@@ -116,7 +151,7 @@ public interface Bridge {
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int addExternalPaymentService(int admin, int esPayment);
+    int addExternalPaymentService(int admin, String esPayment);
 
     /**
      * System external payment service management - remove external service
@@ -126,18 +161,17 @@ public interface Bridge {
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int removeExternalPaymentService(int admin, int es);
+    int removeExternalPaymentService(int admin, String es);
 
     /**
      * System external payment service management - replace external service
      *
      * @param admin admin Id
-     * @param es external service
      * @param esPayment external payment service
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int replaceExternalPaymentService(int admin, int es, int esPayment);
+    int replaceExternalPaymentService(int admin, String esPayment);
 
     /**
      * Get user unread messages

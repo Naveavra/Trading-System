@@ -84,33 +84,93 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int addExternalSupplierService(int admin, int esSupplier) {
-        return 0;
+    public List<String> getPossibleExternalSupplierService(int admin) {
+        Response<List<String>> res = null;//TODO: market.openStore(user, token, description);
+        if (res != null && !res.errorOccurred()) {
+            return res.getValue();
+        }
+        return null;
     }
 
     @Override
-    public int removeExternalSupplierService(int admin, int es) {
-        return 0;
+    public List<String> getAvailableExternalSupplierService(int user) {
+        Response<List<String>> res = null;//TODO: market.openStore(user, token, description);
+        if (res != null && !res.errorOccurred()) {
+            return res.getValue();
+        }
+        return null;
     }
 
     @Override
-    public int replaceExternalSupplierService(int admin, int es, int esSupplier) {
-        return 0;
+    public int addExternalSupplierService(int admin, String esSupplier) {
+        Response<String> res = market.addSupplierService(admin,token, esSupplier);
+        if (res != null && !res.errorOccurred()) {
+            return 1;
+        }
+        return -1;
     }
 
     @Override
-    public int addExternalPaymentService(int admin, int esPayment) {
-        return 0;
+    public int removeExternalSupplierService(int admin, String es) {
+        Response<String> res = market.removeSupplierService(admin, token, es);
+        if (res != null && !res.errorOccurred()) {
+            return 1;
+        }
+        return -1;
     }
 
     @Override
-    public int removeExternalPaymentService(int admin, int es) {
-        return 0;
+    public int replaceExternalSupplierService(int admin, String esSupplier) {
+        Response<String> res = market.setSupplierService(admin, token, esSupplier);
+        if (res != null && !res.errorOccurred()) {
+            return 1;
+        }
+        return -1;
     }
 
     @Override
-    public int replaceExternalPaymentService(int admin, int es, int esPayment) {
-        return 0;
+    public List<String> getPossibleExternalPaymentService(int admin) {
+        Response<List<String>> res = null;//TODO: market.openStore(user, token, description);
+        if (res != null && !res.errorOccurred()) {
+            return res.getValue();
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getAvailableExternalPaymentService(int user) {
+        Response<List<String>> res = null;//TODO: market.openStore(user, token, description);
+        if (res != null && !res.errorOccurred()) {
+            return res.getValue();
+        }
+        return null;
+    }
+
+    @Override
+    public int addExternalPaymentService(int admin, String esPayment) {
+        Response<String> res = market.addPaymentService(admin,token, esPayment);
+        if (res != null && !res.errorOccurred()) {
+            return 1;
+        }
+        return -1;
+    }
+
+    @Override
+    public int removeExternalPaymentService(int admin, String es) {
+        Response<String> res = market.removePaymentService(admin,token, es);
+        if (res != null && !res.errorOccurred()) {
+            return 1;
+        }
+        return -1;
+    }
+
+    @Override
+    public int replaceExternalPaymentService(int admin, String esPayment) {
+        Response<String> res = market.setPaymentService(admin,token, esPayment);
+        if (res != null && !res.errorOccurred()) {
+            return 1;
+        }
+        return -1;
     }
 
     @Override

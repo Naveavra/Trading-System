@@ -59,7 +59,7 @@ public class Market implements MarketInterface {
         gson = new Gson();
         proxyPayment = new ProxyPayment("Apple Pay");
         userAuth = new UserAuth();
-        proxySupplier = new ProxySupplier("UPS");
+        proxySupplier = new ProxySupplier("DHL");
         complaints = new ConcurrentHashMap<>();
         actionIds = new HashMap<>();
         marketInfo = new MarketInfo();
@@ -1455,7 +1455,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
     }
 
     @Override
-    public Response setPaymentService(int guestId, String paymentService) {
+    public Response setPaymentService(int adminId, String token, String paymentService) {
         try{
             logger.log(Logger.logStatus.Success, "set payment service successfully on " + LocalDateTime.now());
             proxyPayment.setRealPayment(paymentService);
@@ -1534,6 +1534,26 @@ public Response<List<ProductInfo>> getProducts(int storeId){
             logger.log(Logger.logStatus.Fail, "cant remove payment service because: " + e.getMessage() +" on time: " + LocalDateTime.now());
             return new Response<>(null, commandType, e.getMessage());
         }
+    }
+
+    @Override
+    public Response setSupplierService(int adminId, String token, String supplierService) {
+        return null;
+    }
+
+    @Override
+    public Response getSupplierServiceOptions(int adminId, String token, String supplierService) {
+        return null;
+    }
+
+    @Override
+    public Response addSupplierService(int adminId, String token, String supplierService) {
+        return null;
+    }
+
+    @Override
+    public Response removeSupplierService(int adminId, String token, String supplierService) {
+        return null;
     }
 
     public String addTokenForTests() {
