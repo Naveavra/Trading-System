@@ -159,7 +159,7 @@ public class API {
             for (Map.Entry<Integer, List<Action>> entry : hashmap.entrySet()) {
                 JSONObject jsonO = new JSONObject();
                 jsonO.put(key, entry.getKey());
-                jsonO.put(value, entry.getValue());
+                jsonO.put(value, fromActionToString(entry.getValue()));
                 jsonList.add(jsonO);
             }
         }
@@ -826,4 +826,20 @@ public class API {
         market.logout(id1);
         market.logout(id2);
     }
+
+    public List<String> fromActionToString(List<Action> actions){
+        List<String> ans = new LinkedList<>();
+        for(Action a : actions){
+            String as = a.toString();
+            for(int i = 0; i<as.length(); i++) {
+                if (40 < as.charAt(i) && as.charAt(i) < 91) {
+                    char add = (char)(as.charAt(i) + 32);
+                    as = as.substring(0, i) + " " + add + as.substring(i + 1);
+                }
+            }
+            ans.add(as);
+        }
+       return ans;
+    }
+
 }
