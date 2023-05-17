@@ -20,7 +20,7 @@ public abstract class ProjectTest{
 
 
     // Store, admin, appointment
-    AdminInfo mainAdmin = new AdminInfo(-1,"admin@gmail.com", "adminA1");
+    AdminInfo mainAdmin = new AdminInfo(-1,"admin@gmail.com", "admin");
     public static final int USER_EMAIL = 0, USER_USER = 1, USER_PASS = 2, USER_BIRTHDAY = 3;
     public static final int ADMIN_USER = 0, ADMIN_PASS = 1;
     protected final String[][] admins = {{"admin1@gmail.com", "admin1A"}};
@@ -55,6 +55,7 @@ public abstract class ProjectTest{
     }
 
     private void setUpAdmins() {
+        adminLogin(mainAdmin.getEmail(), mainAdmin.getPassword());
         for (String[] adminInfo : admins) {
             AdminInfo ai = new AdminInfo(adminInfo[ADMIN_USER], adminInfo[ADMIN_PASS]);
             this.bridge.addAdmin(mainAdmin.getAdminId(), adminInfo[ADMIN_USER], adminInfo[ADMIN_PASS]);

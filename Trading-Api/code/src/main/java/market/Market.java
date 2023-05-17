@@ -43,16 +43,15 @@ public class Market implements MarketInterface {
     private Gson gson;
     private final Logger logger;
     private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-    private AtomicInteger adminId = new AtomicInteger(-2);
+    private AtomicInteger adminId = new AtomicInteger(-1);
 
     private HashMap<Integer, Action> actionIds;
 
     private MarketInfo marketInfo;
 
-    public Market(Admin admin) {
+    public Market(String email, String pass) {
         activeAdmins = new ConcurrentHashMap<>();
         inActiveAdmins = new ConcurrentHashMap<>();
-        activeAdmins.put(admin.getAdminId(), admin);
         logger = Logger.getInstance();
         userController = new UserController();
         marketController = new MarketController();
@@ -63,8 +62,7 @@ public class Market implements MarketInterface {
         complaints = new ConcurrentHashMap<>();
         actionIds = new HashMap<>();
         marketInfo = new MarketInfo();
-
-        admin.addControllers(userController, marketController);
+        addAdmin(0, null, email, pass);
 
         actionIds.put(0, Action.addProduct);
         actionIds.put(1, Action.removeProduct);
@@ -1315,34 +1313,39 @@ public Response<List<ProductInfo>> getProducts(int storeId){
 
     @Override
     public Response<String> addAdmin(int userId, String token, String email, String pass) {
-        try{
-            userAuth.checkUser(userId, token);
-        }catch (Exception e){
-            logger.log(Logger.logStatus.Fail, "cant add admin because: " + e.getMessage() +" on time: " + LocalDateTime.now());
-            return new Response<>(null, "add admin failed", e.getMessage());
-        }
-        Admin appoint = activeAdmins.get(userId);
-        if (appoint != null) {
-            for (Admin a : activeAdmins.values()) {
-                if (a.checkEmail(email)) {
-                    logger.log(Logger.logStatus.Fail, "cant add new admin , another admin already exist with this name on " + LocalDateTime.now());
-                    return new Response<>(null, "add admin failed", "another admin already exist with this name");
+        if (userId != 0) {
+            try {
+                userAuth.checkUser(userId, token);
+            } catch (Exception e) {
+                logger.log(Logger.logStatus.Fail, "cant add admin because: " + e.getMessage() + " on time: " + LocalDateTime.now());
+                return new Response<>(null, "add admin failed", e.getMessage());
+            }
+            Admin appoint = activeAdmins.get(userId);
+            if (appoint != null) {
+                for (Admin a : activeAdmins.values()) {
+                    if (a.checkEmail(email)) {
+                        logger.log(Logger.logStatus.Fail, "cant add new admin , another admin already exist with this name on " + LocalDateTime.now());
+                        return new Response<>(null, "add admin failed", "another admin already exist with this name");
+                    }
+                }
+                for (Admin a : inActiveAdmins.values()) {
+                    if (a.checkEmail(email)) {
+                        logger.log(Logger.logStatus.Fail, "cant add new admin , another admin already exist with this name on " + LocalDateTime.now());
+                        return new Response<>(null, "add admin failed", "another admin already exist with this name");
+                    }
                 }
             }
-            for (Admin a : inActiveAdmins.values()) {
-                if (a.checkEmail(email)) {
-                    logger.log(Logger.logStatus.Fail, "cant add new admin , another admin already exist with this name on " + LocalDateTime.now());
-                    return new Response<>(null, "add admin failed", "another admin already exist with this name");
-                }
+            else{
+                logger.log(Logger.logStatus.Fail, "cant add new admin , u dont have access" + LocalDateTime.now());
+                return new Response<>(null, "add admin failed", "u dont have access");
             }
-            String hashedPass = userAuth.hashPassword(email, pass, true);
-            Admin a = new Admin(adminId.getAndDecrement(), email, hashedPass);
-            inActiveAdmins.put(a.getAdminId(), a);
-            logger.log(Logger.logStatus.Success, "admin added new admin successfully on " + LocalDateTime.now());
-            return new Response<>("admin added new admin successfully", null, null);
         }
-        logger.log(Logger.logStatus.Fail, "cant add new admin , u dont have access" + LocalDateTime.now());
-        return new Response<>(null, "add admin failed", "u dont have access");
+        String hashedPass = userAuth.hashPassword(email, pass, true);
+        Admin a = new Admin(adminId.getAndDecrement(), email, hashedPass);
+        a.addControllers(userController, marketController);
+        inActiveAdmins.put(a.getAdminId(), a);
+        logger.log(Logger.logStatus.Success, "admin added new admin successfully on " + LocalDateTime.now());
+        return new Response<>("admin added new admin successfully", null, null);
     }
 
     @Override
