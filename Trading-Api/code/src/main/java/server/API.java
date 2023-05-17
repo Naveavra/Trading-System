@@ -324,7 +324,56 @@ public class API {
         Response<String> res = market.appointManager(userId, token, managerIdToAppoint, storeId);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> changeStoreInfo(int userId, String token, int storeId, String name, String desc,
+                                                     String isActive, String img){
+        String ret = "";
+        Response<String> ans;
+        Pair<Boolean, JSONObject> check;
+        if(name != null) {
+            check = changeStoreName(userId, token, storeId, name);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "change name failed", ret);
+                return fromResToPair(ans);
+            }
 
+        }
+        if(img != null) {
+            check = changeStoreImg(userId, token, storeId, img);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "change img failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        if(desc != null) {
+            check = changeStoreDescription(userId, token, storeId, desc);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "change desc failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        if(isActive.equals("false")) {
+            check = closeStore(userId, token, storeId);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "close store failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        if(isActive.equals("true")) {
+            check = reopenStore(userId, token, storeId);
+            ret = ret + "\n" + check.getSecond();
+            if(!check.getFirst()){
+                ans = new Response<>(null, "reopen store failed", ret);
+                return fromResToPair(ans);
+            }
+        }
+        ans = new Response<>(ret, null, null);
+        return fromResToPair(ans);
+
+    }
     public Pair<Boolean, JSONObject> changeStoreDescription(int userId, String token, int storeId, String description){
         Response<String> res = market.changeStoreDescription(userId, token, storeId, description);
         return fromResToPair(res);
@@ -765,6 +814,7 @@ public class API {
         json.put("reviews", reviewsToJson(store.getStoreReviews(), "messageId", "review"));
         json.put("questions", reviewsToJson(store.getStoreQuestions(), "messageId", "question"));
         json.put("img", store.getImgUrl());
+        json.put("roles", store.getRoles());
         return json;
     }
     public Pair<Boolean, JSONObject> getStore(int userId, String token, int storeId) {
