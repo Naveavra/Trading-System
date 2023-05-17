@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -7,26 +7,35 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css"
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Product } from "../../../types/systemTypes/Product";
-import { Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
+import { Avatar, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
-import { guestEnter, logout } from "../../../reducers/authSlice";
+import { getClientData, guestEnter, logout } from "../../../reducers/authSlice";
 import { getStore } from "../../../reducers/storesSlice";
 import { StoreRole } from "../../../types/systemTypes/StoreRole";
+import { clearNotifications } from "../../../reducers/authSlice";
 
 interface Props {
     headLine: string;
 }
 const Bar: React.FC<Props> = ({ headLine }) => {
-
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const [storeOpen, setStoreOpen] = useState(false)
     const [profileDialogOpen, setProfileDialogOpen] = useState(false);
-    const products: Product[] = [];// = useSelector((state) => state.cart.products);
+    const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
+
+    const notification = useAppSelector((state) => state.auth.notifications);
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
     const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector((state) => state.auth.userName);
     const stores_roles: StoreRole[] = useAppSelector((state) => state.auth.storeRoles);
     const stores_names = useAppSelector((state) => state.auth.storeNames);
     const store_images = useAppSelector((state) => state.auth.storeImgs);
+    const token = useAppSelector((state) => state.auth.token) ?? "";
+
+    const cart = useAppSelector((state) => state.cart.responseData);
+    const numProductsIncart = cart?.baskets?.reduce((acc, item) => acc + item.products.productsList.length, 0) ?? 0;
+
     const stores = stores_roles ? stores_roles.map((role, index) => {
         return {
             storeId: role.storeId,
@@ -35,8 +44,8 @@ const Bar: React.FC<Props> = ({ headLine }) => {
             storeImg: store_images[index].storeImg,
         }
     }) : [];
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
+
+    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const handleLogout = () => {
         dispatch(logout(userId));
@@ -46,6 +55,16 @@ const Bar: React.FC<Props> = ({ headLine }) => {
         dispatch(getStore({ userId: userId, storeId: storeNumber }));
         navigate('shops/superior');
     }
+    const handleNotification = () => {
+        setNotificationDialogOpen(true);
+        //navigate('notifications');
+    }
+    const handleConfirm = (event: React.ChangeEvent<HTMLInputElement>, idx: number): void => {
+        console.log(`confirm message ${idx}`);
+    }
+    useEffect(() => {
+        dispatch(getClientData({ userId: userId, token: token }));
+    }, [notification, numProductsIncart])
     return (
         <div className="navbar">
             <div className="wrapper">
@@ -72,8 +91,12 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                                 <IconButton onClick={() => setStoreOpen(true)}>
                                     <StorefrontIcon />
                                 </IconButton>
-                                <IconButton onClick={() => { console.log("notifications") }}>
-                                    <NotificationsOutlinedIcon />
+
+                                <IconButton onClick={handleNotification}>
+                                    <div className="cartIcon">
+                                        <NotificationsOutlinedIcon />
+                                        <span>{notification.length}</span>
+                                    </div>
                                 </IconButton>
                                 <IconButton onClick={() => {
                                     setProfileDialogOpen(true);
@@ -94,7 +117,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                         <IconButton onClick={() => navigate(`/dashboard/${userId}/cart`)}>
                             <div className="cartIcon">
                                 <ShoppingCartOutlinedIcon />
-                                <span>{products.length}</span>
+                                <span>{numProductsIncart}</span>
                             </div>
                         </IconButton>
 
@@ -173,7 +196,38 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                                 </Button>
                             </DialogActions>
                         </Dialog>
-
+                        {/* -------------------------------------notofication---------------- */}
+                        <Dialog
+                            open={notificationDialogOpen}
+                            onClose={() => {
+                                setNotificationDialogOpen(false);
+                            }}
+                        >
+                            <DialogTitle>your notifications</DialogTitle>
+                            <>
+                                {notification.map((not, index) => {
+                                    return (
+                                        <DialogContent dividers key={index}>
+                                            <Box ml={3} display={'flex'} key={index}>
+                                                <Typography sx={{ ml: 2, mr: 3 }}>{not}</Typography>
+                                                <Checkbox {...label} defaultChecked onChange={(e) => { handleConfirm(e, index) }} />
+                                            </Box>
+                                        </DialogContent>
+                                    )
+                                }
+                                )}
+                            </>
+                            <DialogActions>
+                                <Button
+                                    onClick={() => {
+                                        setNotificationDialogOpen(false);
+                                        dispatch(clearNotifications());
+                                    }}
+                                >
+                                    close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </div>
                 </div>
             </div>

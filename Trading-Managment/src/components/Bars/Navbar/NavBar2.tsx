@@ -7,8 +7,8 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions } from '@mui/material';
-import { logout, guestEnter } from '../../../reducers/authSlice';
+import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox } from '@mui/material';
+import { logout, guestEnter, getClientData, clearNotifications } from '../../../reducers/authSlice';
 import { getStore } from '../../../reducers/storesSlice';
 import { useAppSelector, useAppDispatch } from '../../../redux/store';
 import './NavBar2.css';
@@ -19,6 +19,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import SideDrawer from '../../SideDrawer';
 import { StoreRole } from '../../../types/systemTypes/StoreRole';
+import { useEffect, useState } from 'react';
 
 interface Props {
     headLine: string;
@@ -27,15 +28,19 @@ const DRAWER_WIDTH = 240;
 const Bar2: React.FC<Props> = ({ headLine }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const [storeOpen, setStoreOpen] = React.useState(false);
-    const [openDrawer, setOpenDrawer] = React.useState(false);
-    const [profileDialogOpen, setProfileDialogOpen] = React.useState(false);
-    const cart = useAppSelector((state) => state.cart.responseData);
-    const notifications = useAppSelector((state) => state.auth.notifications);
-    const isLoggedIn = useAppSelector((state) => !!state.auth.token);
+    const [storeOpen, setStoreOpen] = useState(false);
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+    const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
+    const notification = useAppSelector((state) => state.auth.notifications);
     const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector((state) => state.auth.userName);
+    const token = useAppSelector((state) => state.auth.token) ?? "";
+    const notifications = useAppSelector((state) => state.auth.notifications);
+    const isLoggedIn = useAppSelector((state) => !!state.auth.token);
 
+    const cart = useAppSelector((state) => state.cart.responseData);
+    const numProductsIncart = cart?.baskets?.reduce((acc, item) => acc + item.products.productsList.length, 0) ?? 0;
 
     const stores_roles: StoreRole[] = useAppSelector((state) => state.auth.storeRoles);
     const stores_names = useAppSelector((state) => state.auth.storeNames);
@@ -51,7 +56,8 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
 
     const storeInfo = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
     const managerInStore = useAppSelector((state) => state.auth.storeRoles)?.filter((store) => store.storeId == storeInfo.id).length > 0;
-    const numProductsIncart = cart?.baskets?.reduce((acc, item) => acc + item.products.productsList.length, 0) ?? 0;
+    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
     const handleLogout = () => {
         dispatch(logout(userId));
         navigate('/auth/login');
@@ -66,6 +72,17 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const handleDrawerOpen = () => {
         setOpenDrawer(true);
     }
+    const handleNotification = () => {
+        setNotificationDialogOpen(true);
+    }
+    const handleConfirm = (event: React.ChangeEvent<HTMLInputElement>, idx: number): void => {
+        console.log(`confirm message ${idx}`);
+    }
+    useEffect(() => {
+        dispatch(getClientData({ userId: userId, token: token }));
+
+    }, [notifications, numProductsIncart])
+
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
@@ -215,6 +232,39 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                         }}
                     >
                         add new store
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            {/*--------------notofications-----------*/}
+            {/* -------------------------------------notofication---------------- */}
+            <Dialog
+                open={notificationDialogOpen}
+                onClose={() => {
+                    setNotificationDialogOpen(false);
+                }}
+            >
+                <DialogTitle>your notifications</DialogTitle>
+                <>
+                    {notification.map((not, index) => {
+                        return (
+                            <DialogContent dividers key={index}>
+                                <Box ml={3} display={'flex'} key={index}>
+                                    <Typography sx={{ ml: 2, mr: 3 }}>{not}</Typography>
+                                    <Checkbox {...label} defaultChecked onChange={(e) => { handleConfirm(e, index) }} />
+                                </Box>
+                            </DialogContent>
+                        )
+                    }
+                    )}
+                </>
+                <DialogActions>
+                    <Button
+                        onClick={() => {
+                            setNotificationDialogOpen(false);
+                            dispatch(clearNotifications());
+                        }}
+                    >
+                        close
                     </Button>
                 </DialogActions>
             </Dialog>

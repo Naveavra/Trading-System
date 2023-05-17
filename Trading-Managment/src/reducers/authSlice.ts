@@ -138,6 +138,9 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         clearAuthMsg: (state) => {
             state.message = null;
         },
+        clearNotifications: (state) => {
+            state.notifications = [];
+        },
 
     },
     extraReducers: builder => {
@@ -254,5 +257,5 @@ const { reducer: authReducer, actions: authActions } = createSlice({
     }
 });
 // Action creators are generated for each case reducer function
-export const { clearAuthError, clearAuthMsg } = authActions;
+export const { clearAuthError, clearAuthMsg, clearNotifications } = authActions;
 export default authReducer;
