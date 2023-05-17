@@ -1454,13 +1454,22 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         }
     }
 
+    private Admin getAdmin(int adminId) throws Exception {
+        Admin admin = activeAdmins.get(adminId);
+        if(admin == null)
+        {
+            throw new Exception("Can't get admin on");
+        }
+        return admin;
+    }
+
     @Override
     public Response setPaymentService(int adminId, String token, String paymentService) {
         //TODO: ADD logger
         Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            //TODO: admin = activeAdmins.get(adminId);
+            admin = getAdmin(adminId);
             proxyPayment.setRealPayment(paymentService);
             return new Response("Set payment service to: " + paymentService + " success", null, null);
         }
@@ -1475,7 +1484,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            //TODO: admin = activeAdmins.get(adminId);
+            admin = getAdmin(adminId);
             return new Response(proxyPayment.getPaymentServicesPossibleOptions(), null, null);
         }
         catch (Exception e){
@@ -1489,7 +1498,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         Admin admin = null;
         try{
             //TODO: userAuth.checkUser(userId);
-            //TODO: admin = activeAdmins.get(adminId);
+            //TODO: admin = getAdmin(adminId);
             return new Response(proxyPayment.getPaymentServicesAvailableOptions(), null, null);
         }
         catch (Exception e){
@@ -1503,7 +1512,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            //TODO: admin = activeAdmins.get(adminId);
+            admin = getAdmin(adminId);
             proxyPayment.addPaymentService(paymentService);
             return new Response("Add payment service to: " + paymentService + " success", null, null);
         }
@@ -1518,7 +1527,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            //TODO: admin = activeAdmins.get(adminId);
+            admin = getAdmin(adminId);
             proxyPayment.removePaymentService(paymentService);
             return new Response("Add payment service to: " + paymentService + " success", null, null);
         }
@@ -1533,7 +1542,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            //TODO: admin = activeAdmins.get(adminId);
+            admin = getAdmin(adminId);
             proxySupplier.setRealSupplier(supplierService);
             return new Response("Set supplier service to: " + supplierService + " success", null, null);
         }
@@ -1548,7 +1557,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            //TODO: admin = activeAdmins.get(adminId);
+            admin = getAdmin(adminId);
             return new Response(proxySupplier.getSupplierServicesPossibleOptions(), null, null);
         }
         catch (Exception e){
@@ -1576,7 +1585,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            //TODO: admin = activeAdmins.get(adminId);
+            admin = getAdmin(adminId);
             proxySupplier.addSupplierService(supplierService);
             return new Response("Add supplier service to: " + supplierService + " success", null, null);
         }
@@ -1585,14 +1594,15 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         }
     }
 
+
     @Override
     public Response removeSupplierService(int adminId, String token, String supplierService) {
         //TODO: ADD logger
         Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            //TODO: admin = activeAdmins.get(adminId);
-            proxyPayment.removePaymentService(supplierService);
+            admin = getAdmin(adminId);
+            proxySupplier.removeSupplierService(supplierService);
             return new Response("Remove supplier service to: " + supplierService + " success", null, null);
         }
         catch (Exception e){

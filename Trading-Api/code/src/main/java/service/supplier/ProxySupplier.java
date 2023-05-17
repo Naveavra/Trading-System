@@ -50,7 +50,7 @@ public class ProxySupplier implements SupplierAdapter {
 
     public void removeSupplierService(String supplierAdapter) throws Exception
     {
-        if (availableSupplierServices.size() > 1)
+        if (availableSupplierServices.size() <= 1)
         {
             throw new IllegalArgumentException("Can't remove supplier service need at least 1 supplier service!");
         }

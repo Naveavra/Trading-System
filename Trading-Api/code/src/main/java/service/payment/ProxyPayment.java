@@ -49,7 +49,7 @@ public class ProxyPayment implements PaymentAdapter {
 
     public void removePaymentService(String paymentService) throws Exception
     {
-        if (availablePaymentServices.size() > 1)
+        if (availablePaymentServices.size() <= 1)
         {
             throw new Exception("Can't remove payment service need at least 1 payment service!");
         }

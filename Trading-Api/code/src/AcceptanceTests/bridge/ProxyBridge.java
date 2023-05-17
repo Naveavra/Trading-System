@@ -70,7 +70,7 @@ public class ProxyBridge implements Bridge {
     @Override
     public List<String> getAvailableExternalSupplierService(int user) {
         if (real != null)
-            return real.getPossibleExternalSupplierService(user);
+            return real.getAvailableExternalSupplierService(user);
         return null;
     }
 
