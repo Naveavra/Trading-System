@@ -59,7 +59,7 @@ public class Market implements MarketInterface {
         gson = new Gson();
         proxyPayment = new ProxyPayment("Apple Pay");
         userAuth = new UserAuth();
-        proxySupplier = new ProxySupplier();
+        proxySupplier = new ProxySupplier("UPS");
         complaints = new ConcurrentHashMap<>();
         actionIds = new HashMap<>();
         marketInfo = new MarketInfo();
