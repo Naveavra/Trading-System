@@ -1,18 +1,25 @@
 package domain.user;
 
-import domain.store.product.Product;
+import org.json.JSONObject;
 
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Basket {
+    private int storeId;
     private HashMap<Integer, Integer> productList; //a list of all the product ids and their quantities related to a specific shop
 
 
-    public Basket(){
+    public Basket(int storeId){
+        this.storeId = storeId;
         productList = new HashMap<>();
+    }
+
+    public Basket(Basket b){
+        this.storeId = b.storeId;
+        productList = new HashMap<>();
+        for(int productId : b.productList.keySet())
+            productList.put(productId, b.productList.get(productId));
+
     }
 
 
@@ -26,60 +33,43 @@ public class Basket {
 
     }
 
-    public boolean changeQuantityInCart(int productId, int change) throws RuntimeException{
-        if(productList.containsKey(productId)) {
-            if(change == 0)
-                return removeProductFromCart(productId);
-            else
-                productList.put(productId, change);
-        }
-        else
-            throw new RuntimeException("the product isn't in the user's cart");
-        return true;
-    }
-    public boolean addQuantityInCart(int productId, int change) throws Exception{
+    public boolean changeQuantityInCart(int productId, int change) throws Exception{
         if(productList.containsKey(productId)) {
             int prevQuantity = productList.get(productId);
-            if (change > 0) {
-                int newQuantity = prevQuantity + change;
-                if(newQuantity == 0)
-                    return removeProductFromCart(productId);
-                else
-                    productList.put(productId, newQuantity);
-
-            }
-            else
-                throw new Exception("the quantity given in negative");
-        }
-        else {
-            if(change > 0) {
-                addProductToCart(productId, change);
-            }
-            else
-                throw new Exception("the quantity given is negative");
-        }
-        return productList.size() > 0;
-    }
-
-    public boolean removeQuantityInCart(int productId, int change) throws RuntimeException{
-        if(productList.containsKey(productId)) {
-            int prevQuantity = productList.get(productId);
-            int newQuantity = prevQuantity - change;
-            if (newQuantity < 0){throw new RuntimeException("quantity cant be negative");}
-            else if (newQuantity == 0)
-            {
+            int newQuantity = prevQuantity + change;
+            if(newQuantity == 0)
                 return removeProductFromCart(productId);
-            }
-            else {
+            else
                 productList.put(productId, newQuantity);
-            }
         }
         else
-            throw new RuntimeException("the product isn't in the user's cart");
+            throw new Exception("the quantity given is negative");
         return true;
     }
 
     public HashMap<Integer, Integer> getContent() {
         return productList;
+    }
+
+    public JSONObject toJson(){
+        JSONObject basketJson = new JSONObject();
+        basketJson.put("storeId", storeId);
+        List<JSONObject> bucketList = new ArrayList();
+        for (Map.Entry<Integer, Integer> productEntry : productList.entrySet()) {
+            JSONObject productJson = new JSONObject();
+            productJson.put("productId", productEntry.getKey());
+            productJson.put("quantity", productEntry.getValue());
+            bucketList.add(productJson);
+        }
+        basketJson.put("products", bucketList);
+        return basketJson;
+    }
+
+    public void clear(){
+        productList.clear();;
+    }
+
+    public boolean hasProduct(int productId) {
+        return productList.containsKey(productId);
     }
 }

@@ -79,11 +79,11 @@ public abstract class ProjectTest{
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
         ui1.setUserId(login(ui1.getEmail(), ui1.getPassword()));
         //Create Stores:
-        StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "Phone Store");
-        StoreInfo newStore1 = new StoreInfo(ui.getUserId(), "Sport Store");
-        StoreInfo newStore2 = new StoreInfo(ui.getUserId(), "Cloth Store");
-        StoreInfo newStore3 = new StoreInfo(ui.getUserId(), "Kids Store");
-        StoreInfo newStore4 = new StoreInfo(ui1.getUserId(), "Phone Store");
+        StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "iphone", "Phone Store", "img");
+        StoreInfo newStore1 = new StoreInfo(ui.getUserId(), "nike", "Sport Store", "img");
+        StoreInfo newStore2 = new StoreInfo(ui.getUserId(), "store3", "Cloth Store", "img");
+        StoreInfo newStore3 = new StoreInfo(ui.getUserId(), "toysRus", "Kids Store", "img");
+        StoreInfo newStore4 = new StoreInfo(ui1.getUserId(), "samsumg", "Phone Store", "img");
         newStore0.setStoreId(createStore(newStore0));
         stores.add(newStore0);
         newStore1.setStoreId(createStore(newStore1));
@@ -151,23 +151,25 @@ public abstract class ProjectTest{
     }
 
     public int createStore(StoreInfo si) {
-        return bridge.createStore(si.getCreatorId(), si.getDescription());
+        return bridge.createStore(si.getCreatorId(), si.getStoreName(), si.getDescription(), si.getImg());
     }
-    public int createStore(int creatorId, String storeDesc) {
-        return bridge.createStore(creatorId, storeDesc);
+    public int createStore(int creatorId, String name, String storeDesc, String img) {
+        return bridge.createStore(creatorId, name, storeDesc, img);
     }
 
     public int removeProduct(int user, int store, int productId) {
         return bridge.removeProduct(user, store, productId);
     }
 
-    public int addProduct(int userId, int storeId, List<String> categories, String name, String description, int price, int quantity)
+    public int addProduct(int userId, int storeId, List<String> categories, String name, String description, int price,
+                          int quantity, String img)
     {
-        return bridge.addProduct(userId, storeId, categories, name, description, price, quantity);
+        return bridge.addProduct(userId, storeId, categories, name, description, price, quantity, img);
     }
     public int addProduct(int userId, int storeId, ProductInfo pi)
     {
-        return bridge.addProduct(userId, storeId, pi.getCategories(), pi.getName(), pi.getDescription(), pi.getPrice(), pi.getQuantity());
+        return bridge.addProduct(userId, storeId, pi.getCategories(), pi.getName(), pi.getDescription(), pi.getPrice(), pi.getQuantity(),
+                pi.getImg());
     }
 
     public int updateProduct(int userId, int storeId, int productId, List<String> categories, String name, String description, int price, int quantity)

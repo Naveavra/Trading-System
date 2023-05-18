@@ -1,11 +1,12 @@
-package utils.userInfoRelated;
+package utils.infoRelated;
 
+import org.json.JSONObject;
 import utils.stateRelated.Action;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class Info {
+public class Info extends Information{
     public int getId() {
         return id;
     }
@@ -51,4 +52,16 @@ public class Info {
     }
 
 
+    @Override
+    public JSONObject toJson()
+    {
+        JSONObject json = new JSONObject();
+        json.put("userId", getId());
+        json.put("userName", getName());
+        json.put("email", getEmail());
+        json.put("birthday", getBirthday());
+        json.put("age", getAge());
+        json.put("managerPermissions", fromActionToString(getManagerActions()));
+        return json;
+    }
 }

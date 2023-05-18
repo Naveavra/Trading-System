@@ -1,13 +1,13 @@
 package domain.store.storeManagement;
 
-import utils.ProductInfo;
+import utils.infoRelated.ProductInfo;
 import utils.Filter.ProductFilter;
-import utils.StoreInfo;
+import utils.infoRelated.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
-import utils.orderRelated.OrderInfo;
-import utils.userInfoRelated.Receipt;
+import utils.infoRelated.OrderInfo;
+import utils.infoRelated.Receipt;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -361,5 +361,10 @@ public class StoreController {
                 products.addAll(s.getProducts());
         }
         return products;
+    }
+
+    public void checkProductInStore(int storeId, int productId) throws Exception{
+        Store s = storeList.get(storeId);
+        s.checkProductInStore(productId);
     }
 }

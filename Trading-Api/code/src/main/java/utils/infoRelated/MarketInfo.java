@@ -1,9 +1,11 @@
-package utils.marketRelated;
+package utils.infoRelated;
+
+import org.json.JSONObject;
 
 import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MarketInfo {
+public class MarketInfo extends Information{
     private transient LocalTime startTime;
     private transient AtomicInteger countUserIn;
     private transient AtomicInteger countUserOut;
@@ -56,8 +58,6 @@ public class MarketInfo {
         averageRegistered = countRegister.get() / calcMinutes;
         averageUserOut =countUserOut.get() / calcMinutes;
         averageUserIn = countUserIn.get() / calcMinutes;
-
-
     }
 
     public double getAverageUserIn(){
@@ -74,5 +74,16 @@ public class MarketInfo {
 
     public double getAveragePurchase(){
         return averagePurchase;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        calculateAverages();
+        JSONObject json = new JSONObject();
+        json.put("averageUserIn", averageUserIn);
+        json.put("averageUserOut", averageUserOut);
+        json.put("averageRegistered", averageRegistered);
+        json.put("averagePurchase", averagePurchase);
+        return json;
     }
 }

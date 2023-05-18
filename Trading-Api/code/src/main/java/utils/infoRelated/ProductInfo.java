@@ -1,12 +1,13 @@
-package utils;
+package utils.infoRelated;
 
+import org.json.JSONObject;
 import utils.messageRelated.Message;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ProductInfo {
+public class ProductInfo extends Information{
 
     public final int storeId;
     public final int id;
@@ -63,4 +64,20 @@ public class ProductInfo {
     public double getRating(){return rating;}
     public HashMap<Integer, Message> getReviews(){return reviews;}
     public String getImg(){return img;}
+
+    @Override
+    public  JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("storeId", getId());
+        json.put("productId", getId());
+        json.put("name", getName());
+        json.put("description", getDescription());
+        json.put("price", getPrice());
+        json.put("quantity", getQuantity());
+        json.put("categories", getCategories());
+        json.put("rating", getRating());
+        json.put("reviews", reviewsToJson(getReviews(), "messageId", "review"));
+        json.put("img", getImg());
+        return json;
+    }
 }

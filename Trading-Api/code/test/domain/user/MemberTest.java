@@ -13,7 +13,7 @@ import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
-import utils.userInfoRelated.Info;
+import utils.infoRelated.Info;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -105,7 +105,7 @@ class MemberTest {
         m.purchaseMade(0,100);
         HashMap<Integer, HashMap<Integer, Integer>> cart = m.getCartContent();
         assertTrue(cart.size()==0);
-        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> history = m.getUserPurchaseHistory();
+        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> history = m.getUserPurchaseHistoryHash();
         assertEquals(history.size(), 1);
         for(int orderId : history.keySet())
             for(int storeId : history.get(orderId).keySet())
@@ -260,7 +260,7 @@ class MemberTest {
         m.login("ziv1234");
         m.addProductToCart(s.getStoreId(),1,100);
         m.purchaseMade(0,10);
-        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> res = m.getUserPurchaseHistory();
+        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> res = m.getUserPurchaseHistoryHash();
         System.out.println(res);
         System.out.println(res.get(0));
         //assertTrue(cart.get(0).get(0).keySet().contains(1));

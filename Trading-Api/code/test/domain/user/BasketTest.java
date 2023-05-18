@@ -14,7 +14,7 @@ class BasketTest {
 
     @BeforeEach
     void setUp() {
-        basket = new Basket();
+        basket = new Basket(0);
     }
 
     //product - int prod_id, String _name, String desc

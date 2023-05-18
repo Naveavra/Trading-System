@@ -8,25 +8,26 @@ import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
 import domain.store.purchase.PurchasePolicy;
 
+import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
-import utils.ProductInfo;
-import utils.StoreInfo;
+import utils.infoRelated.Information;
+import utils.infoRelated.ProductInfo;
+import utils.infoRelated.StoreInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.Pair;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
-import utils.orderRelated.OrderInfo;
+import utils.infoRelated.OrderInfo;
 import utils.stateRelated.Role;
 
-import java.awt.desktop.AppHiddenEvent;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class Store {
+public class Store extends Information {
     private final int storeid;
     private String storeName;
     private boolean isActive;
@@ -176,7 +177,7 @@ public class Store {
         List<OrderInfo> orderInfos = new LinkedList<>();
         for(int orderId : storeOrders.keySet()){
             Order order = storeOrders.get(orderId);
-            OrderInfo orderInfo = new OrderInfo(orderId, order.getUserId(), order.getProductsInStores(), order.getTotalPrice());
+            OrderInfo orderInfo = new OrderInfo(orderId, order.getUserId(), order.getShoppingCart(), order.getTotalPrice());
             orderInfos.add(orderInfo);
         }
         return orderInfos;
@@ -507,6 +508,28 @@ public class Store {
     }
     public AppHistory getAppHistory(){
         return appHistory;
+    }
+
+    public void checkProductInStore(int productId) throws Exception{
+        inventory.getProduct(productId);
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("storeId", getStoreId());
+        json.put("storeName", getName());
+        json.put("description", getStoreDescription());
+        json.put("isActive", isActive());
+        json.put("creatorId", getCreatorId());
+        json.put("appHistory", getApp());
+        json.put("inventory", infosToJson(getProducts()));
+        json.put("storeOrders", infosToJson(getOrdersHistory()));
+        json.put("reviews", hashMapToJson(getStoreReviews(), "messageId", "review"));
+        json.put("questions", hashMapToJson(getStoreQuestions(), "messageId", "question"));
+        json.put("img", getImgUrl());
+        json.put("roles", getRoles());
+        return json;
     }
 
 //    public void setStoreDiscountPolicy(String policy) throws Exception {

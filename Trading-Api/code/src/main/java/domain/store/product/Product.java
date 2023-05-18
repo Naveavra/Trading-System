@@ -1,9 +1,6 @@
 package domain.store.product;
 
-import utils.ProductInfo;
-
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Product {
     public final int id;

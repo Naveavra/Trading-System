@@ -75,7 +75,7 @@ public interface Bridge {
      * @return If succeed returns Store ID > 0. Otherwise,
      *         return -1.
      */
-    int createStore(int user, String description);
+    int createStore(int user, String name, String description, String img);
 
     /**
      * System external supplier service management - getting all possible external service
@@ -202,8 +202,8 @@ public interface Bridge {
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int addProduct(int userId, int storeId, List<String> categories, String name, String description, int price, int quantity);
-
+    public int addProduct(int userId, int storeId, List<String> categories, String name, String description, int price,
+                          int quantity, String img);
     /**
      * Inventory management - remove product
      *

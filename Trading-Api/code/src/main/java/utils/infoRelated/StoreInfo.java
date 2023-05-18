@@ -1,6 +1,8 @@
-package utils;
+package utils.infoRelated;
 
-public class StoreInfo {
+import org.json.JSONObject;
+
+public class StoreInfo extends Information{
 
     private int storeId;
     private String storeName;
@@ -41,4 +43,16 @@ public class StoreInfo {
     }
     public String getUrl(){return imgUrl;}
 
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("storeId", getStoreId());
+        json.put("name", getName());
+        json.put("description", getDescription());
+        json.put("isActive", getIsActive());
+        json.put("creatorId", getCreatorId());
+        json.put("rating", getRating());
+        json.put("img", getUrl());
+        return json;
+    }
 }

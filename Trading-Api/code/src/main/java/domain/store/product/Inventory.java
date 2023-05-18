@@ -1,9 +1,8 @@
 package domain.store.product;
 
 
-import jdk.jfr.Label;
 import utils.Filter.ProductFilter;
-import utils.ProductInfo;
+import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 
 import java.text.DecimalFormat;

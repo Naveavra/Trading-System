@@ -160,7 +160,7 @@ public class AdminTest extends ProjectTest {
         assertNotNull(allStores);
         assertEquals(stores.size(), allStores.size());
         UserInfo ui = users_dict.get(users[0][0]);
-        StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "Phone Accessory Store");
+        StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "iphone", "Phone Accessory Store", "img");
         status = login(ui.getEmail(), ui.getPassword());
         assertTrue(status > 0);
         ui.setUserId(status);

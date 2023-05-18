@@ -1,19 +1,11 @@
 package market;
 
-import domain.states.StoreCreator;
 import domain.store.storeManagement.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.API;
-import utils.Logger;
-import utils.LoginInformation;
-import utils.marketRelated.Response;
-import utils.stateRelated.Action;
-import utils.stateRelated.Role;
+import utils.Response;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

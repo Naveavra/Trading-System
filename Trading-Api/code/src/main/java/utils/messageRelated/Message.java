@@ -1,8 +1,10 @@
 package utils.messageRelated;
 
 import domain.user.Member;
+import org.json.JSONObject;
+import utils.infoRelated.Information;
 
-public class Message {
+public class Message extends Information {
     private transient int messageId;
     private String content;
     private String ownerEmail;
@@ -110,4 +112,18 @@ public class Message {
         return seen;
     }
 
+    @Override
+    public JSONObject toJson(){
+        JSONObject json = new JSONObject();
+        json.put("messageId", getMessageId());
+        json.put("content", getContent());
+        json.put("rating", getRating());
+        json.put("state", getMessageState());
+        json.put("orderId", getOrderId());
+        json.put("storeId", getStoreId());
+        json.put("productId", getProductId());
+        json.put("gotFeedback", gotFeedback());
+        json.put("seen", getSeen());
+        return json;
+    }
 }

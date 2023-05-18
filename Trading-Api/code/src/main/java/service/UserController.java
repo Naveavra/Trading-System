@@ -6,12 +6,14 @@ import domain.store.storeManagement.Store;
 import domain.user.Guest;
 import domain.user.Member;
 
-import com.google.gson.Gson;
+import domain.user.PurchaseHistory;
+import domain.user.ShoppingCart;
+import org.json.JSONObject;
 import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
-import utils.userInfoRelated.Info;
+import utils.infoRelated.Info;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -24,32 +26,25 @@ import java.util.regex.Pattern;
 public class UserController {
 
     ConcurrentHashMap<Integer, Guest> guestList;
-    int guestIds;
     ConcurrentHashMap<String, Member> activeMemberList;
     ConcurrentHashMap<String, Member> inActiveMemberList;
     ConcurrentHashMap<Integer, String> idToEmail;
-    int memberIds;
     int messageIds;
-    private transient Gson gson ;
 
 
     public UserController(){
         guestList = new ConcurrentHashMap<>();
-        guestIds = 2;
         activeMemberList = new ConcurrentHashMap<>();
         inActiveMemberList = new ConcurrentHashMap<>();
         idToEmail = new ConcurrentHashMap<>();
-        memberIds = 1;
         messageIds = 0;
-        gson = new Gson();
     }
 
 
 
-    public synchronized int enterGuest(){
-        Guest g = new Guest(guestIds);
-        guestList.put(guestIds, g);
-        guestIds+=2;
+    public synchronized int enterGuest(int id){
+        Guest g = new Guest(id);
+        guestList.put(id, g);
         return g.getId();
     }
 
@@ -70,7 +65,7 @@ public class UserController {
             throw new Exception("id given is not of guest");
     }
 
-    public synchronized void register(String email, String password, String birthday) throws Exception{
+    public synchronized void register(int id, String email, String password, String birthday) throws Exception{
         if(!checkEmail(email))
             throw new Exception("invalid email");
         for (Member m : activeMemberList.values())
@@ -82,10 +77,8 @@ public class UserController {
         if(!checkBirthday(birthday))
             throw new Exception("birthday not legal");
 
-        Member m = new Member(memberIds, email, password, birthday);
+        Member m = new Member(id, email, password, birthday);
         inActiveMemberList.put(email, m);
-        idToEmail.put(memberIds, email);
-        memberIds+=2;
     }
 
     //the answers given are for the security questions, if there are no security questions then put an empty list
@@ -258,38 +251,6 @@ public class UserController {
                 throw new Exception("no such member exists");
         }
     }
-    public synchronized void addQuantityInCart(int userId, int storeId, int productId, int change) throws Exception{
-        if(userId % 2 == 0) {
-            Guest g = guestList.get(userId);
-            if(g != null)
-                g.addQuantityInCart(storeId, productId, change);
-            else
-                throw new Exception("no such guest exists");
-        }
-        else {
-            String email = idToEmail.get(userId);
-            if (email != null)
-                addQuantityInCart(email, storeId, productId, change);
-            else
-                throw new Exception("no such member exists");
-        }
-    }
-    public synchronized void removeQuantityInCart(int userId, int storeId, int productId, int change) throws Exception{
-        if(userId % 2 == 0) {
-            Guest g = guestList.get(userId);
-            if(g != null)
-                g.removeQuantityInCart(storeId, productId, change);
-            else
-                throw new Exception("no such guest exists");
-        }
-        else {
-            String email = idToEmail.get(userId);
-            if (email != null)
-                removedQuantityInCart(email, storeId, productId, change);
-            else
-                throw new Exception("no such member exists");
-        }
-    }
     public synchronized void changeQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
         Member m = activeMemberList.get(email);
         if(m != null) {
@@ -298,23 +259,6 @@ public class UserController {
         else
             throw new Exception("no such member exists");
     }
-    public synchronized void addQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
-        Member m = activeMemberList.get(email);
-        if(m != null) {
-            m.addQuantityInCart(storeId, productId, change);
-        }
-        else
-            throw new Exception("no such member exists");
-    }
-    public synchronized void removedQuantityInCart(String email, int storeId, int productId, int change) throws Exception{
-        Member m = activeMemberList.get(email);
-        if(m != null) {
-            m.removeQuantityInCart(storeId, productId, change);
-        }
-        else
-            throw new Exception("no such member exists");
-    }
-
     /**
      * the return of the function is a hashmap between storeId to hashmap of productId to quantity. meaning that it displays the
      * product and quantity for each store.
@@ -322,11 +266,11 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    public synchronized HashMap<Integer, HashMap<Integer, Integer>>  getUserCart(int userId) throws Exception{
+    public synchronized ShoppingCart getUserCart(int userId) throws Exception{
         if(userId % 2 == 0) {
             Guest g = guestList.get(userId);
             if(g != null)
-                return  g.getCartContent();
+                return  g.getShoppingCart();
             else
                 throw new Exception("no such guest exists");
         }
@@ -339,10 +283,10 @@ public class UserController {
         }
     }
 
-    public synchronized HashMap<Integer, HashMap<Integer, Integer>>  getUserCart(String email) throws Exception{
+    public synchronized ShoppingCart getUserCart(String email) throws Exception{
         Member m = activeMemberList.get(email);
         if(m != null) {
-                return m.getCartContent();
+                return m.getShoppingCart();
         }
         else
             throw new Exception("no such member exists");
@@ -380,12 +324,11 @@ public class UserController {
      * @param userId
      * @return
      */
-    public synchronized boolean canOpenStore(int userId){
+    public synchronized void canOpenStore(int userId) throws Exception{
 
         String email = idToEmail.get(userId);
-        if(email == null)
-            return false;
-        return activeMemberList.get(email) != null;
+        if(email == null || activeMemberList.get(email) == null)
+            throw new Exception("the id given does not belong to a member who can open a store");
     }
 
 
@@ -440,8 +383,8 @@ public class UserController {
         Member m = activeMemberList.get(email);
         if(m != null) {
             {
-                int tmp = memberIds;
-                messageIds += 2;
+                int tmp = messageIds;
+                messageIds++;
                 return m.writeReview(tmp, storeId, orderId, content, grading);
             }
         }
@@ -513,7 +456,7 @@ public class UserController {
         if(m != null) {
             {
                 int tmp = messageIds;
-                messageIds += 2;
+                messageIds++;
                 return m.writeComplaint(tmp, orderId, storeId, comment);
             }
         }
@@ -541,7 +484,7 @@ public class UserController {
         if(m != null) {
             {
                 int tmp = messageIds;
-                messageIds += 2;
+                messageIds++;
                 return m.sendQuestion(tmp, storeId, question);
             }
         }
@@ -614,35 +557,39 @@ public class UserController {
     /**
      * @param userId the one who asks
      */
-    public synchronized HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> getUserPurchaseHistory(int userId, int buyerId) throws Exception {
+    public synchronized HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> getUserPurchaseHistoryHash(int userId, int buyerId) throws Exception {
         if(userId % 2 ==0)
             throw new Exception("guest can't access the user history");
         else if (userId < 0) {
-            return adminGetUserPurchaseHistory(buyerId);
+            return adminGetUserPurchaseHistoryHash(buyerId);
         } else{
             String email = idToEmail.get(userId);
             if(email != null)
-                return getUserPurchaseHistory(email);
+                return getUserPurchaseHistoryHash(email);
             else
                 throw new Exception("no member has this id");
         }
     }
 
-    public synchronized HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> adminGetUserPurchaseHistory(int userId) throws Exception
+    public synchronized HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> adminGetUserPurchaseHistoryHash(int userId) throws Exception
     {
         Member m = getMember(userId);
-        return m.getUserPurchaseHistory();
+        return m.getUserPurchaseHistoryHash();
+    }
+
+    public PurchaseHistory getUserPurchaseHistory(int userId){
+        //TODO: here
     }
 
 
-    public synchronized HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> getUserPurchaseHistory(String email) throws Exception{
+    public synchronized HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> getUserPurchaseHistoryHash(String email) throws Exception{
         Member m = activeMemberList.get(email);
         if(m!= null)
-            return m.getUserPurchaseHistory();
+            return m.getUserPurchaseHistoryHash();
         else {
             m = inActiveMemberList.get(email);
             if(m != null)
-                return m.getUserPurchaseHistory();
+                return m.getUserPurchaseHistoryHash();
             else
                 throw new Exception("no member has this email");
         }
@@ -1243,7 +1190,7 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    public synchronized boolean checkPermission(int userId, Action action, int storeId) throws Exception {
+    public synchronized void checkPermission(int userId, Action action, int storeId) throws Exception {
         if(userId % 2 == 0)
             return false;
         else if(userId < 0)
@@ -1251,7 +1198,7 @@ public class UserController {
         else{
             String email = idToEmail.get(userId);
             if(email != null)
-                return checkPermission(email, action, storeId);
+                checkPermission(email, action, storeId);
             else
                 throw new Exception("no member has this id: " + userId);
         }
@@ -1498,11 +1445,11 @@ public class UserController {
     public List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> getUsersInformation() {
         List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> membersInformation = new LinkedList<>();
         for(Member m : activeMemberList.values()) {
-            HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> history = m.getUserPurchaseHistory();
+            HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> history = m.getUserPurchaseHistoryHash();
             membersInformation.add(history);
         }
         for(Member m : inActiveMemberList.values()){
-            HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> history = m.getUserPurchaseHistory();
+            HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> history = m.getUserPurchaseHistoryHash();
             membersInformation.add(history);
         }
         return membersInformation;
@@ -1534,4 +1481,7 @@ public class UserController {
         }
     }
 
+    public List<JSONObject> getUserCartJson(int id) {
+        //TODO: here
+    }
 }

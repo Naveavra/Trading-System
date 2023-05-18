@@ -1,8 +1,9 @@
 package market;
 
 import domain.store.storeManagement.Store;
-import utils.LoginInformation;
-import utils.marketRelated.Response;
+import domain.user.PurchaseHistory;
+import utils.infoRelated.LoginInformation;
+import utils.Response;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +20,6 @@ public interface MarketInterface {
     public Response addProductToCart(int userId,int storeId ,int productId, int quantity);
     public Response removeProductFromCart(int userId,  int storeId, int productId);
     public Response changeQuantityInCart(int userId, int storeId, int productId, int change);
-    public Response addQuantityInCart(int userId, int storeId, int productId, int change);
-    public Response removeQuantityInCart(int userId, int storeId, int productId, int change);
     public Response getCart(int id);
     Response<String> removeCart(int userId);
     public Response makePurchase(int userId , String accountNumber);
@@ -45,13 +44,17 @@ public interface MarketInterface {
 
     public Response changeName(int userId, String token, String newUserName);
     public Response changeEmail(int userId, String token, String newEmail);
-
-    public Response openStore(int userId,String token, String storeDescription);
     public Response openStore(int userId, String token, String storeName, String des, String img);
     public Response getMemberInformation(int userId, String token);
-    public Response getUserPurchaseHistory(int userId, String token, int buyerId);
+    public Response getUserPurchaseHistoryHash(int userId, String token, int buyerId);
+
+    Response<PurchaseHistory> getUserPurchaseHistory(int userId, String token, int buyerId);
+
     public Response writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading);
-    public Response writeReviewToProduct(int userId, String token, int orderId, int storeId,int productId, String content, int grading);
+
+    Response<String> sendNotification(int userId, String token, String receiverEmail, String notify);
+
+    public Response writeReviewToProduct(int userId, String token, int orderId, int storeId, int productId, String content, int grading);
     public Response checkReviews(int userId, String token, int storeId);
     public Response getProductInformation(int storeId , int productId);
     public Response getStoreInformation(int storeId);
@@ -68,7 +71,7 @@ public interface MarketInterface {
     Response<String> changeStoreImg(int userId, String token, int storeId, String img);
     Response<String> changeStoreName(int userId, String token, int storeId, String name);
     public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
-    public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
+    //public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
     public Response addPurchaseConstraint(int userId, String token, int storeId, String constraint);
     public Response fireManager(int userId, String token, int managerToFire, int storeId);
     public Response checkWorkerStatus(int userId, String token, int workerId, int storeId);
@@ -76,8 +79,6 @@ public interface MarketInterface {
     public Response viewQuestions(int userId, String token, int storeId);
     public Response answerQuestion(int userId, String token, int storeId, int questionId, String answer);
     public Response seeStoreHistory(int userId, String token, int storeId);
-    public Response addProduct(int useIid, String token, int storeId,List<String> categories, String name , String description , int price , int quantity);
-
     public Response<Integer> addProduct(int userId, String token, int storeId, List<String> categories, String name, String description,
                                         int price, int quantity, String img);
     public Response deleteProduct(int userId, String token, int storeId, int productId);

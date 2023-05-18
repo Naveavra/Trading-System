@@ -41,7 +41,7 @@ public class StoreTest extends ProjectTest{
         UserInfo ui = users_dict.get(users[0][USER_EMAIL]);
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
         assertTrue(ui.getUserId() > 0);
-        StoreInfo si = new StoreInfo(ui.getUserId(), "Gong");
+        StoreInfo si = new StoreInfo(ui.getUserId(), "s", "Gong", "img");
         si.setStoreId(createStore(si));
         assertTrue(si.getStoreId() > 0);
     }
@@ -49,7 +49,7 @@ public class StoreTest extends ProjectTest{
     @Test
     public void testWithoutLoginCreateStore() {
         UserInfo ui = users_dict.get(users[0][USER_EMAIL]);
-        StoreInfo si = new StoreInfo(ui.getUserId(), "Gong");
+        StoreInfo si = new StoreInfo(ui.getUserId(), "s", "Gong", "img");
         si.setStoreId(createStore(si));
         assertTrue(si.getStoreId() < 0);
     }
@@ -60,7 +60,7 @@ public class StoreTest extends ProjectTest{
     public void testGetProductInStore() {
         UserInfo ui = users_dict.get(users[0][USER_EMAIL]);
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
-        StoreInfo si = new StoreInfo(ui.getUserId(), "Gong");
+        StoreInfo si = new StoreInfo(ui.getUserId(),"s", "Gong", "img");
         si.setStoreId(createStore(si));
         List<ProductInfo> products = getProductInStore(si.getStoreId());
         assertNotNull(products);
@@ -71,7 +71,7 @@ public class StoreTest extends ProjectTest{
         //TODO:
         UserInfo ui = users_dict.get(users[0][USER_EMAIL]);
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
-        StoreInfo si = new StoreInfo(ui.getUserId(), "Gong");
+        StoreInfo si = new StoreInfo(ui.getUserId(), "s", "Gong", "img");
         si.setStoreId(createStore(si));
         List<ProductInfo> products = getProductInStore(si.getStoreId());
         assertNotNull(products);
@@ -82,7 +82,7 @@ public class StoreTest extends ProjectTest{
         //TODO:
         UserInfo ui = users_dict.get(users[0][USER_EMAIL]);
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
-        StoreInfo si = new StoreInfo(ui.getUserId(), "Gong");
+        StoreInfo si = new StoreInfo(ui.getUserId(),"s", "Gong", "img");
         si.setStoreId(createStore(si));
         List<ProductInfo> products = getProductInStore(si.getStoreId());
         assertNotNull(products);

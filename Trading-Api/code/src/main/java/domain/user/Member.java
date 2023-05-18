@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
+import org.json.JSONObject;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
-import utils.userInfoRelated.Info;
-import utils.userInfoRelated.PrivateInfo;
+import utils.infoRelated.Info;
 
 
 import java.util.*;
@@ -174,13 +174,6 @@ public class Member {
     public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
         g.changeQuantityInCart(storeId, productId, change);
     }
-    public void addQuantityInCart(int storeId, int productId, int change) throws Exception {
-        g.addQuantityInCart(storeId, productId, change);
-    }
-
-    public void removeQuantityInCart(int storeId, int productId, int change) throws Exception {
-        g.removeQuantityInCart(storeId, productId, change);
-    }
 
 
     /**
@@ -196,7 +189,7 @@ public class Member {
      * @param orderId
      */
     public void purchaseMade(int orderId, double totalPrice){
-        userHistory.addPurchaseMade(orderId, totalPrice, g.getCartContent());
+        userHistory.addPurchaseMade(orderId, totalPrice, g.getShoppingCart());
         g.emptyCart();
 
     }
@@ -285,7 +278,7 @@ public class Member {
         List<String> display = new LinkedList<>();
         for (Notification notification : notifications)
             display.add(notification.toString());
-        notifications = new ConcurrentLinkedDeque<>();
+        notifications.clear();
         return display;
     }
 
@@ -311,14 +304,13 @@ public class Member {
         return us.checkPermission(Action.answerMessage);
     }
 
-    public HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> getUserPurchaseHistory() {
+    public PurchaseHistory getUserPurchaseHistory(){
         return userHistory.getUserPurchaseHistory();
     }
 
     public Info getPrivateInformation() {
-        PrivateInfo info = new PrivateInfo(id, name, email, birthday, age);
-        userHistory.getInformation(info);
-        return info;
+        Info info = new Info(id, name, email, birthday, age);
+        return userHistory.getInformation(info);
     }
 
     /**
@@ -592,5 +584,17 @@ public class Member {
         return ans;
     }
 
+    public List<JSONObject> getCartJson(){
+        return g.getCartJson();
+    }
 
+
+    public ShoppingCart getShoppingCart() {
+        return g.getShoppingCart();
+    }
+
+    //for tests
+    public HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> getUserPurchaseHistoryHash() {
+        return userHistory.getUserPurchaseHistoryHash();
+    }
 }

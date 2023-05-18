@@ -1,4 +1,4 @@
-package utils.marketRelated;
+package utils;
 
 public class Response<T> {
     private T value;
