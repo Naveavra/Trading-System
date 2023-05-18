@@ -3,6 +3,7 @@ package market;
 import domain.store.storeManagement.AppHistory;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
+import org.eclipse.jetty.util.log.Log;
 import org.json.JSONObject;
 import service.security.UserAuth;
 import service.supplier.ProxySupplier;
@@ -23,7 +24,6 @@ import utils.infoRelated.Receipt;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -109,7 +109,7 @@ public class Market implements MarketInterface {
     public Response<LoginInformation> login(String email, String pass) {
         try {
             userAuth.checkPassword(email, pass);
-            if (!checkIsAdmin(email)){
+            if (checkIsAdmin(email)){
                 String hashedPass = userAuth.hashPassword(email, pass, false);
                 int memberId = userController.login(email, hashedPass);
                 userController.checkPassword(pass);
@@ -133,11 +133,11 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             LoginInformation loginInformation;
-            if (!checkIsAdmin(userId)) {
+            if (checkIsAdmin(userId)) {
                 loginInformation = getLoginInformation(token, userId, userController.getUserEmail(userId));
                 return new Response<LoginInformation>(loginInformation, null, null);
             }
-            Admin a = getAdmin(userId);
+            Admin a = getActiveAdmin(userId);
             loginInformation = getAdminLoginInformation(token, userId, a.getEmailAdmin());
             return new Response<LoginInformation>(loginInformation, null, null);
         }catch (Exception e){
@@ -807,8 +807,8 @@ public class Market implements MarketInterface {
             return logAndRes(Logger.logStatus.Success, "user get store history successfully on " + LocalDateTime.now(),
                     res, null, null);
         } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail, "cant  get store history  because: " + e.getMessage() + "on " + LocalDateTime.now());
-            return new Response<>(null, " get store history failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "cant  get store history  because: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, " get store history failed", e.getMessage());
         }
     }
 
@@ -945,21 +945,10 @@ public class Market implements MarketInterface {
     public Response<String> removeManagerPermissions(int ownerId, String token, int userId, int storeId, List<Integer> permissionsIds) {
         try {
             userAuth.checkUser(ownerId, token);
-            for(int permissionId : permissionsIds) {
-                Action a = actionIds.get(permissionId);
-                if(a != null) {
-                    userController.removeManagerAction(ownerId, userId, a, storeId);
-                    logger.log(Logger.logStatus.Success, "the action " + permissionId + " has been removed from user: " + userId +
-                            "on time: " + LocalDateTime.now());
-                }
-                else{
-                    logger.log(Logger.logStatus.Fail, "cant add permission because the action id does not match an action on " + LocalDateTime.now());
-                    return new Response<>(null, "add permission failed", "no id match");
-                }
-            }
+            for(int permissionId : permissionsIds)
+                removeManagerPermission(ownerId, token, userId, storeId, permissionId);
             return new Response<>("manager permission was removed successful", null, null);
         } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail, "cant remove permission because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "remove permission fail", e.getMessage());
         }
     }
@@ -969,17 +958,13 @@ public class Market implements MarketInterface {
     public Response<AppHistory> getAppointments(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            if (userController.checkPermission(userId, Action.seeStoreHistory, storeId)) {
-                AppHistory res = marketController.getAppointments(storeId);
-                logger.log(Logger.logStatus.Success, "user get appointments" + LocalDateTime.now());
-                return new Response<>(res, null, null);
-            } else {
-                logger.log(Logger.logStatus.Fail, "cant get store appointments: user dont have access" + "on " + LocalDateTime.now());
-                return new Response<>(null, "get appointments failed", "user dont have access");
-            }
+            userController.checkPermission(userId, Action.seeStoreHistory, storeId);
+            AppHistory res = marketController.getAppointments(storeId);
+            return logAndRes(Logger.logStatus.Success, "user get appointments" + LocalDateTime.now(),
+                    res, null, null);
         } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail, "cant get appointments: " + e.getMessage() + "on " + LocalDateTime.now());
-            return new Response<>(null, "get appointments failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "cant get appointments: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, "get appointments failed", e.getMessage());
         }
     }
 
@@ -989,12 +974,12 @@ public class Market implements MarketInterface {
         {
             userAuth.checkUser(userId, token);
             userController.closeStore(userId, storeId);
-            logger.log(Logger.logStatus.Success, "user closed store" + LocalDateTime.now());
-            return new Response<>("close store was successful", null, null);
+            return logAndRes(Logger.logStatus.Success, "user closed store" + LocalDateTime.now(),
+                    "close store was successful", null, null);
 
         } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail, "cant close store: " + e.getMessage() + "on " + LocalDateTime.now());
-            return new Response<>(null, "close store failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "cant close store: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, "close store failed", e.getMessage());
         }
     }
 
@@ -1004,239 +989,197 @@ public class Market implements MarketInterface {
         {
             userAuth.checkUser(userId, token);
             userController.reOpenStore(userId, storeId);
-            logger.log(Logger.logStatus.Success, "user reopened store" + LocalDateTime.now());
-            return new Response<>("reopen store was successful", null, null);
+            return logAndRes(Logger.logStatus.Success, "user reopened store" + LocalDateTime.now(),
+                    "reopen store was successful", null, null);
         } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail, "cant reopen store: " + e.getMessage() + "on " + LocalDateTime.now());
-            return new Response<>(null, "reopen store failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "cant reopen store: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, "reopen store failed", e.getMessage());
         }
 
     }
 
-    @Override
-    public Response<String> closeStorePermanently(int adminId, String token, int storeId){
-        if (adminId < 0) {
-            Admin admin = activeAdmins.get(adminId);
-            if (admin != null) {
-                try {
-                    userAuth.checkUser(adminId, token);
-                    admin.closeStorePermanently(storeId, -1);
-                    logger.log(Logger.logStatus.Success, "the store: " + storeId + " has been permanently closed by admin: " + adminId + " at time " + LocalDateTime.now());
-                    return new Response<String>("close was permanently closed", null, null);
-                }
-                catch (Exception e){
-                    logger.log(Logger.logStatus.Fail, "the user: " + adminId + "  cannot close store because: " + e.getMessage() + " at time " + LocalDateTime.now());
-                    return new Response<>(null, "close permanent not successfully", e.getMessage());
-                }
-            } else {
-                logger.log(Logger.logStatus.Fail, "the user: " + adminId + " cannot permanently close stores"  +" at time " + LocalDateTime.now());
-                return new Response<>(null, "close permanent not successfully", "the id given is not of an admin");
-            }
-        } else {
-            logger.log(Logger.logStatus.Fail, "the user: " + adminId + " cannot permanently close stores"  +" at time " + LocalDateTime.now());
-            return new Response<>(null, "close permanent not successfully", "the id given is not of an admin");
-        }
-    }
-
-    @Override
-public Response<List<ProductInfo>> getProducts(int storeId){
-    try{
-        List<ProductInfo> products = marketController.getStoreProducts(storeId);
-        logger.log(Logger.logStatus.Success, "store get products successfully on " + LocalDateTime.now());
-        return new Response<>(products, null, null);
-    }catch(Exception e){
-        logger.log(Logger.logStatus.Fail, "cant get store products because: " + e.getMessage() + "on " + LocalDateTime.now());
-        return new Response<>(null, "get store products failed", e.getMessage());
-    }
-}
     @Override
     public Response<List<? extends Information>> getProducts() {
         try{
             List<ProductInfo> products = marketController.getAllProducts();
-            logger.log(Logger.logStatus.Success, "store get products successfully on " + LocalDateTime.now());
-            return new Response<>(products, null, null);
+            return logAndRes(Logger.logStatus.Success, "store get products successfully on " + LocalDateTime.now(),
+                    products, null, null);
         }catch(Exception e){
-            logger.log(Logger.logStatus.Fail, "cant get store products because: " + e.getMessage() + "on " + LocalDateTime.now());
-            return new Response<>(null, "get store products failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "cant get store products because: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, "get store products failed", e.getMessage());
+        }
+    }
+
+
+
+    //admin functions
+    private Admin getActiveAdmin(int adminId) throws Exception {
+        Admin admin = admins.get(adminId);
+        if(admin == null || (!admin.getIsActive()))
+        {
+            throw new Exception("id given does not belong to an active admin");
+        }
+        return admin;
+    }
+    private Admin getInActiveAdmin(String email, String password) throws Exception{
+        for(Admin a : admins.values())
+            if(a.checkEmail(email) && a.checkPassword(password)) {
+                if (!a.getIsActive())
+                    return a;
+                else
+                    throw new Exception("the admin is active");
+            }
+        throw new Exception("no admin has this email");
+    }
+
+
+    //check if admin
+    public boolean checkIsAdmin(int adminId){
+        return !admins.containsKey(adminId);
+    }
+
+    public boolean checkIsAdmin(String email){
+        for(Admin a : admins.values())
+            if(a.checkEmail(email))
+                return true;
+        return false;
+    }
+    @Override
+    public Response<String> closeStorePermanently(int adminId, String token, int storeId){
+        try {
+            userAuth.checkUser(adminId, token);
+            Admin admin = getActiveAdmin(adminId);
+            admin.closeStorePermanently(storeId, -1);
+            return logAndRes(Logger.logStatus.Success, "the store: " + storeId + " has been permanently closed by admin: " + adminId + " at time " + LocalDateTime.now(),
+                    "close was permanently closed", null, null);
+        }
+        catch (Exception e){
+            return logAndRes(Logger.logStatus.Fail, "the user: " + adminId + "  cannot close store because: " + e.getMessage() + " at time " + LocalDateTime.now(),
+                    null, "close permanent not successfully", e.getMessage());
         }
     }
 
     @Override
+    public Response<String> addAdmin(int userId, String token, String email, String pass) {
+        try {
+            userAuth.checkUser(userId, token);
+            if (userId != 0)
+                getActiveAdmin(userId);
+            String hashedPass = userAuth.hashPassword(email, pass, true);
+            Admin a = new Admin(ids.getAndIncrement(), email, hashedPass);
+            a.addControllers(userController, marketController);
+            admins.put(a.getAdminId(), a);
+            return logAndRes(Logger.logStatus.Success, "admin added new admin successfully on " + LocalDateTime.now(),
+                    "admin added new admin successfully", null, null);
+        }catch (Exception e){
+            return logAndRes(Logger.logStatus.Fail, "add admin failed, "+e.getMessage() + " on " +LocalDateTime.now(),
+                    null, "add admin failed", e.getMessage());
+        }
+    }
+    @Override
     public Response<LoginInformation> adminLogin(String email, String pass) {
         try {
-            for (Admin a : activeAdmins.values()) {
-                if (a.checkEmail(email)) {
-                    logger.log(Logger.logStatus.Fail, "cant login admin , admin already connected " + LocalDateTime.now());
-                    return new Response<>(null, "log admin failed", "u are already connected");
-                }
-            }
-            for (Admin a : inActiveAdmins.values()) {
-                String hashedPass = userAuth.hashPassword(email, pass, false);
-                if (a.checkEmail(email) && a.checkPassword(hashedPass)) {
-                    int id = a.getAdminId();
-                    activeAdmins.put(a.getAdminId(), inActiveAdmins.remove(a.getAdminId()));
-                    logger.log(Logger.logStatus.Success, "admin logged in successfully on " + LocalDateTime.now());
-                    LoginInformation loginInformation = new LoginInformation(userAuth.generateToken(id), id, email, true, null,
-                            false, null, null, null, null);
-                    return new Response<>(loginInformation, null, null);
-                }
-            }
-            logger.log(Logger.logStatus.Fail, "cant login admin , wrong details" + LocalDateTime.now());
-            return new Response<>(null, "log admin failed", "wrong details");
+            String hashedPass = userAuth.hashPassword(email, pass, false);
+            Admin a = getInActiveAdmin(email, hashedPass);
+            a.setIsActive(true);
+            String token = userAuth.generateToken(a.getAdminId());
+            LoginInformation loginInformation = getAdminLoginInformation(token, a.getAdminId(), a.getEmailAdmin());
+            return logAndRes(Logger.logStatus.Success, "admin logged in successfully on " + LocalDateTime.now(),
+                    loginInformation, null, null);
         }
         catch (Exception e){
-            logger.log(Logger.logStatus.Fail, "cant login admin because: " + e.getMessage() + "on " + LocalDateTime.now());
-            return new Response<>(null, "login admin failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "cant login admin because: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, "login admin failed", e.getMessage());
         }
     }
 
     @Override
     public Response<String> adminLogout(int adminId) {
-        Admin a = activeAdmins.get(adminId);
-        if (a != null) {
-            inActiveAdmins.put(adminId, activeAdmins.remove(adminId));
+        try {
+            Admin a = getActiveAdmin(adminId);
+            a.setIsActive(false);
             logger.log(Logger.logStatus.Success, "admin logged out successfully on " + LocalDateTime.now());
             return new Response<>("u logged out", null, null);
-        }
-        a = inActiveAdmins.get(adminId);
-        if (a != null) {
-            logger.log(Logger.logStatus.Fail, "cant log out admin , admin not connected " + LocalDateTime.now());
-            return new Response<>(null, "log out admin failed", "u are not connected");
-        }
-        logger.log(Logger.logStatus.Fail, "cant log out admin , admin not exist " + LocalDateTime.now());
-        return new Response<>(null, "log out admin failed", "u dont exist");
-    }
-
-    @Override
-    public Response<HashMap<Integer,Admin>> getAdmins(int adminId, String token) {
-        try {
-            userAuth.checkUser(adminId, token);
         }catch (Exception e){
-            logger.log(Logger.logStatus.Fail, "cant get admins because: " + e.getMessage() +" on time: " + LocalDateTime.now());
-            return new Response<>(null, "get admins failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "cant log out admin, " + e.getMessage() + LocalDateTime.now(),
+                    null, "log out admin failed", e.getMessage());
         }
-        Admin a = activeAdmins.get(adminId);
-        HashMap<Integer,Admin> list= new HashMap<>();
-        if(a != null){
-            for(Integer key : activeAdmins.keySet()){
-                list.put(key,activeAdmins.get(key));
-            }
-            for(Integer key : inActiveAdmins.keySet()){
-                list.put(key,inActiveAdmins.get(key));
-            }
-            logger.log(Logger.logStatus.Success, "admin get all admins successfully on " + LocalDateTime.now());
-            return new Response<>(list, null, null);
-        }
-        a= inActiveAdmins.get(adminId);
-        if(a !=null){
-            logger.log(Logger.logStatus.Fail, "cant get admins , admin not connected " + LocalDateTime.now());
-            return new Response<>(null, "get admins failed", "u are not connected");
-        }
-        logger.log(Logger.logStatus.Fail, "cant get admins , admin not connected " + LocalDateTime.now());
-        return new Response<>(null, "get admins failed", "u are not connected");
     }
 
-
-
-    @Override
-    public Response<String> addAdmin(int userId, String token, String email, String pass) {
-        if (userId != 0) {
-            try {
-                userAuth.checkUser(userId, token);
-            } catch (Exception e) {
-                logger.log(Logger.logStatus.Fail, "cant add admin because: " + e.getMessage() + " on time: " + LocalDateTime.now());
-                return new Response<>(null, "add admin failed", e.getMessage());
-            }
-            Admin appoint = activeAdmins.get(userId);
-            if (appoint != null) {
-                for (Admin a : activeAdmins.values()) {
-                    if (a.checkEmail(email)) {
-                        logger.log(Logger.logStatus.Fail, "cant add new admin , another admin already exist with this name on " + LocalDateTime.now());
-                        return new Response<>(null, "add admin failed", "another admin already exist with this name");
-                    }
-                }
-                for (Admin a : inActiveAdmins.values()) {
-                    if (a.checkEmail(email)) {
-                        logger.log(Logger.logStatus.Fail, "cant add new admin , another admin already exist with this name on " + LocalDateTime.now());
-                        return new Response<>(null, "add admin failed", "another admin already exist with this name");
-                    }
-                }
-            }
-            else{
-                logger.log(Logger.logStatus.Fail, "cant add new admin , u dont have access" + LocalDateTime.now());
-                return new Response<>(null, "add admin failed", "u dont have access");
-            }
-        }
-        String hashedPass = userAuth.hashPassword(email, pass, true);
-        Admin a = new Admin(adminId.getAndDecrement(), email, hashedPass);
-        a.addControllers(userController, marketController);
-        inActiveAdmins.put(a.getAdminId(), a);
-        logger.log(Logger.logStatus.Success, "admin added new admin successfully on " + LocalDateTime.now());
-        return new Response<>("admin added new admin successfully", null, null);
+    private void checkRemoveAdmin() throws Exception{
+        if(admins.size() == 1)
+            throw new Exception("the admin cannot be removed because it is the only admin in the system");
     }
 
     @Override
     public Response<String> removeAdmin(int adminId, String token) {
         try{
             userAuth.checkUser(adminId, token);
+            getActiveAdmin(adminId);
+            checkRemoveAdmin();
+            admins.remove(adminId);
+            return logAndRes(Logger.logStatus.Success, "admin removed himself successfully on " + LocalDateTime.now(),
+                    "u removed u self successfully", null, null);
         }catch (Exception e){
             logger.log(Logger.logStatus.Fail, "cant remove admin because: " + e.getMessage() +" on time: " + LocalDateTime.now());
             return new Response<>(null, "remove admin failed", e.getMessage());
         }
-        Admin me = activeAdmins.get(adminId);
-        if(activeAdmins.size() + inActiveAdmins.size() == 1){
-            logger.log(Logger.logStatus.Fail, "cant remove admin , need at least 1 admin in the system" + LocalDateTime.now());
-            return new Response<>(null, "remove admin failed", "need at least 1 admin in the system");
-        }
-        if (me != null) {
-            activeAdmins.remove(adminId);
-            logger.log(Logger.logStatus.Success, "admin removed himself successfully on " + LocalDateTime.now());
-            return new Response<>("u removed u self successfully", null, null);
-        }
-        logger.log(Logger.logStatus.Fail, "cant remove admin , u dont have access" + LocalDateTime.now());
-        return new Response<>(null, "remove admin failed", "u dont have access");
     }
+
+    @Override
+    public Response<HashMap<Integer,Admin>> getAdmins(int adminId, String token) {
+        try {
+            userAuth.checkUser(adminId, token);
+            getActiveAdmin(adminId);
+            HashMap<Integer, Admin> list = new HashMap<>();
+            for (int key : admins.keySet())
+                list.put(key, admins.get(key));
+            return logAndRes(Logger.logStatus.Success, "admin get all admins successfully on " + LocalDateTime.now(),
+                    list, null, null);
+        }catch (Exception e){
+            return logAndRes(Logger.logStatus.Fail, "cant get admins because: " + e.getMessage() +" on time: " + LocalDateTime.now(),
+                    null, "get admins failed", e.getMessage());
+        }
+    }
+
 
     /**
      * return json of all the relevant information about the users: email, id, name
      */
     @Override
-    public Response<List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>>> getUsersPurchaseHistory(int adminId, String token) {
+    public Response<List<? extends Information>> getUsersPurchaseHistory(int adminId, String token) {
         try {
             userAuth.checkUser(adminId, token);
-            Admin a = activeAdmins.get(adminId);
-            if (a != null) {
-                List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> users = userController.getUsersInformation();
-                logger.log(Logger.logStatus.Success, "admin get users successfully on " + LocalDateTime.now());
-                return new Response<>(users, null, null);
-            }
-            return new Response<>(null, "can't get the users information", "the id given is not of admin");
+            getActiveAdmin(adminId);
+            List<PurchaseHistory> users = userController.getUsersInformation();
+            return logAndRes(Logger.logStatus.Success, "admin get users successfully on " + LocalDateTime.now(),
+                    users, null, null);
         } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail, "user failed getting all users because :" + e.getMessage());
-            return new Response<>(null, "get users", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "user failed getting all users because :" + e.getMessage(),
+                    null, "get users", e.getMessage());
         }
     }
 
+
+    private void sendFeedback(int messageId, String ans) throws Exception{
+        Message m = complaints.get(messageId);
+        if (m != null)
+            m.sendFeedback(ans);
+        else
+            throw new Exception("message does not found");
+
+    }
     @Override
     public Response<String> answerComplaint(int adminId, String token, int complaintId, String ans) {
         try {
             userAuth.checkUser(adminId, token);
-            Admin a = activeAdmins.get(adminId);
-            if (a != null) {
-                Message m = complaints.get(complaintId);
-                if (m != null) {
-                    m.sendFeedback(ans);
-                    logger.log(Logger.logStatus.Success, "admin answer complaint successfully on " + LocalDateTime.now());
-                    return new Response<>("admin answer complaint", null, null);
-                }
-                logger.log(Logger.logStatus.Fail, "cant get message to answer on" + LocalDateTime.now());
-                return new Response<>(null, "answer complaint failed", "message does not found");
-            }
-            logger.log(Logger.logStatus.Fail, "cant get admin on" + LocalDateTime.now());
-            return new Response<>(null, "answer complaint failed", "admin wasn't found");
+            getActiveAdmin(adminId);
+            sendFeedback(complaintId, ans);
+            return logAndRes(Logger.logStatus.Success, "admin answer complaint successfully on " + LocalDateTime.now(),
+                    "admin answer complaint", null, null);
         } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail, "user failed answer complaints because:" + e.getMessage() + " on" + LocalDateTime.now());
-            return new Response<>(null, "answer complaint failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "user failed answer complaints because:" + e.getMessage() + " on" + LocalDateTime.now(),
+                    null, "answer complaint failed", e.getMessage());
         }
     }
 
@@ -1244,17 +1187,13 @@ public Response<List<ProductInfo>> getProducts(int storeId){
     public Response<String> cancelMembership(int adminId, String token, int userToRemove) {
         try {
             userAuth.checkUser(adminId, token);
-            Admin admin = activeAdmins.get(adminId);
-            if (admin != null) {
-                admin.cancelMembership(userToRemove);
-                logger.log(Logger.logStatus.Success, "admin cancel Membership successfully on " + LocalDateTime.now());
-                return new Response<>("admin cancel Membership complaint", null, null);
-            }
-            logger.log(Logger.logStatus.Fail, "cant cancel Membership on" + LocalDateTime.now());
-            return new Response<>(null, "cancel Membership failed", "admin wasnt found");
+            Admin admin = getActiveAdmin(adminId);
+            admin.cancelMembership(userToRemove);
+            return logAndRes(Logger.logStatus.Success, "admin cancel Membership successfully on " + LocalDateTime.now(),
+                    "admin cancel Membership complaint", null, null);
         } catch (Exception e) {
-            logger.log(Logger.logStatus.Fail, "user failed cancel Membership because:" + e.getMessage() + " on" + LocalDateTime.now());
-            return new Response<>(null, "cancel Membership failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "user failed cancel Membership because:" + e.getMessage() + " on" + LocalDateTime.now(),
+                    null, "cancel Membership failed", e.getMessage());
         }
     }
 
@@ -1262,64 +1201,48 @@ public Response<List<ProductInfo>> getProducts(int storeId){
     public Response<List<String>> watchEventLog(int adminId, String token){
         try{
             userAuth.checkUser(adminId, token);
+            getActiveAdmin(adminId);
+            return logAndRes(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now(),
+                    logger.getEventMap(), null, null);
         }catch (Exception e){
-            logger.log(Logger.logStatus.Fail, "cant watch log because: " + e.getMessage() +" on time: " + LocalDateTime.now());
-            return new Response<>(null, "watch log failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "cant watch log because: " + e.getMessage() +" on time: " + LocalDateTime.now(),
+                    null, "watch log failed", e.getMessage());
         }
-        Admin admin = activeAdmins.get(adminId);
-        if(admin !=null){
-            logger.log(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now());
-            return new Response<>(logger.getEventMap(), null, null);
-        }
-        logger.log(Logger.logStatus.Fail, "cant get admin on" + LocalDateTime.now());
-        return new Response<>(null, "watch event log failed", "admin wasn't found");
     }
 
     @Override
     public Response<List<String>> watchFailLog(int adminId, String token){
-        try{
+        try {
             userAuth.checkUser(adminId, token);
+            getActiveAdmin(adminId);
+            return logAndRes(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now(),
+                    logger.getFailMap(), null, null);
         }catch (Exception e){
-            logger.log(Logger.logStatus.Fail, "cant watch log because: " + e.getMessage() +" on time: " + LocalDateTime.now());
-            return new Response<>(null, "watch log failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "cant watch log because: " + e.getMessage() +" on time: " + LocalDateTime.now(),
+                    null, "watch log failed", e.getMessage());
         }
-        Admin admin = activeAdmins.get(adminId);
-        if(admin !=null){
-            logger.log(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now());
-            return new Response<>(logger.getFailMap(), null, null);
-        }
-        logger.log(Logger.logStatus.Fail, "cant get admin on" + LocalDateTime.now());
-        return new Response<>(null, "watch event log failed", "admin wasn't found");
     }
 
     @Override
-    public Response watchMarketStatus(int adminId, String token) {
-        try{
+    public Response<MarketInfo> watchMarketStatus(int adminId, String token) {
+        try {
             userAuth.checkUser(adminId, token);
-        }catch (Exception e){
-            logger.log(Logger.logStatus.Fail, "cant watch market status because: " + e.getMessage() +" on time: " + LocalDateTime.now());
-            return new Response<>(null, "watch market status failed", e.getMessage());
-        }
-        Admin admin = activeAdmins.get(adminId);
-        if(admin != null){
+            getActiveAdmin(adminId);
             marketInfo.calculateAverages();
-            logger.log(Logger.logStatus.Success, "admin get market status successfully on  " + LocalDateTime.now());
-            return new Response<>(marketInfo, null, null);
-        }
-        else{
-            logger.log(Logger.logStatus.Fail, "cant get admin on" + LocalDateTime.now());
-            return new Response<>(null, "watch market status", "admin wasn't found");
+            return logAndRes(Logger.logStatus.Success, "admin get market status successfully on  " + LocalDateTime.now(),
+                    marketInfo, null, null);
+        }catch (Exception e){
+            return logAndRes(Logger.logStatus.Fail, "cant watch market status because: " + e.getMessage() +" on time: " + LocalDateTime.now(),
+                    null, "watch market status failed", e.getMessage());
         }
     }
 
-
+    //TODO: ADD logger to those functions
     @Override
     public Response setPaymentService(int adminId, String token, String paymentService) {
-        //TODO: ADD logger
-        Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            admin = getAdmin(adminId);
+            getActiveAdmin(adminId);
             proxyPayment.setRealPayment(paymentService);
             return new Response("Set payment service to: " + paymentService + " success", null, null);
         }
@@ -1330,11 +1253,9 @@ public Response<List<ProductInfo>> getProducts(int storeId){
 
     @Override
     public Response getPaymentServicePossible(int adminId, String token) {
-        //TODO: ADD logger
-        Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            admin = getAdmin(adminId);
+            getActiveAdmin(adminId);
             return new Response(proxyPayment.getPaymentServicesPossibleOptions(), null, null);
         }
         catch (Exception e){
@@ -1342,13 +1263,11 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         }
     }
 
+    //TODO: fix template for this function
     @Override
     public Response getPaymentServiceAvailable(int userId) {
-        //TODO: ADD logger
         Admin admin = null;
         try{
-            //TODO: userAuth.checkUser(userId);
-            //TODO: admin = getAdmin(adminId);
             return new Response(proxyPayment.getPaymentServicesAvailableOptions(), null, null);
         }
         catch (Exception e){
@@ -1358,11 +1277,9 @@ public Response<List<ProductInfo>> getProducts(int storeId){
 
     @Override
     public Response addPaymentService(int adminId, String token, String paymentService) {
-        //TODO: ADD logger
-        Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            admin = getAdmin(adminId);
+            getActiveAdmin(adminId);
             proxyPayment.addPaymentService(paymentService);
             return new Response("Add payment service to: " + paymentService + " success", null, null);
         }
@@ -1373,11 +1290,10 @@ public Response<List<ProductInfo>> getProducts(int storeId){
 
     @Override
     public Response removePaymentService(int adminId, String token, String paymentService) {
-        //TODO: ADD logger
         Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            admin = getAdmin(adminId);
+            getActiveAdmin(adminId);
             proxyPayment.removePaymentService(paymentService);
             return new Response("Add payment service to: " + paymentService + " success", null, null);
         }
@@ -1388,11 +1304,9 @@ public Response<List<ProductInfo>> getProducts(int storeId){
 
     @Override
     public Response setSupplierService(int adminId, String token, String supplierService) {
-        //TODO: ADD logger
-        Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            admin = getAdmin(adminId);
+            getActiveAdmin(adminId);
             proxySupplier.setRealSupplier(supplierService);
             return new Response("Set supplier service to: " + supplierService + " success", null, null);
         }
@@ -1403,11 +1317,9 @@ public Response<List<ProductInfo>> getProducts(int storeId){
 
     @Override
     public Response getSupplierServicePossible(int adminId, String token) {
-        //TODO: ADD logger
-        Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            admin = getAdmin(adminId);
+            getActiveAdmin(adminId);
             return new Response(proxySupplier.getSupplierServicesPossibleOptions(), null, null);
         }
         catch (Exception e){
@@ -1415,13 +1327,12 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         }
     }
 
+    //TODO: fix template for this function
     @Override
     public Response getSupplierServiceAvailable(int userId) {
-        //TODO: ADD logger
-        Admin admin = null;
         try{
             //TODO: userAuth.checkUser(userId);
-            //TODO: admin = activeAdmins.get(adminId);
+            //TODO: activeAdmins.get(adminId);
             return new Response(proxySupplier.getSupplierServicesAvailableOptions(), null, null);
         }
         catch (Exception e){
@@ -1431,11 +1342,9 @@ public Response<List<ProductInfo>> getProducts(int storeId){
 
     @Override
     public Response addSupplierService(int adminId, String token, String supplierService) {
-        //TODO: ADD logger
-        Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            admin = getAdmin(adminId);
+            getActiveAdmin(adminId);
             proxySupplier.addSupplierService(supplierService);
             return new Response("Add supplier service to: " + supplierService + " success", null, null);
         }
@@ -1447,11 +1356,9 @@ public Response<List<ProductInfo>> getProducts(int storeId){
 
     @Override
     public Response removeSupplierService(int adminId, String token, String supplierService) {
-        //TODO: ADD logger
-        Admin admin = null;
         try{
             userAuth.checkUser(adminId, token);
-            admin = getAdmin(adminId);
+            getActiveAdmin(adminId);
             proxySupplier.removeSupplierService(supplierService);
             return new Response("Remove supplier service to: " + supplierService + " success", null, null);
         }
@@ -1491,8 +1398,20 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         }
     }
 
+    @Override
+    public Response<List<ProductInfo>> getProducts(int storeId){
+        try{
+            List<ProductInfo> products = marketController.getStoreProducts(storeId);
+            logger.log(Logger.logStatus.Success, "store get products successfully on " + LocalDateTime.now());
+            return new Response<>(products, null, null);
+        }catch(Exception e){
+            logger.log(Logger.logStatus.Fail, "cant get store products because: " + e.getMessage() + "on " + LocalDateTime.now());
+            return new Response<>(null, "get store products failed", e.getMessage());
+        }
+    }
+
     public int getAdminsize(){
-        return activeAdmins.size() + inActiveAdmins.size();
+        return admins.size();
     }
 
     public void setActionIds(){
@@ -1523,18 +1442,6 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         return new Response<>(value, errorTi, errorMsg);
     }
 
-    //check if admin
-    public boolean checkIsAdmin(int adminId){
-        return admins.containsKey(adminId);
-    }
-    public boolean checkIsAdmin(String email){
-        boolean isAdmin = false;
-        for (Admin a : admins.values()) {
-            if (a.checkEmail(email))
-                isAdmin = true;
-        }
-        return isAdmin;
-    }
 
     //get login information
     public LoginInformation getLoginInformation(String token, int memberId, String email) throws Exception{
@@ -1545,19 +1452,7 @@ public Response<List<ProductInfo>> getProducts(int storeId){
     }
 
     public LoginInformation getAdminLoginInformation(String token, int userId, String email){
-        new LoginInformation(token, userId, email, true, null,
+        return new LoginInformation(token, userId, email, true, null,
                 false, null, null, null, null);
     }
-
-
-    //to get admin
-    private Admin getAdmin(int adminId) throws Exception {
-        Admin admin = admins.get(adminId);
-        if(admin == null || (!admin.getIsActive()))
-        {
-            throw new Exception("id given does not belong to an active admin");
-        }
-        return admin;
-    }
-
 }

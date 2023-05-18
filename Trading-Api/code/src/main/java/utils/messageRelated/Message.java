@@ -64,12 +64,12 @@ public class Message extends Information {
     }
 
     public void sendFeedback(String feedback) throws Exception{
-        if(state == MessageState.question){
+        if(state != MessageState.reviewProduct && state != MessageState.reviewStore ){
             if(!gotFeedback) {
                 Notification<String> notification = new Notification<>(feedback);
                 reviewer.addNotification(notification);
                 sendEmail();
-                gotFeedback = true; //NAVE
+                gotFeedback = true;
             }
         }
         else

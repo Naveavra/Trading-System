@@ -1442,8 +1442,8 @@ public class UserController {
         return creatorStoreIds;
     }
 
-    public List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> getUsersInformation() {
-        List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> membersInformation = new LinkedList<>();
+    public List<PurchaseHistory> getUsersInformation() {
+        List<HashMap<Integer, PurchaseHistory>> membersInformation = new LinkedList<>();
         for(Member m : activeMemberList.values()) {
             HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> history = m.getUserPurchaseHistoryHash();
             membersInformation.add(history);

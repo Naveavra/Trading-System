@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import domain.store.storeManagement.AppHistory;
 import domain.store.storeManagement.Store;
+import domain.user.PurchaseHistory;
 import market.Admin;
 import market.Market;
 import org.json.JSONObject;
@@ -550,9 +551,8 @@ public class API {
 
     public Pair<Boolean, JSONObject> getUsersPurchaseHistory(int buyerId, String token)
     {
-        Response<List<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>>> res = market.getUsersPurchaseHistory(buyerId, token);
-        // TODO: cast this to json
-        return fromResToPair(res);
+        Response<List<? extends Information>> res = market.getUsersPurchaseHistory(buyerId, token);
+        return fromResToPairList(res);
     }
 
     public Pair<Boolean, JSONObject> getStores()
@@ -577,7 +577,7 @@ public class API {
     {
         Response<MarketInfo> res = market.watchMarketStatus(adminId, token);
         // TODO: cast this to json
-        return fromResToPair(res);
+        return fromResToPairInfo(res);
     }
 
     public void mockData(){
