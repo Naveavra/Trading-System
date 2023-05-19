@@ -2,9 +2,11 @@ package domain.user;
 
 import domain.states.StoreCreator;
 import domain.states.UserState;
+import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import org.json.JSONObject;
 import utils.infoRelated.LoginInformation;
+import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.messageRelated.Notification;
@@ -27,8 +29,7 @@ public class Member implements User{
     private String email;
     private transient String password;
 
-    private HashMap<Integer, UserState> roles; //connection between registered to the shops
-    private HashMap<Integer, Store> stores;
+    private List<UserState> roles; //connection between registered to the shops
     private transient ConcurrentLinkedDeque<Notification> notifications;
     private UserHistory userHistory;
     private boolean isConnected;
@@ -40,8 +41,7 @@ public class Member implements User{
         this.password = password;
         this.birthday = birthday;
         age = StringChecks.calculateAge(birthday);
-        roles = new HashMap<>();
-        stores = new HashMap<>();
+        roles = new ArrayList<>();
         userHistory = new UserHistory(this.email, this.name, this.password);
         g = new Guest(id);
         notifications = new ConcurrentLinkedDeque<>();
@@ -59,12 +59,10 @@ public class Member implements User{
 
     public void changeRoleInStore(UserState userState, Store store) throws Exception{
         int storeId = store.getStoreId();
-        if(roles.containsKey(storeId)) {
-            if (roles.get(storeId).getRole() == userState.getRole())
-                throw new Exception("the member already has this role in this store");
-        }
-        roles.put(storeId, userState);
-        stores.put(storeId, store);
+        UserState state = getRole(storeId);
+        if (state.getRole() == userState.getRole())
+            throw new Exception("the member already has this role in this store");
+        roles.add(userState);
     }
 
 
@@ -108,8 +106,8 @@ public class Member implements User{
     }
 
 
-    public void addProductToCart(int storeId, int productId, int quantity) throws Exception{
-            g.addProductToCart(storeId, productId, quantity);
+    public void addProductToCart(int storeId, ProductInfo product, int quantity) throws Exception{
+            g.addProductToCart(storeId, product, quantity);
     }
     public void emptyCart(){
         g.emptyCart();
@@ -119,11 +117,11 @@ public class Member implements User{
         g.removeProductFromCart(storeId, productId);
     }
 
-    public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
-        g.changeQuantityInCart(storeId, productId, change);
+    public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
+        g.changeQuantityInCart(storeId, product, change);
     }
 
-    public HashMap<Integer, HashMap<Integer, Integer>> getCartContent() {
+    public List<Basket> getCartContent() {
         return g.getCartContent();
     }
 
@@ -133,9 +131,8 @@ public class Member implements User{
     }
 
     public void openStore(Store store) {
-        UserState creator = new StoreCreator();
-        stores.put(store.getStoreId(), store);
-        roles.put(store.getStoreId(), creator);
+        UserState creator = new StoreCreator(id, store);
+        roles.add(creator);
     }
 
     public Message writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
@@ -183,38 +180,39 @@ public class Member implements User{
     }
 
 
-    private UserState getActiveRole(int storeId) throws Exception{
-        if(roles.containsKey(storeId)) {
-            if(roles.get(storeId).isActive())
-                return roles.get(storeId);
-            throw new Exception("the role in the store is not active");
+    private UserState getActiveRole(int storeId) throws Exception {
+        for (UserState state : roles) {
+            if (state.getStore().getStoreId() == storeId) {
+                if (state.isActive()) {
+                    return state;
+                }
+                else throw new Exception("the role in the store is not active");
+            }
         }
         throw new Exception("the member does not have a role in this store");
     }
 
     private UserState getInActiveRole(int storeId) throws Exception{
-        if(roles.containsKey(storeId)) {
-            if (!roles.get(storeId).isActive())
-                return roles.get(storeId);
-            throw new Exception("the role in the store is active");
+        for (UserState state : roles) {
+            if (state.getStore().getStoreId() == storeId) {
+                if (state.isActive()) {
+                    return state;
+                }
+                else throw new Exception("the role in the store is active");
+            }
         }
         throw new Exception("the member does not have a role in this store");
     }
 
     public UserState getRole(int storeId) throws Exception{
-        if(roles.containsKey(storeId))
-            return roles.get(storeId);
+        for (UserState state : roles)
+            if (state.getStore().getStoreId() == storeId)
+                    return state;
         throw new Exception("the member does not have a role in this store");
     }
 
     public void checkPermission(Action action, int storeId) throws Exception{
         UserState role = getActiveRole(storeId);
-        if (!role.checkPermission(action))
-            throw new Exception("member does not have permission for this action");
-    }
-
-    public void checkPermissionInActive(Action action, int storeId) throws Exception{
-        UserState role = getInActiveRole(storeId);
         if (!role.checkPermission(action))
             throw new Exception("member does not have permission for this action");
     }
@@ -229,33 +227,26 @@ public class Member implements User{
     }
 
     public Store appointToManager(int appointedId, int storeId) throws Exception {
-        checkPermission(Action.appointManager, storeId);
-        stores.get(storeId).appointUser(id, appointedId, Role.Manager);
-        return stores.get(storeId);
-    }
-
-    public Store appointToOwner(int appointedId, int storeId) throws Exception {
-        checkPermission(Action.appointOwner, storeId);
-        stores.get(storeId).appointUser(id, appointedId, Role.Owner);
-        return stores.get(storeId);
-    }
-    public Set<Integer> fireOwner(int appointedId, int storeId) throws Exception{
-        if(id == appointedId)
-            return stores.get(storeId).fireUser(appointedId);
-        checkPermission(Action.fireOwner, storeId);
-        return stores.get(storeId).fireUser(appointedId);
-    }
-
-    public void removeRoleInStore(int storeId) {
-        roles.remove(storeId);
-        stores.remove(storeId);
+        UserState state = getActiveRole(storeId);
+        return state.appointManager(appointedId);
     }
 
     public void fireManager(int appointedId, int storeId) throws Exception{
-        if(id == appointedId)
-            stores.get(storeId).fireUser(appointedId);
-        checkPermission(Action.fireManager, storeId);
-        stores.get(storeId).fireUser(appointedId);
+        UserState state = getActiveRole(storeId);
+        state.fireManager(appointedId);
+    }
+    public Store appointToOwner(int appointedId, int storeId) throws Exception {
+        UserState state = getActiveRole(storeId);
+        return state.appointOwner(appointedId);
+    }
+    public Set<Integer> fireOwner(int appointedId, int storeId) throws Exception{
+        UserState state = getActiveRole(storeId);
+        return state.fireOwner(appointedId);
+    }
+
+    public void removeRoleInStore(int storeId) throws Exception{
+        UserState state = getRole(storeId);
+        roles.remove(state);
     }
 
     public void addAction(Action a, int storeId) throws Exception {
@@ -268,32 +259,29 @@ public class Member implements User{
         state.removeAction(a);
     }
 
-    public void changeToActive(int storeId){
-        roles.get(storeId).serIsActive(true);
+    public void changeToActive(int storeId) throws Exception{
+        UserState state = getInActiveRole(storeId);
+        state.setIsActive(true);
     }
 
-    public void changeToInActive(int storeId){
-        roles.get(storeId).serIsActive(false);
+    public void changeToInActive(int storeId) throws Exception{
+        UserState state = getActiveRole(storeId);
+        state.setIsActive(false);
     }
 
     public Set<Integer> closeStore(int storeId) throws Exception {
-        checkPermission(Action.closeStore, storeId);
-        changeToInActive(storeId);
-        Store store = stores.get(storeId);
-        return store.closeStoreTemporary(id);
+        UserState state = getActiveRole(storeId);
+        return state.closeStore();
     }
 
     public Set<Integer> reOpenStore(int storeId) throws Exception {
-        checkPermissionInActive(Action.reopenStore, storeId);
-        changeToActive(storeId);
-        Store store = stores.get(storeId);
-        return store.reopenStore(id);
+        UserState state = getInActiveRole(storeId);
+        return state.reOpenStore();
     }
 
     public Set<Integer> getWorkerIds(int storeId) throws Exception {
-        checkPermission(Action.checkWorkersStatus, storeId);
-        Store store = stores.get(storeId);
-        return store.getUsersInStore();
+        UserState state = getActiveRole(storeId);
+        return state.getWorkerIds();
     }
 
     public Info getInformation(int storeId) {
@@ -306,7 +294,9 @@ public class Member implements User{
     }
 
     public Set<Integer> getAllStoreIds(){
-        Set<Integer> storeIds = stores.keySet();
+        Set<Integer> storeIds = new HashSet<>();
+        for(UserState state : roles)
+            storeIds.add(state.getStore().getStoreId());
         return storeIds;
     }
 
@@ -314,29 +304,29 @@ public class Member implements User{
 
     public HashMap<Integer, Role> getRoles() {
         HashMap<Integer, Role> ans = new HashMap<>();
-        for(int storeId : roles.keySet())
-            ans.put(storeId, roles.get(storeId).getRole());
+        for(UserState state : roles)
+            ans.put(state.getStore().getStoreId(), state.getRole());
         return ans;
     }
 
-    public HashMap<Integer, String> getNames() {
+    public HashMap<Integer, String> getStoreNames() {
         HashMap<Integer, String> ans = new HashMap<>();
-        for(int storeId : stores.keySet())
-            ans.put(storeId, stores.get(storeId).getName());
+        for(UserState state : roles)
+            ans.put(state.getStore().getStoreId(), state.getStore().getName());
         return ans;
     }
 
-    public HashMap<Integer, String> getImgs(){
+    public HashMap<Integer, String> getStoreImgs(){
         HashMap<Integer, String> ans = new HashMap<>();
-        for(int storeId : stores.keySet())
-            ans.put(storeId, stores.get(storeId).getImgUrl());
+        for(UserState state : roles)
+            ans.put(state.getStore().getStoreId(), state.getStore().getImgUrl());
         return ans;
     }
 
     public HashMap<Integer, List<Action>> getPermissions() {
         HashMap<Integer, List<Action>> ans = new HashMap<>();
-        for(int storeId : roles.keySet())
-            ans.put(storeId, roles.get(storeId).getActions());
+        for(UserState state : roles)
+            ans.put(state.getStore().getStoreId(), state.getActions());
         return ans;
     }
 
@@ -349,13 +339,9 @@ public class Member implements User{
         return g.getShoppingCart();
     }
 
-    //for tests
-    public HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> getUserPurchaseHistoryHash() {
-        return userHistory.getUserPurchaseHistoryHash();
-    }
 
     public LoginInformation getLoginInformation(String token) {
         return new LoginInformation(token, id, email, false, displayNotifications(),getRoles(),
-                getNames(), getImgs(), getPermissions());
+                getStoreNames(), getStoreImgs(), getPermissions());
     }
 }

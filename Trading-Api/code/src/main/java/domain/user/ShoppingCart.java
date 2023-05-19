@@ -1,37 +1,45 @@
 package domain.user;
 
+import domain.store.product.Product;
 import org.eclipse.jetty.util.ajax.JSON;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
+import utils.infoRelated.ProductInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class ShoppingCart{
-    private HashMap<Integer, Basket> baskets; // saves the connection between a shop and its basket;
+    private List<Basket> baskets; // saves the connection between a shop and its basket;
 
     public ShoppingCart (){
-        baskets = new HashMap<>();
+        baskets = new ArrayList<>();
     }
 
     public ShoppingCart(ShoppingCart cart){
-        baskets = new HashMap<>();
-        for(int storeId : cart.baskets.keySet())
-            baskets.put(storeId, new Basket(cart.baskets.get(storeId)));
+        baskets = new ArrayList<>();
+        for(Basket b: cart.baskets)
+            baskets.add(new Basket(b));
     }
-
-    public void addProductToCart(int storeId, int productId, int quantity) throws Exception {
+    public Basket getBasket(int storeId){
+        for(Basket b : baskets)
+            if(b.getStoreId() == storeId)
+                return b;
+        return null;
+    }
+    public void addProductToCart(int storeId, ProductInfo product, int quantity) throws Exception {
         if (quantity < 1) {
             throw new Exception("quantity must be bigger then 0");
         }
-        if(!baskets.containsKey(storeId))
-            baskets.put(storeId, new Basket(storeId));
-        baskets.get(storeId).addProductToCart(productId, quantity);
+        Basket b = getBasket(storeId);
+        if(b == null)
+            baskets.add(new Basket(storeId));
+        baskets.get(storeId).addProductToCart(product, quantity);
     }
 
     public void removeProductFromCart(int storeId, int productId) throws Exception {
-        Basket basket = baskets.get(storeId);
+        Basket basket = getBasket(storeId);
         if(basket != null) {
             boolean check = basket.removeProductFromCart(productId);
             if(!check)
@@ -41,53 +49,46 @@ public class ShoppingCart{
             throw new Exception("the product isn't in the cart");
     }
 
-    public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
-        if(baskets.containsKey(storeId)) {
-            boolean check = baskets.get(storeId).changeQuantityInCart(productId, change);
+    public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
+        Basket b = getBasket(storeId);
+        if(b != null) {
+            boolean check = baskets.get(storeId).changeQuantityInCart(product, change);
             if(!check)
                 baskets.remove(storeId);
         }
         else
-            addProductToCart(storeId, productId, change);
-    }
-
-    public HashMap<Integer, HashMap<Integer, Integer>> getContent(){
-        HashMap<Integer, HashMap<Integer, Integer>> cartContent = new HashMap<>();
-        for(int storeId : baskets.keySet()) {
-            HashMap<Integer, Integer> basketContent = baskets.get(storeId).getContent();
-            cartContent.put(storeId, basketContent);
-        }
-        return cartContent;
+            addProductToCart(storeId, product, change);
     }
 
     public boolean hasStore(int storeId){
-        return baskets.containsKey(storeId);
+        return getBasket(storeId) != null;
     }
 
     public boolean hasProduct(int storeId, int productId) {
-        if(hasStore(storeId))
-            return baskets.get(storeId).hasProduct(productId);
+        Basket b = getBasket(storeId);
+        if(b != null)
+            return b.hasProduct(productId);
         return false;
     }
 
 
-    public List<JSONObject> toJson()
+    public HashMap<Integer, HashMap<Integer, Integer>> getContent(){
+        for(Basket b : )
+        return null;
+    }
+    public List<ProductInfo> getCart()
     {
-        List<JSONObject> ans = new ArrayList();
-        for (Basket b : baskets.values()) {
-            JSONObject basketJson = b.toJson();
-            ans.add(basketJson);
+        List<ProductInfo> ans = new ArrayList();
+        for (Basket b : baskets) {
+            List<ProductInfo> basketJson = b.getContent();
+            ans.addAll(basketJson);
         }
         return ans;
     }
 
     public void emptyCart() {
-        for(Basket b : baskets.values())
+        for(Basket b : baskets)
             b.clear();
         baskets.clear();
-    }
-
-    public HashMap<Integer, Basket> getBaskets() {
-        return baskets;
     }
 }

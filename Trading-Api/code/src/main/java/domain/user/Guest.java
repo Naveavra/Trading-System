@@ -1,6 +1,9 @@
 package domain.user;
 
+import domain.store.product.Product;
 import org.json.JSONObject;
+import utils.Pair;
+import utils.infoRelated.ProductInfo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +11,6 @@ import java.util.List;
 public class Guest implements User{
     private int id;
     private ShoppingCart cart;
-
-
 
 
     public Guest(int id){
@@ -21,8 +22,8 @@ public class Guest implements User{
         return id;
     }
 
-    public void addProductToCart(int storeId, int productId, int quantity) throws Exception{
-            cart.addProductToCart(storeId, productId, quantity);
+    public void addProductToCart(int storeId, ProductInfo product, int quantity) throws Exception{
+            cart.addProductToCart(storeId, product, quantity);
     }
 
 
@@ -30,11 +31,11 @@ public class Guest implements User{
         cart.removeProductFromCart(storeId, productId);
     }
 
-    public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
-        cart.changeQuantityInCart(storeId, productId, change);
+    public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
+        cart.changeQuantityInCart(storeId, product, change);
     }
 
-    public HashMap<Integer, HashMap<Integer, Integer>> getCartContent() {
+    public List<Basket> getCartContent() {
         return cart.getContent();
     }
 

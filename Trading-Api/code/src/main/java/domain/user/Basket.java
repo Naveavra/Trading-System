@@ -1,73 +1,74 @@
 package domain.user;
 
+import domain.store.product.Product;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
+import utils.infoRelated.ProductInfo;
 
 import java.util.*;
 
-public class Basket extends Information {
+public class Basket{
     private int storeId;
-    private HashMap<Integer, Integer> productList; //a list of all the product ids and their quantities related to a specific shop
+    private List<ProductInfo> productList; //a list of all the product ids and their quantities related to a specific shop
 
 
     public Basket(int storeId){
         this.storeId = storeId;
-        productList = new HashMap<>();
+        productList = new ArrayList<>();
     }
 
     public Basket(Basket b){
         this.storeId = b.storeId;
-        productList = new HashMap<>();
-        for(int productId : b.productList.keySet())
-            productList.put(productId, b.productList.get(productId));
+        productList = new ArrayList<>();
+        productList.addAll(b.productList);
 
     }
 
 
-    public void addProductToCart(int productId, int quantity) throws Exception{
+    public int getStoreId(){
+        return storeId;
+    }
+    public void addProductToCart(ProductInfo product, int quantity) throws Exception{
         if(quantity < 1)
             throw new Exception("the quantity given is negative");
-        productList.put(productId, quantity);
+        product.quantity = quantity;
+        productList.add(product);
     }
 
     public boolean removeProductFromCart(int productId) {
-        productList.remove(productId);
+        ProductInfo p = getProduct(productId);
+        productList.remove(p);
         return productList.size() != 0;
 
     }
 
-    public boolean changeQuantityInCart(int productId, int change) throws Exception{
-        if(productList.containsKey(productId)) {
-            int prevQuantity = productList.get(productId);
+    public ProductInfo getProduct(int productId){
+        for(ProductInfo productInfo : productList)
+            if (productInfo.id == productId)
+                return productInfo;
+        return null;
+    }
+
+    public boolean changeQuantityInCart(ProductInfo product, int change) throws Exception{
+        ProductInfo p = getProduct(product.id);
+        if(p != null) {
+            int prevQuantity = p.quantity;
             int newQuantity = prevQuantity + change;
             if(newQuantity < 0)
                 throw new Exception("the new quantity is negative");
-            if(newQuantity == 0)
-                return removeProductFromCart(productId);
+            else if(newQuantity == 0)
+                return removeProductFromCart(p.id);
             else
-                productList.put(productId, newQuantity);
+                p.quantity = newQuantity;
+
         }
         else
-            addProductToCart(productId, change);
+            addProductToCart(product, change);
         return true;
     }
 
-    public HashMap<Integer, Integer> getContent() {
+    public List<ProductInfo> getContent() {
         return productList;
-    }
-
-    public JSONObject toJson(){
-        JSONObject basketJson = new JSONObject();
-        basketJson.put("storeId", storeId);
-        List<JSONObject> bucketList = new ArrayList();
-        for (Map.Entry<Integer, Integer> productEntry : productList.entrySet()) {
-            JSONObject productJson = new JSONObject();
-            productJson.put("productId", productEntry.getKey());
-            productJson.put("quantity", productEntry.getValue());
-            bucketList.add(productJson);
-        }
-        basketJson.put("products", bucketList);
-        return basketJson;
     }
 
     public void clear(){
@@ -75,6 +76,8 @@ public class Basket extends Information {
     }
 
     public boolean hasProduct(int productId) {
-        return productList.containsKey(productId);
+        ProductInfo p = getProduct(productId);
+        return p!= null;
+
     }
 }

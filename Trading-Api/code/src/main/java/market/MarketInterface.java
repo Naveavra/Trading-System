@@ -20,7 +20,6 @@ public interface MarketInterface {
     public Response addProductToCart(int userId,int storeId ,int productId, int quantity);
     public Response removeProductFromCart(int userId,  int storeId, int productId);
     public Response changeQuantityInCart(int userId, int storeId, int productId, int change);
-    public Response getCartHash(int id);
     Response<String> removeCart(int userId);
     public Response makePurchase(int userId , String accountNumber);
     public Response getStoreDescription(int storeId);
@@ -42,7 +41,6 @@ public interface MarketInterface {
     public Response changeEmail(int userId, String token, String newEmail);
     public Response openStore(int userId, String token, String storeName, String des, String img);
     public Response getMemberInformation(int userId, String token);
-    public Response getUserPurchaseHistoryHash(int userId, String token, int buyerId);
 
     Response<PurchaseHistory> getUserPurchaseHistory(int userId, String token, int buyerId);
 

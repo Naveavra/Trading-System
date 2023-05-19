@@ -1,5 +1,6 @@
 package utils.infoRelated;
 
+import domain.store.product.Product;
 import org.json.JSONObject;
 import utils.messageRelated.Message;
 
@@ -32,6 +33,18 @@ public class ProductInfo extends Information{
         this.rating = rating;
         this.reviews = reviews;
         this.img = img;
+    }
+
+    public ProductInfo(int storeId, Product product, int quantity){
+        this.storeId = storeId;
+        this.id = product.getID();
+        this.name =product.getName();
+        this.description = product.getDescription();
+        this.price = product.getPrice();
+        this.quantity =quantity;
+        this.rating = product.getRating();
+        this.reviews = new HashMap<>();
+        this.img = product.getImgUrl();
     }
     public int getStoreId(){return storeId;}
     public void setCategories(ArrayList<String> cat){

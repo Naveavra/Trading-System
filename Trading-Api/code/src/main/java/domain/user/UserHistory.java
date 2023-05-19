@@ -64,11 +64,4 @@ public class UserHistory {
         PrivateInfo privateInfo = new PrivateInfo(info, names, emails, passwords);
         return privateInfo;
     }
-
-
-    //for tests
-    public  HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>  getUserPurchaseHistoryHash() {
-        return purchaseHistory.getHash();
-    }
-
 }

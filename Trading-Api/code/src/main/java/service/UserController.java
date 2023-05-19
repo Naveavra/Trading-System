@@ -2,11 +2,13 @@ package service;
 
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
+import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import domain.user.*;
 
 import org.json.JSONObject;
 import utils.infoRelated.LoginInformation;
+import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -126,9 +128,9 @@ public class UserController {
     }
 
     //adding the productId to the user's cart with the given quantity
-    public synchronized void addProductToCart(int userId, int storeId, int productId, int quantity) throws Exception{
+    public synchronized void addProductToCart(int userId, int storeId, ProductInfo product, int quantity) throws Exception{
         User user = getUser(userId);
-        user.addProductToCart(storeId, productId, quantity);
+        user.addProductToCart(storeId, product, quantity);
     }
 
     //removing the productId from the user's cart
@@ -139,9 +141,9 @@ public class UserController {
 
 
     //adding the change quantity to the product's quantity in the user's cart
-    public synchronized void changeQuantityInCart(int userId, int storeId, int productId, int change) throws Exception{
+    public synchronized void changeQuantityInCart(int userId, int storeId, ProductInfo product, int change) throws Exception{
         User user = getUser(userId);
-        user.changeQuantityInCart(storeId, productId, change);
+        user.changeQuantityInCart(storeId, product, change);
     }
 
 
@@ -211,15 +213,6 @@ public class UserController {
         return m.displayNotifications();
     }
 
-    public synchronized HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> getUserPurchaseHistoryHash(int userId, boolean isAdmin) throws Exception {
-        Member m;
-        if(isAdmin)
-            m = getMember(userId);
-        else
-            m = getActiveMember(userId);
-        return m.getUserPurchaseHistoryHash();
-    }
-
 
     public PurchaseHistory getUserPurchaseHistory(int userId, boolean isAdmin) throws Exception{
         Member m;
@@ -263,7 +256,7 @@ public class UserController {
         Store store = owner.appointToOwner(appointed.getId(), storeId);
         Notification<String> notify = new Notification<>("you have been appointed to owner in store: " + storeId);
         appointed.addNotification(notify);
-        appointed.changeRoleInStore(new StoreOwner(), store);
+        appointed.changeRoleInStore(new StoreOwner(appointed.getId(), store), store);
     }
 
 
@@ -293,7 +286,7 @@ public class UserController {
         Store store = owner.appointToManager(appointed.getId(), storeId);
         Notification<String> notify = new Notification<>("you have been appointed to manager in store: " + storeId);
         appointed.addNotification(notify);
-        appointed.changeRoleInStore(new StoreManager(), store);
+        appointed.changeRoleInStore(new StoreManager(appointed.getId(), store), store);
     }
 
     public synchronized void fireManager(int ownerId, int appointedId, int storeId) throws Exception {
@@ -342,7 +335,7 @@ public class UserController {
 
     public synchronized void reOpenStore(int userId, int storeId) throws Exception {
         Member m = getActiveMember(userId);
-        Set<Integer> workerIds = m.closeStore(storeId);
+        Set<Integer> workerIds = m.reOpenStore(storeId);
         for(int workerId : workerIds){
             Member worker = getMember(workerId);
             worker.changeToActive(storeId);

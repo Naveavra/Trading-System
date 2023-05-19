@@ -195,7 +195,7 @@ public class Market implements MarketInterface {
     public Response<String> addProductToCart(int userId, int storeId, int productId, int quantity) {
         try {
             marketController.checkProductInStore(storeId, productId);
-            userController.addProductToCart(userId, storeId, productId, quantity);
+            userController.addProductToCart(userId, storeId, marketController.getProductInformation(storeId, productId), quantity);
             String name = userController.getUserName(userId);
             String productName = marketController.getProductName(storeId, productId);
             return logAndRes(Logger.logStatus.Success, "user " + name + "add " + quantity + " " + productName + " to shopping cart on " + LocalDateTime.now(),
@@ -225,7 +225,7 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> changeQuantityInCart(int userId, int storeId, int productId, int change) {
         try {
-            userController.changeQuantityInCart(userId, storeId, productId, change);
+            userController.changeQuantityInCart(userId, storeId, marketController.getProductInformation(storeId, productId), change);
             String name = userController.getUserName(userId);
             String productName = marketController.getProductName(storeId, productId);
             return logAndRes(Logger.logStatus.Success, "user " + name + " change quantity to " + change + " on shopping cart on " + LocalDateTime.now(),
@@ -236,9 +236,9 @@ public class Market implements MarketInterface {
         }
     }
 
-    public Response<HashMap<Integer, ? extends Information>> getCart(int id) {
+    public Response<List<? extends Information>> getCart(int id) {
         try {
-            HashMap<Integer, ? extends Information> baskets = userController.getUserCart(id).getBaskets();
+            List<? extends Information> baskets = userController.getUserCart(id).getCart();
             String name = userController.getUserName(id);
             return logAndRes(Logger.logStatus.Success, "user" + name + "ask for his cart on " + LocalDateTime.now(),
                     baskets, null, null);
@@ -1258,34 +1258,6 @@ public class Market implements MarketInterface {
     //functions for tests
     public String addTokenForTests() {
         return userAuth.generateToken(0);
-    }
-    public Response<HashMap<Integer, HashMap<java.lang.Integer,java.lang.Integer>>> getCartHash(int id) {
-        try {
-            HashMap<Integer, HashMap<java.lang.Integer,java.lang.Integer>> cart = userController.getUserCart(id).getContent();
-            String name = userController.getUserName(id);
-            return logAndRes(Logger.logStatus.Success, "user" + name + "ask for his cart on " + LocalDateTime.now(),
-                    cart, null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant get his cart because " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "get cart failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> getUserPurchaseHistoryHash(int userId, String token, int buyerId) {
-        try {
-            userAuth.checkUser(userId, token);
-            HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> orders;
-            if(checkIsAdmin(userId))
-                orders = userController.getUserPurchaseHistoryHash(userId, true);
-            else
-                orders = userController.getUserPurchaseHistoryHash(userId, false);
-           return logAndRes(Logger.logStatus.Success, "user received orders successfully on " + LocalDateTime.now(),
-                    orders, null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant get user orders because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "get user orders failed", e.getMessage());
-        }
     }
 
     @Override

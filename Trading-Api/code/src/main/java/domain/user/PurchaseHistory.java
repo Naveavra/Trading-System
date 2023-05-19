@@ -5,6 +5,7 @@ import utils.Pair;
 import utils.infoRelated.Information;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class PurchaseHistory extends Information {
 
@@ -42,8 +43,8 @@ public class PurchaseHistory extends Information {
         return false;
     }
 
-    public HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> getHash(){
-        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> ans = new HashMap<>();
+    public HashMap<Integer, List<Basket>> getHash(){
+        HashMap<Integer, List<Basket>> ans = new HashMap<>();
         for(int orderId : purchaseHistory.keySet())
             ans.put(orderId, purchaseHistory.get(orderId).getContent());
         return ans;

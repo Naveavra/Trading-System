@@ -131,8 +131,8 @@ public class API {
 //    }
 
     public Pair<Boolean, JSONObject> getCart(int id){
-        Response<HashMap<Integer, ? extends Information>> res = market.getCart(id);
-        return fromResToPairHashMap(res, "storeId", "products");
+        Response<List<? extends Information>> res = market.getCart(id);
+        return fromResToPairList(res);
     }
 
     public Pair<Boolean, JSONObject> makePurchase(int userId , String accountNumber){
