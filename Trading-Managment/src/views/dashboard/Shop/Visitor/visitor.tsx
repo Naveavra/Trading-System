@@ -1,7 +1,6 @@
 import { Card, CardContent, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Outlet } from "react-router";
-import Bar2 from "../../../../components/Bars/Navbar/NavBar2";
 import ProductDisplay from "../../../../components/Product/Product";
 import ProductCard from "../../../../components/ProductCard/Card";
 import { useAppDispatch, useAppSelector } from "../../../../redux/store";
@@ -9,7 +8,8 @@ import { useEffect } from "react";
 import { getProducts } from "../../../../reducers/productsSlice";
 import { getStoresInfo } from "../../../../reducers/storesSlice";
 import axios from "axios";
-import { getClientData } from "../../../../reducers/authSlice";
+import { getNotifications } from "../../../../reducers/authSlice";
+import Bar3 from "../../../../components/Bars/Navbar/NavBar3";
 
 
 const Visitor: React.FC = () => {
@@ -37,7 +37,7 @@ const Visitor: React.FC = () => {
     }
     const getC = () => {
         if (token) {
-            dispatch(getClientData({ userId: userId, token: token }));
+            dispatch(getNotifications({ userId: userId, token: token }));
         }
     }
     useEffect(() => {
@@ -45,9 +45,6 @@ const Visitor: React.FC = () => {
         const pingInterval2 = setInterval(getC, PING_INTERVAL2);
         dispatch(getStoresInfo());
         dispatch(getProducts());
-        if (token) {
-            dispatch(getClientData({ userId: userId, token: token }));
-        }
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
@@ -56,7 +53,7 @@ const Visitor: React.FC = () => {
     }, [dispatch]);
     return (
         <>
-            <Bar2 headLine={`wellcome to the store`} />
+            <Bar3 headLine={`wellcome to the store`} />
             <Box>
                 <Card sx={{ minWidth: 275 }}>
                     <CardContent>

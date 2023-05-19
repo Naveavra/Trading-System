@@ -4,14 +4,15 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { type } from "os";
 import error from "../Alerts/error";
 import AlertDialog from "../Dialog/AlertDialog";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { ProductFormValues } from "../../types/formsTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { clearProductError, patchProduct, postProduct } from "../../reducers/productsSlice";
 import SuccessAlert from "../Alerts/success";
-import { getClientData, ping } from "../../reducers/authSlice";
+import { getNotifications, ping } from "../../reducers/authSlice";
+import { getStore } from "../../reducers/storesSlice";
 
 interface Props {
     mode: 'add' | 'edit';
@@ -20,73 +21,70 @@ interface Props {
 const AddEditProductForm: React.FC<Props> = ({ mode }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const [open, setOpen] = useState(true);
     const form = useForm<ProductFormValues>();
+
     const required = (() => { return mode === 'add' ? true : false })();
-    const params = useParams();
     const userId = useAppSelector((state) => state.auth.userId);
     const token = useAppSelector((state) => state.auth.token);
     const error = useAppSelector((state) => state.store.storeState.error);
     const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
     const isLoading = useAppSelector((state) => state.product.isLoading)
-    const handleOnClose = () => {
-        setOpen(false);
-        navigate("/dashboard/shops/superior");
-        // dispatch(getStoreData({ storeId: storeId, token: token }));
-    }
+
+    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
+    const PING_INTERVAL2 = 5000;
+    // Send a ping to the server
+
+
 
     const handleOnSubmit = () => {
         //todo : handle null in edit
         let response;
+        debugger;
         form.setValue('storeId', storeId);
         form.setValue('id', userId);
         switch (mode) {
             case 'add':
                 response = dispatch(postProduct(form.getValues()));
-                response.then((res) => {
-                    if (res.meta.requestStatus === 'fulfilled') {
-                        handleOnClose();
-                    }
-                });
                 break;
             case 'edit':
                 response = dispatch(patchProduct(form.getValues()));
-                response.then((res) => {
-                    if (res.meta.requestStatus === 'fulfilled') {
-                        handleOnClose();
-                    }
-                });
                 break;
             default:
-
                 break;
         }
-    };
+        handleOnClose();
 
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    // Send a ping to the server
+    };
+    const handleOnClose = useCallback(() => {
+        navigate('/dashboard/store/superior');
+        dispatch(getStore({ userId: userId, storeId: storeId }));
+        // navigate(-1);
+    }, []);
+
     const sendPing = () => {
         if (userId != 0) {
             dispatch(ping(userId));
         }
     }
-    const getC = () => {
-        if (token) {
-            dispatch(getClientData({ userId: userId, token: token }));
+    const getNotifiy = () => {
+        if (token != '') {
+            dispatch(getNotifications({ userId: userId, token: token }));
         }
     }
     useEffect(() => {
         // Call the sendPing function every 2 seconds
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
+        const pingInterval2 = setInterval(getNotifiy, PING_INTERVAL2);
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
+            clearInterval(pingInterval2)
         };
 
     }, [])
     return (
         <>
-            <Dialog onClose={handleOnClose} open={open}>
+            <Dialog onClose={handleOnClose} open={true}>
                 <Box
                     sx={{
                         marginTop: 4,
@@ -111,12 +109,32 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
                     >
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                {mode === 'add' ? <b>אנא הוסף את פרטי המוצר החדש</b> : <b>אנא עדכן את פרטי המוצר</b>}
+                                {mode === 'add' ? <b>please enter new products's details</b> : <b>update product</b>}
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
                             {/* <SelectAutoWidth label={label} values={types_names} labels={types_names} value={type} handleChange={handleSetType} /> */}
                         </Grid>
+                        {mode === 'edit' ?
+                            <Grid item xs={12}>
+                                <TextField
+                                    name="productId"
+                                    type="text"
+                                    fullWidth
+                                    label="product id"
+                                    sx={{ mt: 1, mb: 1 }}
+                                    inputProps={{
+                                        ...form.register('productId', {
+                                            required: {
+                                                value: mode === 'edit' ? true : false,
+                                                message: "product id is required"
+                                            }
+                                        })
+                                    }}
+                                    error={!!form.formState.errors['productId'] ?? false}
+                                    helperText={form.formState.errors['productId']?.message ?? undefined}
+                                />
+                            </Grid> : null}
                         <Grid item xs={12}>
                             <TextField
                                 name="name"
@@ -250,8 +268,7 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
             </Dialog >
             {!!error ?
                 <AlertDialog open={!!error} onClose={() => { dispatch(clearProductError()); }} text={error} sevirity={"error"} />
-                : mode == "add" ? <SuccessAlert message={"product added successfuly"} /> :
-                    <SuccessAlert message={"product updated successfuly"} />
+                : null
             }
         </>
     );

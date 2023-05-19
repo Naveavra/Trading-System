@@ -4,7 +4,6 @@ import { ApiResponse, ApiResponseListData } from '../types/apiTypes';
 export const apiErrorHandlerWrapper = (promise: Promise<AxiosResponse>): Promise<ApiResponseListData<any> | ApiResponse<any>> => {
     return promise
         .then((res) => {
-
             if (res.status >= 500 && res.status < 600) {
                 return Promise.reject({
                     message: res.data
@@ -22,7 +21,7 @@ export const apiErrorHandlerWrapper = (promise: Promise<AxiosResponse>): Promise
 export const removeEmptyValues = (obj: any) => {
     let tmp = { ...obj };
     Object.keys(tmp).forEach((key) => {
-        if (!tmp[key] || tmp[key] === "") {
+        if (tmp[key] === "") {
             tmp[key] = null;
         }
     });

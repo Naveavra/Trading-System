@@ -1,5 +1,5 @@
 import React from "react";
-import "./Cart.scss";
+import "./Cart.css";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 //import { removeItem, resetCart } from "../../redux/cartReducer";
 ;
@@ -7,11 +7,13 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { Product } from "../../types/systemTypes/Product";
 import { CartProduct } from "../../types/systemTypes/CartProduct";
+import { buyCart, removeFromCart } from "../../reducers/cartSlice";
 
 const Cart = () => {
     //todo: implemet redux cart functionality
     const products: CartProduct[] = [];//useAppSelector((state) => state.cart.products);
     const dispatch = useAppDispatch();
+    const userId = useAppSelector((state) => state.auth.userId);
 
     const totalPrice = () => {
         let total = 0;
@@ -35,7 +37,7 @@ const Cart = () => {
         // } catch (err) {
         //   console.log(err);
         // }
-        dispatch(makePurchace({ userId: -1, accountNumber: '' }))
+        dispatch(buyCart({ userId: userId, accountNumber: '' }))
     };
     return (
         <div className="cart">
@@ -52,7 +54,7 @@ const Cart = () => {
                     </div>
                     <DeleteOutlinedIcon
                         className="delete"
-                        onClick={() => dispatch(removeItem(item.id))}
+                        onClick={() => dispatch(removeFromCart({ userId: userId, storeId: item.storeId, productId: item.id, quantity: item.quantity }))}
                     />
                 </div>
             ))}

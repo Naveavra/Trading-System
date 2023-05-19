@@ -3,7 +3,7 @@ import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "../../../../redux/store";
 
-import { getClientData, logout } from "../../../../reducers/authSlice";
+import { getNotifications, logout } from "../../../../reducers/authSlice";
 import Bar2 from "../../../../components/Bars/Navbar/NavBar2";
 import { Product } from "../../../../types/systemTypes/Product";
 import { products } from "../../../../mock/products";
@@ -11,7 +11,7 @@ import { Box, CardContent, Typography, Card, Divider, Button } from "@mui/materi
 import ProductCard from "../../../../components/ProductCard/Card";
 import axios from "axios";
 import { getProducts } from "../../../../reducers/productsSlice";
-import { getStoresInfo } from "../../../../reducers/storesSlice";
+import { clearStoreError, clearStoresResponse, getStoresInfo } from "../../../../reducers/storesSlice";
 import { Action } from "../../../../types/systemTypes/Action";
 
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from '@mui/x-data-grid';
@@ -19,6 +19,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Dehaze from '@mui/icons-material/Dehaze';
 import React from "react";
+import SuccessAlert from "../../../../components/Alerts/success";
+import ErrorAlert from "../../../../components/Alerts/error";
 
 
 const Superior: React.FC = () => {
@@ -34,20 +36,23 @@ const Superior: React.FC = () => {
     const userName = useAppSelector(state => state.auth.userName);
     const privateName = userName.split('@')[0];
     const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
-    const products = useAppSelector((state) => state.store.storeState.watchedStore.inventory);
+    const inventory = useAppSelector((state) => state.store.storeState.watchedStore.inventory);
     const permmisions = useAppSelector((state: RootState) => state.auth.permissions).filter((perm) => perm.storeId === storeId);
-    const Actions = permmisions.length > 0 ? permmisions[0]?.actions : [];
+    const Actions = permmisions[0]?.actions ?? [];
     const canRemove = Actions.includes(Action.removeProduct);
     const canEdit = Actions.includes(Action.updateProduct);
+
+    const storeError = useAppSelector((state) => state.store.storeState.error);
+    const storeMessage = useAppSelector((state) => state.store.storeState.responseData);
+
     const orders = useAppSelector((state) => state.store.storeState.watchedStore.storeOrders).map((order) => {
         return {
             id: order.orderId,
             userId: order.userId,
-            num_products: order.productsInStores.products?.reduce((acc, curr) => acc + curr.reduce((acc1, curr1) => acc1 + curr1.quantity, 0), 0),
+            num_products: order.productsInStores?.reduce((acc, curr) => acc + curr.basket?.reduce((acc1, curr1) => acc1 + curr1?.quantity, 0), 0),
             price: order.totalPrice,
         }
     });
-    console.log("orders", orders);
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
     const PING_INTERVAL2 = 5000; // 10 seconds in milliseconds
 
@@ -77,7 +82,7 @@ const Superior: React.FC = () => {
 
     const getC = () => {
         if (token) {
-            dispatch(getClientData({ userId: userId, token: token }));
+            dispatch(getNotifications({ userId: userId, token: token }));
         }
     }
 
@@ -136,7 +141,7 @@ const Superior: React.FC = () => {
 
 
     return (<>
-        <Bar2 headLine={`wellcome to the store ${privateName}`} />
+        <Bar2 headLine={`hellow ${privateName} , wellcome to `} />
         <Box>
             <Card sx={{ minWidth: 275 }}>
                 <CardContent>
@@ -155,6 +160,8 @@ const Superior: React.FC = () => {
                 </CardContent>
             </Card>
         </Box >
+        {storeMessage ? <SuccessAlert message={storeMessage} onClose={() => { dispatch(clearStoresResponse({})) }} /> : null}
+        {storeError ? <ErrorAlert message={storeError} onClose={() => { dispatch(clearStoreError({})) }} /> : null}
         <Typography variant="h4" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 84, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif', textDecoration: 'underline' }}>
             orders
         </Typography >
@@ -183,13 +190,14 @@ const Superior: React.FC = () => {
         </Box>
         <Divider />
         <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >
-            {products.map((product) => {
+            {inventory.map((product) => {
                 return (
-                    <ProductCard item={{ ...product.product, storeId: storeId }} canDelete={canRemove} canEdit={canEdit} key={product.id} />
+                    <ProductCard item={product} canDelete={canRemove} canEdit={canEdit} key={product.productId} />
                 );
             })
             }
         </Box>
+
         <Outlet />
     </>
     );
@@ -198,10 +206,6 @@ function EditToolbar() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const fontSize = 'large';//useAppSelector((state) => state.global.clientSettings.fontSize.size);
-    const handlerAddUser = () => {
-        navigate('new_customer');
-        //dispatch(setAddUserDialogOpen(true));
-    };
 
     return (
         <div>

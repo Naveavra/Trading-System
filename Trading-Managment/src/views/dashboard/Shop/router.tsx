@@ -5,8 +5,8 @@ import { VisitorShopRoutes } from "./Visitor/router";
 import Shops from ".";
 
 export const ShopRoutes = [
-    <Route key="routes" path="shops" >
-        <Route path="/dashboard/shops" element={<Shops />} />
+    <Route key="routes" path="store" >
+        <Route path="/dashboard/store" element={<Shops />} />
         {SuperiorShopRoutes}
         {VisitorShopRoutes}
     </Route>

@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiError, ApiListData, ApiResponse } from "../types/apiTypes";
-import { Basket } from "../types/systemTypes/Basket";
-import { DeleteCartParams, GetCartParams, PatchCartParams, PostBasketParams } from "../types/requestTypes/cartTypes";
+import { DeleteCartParams, GetCartParams, PatchCartParams, PostBasketParams, buyCartParams } from "../types/requestTypes/cartTypes";
 import { cartApi } from "../api/cartApi";
-import { Cart, emptyCart } from "../types/systemTypes/Cart";
+import { Basket } from "../types/systemTypes/Basket";
 
 const reducerName = 'carts';
 
@@ -14,7 +13,7 @@ interface CartState {
         error: string | null;
     },
     isLoading: boolean;
-    responseData: Cart;
+    responseData: Basket[];
     error: string | null;
 };
 
@@ -25,7 +24,7 @@ const initialState: CartState = {
         error: null,
     },
     isLoading: false,
-    responseData: emptyCart,
+    responseData: [],
     error: null,
 };
 // export const postBasket = createAsyncThunk<
@@ -65,14 +64,14 @@ export const deleteCart = createAsyncThunk<
     });
 
 export const getCart = createAsyncThunk<
-    Cart,
+    Basket[],
     GetCartParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/get`,
     async (formData, thunkApi) => {
         return cartApi.getCart(formData)
-            .then((res) => thunkApi.fulfillWithValue(res as Cart))
+            .then((res) => thunkApi.fulfillWithValue(res as Basket[]))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
@@ -100,7 +99,19 @@ export const removeFromCart = createAsyncThunk<
         return cartApi.removeFromCart(formData)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
-    });//buy
+    });
+//buy
+export const buyCart = createAsyncThunk<
+    string,
+    buyCartParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/buyCart`,
+    async (formData, thunkApi) => {
+        return cartApi.buyCart(formData)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
 
 const { reducer: cartReducer, actions: cartActions } = createSlice({
     name: reducerName,
@@ -121,6 +132,8 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         });
         builder.addCase(getCart.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
+            debugger;
+            console.log("cart!!!", payload);
             state.responseData = payload;
             state.error = null;
         });
@@ -167,6 +180,20 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         builder.addCase(deleteCart.rejected, (state, { payload }) => {
             state.basketState.error = payload?.message.data ?? "error during deleteCart";
             state.basketState.isLoading = false;
+        });
+        //buy cart
+        builder.addCase(buyCart.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(buyCart.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.basketState.responseData = payload;
+            state.error = null;
+        });
+        builder.addCase(buyCart.rejected, (state, { payload }) => {
+            state.error = payload?.message.data ?? "error during buyCart";
+            state.isLoading = false;
         });
     }
 });

@@ -9,7 +9,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { Product } from "../../../types/systemTypes/Product";
 import { Avatar, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
-import { getClientData, guestEnter, logout } from "../../../reducers/authSlice";
+import { getNotifications, guestEnter, logout } from "../../../reducers/authSlice";
 import { getStore } from "../../../reducers/storesSlice";
 import { StoreRole } from "../../../types/systemTypes/StoreRole";
 import { clearNotifications } from "../../../reducers/authSlice";
@@ -32,9 +32,8 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     const stores_names = useAppSelector((state) => state.auth.storeNames);
     const store_images = useAppSelector((state) => state.auth.storeImgs);
     const token = useAppSelector((state) => state.auth.token) ?? "";
-
     const cart = useAppSelector((state) => state.cart.responseData);
-    const numProductsIncart = cart?.baskets?.reduce((acc, item) => acc + item.products.productsList.length, 0) ?? 0;
+    const numProductsIncart = cart?.reduce((acc, item) => acc + item.products?.reduce((acc1, curr1) => acc1 + curr1.quantity, 0), 0) ?? 0;
 
     const stores = stores_roles ? stores_roles.map((role, index) => {
         return {
@@ -44,16 +43,16 @@ const Bar: React.FC<Props> = ({ headLine }) => {
             storeImg: store_images[index].storeImg,
         }
     }) : [];
-
+    console.log(stores)
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
-    const handleLogout = () => {
-        dispatch(logout(userId));
+    const handleLogout = async () => {
+        await dispatch(logout(userId));
         navigate('/auth/login');
     };
     const handleChooseStore = (storeNumber: number) => () => {
         dispatch(getStore({ userId: userId, storeId: storeNumber }));
-        navigate('shops/superior');
+        navigate('store/superior');
     }
     const handleNotification = () => {
         setNotificationDialogOpen(true);
@@ -63,8 +62,8 @@ const Bar: React.FC<Props> = ({ headLine }) => {
         console.log(`confirm message ${idx}`);
     }
     useEffect(() => {
-        dispatch(getClientData({ userId: userId, token: token }));
-    }, [])
+        dispatch(getNotifications({ userId: userId, token: token }));
+    }, [dispatch])
     return (
         <div className="navbar">
             <div className="wrapper">
@@ -114,7 +113,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                                 </IconButton>
                             </>
                         }
-                        <IconButton onClick={() => navigate(`/dashboard/${userId}/cart`)}>
+                        <IconButton onClick={() => navigate(`/dashboard/cart`)}>
                             <div className="cartIcon">
                                 <ShoppingCartOutlinedIcon />
                                 <span>{numProductsIncart}</span>
@@ -205,7 +204,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                         >
                             <DialogTitle>your notifications</DialogTitle>
                             <>
-                                {notification.map((not, index) => {
+                                {notification?.map((not, index) => {
                                     return (
                                         <DialogContent dividers key={index}>
                                             <Box ml={3} display={'flex'} key={index}>

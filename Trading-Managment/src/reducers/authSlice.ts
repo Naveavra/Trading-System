@@ -1,13 +1,12 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ApiError } from "../types/apiTypes";
-import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData, getClientResponseData } from "../types/responseTypes/authTypes";
+import { ApiError, ApiListData, ApiResponseListData } from "../types/apiTypes";
+import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData, getClientResponseData, getClientNotifications } from "../types/responseTypes/authTypes";
 import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
-import { RegisterPostData } from "../types/requestTypes/authTypes";
+import { RegisterPostData, getUserData, getUserNotifications } from "../types/requestTypes/authTypes";
 import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
-import { getUserData } from "../types/requestTypes/authTypes";
 
 interface AuthState {
     token: string;
@@ -87,7 +86,7 @@ export const logout = createAsyncThunk<
 >(
     `${reducrName}/logout`,
     async (userId, thunkApi) => {
-        return authApi.logout(userId)
+        return await authApi.logout(userId)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
@@ -116,7 +115,18 @@ export const ping = createAsyncThunk<
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
-//get client data
+
+export const getNotifications = createAsyncThunk<
+    getClientNotifications,
+    getUserNotifications,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/getNotifications`,
+    async (credential, thunkApi) => {
+        return authApi.getNotifications(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as getClientNotifications))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
 export const getClientData = createAsyncThunk<
     getClientResponseData,
     getUserData,
@@ -128,6 +138,7 @@ export const getClientData = createAsyncThunk<
             .then((res) => thunkApi.fulfillWithValue(res as getClientResponseData))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
+
 const { reducer: authReducer, actions: authActions } = createSlice({
     name: reducrName,
     initialState,
@@ -234,6 +245,18 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.error = payload?.message.data ?? "error during guest enter";
         });
         // get client data
+        builder.addCase(getNotifications.pending, (state) => {
+            state.isLoginLoading = true;
+            state.error = null;
+        });
+        builder.addCase(getNotifications.fulfilled, (state, { payload }) => {
+            state.isLoginLoading = false;
+            state.notifications = state.notifications.concat(payload.notifications);
+        });
+        builder.addCase(getNotifications.rejected, (state, { payload }) => {
+            state.isLoginLoading = false;
+        });
+        // get client data
         builder.addCase(getClientData.pending, (state) => {
             state.isLoginLoading = true;
             state.error = null;
@@ -246,14 +269,13 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.storeRoles = payload.storeRoles;
             state.storeNames = payload.storeNames;
             state.storeImgs = payload.storeImgs;
-            state.notifications = payload.notifications;
+            state.notifications = state.notifications.concat(payload.notifications);
             state.permissions = payload.permissions;
         });
         builder.addCase(getClientData.rejected, (state, { payload }) => {
             state.isLoginLoading = false;
             state.error = payload?.message.data ?? "error during get client data";
         });
-
     }
 });
 // Action creators are generated for each case reducer function

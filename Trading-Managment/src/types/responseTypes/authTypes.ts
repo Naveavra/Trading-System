@@ -31,3 +31,6 @@ export interface getClientResponseData {
     storeImgs: StoreImg[];
     permissions: Permission[];
 };
+export interface getClientNotifications {
+    notifications: string[];
+};

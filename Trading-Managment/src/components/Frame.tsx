@@ -14,7 +14,7 @@ import ProductCard from './ProductCard/Card';
 import { Product } from '../types/systemTypes/Product';
 import { getStoresInfo } from '../reducers/storesSlice';
 import { getProducts } from '../reducers/productsSlice';
-import { getClientData, ping } from '../reducers/authSlice';
+import { getNotifications, ping } from '../reducers/authSlice';
 
 const DashboardFrame: React.FC = () => {
 
@@ -42,8 +42,8 @@ const DashboardFrame: React.FC = () => {
         }
     }
     const getC = () => {
-        if (token) {
-            dispatch(getClientData({ userId: userId, token: token }));
+        if (token != "") {
+            dispatch(getNotifications({ userId: userId, token: token }));
         }
     }
     useEffect(() => {
@@ -91,9 +91,4 @@ const DashboardFrame: React.FC = () => {
     </>);
 };
 
-export default DashboardFrame
-
-function getClient(arg0: { userId: number; token: string; }): any {
-    throw new Error('Function not implemented.');
-}
-
+export default DashboardFrame;

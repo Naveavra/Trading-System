@@ -18,3 +18,8 @@ export interface StoreImg {
     storeImg: string;
     storeId: number;
 }
+export interface RoleInStore {
+    userId: number;
+    userName: string;
+    storeRole: StoreRoleEnum;
+}

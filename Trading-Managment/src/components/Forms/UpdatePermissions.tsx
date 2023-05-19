@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { fireUserFormValues } from "../../types/formsTypes";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,9 +16,10 @@ import { patchPermissionsParams } from "../../types/requestTypes/storeTypes";
 
 const UpdatePermissions = () => {
     const dispatch = useAppDispatch();
-    const [open, setOpen] = useState(true);
     const [userToFireId, setUserToFireId] = useState(-1);
     const [user_name, setUser_name] = useState('');
+
+
     const userId = useAppSelector((state) => state.auth.userId);
     const form = useForm<patchPermissionsParams>();
     const navigate = useNavigate();
@@ -36,12 +37,11 @@ const UpdatePermissions = () => {
 
 
     //maybe take it from params
-    const handleOnClose = () => {
-        setOpen(false);
-        navigate(-1);
-        dispatch(getStore({ userId: Number(userId), storeId: storeId }));
+    const handleOnClose = useCallback(() => {
+        navigate('/dashboard/store/superior');
+        dispatch(getStore({ userId: userId, storeId: storeId }));
+    }, []);
 
-    }
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
         form.setValue('storeId', storeId);
@@ -51,11 +51,7 @@ const UpdatePermissions = () => {
         const ans = permissions[0].split(',');
         form.setValue('permissions', ans);
         const response = dispatch(patchPermissions(form.getValues()));
-        response.then((res: { meta: { requestStatus: string; }; }) => {
-            if (res.meta.requestStatus === 'fulfilled') {
-                handleOnClose();
-            }
-        });
+        handleOnClose();
     }
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -65,7 +61,7 @@ const UpdatePermissions = () => {
 
     return (
         <>
-            <Dialog onClose={handleOnClose} open={open}>
+            <Dialog onClose={handleOnClose} open={true}>
                 <Box
                     sx={{
                         marginTop: 4,

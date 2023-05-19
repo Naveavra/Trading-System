@@ -1,12 +1,18 @@
-import { Alert, AlertTitle } from "@mui/material"
+import { Alert, AlertTitle, Button } from "@mui/material"
 interface SuccessAlertProps {
     message: string
+    onClose: () => void;
 }
-const SuccessAlert: React.FC<SuccessAlertProps> = ({ message }) => {
+const SuccessAlert: React.FC<SuccessAlertProps> = ({ message, onClose }) => {
     return (
-        <Alert severity="success">
-            <AlertTitle>Success</AlertTitle>
-            <strong>{message}</strong>
+        <Alert sx={{ margin: 'auto', width: '50%' }}
+            action={
+                <Button color="inherit" size="small" onClick={onClose}>
+                    CLOSE
+                </Button>
+            }
+        >
+            {message}
         </Alert>
     );
 }

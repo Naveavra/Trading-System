@@ -52,6 +52,7 @@ export const patchProduct = createAsyncThunk<
 >(
     `${reducerName}/patch`,
     async (formData, thunkApi) => {
+        debugger;
         const data = removeEmptyValues(formData);
         return productsApi.patchProduct(data)
             .then((res) => thunkApi.fulfillWithValue(res as string))

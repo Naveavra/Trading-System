@@ -1304,6 +1304,7 @@ public class Market implements MarketInterface {
         return admins.size();
     }
 
+
     public void setActionIds(){
         actionIds.put(0, Action.addProduct);
         actionIds.put(1, Action.removeProduct);
@@ -1343,5 +1344,20 @@ public class Market implements MarketInterface {
     public LoginInformation getAdminLoginInformation(String token, int userId, String email){
         return new LoginInformation(token, userId, email, true, null,
                 null, null, null, null);
+      
+    public Response<List<String>> getMemberNotifications(int userId, String token) {
+        try {
+            userAuth.checkUser(userId, token);
+            if (userId % 2 == 1 && userController.isActiveUser(userId)) {
+                return new Response<List<String>>(displayNotifications(userId, token).getValue(), null, null);
+            }
+            else if(activeAdmins.containsKey(userId)){
+                return new Response<List<String>>(null, null, null);
+            }
+            else
+                return new Response<>(null, "get member failed", "the userId given does not belong to any user");
+        }catch (Exception e){
+            return new Response<>(null, "get member failed", e.getMessage());
+        }
     }
 }
