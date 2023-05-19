@@ -20,7 +20,7 @@ public interface MarketInterface {
     public Response addProductToCart(int userId,int storeId ,int productId, int quantity);
     public Response removeProductFromCart(int userId,  int storeId, int productId);
     public Response changeQuantityInCart(int userId, int storeId, int productId, int change);
-    public Response getCart(int id);
+    public Response getCartHash(int id);
     Response<String> removeCart(int userId);
     public Response makePurchase(int userId , String accountNumber);
     public Response getStoreDescription(int storeId);

@@ -1,9 +1,9 @@
 package market;
 
 import domain.store.storeManagement.AppHistory;
+import domain.user.Basket;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
-import org.json.JSONObject;
 import service.security.UserAuth;
 import service.supplier.ProxySupplier;
 import service.UserController;
@@ -236,12 +236,12 @@ public class Market implements MarketInterface {
         }
     }
 
-    public Response<List<JSONObject>> getCartJson(int id) {
+    public Response<HashMap<Integer, ? extends Information>> getCart(int id) {
         try {
-            List<JSONObject> cart = userController.getUserCartJson(id);
+            HashMap<Integer, ? extends Information> baskets = userController.getUserCart(id).getBaskets();
             String name = userController.getUserName(id);
             return logAndRes(Logger.logStatus.Success, "user" + name + "ask for his cart on " + LocalDateTime.now(),
-                    cart, null, null);
+                    baskets, null, null);
         } catch (Exception e) {
             return logAndRes(Logger.logStatus.Fail, "user cant get his cart because " + e.getMessage() + "on " + LocalDateTime.now(),
                     null, "get cart failed", e.getMessage());
@@ -1259,7 +1259,7 @@ public class Market implements MarketInterface {
     public String addTokenForTests() {
         return userAuth.generateToken(0);
     }
-    public Response<HashMap<Integer, HashMap<java.lang.Integer,java.lang.Integer>>> getCart(int id) {
+    public Response<HashMap<Integer, HashMap<java.lang.Integer,java.lang.Integer>>> getCartHash(int id) {
         try {
             HashMap<Integer, HashMap<java.lang.Integer,java.lang.Integer>> cart = userController.getUserCart(id).getContent();
             String name = userController.getUserName(id);
@@ -1341,23 +1341,16 @@ public class Market implements MarketInterface {
         return userController.getLoginInformation(memberId, token);
     }
 
-    public LoginInformation getAdminLoginInformation(String token, int userId, String email){
+    public LoginInformation getAdminLoginInformation(String token, int userId, String email) {
         return new LoginInformation(token, userId, email, true, null,
                 null, null, null, null);
+    }
       
     public Response<List<String>> getMemberNotifications(int userId, String token) {
         try {
-            userAuth.checkUser(userId, token);
-            if (userId % 2 == 1 && userController.isActiveUser(userId)) {
-                return new Response<List<String>>(displayNotifications(userId, token).getValue(), null, null);
-            }
-            else if(activeAdmins.containsKey(userId)){
-                return new Response<List<String>>(null, null, null);
-            }
-            else
-                return new Response<>(null, "get member failed", "the userId given does not belong to any user");
+            return new Response<List<String>>(displayNotifications(userId, token).getValue(), null, null);
         }catch (Exception e){
-            return new Response<>(null, "get member failed", e.getMessage());
+            return new Response<>(null, "get member notifications failed", e.getMessage());
         }
     }
 }

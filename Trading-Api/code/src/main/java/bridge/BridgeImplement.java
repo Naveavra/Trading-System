@@ -494,7 +494,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public CartInfo getCart(int user) {
-        Response<HashMap<Integer, HashMap<Integer, Integer>>> res = market.getCart(user);
+        Response<HashMap<Integer, HashMap<Integer, Integer>>> res = market.getCartHash(user);
         if(!res.errorOccurred())
         {
             return new CartInfo(res.getValue());

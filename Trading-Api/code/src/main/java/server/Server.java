@@ -1,7 +1,6 @@
 package server;
 
 import com.google.gson.Gson;
-import domain.store.storeManagement.Store;
 import org.json.JSONObject;
 import utils.Pair;
 
@@ -13,8 +12,6 @@ import java.util.List;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import static spark.Spark.*;
@@ -107,7 +104,7 @@ public class Server {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = request.get("token").toString();
-            toSparkRes(res, api.getClientNotifications(userId, token));
+            toSparkRes(res, api.getMemberNotifications(userId, token));
             return res.body();
         });
         post("api/auth/getClient", (req, res) -> {

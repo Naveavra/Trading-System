@@ -1,12 +1,14 @@
 package domain.user;
 
+import org.eclipse.jetty.util.ajax.JSON;
 import org.json.JSONObject;
+import utils.infoRelated.Information;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ShoppingCart {
+public class ShoppingCart{
     private HashMap<Integer, Basket> baskets; // saves the connection between a shop and its basket;
 
     public ShoppingCart (){
@@ -85,4 +87,7 @@ public class ShoppingCart {
         baskets.clear();
     }
 
+    public HashMap<Integer, Basket> getBaskets() {
+        return baskets;
+    }
 }

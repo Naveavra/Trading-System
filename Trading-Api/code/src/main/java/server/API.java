@@ -3,7 +3,7 @@ package server;
 import com.google.gson.Gson;
 import domain.store.storeManagement.AppHistory;
 import domain.store.storeManagement.Store;
-import domain.user.PurchaseHistory;
+import domain.user.ShoppingCart;
 import market.Admin;
 import market.Market;
 import org.json.JSONObject;
@@ -70,7 +70,8 @@ public class API {
         }
     }
 
-    private Pair<Boolean, JSONObject> fromResToPairHashMap(Response<HashMap<Integer, ? extends Information>> res){
+    private Pair<Boolean, JSONObject> fromResToPairHashMap(Response<HashMap<Integer, ? extends Information>> res, String key,
+                                                           String value){
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
         {
@@ -78,7 +79,7 @@ public class API {
             return new Pair<>(false, json);
         }
         else {
-            json.put("value", Information.hashMapToJson(res.getValue(), "messageId", "question"));
+            json.put("value", Information.hashMapToJson(res.getValue(), key, value));
             return new Pair<>(true, json);
         }
     }
@@ -130,8 +131,8 @@ public class API {
 //    }
 
     public Pair<Boolean, JSONObject> getCart(int id){
-        Response<List<JSONObject>> res = market.getCartJson(id);
-        return fromResToPair(res);
+        Response<HashMap<Integer, ? extends Information>> res = market.getCart(id);
+        return fromResToPairHashMap(res, "storeId", "products");
     }
 
     public Pair<Boolean, JSONObject> makePurchase(int userId , String accountNumber){
@@ -149,7 +150,7 @@ public class API {
         Response<LoginInformation> res = market.login(email, pass);
         return fromResToPairInfo(res);
     }
-    public Pair<Boolean, JSONObject> getClientNotifications(int userId, String token) {
+    public Pair<Boolean, JSONObject> getMemberNotifications(int userId, String token) {
         Response<List<String>> res = market.getMemberNotifications(userId, token);
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
@@ -527,7 +528,7 @@ public class API {
     public Pair<Boolean, JSONObject> viewQuestions(int userId, String token, int storeId)
     {
         Response<HashMap<Integer, ? extends Information>> res = market.viewQuestions(userId, token, storeId);
-        return fromResToPairHashMap(res);
+        return fromResToPairHashMap(res, "messageId", "question");
     }
 
     public Pair<Boolean, JSONObject> getUsersPurchaseHistory(int buyerId, String token)

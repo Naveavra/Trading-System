@@ -1,10 +1,11 @@
 package domain.user;
 
 import org.json.JSONObject;
+import utils.infoRelated.Information;
 
 import java.util.*;
 
-public class Basket {
+public class Basket extends Information {
     private int storeId;
     private HashMap<Integer, Integer> productList; //a list of all the product ids and their quantities related to a specific shop
 
