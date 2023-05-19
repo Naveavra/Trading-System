@@ -322,9 +322,6 @@ public class Server {
 
         //cart
         get("api/cart/:id", (req, res) -> {
-            //when a user change quantity of a product in specific store basket
-            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
-            // int userId = Integer.parseInt(req.queryParams("userId"));
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             toSparkRes(res, api.getCart(userId));

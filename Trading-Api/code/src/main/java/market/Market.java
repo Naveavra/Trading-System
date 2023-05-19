@@ -3,7 +3,6 @@ package market;
 import domain.store.storeManagement.AppHistory;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
-import org.eclipse.jetty.util.log.Log;
 import org.json.JSONObject;
 import service.security.UserAuth;
 import service.supplier.ProxySupplier;
@@ -63,7 +62,7 @@ public class Market implements MarketInterface {
         setActionIds();
 
         ids = new AtomicInteger(1);
-        addAdmin(0, null, email, pass);
+        addAdmin(0, addTokenForTests(), email, pass);
     }
 
 
@@ -93,9 +92,8 @@ public class Market implements MarketInterface {
     public Response<String> register(String email, String pass, String birthday) {
         try {
             String hashedPassword = userAuth.hashPassword(email, pass, true);
-            userController.checkPassword(pass);
             int id = ids.getAndIncrement();
-            userController.register(id, email, hashedPassword, birthday);
+            userController.register(id, email, pass, hashedPassword, birthday);
             marketInfo.addRegisteredCount();
             return logAndRes(Logger.logStatus.Success, "user :" + email + " has successfully register on " + LocalDateTime.now(),
                     "registered successfully", null, null);
@@ -109,10 +107,9 @@ public class Market implements MarketInterface {
     public Response<LoginInformation> login(String email, String pass) {
         try {
             userAuth.checkPassword(email, pass);
-            if (checkIsAdmin(email)){
+            if (!checkIsAdmin(email)){
                 String hashedPass = userAuth.hashPassword(email, pass, false);
                 int memberId = userController.login(email, hashedPass);
-                userController.checkPassword(pass);
                 marketInfo.addUserCount();
                 String token = userAuth.generateToken(memberId);
                 LoginInformation loginInformation = getLoginInformation(token, memberId, email);
@@ -144,63 +141,6 @@ public class Market implements MarketInterface {
             return new Response<>(null, "get member failed", e.getMessage());
         }
     }
-
-    @Override
-    public Response<String> checkSecurityQuestions(int userId, String token, List<String> answers) {
-        try {
-            userAuth.checkUser(userId, token);
-            userController.checkSecurityQuestions(userId, answers);
-            return logAndRes(Logger.logStatus.Success, "user: " + userId + " entered security answers successfully on " + LocalDateTime.now(),
-                    "security questions were added successfully", null, null);
-        }
-        catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "user cant add security question because " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "add security question failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<String> addSecurityQuestion(int userId, String token, String question, String answer) {
-        try {
-            userAuth.checkUser(userId, token);
-            userController.addSecurityQuestion(userId, question, answer);
-            return logAndRes(Logger.logStatus.Success, "user: " + userId + " added security question successfully on " + LocalDateTime.now(),
-                    "security question added successfully", null, null);
-        }
-        catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "user cant add security question because " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "add security question failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<String> changeAnswerForLoginQuestion(int userId, String token, String question, String answer) {
-        try {
-            userAuth.checkUser(userId, token);
-            userController.changeAnswerForLoginQuestion(userId, question, answer);
-            return logAndRes(Logger.logStatus.Success, "user: " + userId + " changed security answer successfully on " + LocalDateTime.now(),
-                    "security answer changed successfully", null, null);
-        }
-        catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "user cant change security answer because " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "change security answer failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<String> removeSecurityQuestion(int userId, String token, String question) {
-        try {
-            userAuth.checkUser(userId, token);
-            userController.removeSecurityQuestion(userId, question);
-            return logAndRes(Logger.logStatus.Success, "user: " + userId + " removed security question successfully on " + LocalDateTime.now(),
-                    "security question removed successfully", null, null);
-        }
-        catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "user cant remove security question because " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "remove security question failed", e.getMessage());
-        }
-    }
-
 
 
     @Override
@@ -327,10 +267,12 @@ public class Market implements MarketInterface {
     public synchronized Response<Receipt> makePurchase(int userId, String accountNumber) {
         try {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
+            int totalPrice = marketController.calculatePrice(cart);
+            proxyPayment.makePurchase(accountNumber, totalPrice);
+            proxySupplier.checkSupply(cart);
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userId);
             Receipt receipt = ans.getFirst();
             Set<Integer> creatorIds = ans.getSecond();
-            proxyPayment.makePurchase(accountNumber, receipt.getTotalPrice());
             userController.purchaseMade(userId, receipt.getOrderId(), receipt.getTotalPrice());
             //TODO: make an external service handle notifications
             for(int creatorId : creatorIds)
@@ -381,8 +323,7 @@ public class Market implements MarketInterface {
             userAuth.checkPassword(email, oldPass);
             String oldHashedPass = userAuth.hashPassword(email, oldPass, false);
             String newHashedPass = userAuth.hashPassword(email, newPass, true);
-            userController.checkPassword(newPass);
-            userController.changeUserPassword(userId, oldHashedPass, newHashedPass);
+            userController.changeUserPassword(userId, oldHashedPass, newPass, newHashedPass);
             String name = userController.getUserName(userId);
             return logAndRes(Logger.logStatus.Success, "user" + name + "changed password successfully on " + LocalDateTime.now(),
                     " you changed details successfully", null, null);
@@ -421,21 +362,15 @@ public class Market implements MarketInterface {
         }
     }
 
-    private void checkAdminOrSame(int userId, int buyerId) throws Exception{
-        if (!(userId < 0 || userId == buyerId)) //if it's the admin or the user himself
-        {
-            throw new Exception("user failed to get purchase history because he doesnt have permission ");
-        }
-        else if(userId == buyerId && (!userController.isActiveUser(userId)))
-            throw new Exception("the id given belong to an inactive member");
-    }
-
     @Override
     public Response<PurchaseHistory> getUserPurchaseHistory(int userId, String token, int buyerId) {
         try {
             userAuth.checkUser(userId, token);
-            checkAdminOrSame(userId, buyerId);
-            PurchaseHistory orders = userController.getUserPurchaseHistory(buyerId);
+            PurchaseHistory orders;
+            if(checkIsAdmin(userId))
+                orders = userController.getUserPurchaseHistory(userId, true);
+            else
+                orders = userController.getUserPurchaseHistory(userId, false);
             return logAndRes(Logger.logStatus.Success, "user received orders successfully on " + LocalDateTime.now(),
                     orders, null, null);
         } catch (Exception e) {
@@ -591,7 +526,7 @@ public class Market implements MarketInterface {
             Message m = userController.sendQuestionToStore(userId, storeId, msg);
             int creatorId = marketController.addQuestion(m);
             m.addOwnerEmail(userController.getUserEmail(creatorId));
-            addNotification(userId, "a question of has been added for store: " + storeId);
+            addNotification(creatorId, "a question of has been added for store: " + storeId);
             return logAndRes(Logger.logStatus.Success, "user send question successfully on " + LocalDateTime.now(),
                     "question added successfully", null, null);
         } catch (Exception e) {
@@ -618,7 +553,7 @@ public class Market implements MarketInterface {
     public Response<String> appointManager(int userId, String token, String managerToAppoint, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.appointManager(userController.getUserEmail(userId), managerToAppoint, storeId);
+            userController.appointManager(userId, managerToAppoint, storeId);
             return logAndRes(Logger.logStatus.Success, "user appoint " + managerToAppoint + "to Manager in: " + storeId + " successfully on " + LocalDateTime.now(),
                     "user appointManager successfully", null, null);
         } catch (Exception e) {
@@ -628,15 +563,42 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> appointManager(int userId, String token, int managerIdToAppoint, int storeId) {
+    public Response<String> fireManager(int userId, String token, int managerToFire, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.appointManager(userId, managerIdToAppoint, storeId);
-            return logAndRes(Logger.logStatus.Success, "user appoint " + managerIdToAppoint + "to Manager in: " + storeId + " successfully on " + LocalDateTime.now(),
-                    "user appointManager successfully", null, null);
+            userController.checkPermission(userId, Action.fireManager, storeId);
+            userController.fireManager(userId, managerToFire, storeId);
+            return logAndRes(Logger.logStatus.Success, "user fire manager successfully on " + LocalDateTime.now(),
+                    "user fire manager successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant appoint Manager because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "appoint Manager failed", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "cant fire manager because: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, "fire manager failed", e.getMessage());
+        }
+    }
+
+    @Override
+    public Response<String> appointOwner(int userId, String token, String owner, int storeId) {
+        try {
+            userAuth.checkUser(userId, token);
+            userController.appointOwner(userId, owner, storeId);
+            return logAndRes(Logger.logStatus.Success, "appointed user successfully on " + LocalDateTime.now(),
+                    "user appoint owner successfully", null, null);
+        } catch (Exception e) {
+            return logAndRes(Logger.logStatus.Fail, "cant appoint owner because: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, "appoint owner failed", e.getMessage());
+        }
+    }
+    @Override
+    public Response<String> fireOwner(int userId, String token, int ownerId, int storeId) {
+        try {
+            userAuth.checkUser(userId, token);
+            userController.checkPermission(userId, Action.fireOwner, storeId);
+            userController.fireOwner(userId, ownerId, storeId);
+            return logAndRes(Logger.logStatus.Success, "user fire owner successfully on " + LocalDateTime.now(),
+                    "user fire owner successfully", null, null);
+        } catch (Exception e) {
+            return logAndRes(Logger.logStatus.Fail, "cant fire owner because: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, "fire owner failed", e.getMessage());
         }
     }
 
@@ -725,20 +687,6 @@ public class Market implements MarketInterface {
         } catch (Exception e) {
             return logAndRes(Logger.logStatus.Fail, "cant add purchase constraint policy because: " + e.getMessage() + "on " + LocalDateTime.now(),
                     null, "add purchase constraint failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<String> fireManager(int userId, String token, int managerToFire, int storeId) {
-        try {
-            userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.fireManager, storeId);
-            userController.fireManager(userId, managerToFire, storeId);
-            return logAndRes(Logger.logStatus.Success, "user fire manager successfully on " + LocalDateTime.now(),
-                    "user fire manager successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant fire manager because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "fire manager failed", e.getMessage());
         }
     }
 
@@ -860,96 +808,35 @@ public class Market implements MarketInterface {
         }
     }
 
-    @Override
-    public Response<String> appointOwner(int userId, String token, String owner, int storeId) {
-        try {
-            userAuth.checkUser(userId, token);
-            userController.appointOwner(userController.getUserEmail(userId), owner, storeId);
-            return logAndRes(Logger.logStatus.Success, "appointed user successfully on " + LocalDateTime.now(),
-                    "user appointManager successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant appoint Manager because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "appoint Manager failed", e.getMessage());
-        }
-    }
 
-    @Override
-    public Response<String> appointOwner(int userId, String token, int ownerId, int storeId) {
-        try {
-            userAuth.checkUser(userId, token);
-            userController.appointOwner(userId, ownerId, storeId);
-            return logAndRes(Logger.logStatus.Success, "appointed user successfully on " + LocalDateTime.now(),
-                    "user appointManager successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant appoint Manager because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "appoint Manager failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<String> fireOwner(int userId, String token, int ownerId, int storeId) {
-        try {
-            userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.fireOwner, storeId);
-            userController.fireOwner(userId, ownerId, storeId);
-            return logAndRes(Logger.logStatus.Success, "user fire owner successfully on " + LocalDateTime.now(),
-                    "user fire owner successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant fire owner because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "fire owner failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<String> addManagerPermission(int ownerId, String token, int userId, int storeId, int permissionsId) {
-        try {
-            userAuth.checkUser(ownerId, token);
-            Action a = actionIds.get(permissionsId);
-            userController.addManagerAction(ownerId, userId, a, storeId);
-            return logAndRes(Logger.logStatus.Success, "the action " + permissionsId + " has been added to user: " + userId +
-                    "on time: " + LocalDateTime.now(), "add manager permission was successful", null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant add permission because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "add permission failed", e.getMessage());
-        }
-    }
-
-
-    //TODO: check if need to add logger or not
     @Override
     public Response<String> addManagerPermissions(int ownerId, String token, int userId, int storeId, List<Integer> permissionsIds) {
         try {
             userAuth.checkUser(ownerId, token);
-            for(int permissionsId : permissionsIds)
-                addManagerPermission(ownerId, token, userId, storeId, permissionsId);
-            return new Response<>("add manager permissions was successful", null, null);
+            List<Action> actions = new ArrayList<>();
+            for(int permissionId : permissionsIds)
+                actions.add(actionIds.get(permissionId));
+            userController.addManagerActions(ownerId, userId, actions, storeId);
+            return logAndRes(Logger.logStatus.Success, "added all permissions to "+ userId + " on time " + LocalDateTime.now(),
+                    "add manager permissions was successful", null, null);
         } catch (Exception e) {
-            return new Response<>(null, "add permissions failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<String> removeManagerPermission(int ownerId, String token, int userId, int storeId, int permissionsId) {
-        try {
-            userAuth.checkUser(ownerId, token);
-            Action a = actionIds.get(permissionsId);
-            userController.removeManagerAction(ownerId, userId, a, storeId);
-            return logAndRes(Logger.logStatus.Success, "the action " + permissionsId + " has been removed from user: " + userId +
-                    "on time: " + LocalDateTime.now(), "manager permission was removed successful", null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant remove permission because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "remove permission fail", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "can't add all permissions because: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, "add permissions failed", e.getMessage());
         }
     }
     @Override
     public Response<String> removeManagerPermissions(int ownerId, String token, int userId, int storeId, List<Integer> permissionsIds) {
         try {
             userAuth.checkUser(ownerId, token);
+            List<Action> actions = new ArrayList<>();
             for(int permissionId : permissionsIds)
-                removeManagerPermission(ownerId, token, userId, storeId, permissionId);
-            return new Response<>("manager permission was removed successful", null, null);
+                actions.add(actionIds.get(permissionId));
+            userController.removeManagerActions(ownerId, userId, actions, storeId);
+            return logAndRes(Logger.logStatus.Success, "removed all permissions from "+ userId + " on time " + LocalDateTime.now(),
+                    "remove manager permissions was successful", null, null);
         } catch (Exception e) {
-            return new Response<>(null, "remove permission fail", e.getMessage());
+            return logAndRes(Logger.logStatus.Fail, "can't remove all permissions because: " + e.getMessage() + "on " + LocalDateTime.now(),
+                    null, "remove permissions failed", e.getMessage());
         }
     }
 
@@ -1388,9 +1275,12 @@ public class Market implements MarketInterface {
     public Response<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> getUserPurchaseHistoryHash(int userId, String token, int buyerId) {
         try {
             userAuth.checkUser(userId, token);
-            checkAdminOrSame(userId, buyerId);
-            HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> orders = userController.getUserPurchaseHistoryHash(userId, buyerId);
-            return logAndRes(Logger.logStatus.Success, "user received orders successfully on " + LocalDateTime.now(),
+            HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> orders;
+            if(checkIsAdmin(userId))
+                orders = userController.getUserPurchaseHistoryHash(userId, true);
+            else
+                orders = userController.getUserPurchaseHistoryHash(userId, false);
+           return logAndRes(Logger.logStatus.Success, "user received orders successfully on " + LocalDateTime.now(),
                     orders, null, null);
         } catch (Exception e) {
             return logAndRes(Logger.logStatus.Fail, "cant get user orders because: " + e.getMessage() + "on " + LocalDateTime.now(),
@@ -1437,6 +1327,8 @@ public class Market implements MarketInterface {
         actionIds.put(19, Action.reopenStore);
     }
 
+
+    //atomic function to log and get response
     public Response logAndRes(Logger.logStatus state, String logString, Object value, String errorTi , String errorMsg) {
         logger.log(state, logString);
         return new Response<>(value, errorTi, errorMsg);
@@ -1445,14 +1337,11 @@ public class Market implements MarketInterface {
 
     //get login information
     public LoginInformation getLoginInformation(String token, int memberId, String email) throws Exception{
-        return new LoginInformation(token, memberId, email, true, displayNotifications(memberId, token).getValue(),
-                userController.hasSecQuestions(memberId), userController.getUserRoles(memberId),
-                userController.getStoreNames(memberId), userController.getStoreImgs(memberId),
-                userController.getPermissions(memberId));
+        return userController.getLoginInformation(memberId, token);
     }
 
     public LoginInformation getAdminLoginInformation(String token, int userId, String email){
         return new LoginInformation(token, userId, email, true, null,
-                false, null, null, null, null);
+                null, null, null, null);
     }
 }

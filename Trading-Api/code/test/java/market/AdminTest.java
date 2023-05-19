@@ -11,67 +11,68 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AdminTest {
     private Market market;
-    private Admin admin;
     private String token;
+    private int adminId;
 
     @BeforeEach
     void setUp() {
         market = new Market("eli@gmail.com", "123Aaa");
-        market.adminLogin("eli@gmail.com", "123Aaa");
+        adminId = market.adminLogin("eli@gmail.com", "123Aaa").getValue().getUserId();
         token = market.addTokenForTests();
     }
 
     @Test
     void addAdmin() {
-        market.addAdmin(-1, token, "ziv@gmail.com", "456Bbb");
-        assertEquals(2, market.getAdminsize());
+        int size = market.getAdminsize();
+        market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
+        assertEquals(size+1, market.getAdminsize());
     }
 
     @Test
     void getAdmins(){
-        Response<HashMap<Integer, Admin>> res = market.getAdmins(-1, token);
+        Response<HashMap<Integer, Admin>> res = market.getAdmins(adminId, token);
         assertFalse(res.errorOccurred());
         assertEquals(1, res.getValue().size());
-        assertTrue(res.getValue().get(-1).getEmailAdmin().equals("eli@gmail.com"));
+        assertTrue(res.getValue().get(adminId).getEmailAdmin().equals("eli@gmail.com"));
 
     }
 
     @Test
     void adminLoginAndGetAdmins(){
-        market.addAdmin(-1, token, "ziv@gmail.com", "456Bbb");
-        market.adminLogin("ziv@gmail.com", "456Bbb");
-        Response<HashMap<Integer, Admin>> res = market.getAdmins(-2, token);
+        market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
+        int adminId2 = market.adminLogin("ziv@gmail.com", "456Bbb").getValue().getUserId();
+        Response<HashMap<Integer, Admin>> res = market.getAdmins(adminId2, token);
         assertFalse(res.errorOccurred());
         assertEquals(2, res.getValue().size());
 
     }
     @Test
     void removeAdmin() {
-        market.addAdmin(-1, token, "ziv@gmail.com", "456Bbb");
-        market.adminLogin("ziv@gmail.com", "456Bbb");
+        market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
+        int adminId2 = market.adminLogin("ziv@gmail.com", "456Bbb").getValue().getUserId();
         market.removeAdmin(-2, token);
-        assertEquals(1, market.getAdminsize());
+        assertEquals(adminId2, market.getAdminsize());
     }
 
     @Test
     void closeStorePermanently() {
         market.register("nave@gmail.com", "123Ccc", "01/01/1996");
-        market.login("nave@gmail.com", "123Ccc");
-        market.openStore(1, token, "nike", "good store", "img");
-        market.closeStorePermanently(-1, token, 0);
-        Response<Store> res = market.getStore(1, token, 0);
+        int userId = market.login("nave@gmail.com", "123Ccc").getValue().getUserId();
+        market.openStore(userId, token, "nike", "good store", "img");
+        market.closeStorePermanently(adminId, token, 0);
+        Response<Store> res = market.getStore(userId, token, 0);
         assertTrue(res.errorOccurred());
-        assertEquals(1, market.displayNotifications(1, token).getValue().size());
-        assertEquals(0, market.getMember(1, token).getValue().getStoreRoles().size());
+        assertEquals(1, market.displayNotifications(userId, token).getValue().size());
+        assertEquals(0, market.getMember(userId, token).getValue().getStoreRoles().size());
     }
 
     @Test
     void cancelMembership() {
         market.register("nave@gmail.com", "123Ccc", "01/01/1996");
-        market.login("nave@gmail.com", "123Ccc");
-        market.openStore(1, token, "nike", "good store", "img");
-        market.cancelMembership(-1, token, 1);
-        assertTrue(market.getMember(1, token).errorOccurred());
+        int login = market.login("nave@gmail.com", "123Ccc").getValue().getUserId();
+        market.openStore(login, token, "nike", "good store", "img");
+        market.cancelMembership(adminId, token, login);
+        assertTrue(market.getMember(login, token).errorOccurred());
         Response<Store> res = market.getStore(1, token, 0);
         assertTrue(res.errorOccurred());
     }

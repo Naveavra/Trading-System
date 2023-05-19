@@ -238,7 +238,7 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int appointmentOwnerInStore(int user, int store, int newOwner) {
+    public int appointmentOwnerInStore(int user, int store, String newOwner) {
         Response<String> res = market.appointOwner(user, token, newOwner, store);
         if(res != null && !res.errorOccurred())
         {
@@ -248,7 +248,7 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int appointmentMangerInStore(int user, int store, int manger) {
+    public int appointmentMangerInStore(int user, int store, String manger) {
         Response<String> res = market.appointManager(user, token, manger, store);
         if(res != null && !res.errorOccurred())
         {
@@ -294,7 +294,9 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int addStoreManagerPermissions(int user, int store, int managerId, int permissionsIds) {
-        Response<String> res = market.addManagerPermission(user, token, managerId, store, permissionsIds);
+        List<Integer> ids = new ArrayList<>();
+        ids.add(permissionsIds);
+        Response<String> res = market.addManagerPermissions(user, token, managerId, store, ids);
         if(res == null || res.errorOccurred())
         {
             return -1;
@@ -304,7 +306,9 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int removeStoreManagerPermissions(int user, int store, int managerId,int permissionsIds) {
-        Response<String> res = market.removeManagerPermission(user, token, managerId, store, permissionsIds);
+        List<Integer> ids = new ArrayList<>();
+        ids.add(permissionsIds);
+        Response<String> res = market.removeManagerPermissions(user, token, managerId, store, ids);
         if(res == null || res.errorOccurred())
         {
             return -1;

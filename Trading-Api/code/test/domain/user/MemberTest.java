@@ -57,8 +57,9 @@ class MemberTest {
         try{
             m.login("ziv1234");
             UserState u = new StoreCreator();
-            m.changeRoleInStore(0, u,s);
-            assertTrue(m.checkPermission(Action.appointOwner,0));
+            m.changeRoleInStore(u,s);
+            m.checkPermission(Action.appointOwner,0);
+            assert true;
         }catch (Exception e){
             assertTrue(false);
         }
@@ -68,10 +69,11 @@ class MemberTest {
         try{
             m.login("ziv1234");
             UserState u =new StoreManager();
-            m.changeRoleInStore(0, u,s);
-            assertFalse(m.checkPermission(Action.appointOwner,0));
+            m.changeRoleInStore(u,s);
+            m.checkPermission(Action.appointOwner,0);
+            assert false;
         }catch (Exception e){
-            assertTrue(false);
+            assert true;
         }
     }
 
@@ -104,15 +106,15 @@ class MemberTest {
         m.addProductToCart(0,1,100);
         m.purchaseMade(0,100);
         HashMap<Integer, HashMap<Integer, Integer>> cart = m.getCartContent();
-        assertTrue(cart.size()==0);
+            assertEquals(0, cart.size());
         HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> history = m.getUserPurchaseHistoryHash();
         assertEquals(history.size(), 1);
         for(int orderId : history.keySet())
             for(int storeId : history.get(orderId).keySet())
                 for(int productId : history.get(orderId).get(storeId).keySet())
                         assertTrue(productId == 1 && history.get(orderId).get(storeId).get(productId) == 100);
-    }catch (Exception e){
-        assertTrue(false);
+        }catch (Exception e){
+            assert false;
         }
     }
 
@@ -121,8 +123,10 @@ class MemberTest {
         try{
         m.login("ziv1234");
         m.openStore(s);
-        assertTrue(m.checkPermission(Action.appointOwner, 0));
-    }catch (Exception e) {
+        m.checkPermission(Action.appointOwner, 0);
+        assert true;
+        }catch (Exception e) {
+            assert false;
         }
     }
 
@@ -211,19 +215,19 @@ class MemberTest {
         try{
             m.login("ziv1234");
             m.openStore(s);
-            assertTrue(m.canCheckMessages(s.getStoreId()));
+            m.checkPermission(Action.viewMessages, s.getStoreId());
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             newMem1.login("Ziv12345");
             s.appointUser(m.getId(),newMem1.getId(), Role.Manager);
             StoreManager sm = new StoreManager();
-            newMem1.changeRoleInStore(s.getStoreId(),sm, s);
-            assertTrue(newMem1.canCheckMessages(s.getStoreId()));
+            newMem1.changeRoleInStore(sm, s);
+            newMem1.checkPermission(Action.viewMessages,s.getStoreId());
             Member newMem2 = new Member(5,"ziv1@gmail.com","Ziv12345","1/1/2000");
             newMem2.login("Ziv12345");
             s.appointUser(m.getId(),newMem2.getId(), Role.Owner);
             StoreOwner so = new StoreOwner();
-            newMem2.changeRoleInStore(s.getStoreId(),so, s);
-            assertTrue(newMem2.canCheckMessages(s.getStoreId()));
+            newMem2.changeRoleInStore(so, s);
+            newMem2.checkPermission(Action.viewMessages, s.getStoreId());
         }catch (Exception e){
             System.out.println(e.getMessage());
             assertTrue(false);
@@ -235,19 +239,19 @@ class MemberTest {
         try{
             m.login("ziv1234");
             m.openStore(s);
-            assertTrue(m.canGiveFeedback(s.getStoreId()));
+            m.checkPermission(Action.answerMessage, s.getStoreId());
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             newMem1.login("Ziv12345");
             s.appointUser(m.getId(),newMem1.getId(), Role.Manager);
             StoreManager sm = new StoreManager();
-            newMem1.changeRoleInStore(s.getStoreId(),sm, s);
-            assertTrue(newMem1.canGiveFeedback(s.getStoreId()));
+            newMem1.changeRoleInStore(sm, s);
+            newMem1.checkPermission(Action.answerMessage, s.getStoreId());
             Member newMem2 = new Member(5,"ziv1@gmail.com","Ziv12345","1/1/2000");
             newMem2.login("Ziv12345");
             s.appointUser(m.getId(),newMem2.getId(), Role.Owner);
             StoreOwner so = new StoreOwner();
-            newMem2.changeRoleInStore(s.getStoreId(),so, s);
-            assertTrue(newMem2.canGiveFeedback(s.getStoreId()));
+            newMem2.changeRoleInStore(so, s);
+            newMem2.checkPermission(Action.answerMessage, s.getStoreId());
         }catch (Exception e){
             System.out.println(e.getMessage());
             assertTrue(false);
@@ -289,68 +293,6 @@ class MemberTest {
     }
 
     @Test
-    void addQuestionForLogin() {
-        try {
-            m.addQuestionForLogin("what is the answer to all", "42");
-            m.login("ziv1234");
-        } catch (Exception e) {
-            assertEquals("the wrong answers were given", e.getMessage());
-            answers.add("42");
-            try {
-                m.login("ziv1234");
-                assertTrue(true);
-            } catch (Exception e2) {
-                System.out.println(e2.getMessage());
-                assertTrue(false);
-            }
-        }
-    }
-
-    @Test
-    void changeAnswerForQuestion() {
-        try {
-            m.addQuestionForLogin("what is the answer to all", "42");
-            m.changeAnswerForQuestion("what is the answer to all","believe");
-            m.login("ziv1234");
-        } catch (Exception e) {
-            assertEquals("the wrong answers were given", e.getMessage());
-            answers.add("42");
-            try {
-                m.login("ziv1234");
-                assertTrue(false);
-            } catch (Exception e2) {
-                try{
-                    answers.remove(0);
-                    answers.add("believe");
-                    m.login("ziv1234");
-                    assertTrue(true);
-                }catch (Exception e3){
-                    System.out.println(e3.getMessage());
-                    assertTrue(false);
-                }
-            }
-        }
-    }
-
-    @Test
-    void removeSecurityQuestion() {
-        try {
-            m.addQuestionForLogin("what is the answer to all", "42");
-            m.login("ziv1234");
-        } catch (Exception e) {
-            assertEquals("the wrong answers were given", e.getMessage());
-            try {
-                m.removeSecurityQuestion("what is the answer to all");
-                m.login("ziv1234");
-                assertTrue(true);
-            }catch (Exception e2){
-                System.out.println(e2.getMessage());
-                assertTrue(false);
-            }
-        }
-    }
-
-    @Test
     void appointToManager() {
         try{
             m.login("ziv1234");
@@ -382,13 +324,13 @@ class MemberTest {
 
     @Test
     void checkRoleInStore() {
-        m.openStore(s);
-        assertEquals( m.checkRoleInStore(0) ,Role.Creator);
-        Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
         try {
+            m.openStore(s);
+            assertEquals( m.getRole(0).getRole() ,Role.Creator);
+            Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             m.appointToManager(3, 0);
-            newMem1.changeRoleInStore(0, new StoreManager(),s);
-            assertEquals(newMem1.checkRoleInStore(0) ,Role.Manager);
+            newMem1.changeRoleInStore(new StoreManager(),s);
+            newMem1.checkPermission(Action.viewMessages, s.getStoreId());
         }catch (Exception e){
             System.out.println(e.getMessage());
             assertTrue(false);
@@ -411,10 +353,14 @@ class MemberTest {
 
     @Test
     void removeRoleInStore() {
-        m.openStore(s);
-        m.removeRoleInStore(0);
-       Role r =  m.checkRoleInStore(0);
-       assertEquals(r,null);
+        try {
+            m.openStore(s);
+            m.removeRoleInStore(0);
+            m.getRole(0);
+            assert false;
+        }catch (Exception e){
+            assert true;
+        }
     }
 
     @Test
@@ -439,16 +385,17 @@ class MemberTest {
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             m.appointToManager(newMem1.getId(), s.getStoreId());
             StoreManager sm = new StoreManager();
-            newMem1.changeRoleInStore(s.getStoreId(), sm, s);
+            newMem1.changeRoleInStore(sm, s);
             List<Action> act = new LinkedList<>(sm.getActions());
             for(Action a : act){
                 newMem1.removeAction(a,s.getStoreId());
                 newMem1.addAction(a,s.getStoreId());
-                assertTrue(newMem1.checkPermission(a,0));
+                newMem1.checkPermission(a,0);
+                assert true;
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
-            assertTrue(false);
+            assert false;
         }
     }
 

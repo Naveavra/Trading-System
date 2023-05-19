@@ -23,7 +23,9 @@ public class Basket {
     }
 
 
-    public void addProductToCart(int productId, int quantity){
+    public void addProductToCart(int productId, int quantity) throws Exception{
+        if(quantity < 1)
+            throw new Exception("the quantity given is negative");
         productList.put(productId, quantity);
     }
 
@@ -37,13 +39,15 @@ public class Basket {
         if(productList.containsKey(productId)) {
             int prevQuantity = productList.get(productId);
             int newQuantity = prevQuantity + change;
+            if(newQuantity < 0)
+                throw new Exception("the new quantity is negative");
             if(newQuantity == 0)
                 return removeProductFromCart(productId);
             else
                 productList.put(productId, newQuantity);
         }
         else
-            throw new Exception("the quantity given is negative");
+            addProductToCart(productId, change);
         return true;
     }
 
@@ -66,7 +70,7 @@ public class Basket {
     }
 
     public void clear(){
-        productList.clear();;
+        productList.clear();
     }
 
     public boolean hasProduct(int productId) {

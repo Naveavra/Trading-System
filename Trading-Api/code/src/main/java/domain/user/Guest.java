@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 
-public class Guest {
+public class Guest implements User{
     private int id;
     private ShoppingCart cart;
 
@@ -42,11 +42,11 @@ public class Guest {
         return cart.toJson();
     }
 
-
-
-
     public void emptyCart() {
         cart.emptyCart();
+    }
+    public void purchaseMade(int orderId, double totalPrice){
+        emptyCart();
     }
 
     public ShoppingCart getShoppingCart() {

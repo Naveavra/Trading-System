@@ -33,6 +33,10 @@ public class MarketController {
         gson = new Gson();
     }
 
+
+    public int calculatePrice(ShoppingCart cart) throws Exception{
+        return storectrl.calculatePrice(cart.getContent());
+    }
     public Pair<Receipt, Set<Integer>> purchaseProducts(ShoppingCart shoppingCart, int userId) throws Exception
     {
         Order order = orderctrl.createNewOrder(userId,shoppingCart, storectrl :: calculatePrice,storectrl :: setPrices);

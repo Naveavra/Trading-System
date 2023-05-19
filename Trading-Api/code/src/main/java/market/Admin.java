@@ -48,7 +48,7 @@ public class Admin {
                 String notify = "the store: " + storeId + " has been permanently closed";
                 Notification<String> notification = new Notification<>(notify);
                 userController.addNotification(userId, notification);
-                userController.removeStoreRole(adminId, userId, storeId);
+                userController.removeStoreRole(userId, storeId);
             }
         }
     }

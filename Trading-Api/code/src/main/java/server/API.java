@@ -158,27 +158,6 @@ public class API {
         return fromResToPair(res);
     }
 
-    //TODO: add to front and server security questions
-    public Pair<Boolean, JSONObject> checkSecurityQuestions(int userId, String token, List<String> answers){
-        Response<String> res = market.checkSecurityQuestions(userId, token, answers);
-        return fromResToPair(res);
-    }
-
-    public Pair<Boolean, JSONObject> addSecurityQuestion(int userId, String token, String question, String answer){
-        Response<String> res = market.addSecurityQuestion(userId, token, question, answer);
-        return fromResToPair(res);
-    }
-
-    public Pair<Boolean, JSONObject> changeAnswerForLoginQuestion(int userId, String token, String question, String answer){
-        Response<String> res = market.changeAnswerForLoginQuestion(userId, token, question, answer);
-        return fromResToPair(res);
-    }
-
-    public Pair<Boolean, JSONObject> removeSecurityQuestion(int userId, String token, String question){
-        Response<String> res = market.removeSecurityQuestion(userId, token, question);
-        return fromResToPair(res);
-    }
-
     //TODO: check that works in getClient and login
     public Pair<Boolean, JSONObject> displayNotifications(int userId, String token){
         Response<List<String>> res = market.displayNotifications(userId, token);
@@ -264,10 +243,6 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> appointManager(int userId, String token, int managerIdToAppoint, int storeId){
-        Response<String> res = market.appointManager(userId, token, managerIdToAppoint, storeId);
-        return fromResToPair(res);
-    }
     public Pair<Boolean, JSONObject> changeStoreInfo(int userId, String token, int storeId, String name, String desc,
                                                      String isActive, String img){
         String ret = "";
@@ -391,11 +366,6 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> appointOwner(int userId, String token, int ownerId, int storeId)
-    {
-        Response<String> res = market.appointOwner(userId, token, ownerId, storeId);
-        return fromResToPair(res);
-    }
 
     public Pair<Boolean, JSONObject> appointOwner(int userId, String token, String ownerMail, int storeId)
     {
@@ -409,11 +379,6 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> addManagerPermission(int ownerId, String token, int userId,int storeId, int permissionsId)
-    {
-        Response<String> res = market.addManagerPermission(ownerId, token, userId, storeId, permissionsId);
-        return fromResToPair(res);
-    }
 
     public Pair<Boolean, JSONObject> addManagerPermissions(int ownerId, String token, int userId,int storeId, List<Integer> permissionsIds)
     {
@@ -427,11 +392,6 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> removeManagerPermission(int ownerId, String token, int userId,int storeId, int permissionsId)
-    {
-        Response<String> res = market.removeManagerPermission(ownerId, token, userId, storeId, permissionsId);
-        return fromResToPair(res);
-    }
 
     public Pair<Boolean, JSONObject> answerQuestion(int userId, String token, int storeId ,int questionId, String answer)
     {
@@ -609,8 +569,8 @@ public class API {
         res3 = market.makePurchase(id2, "111111");
         market.writeReviewToStore(id2, token2, res3.getValue().getOrderId(), sid1, "good store", 4);
         market.sendQuestion(id1, token1, sid1, "why bad?");
-        market.appointManager(id1, token1, id2, sid1);
-        market.appointManager(id2, token2, id1, sid2);
+        market.appointManager(id1, token1, "ziv@gmail.com", sid1);
+        market.appointManager(id2, token2, "eli@gmail.com", sid2);
         market.logout(id1);
         market.logout(id2);
     }

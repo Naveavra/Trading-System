@@ -1,5 +1,6 @@
 package domain.store.storeManagement;
 import domain.user.Member;
+import domain.user.ShoppingCart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.messageRelated.Message;
@@ -34,13 +35,11 @@ class StoreTest {
         store.appointUser(0, 1, Role.Manager);
         store.appointUser(1, 2, Role.Manager);
         member = new Member(2, "lala@gmail.com", "aA12345", "31/08/2022");
-        HashMap<Integer, Integer> map = new HashMap<>();
-        map.put(0, 5);
-        map.put(1, 10);
-        HashMap<Integer, HashMap<Integer, Integer>> map2 = new HashMap<>();
-        map2.put(1, map);
-        orderA = new Order(0, 2, map2);
-        orderB = new Order(1,2,map2);
+        ShoppingCart cart = new ShoppingCart();
+        cart.addProductToCart(1, 0, 5);
+        cart.addProductToCart(1, 1, 10);
+        orderA = new Order(0, 2, cart);
+        orderB = new Order(1,2,cart);
         store.addOrder(orderA);
         store.addOrder(orderB);
 //        store.appointUser(0, 2, Role.Manager);

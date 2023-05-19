@@ -16,7 +16,7 @@ public class ShoppingCart {
     public ShoppingCart(ShoppingCart cart){
         baskets = new HashMap<>();
         for(int storeId : cart.baskets.keySet())
-            baskets.put(storeId, new Basket(baskets.get(storeId)));
+            baskets.put(storeId, new Basket(cart.baskets.get(storeId)));
     }
 
     public void addProductToCart(int storeId, int productId, int quantity) throws Exception {

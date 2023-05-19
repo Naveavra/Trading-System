@@ -33,7 +33,7 @@ class APITest {
         si.put(0, "Role.Creator");
         StoreCreator sc = new StoreCreator();
         sa.put(0, sc.getActions());
-        li = new LoginInformation("5513", 1, "55", true, noti, false, sr, sn, si, sa);
+        li = new LoginInformation("5513", 1, "55", true, noti, sr, sn, si, sa);
         logs.put(Logger.logStatus.Success, new ArrayList<>());
         cart.put(1, new HashMap<>());
         logs.get(Logger.logStatus.Success).add("CREATE cart");

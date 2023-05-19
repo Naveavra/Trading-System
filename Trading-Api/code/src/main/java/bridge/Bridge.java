@@ -271,7 +271,7 @@ public interface Bridge {
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int appointmentOwnerInStore(int user, int store,int newOwner);
+    int appointmentOwnerInStore(int user, int store,String newOwner);
 
     /**
      * Appointment new manger in the store
@@ -282,7 +282,7 @@ public interface Bridge {
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    int appointmentMangerInStore(int user, int store,int manger);
+    int appointmentMangerInStore(int user, int store,String manager);
 
     /**
      * Close the store

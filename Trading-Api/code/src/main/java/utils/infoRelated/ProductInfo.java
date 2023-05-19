@@ -76,7 +76,7 @@ public class ProductInfo extends Information{
         json.put("quantity", getQuantity());
         json.put("categories", getCategories());
         json.put("rating", getRating());
-        json.put("reviews", reviewsToJson(getReviews(), "messageId", "review"));
+        json.put("reviews", hashMapToJson(getReviews(), "messageId", "review"));
         json.put("img", getImg());
         return json;
     }

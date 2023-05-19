@@ -17,14 +17,15 @@ public class UserHistory {
     private List<String> names;
     private transient List<String> passwords;
     private List<String> emails;
-    private transient HashMap<String, String> securityQuestions;
 
-    public UserHistory(){
+    public UserHistory(String email, String name, String pass){
         purchaseHistory = new PurchaseHistory();
         names = new LinkedList<>();
         passwords = new LinkedList<>();
         emails = new LinkedList<>();
-        securityQuestions = new HashMap<>();
+        addEmail(email);
+        addName(name);
+        addPassword(pass);
     }
 
     public void addPurchaseMade(int orderId, double totalPrice, ShoppingCart purchase){
@@ -42,9 +43,6 @@ public class UserHistory {
         emails.add(email);
     }
 
-    public void addQuestion(String question, String answer){
-        securityQuestions.put(question, answer);
-    }
 
     public boolean checkOrderOccurred(int orderId){
         return purchaseHistory.checkOrderOccurred(orderId);
@@ -63,18 +61,10 @@ public class UserHistory {
     }
 
     public PrivateInfo getInformation(Info info) {
-        PrivateInfo privateInfo = new PrivateInfo(info, names, emails, passwords, securityQuestions);
+        PrivateInfo privateInfo = new PrivateInfo(info, names, emails, passwords);
         return privateInfo;
     }
 
-    public void changeAnswerForQuestion(String question, String newAnswer) {
-        if(securityQuestions.containsKey(question))
-            securityQuestions.put(question, newAnswer);
-    }
-
-    public void removeSecurityQuestion(String question) {
-        securityQuestions.remove(question);
-    }
 
     //for tests
     public  HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>  getUserPurchaseHistoryHash() {

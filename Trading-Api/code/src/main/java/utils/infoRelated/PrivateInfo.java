@@ -12,15 +12,12 @@ public class PrivateInfo extends Info{
     private List<String> oldNames;
     private List<String> oldEmails;
     private List<String> oldPasswords;
-    private HashMap<String, String> securityQuestions;
 
-    public PrivateInfo(Info info, List<String> oldNames, List<String> oldEmails,
-                       List<String> oldPasswords, HashMap<String, String> securityQuestions){
+    public PrivateInfo(Info info, List<String> oldNames, List<String> oldEmails, List<String> oldPasswords){
         super(info.getId(), info.getName(), info.getEmail(), info.getBirthday(), info.getAge());
         this.oldNames = oldNames;
         this.oldEmails = oldEmails;
         this.oldPasswords = oldPasswords;
-        this.securityQuestions = securityQuestions;
     }
 
     @Override
@@ -35,7 +32,6 @@ public class PrivateInfo extends Info{
         json.put("oldNames", oldNames);
         json.put("oldEmails", oldEmails);
         json.put("oldPasswords", oldPasswords);
-        json.put("securityQuestions", securityQuestions);
         return json;
     }
 }

@@ -109,7 +109,7 @@ public abstract class ProjectTest{
         List<String> categories = new ArrayList<>();
         categories.add("Smartphones");
         categories.add("Apple");
-        ProductInfo newProduct = new ProductInfo("IPhone", "IPhone11 Appple", categories, 2000, 20);
+        ProductInfo newProduct = new ProductInfo("IPhone", "IPhone11 Appple", categories, 2000, 20, "img");
         return newProduct;
     }
 
@@ -119,7 +119,7 @@ public abstract class ProjectTest{
         List<String> categories = new ArrayList<>();
         categories.add("Smartphones");
         categories.add("Samsung");
-        ProductInfo newProduct = new ProductInfo("Galaxy 1", "Samsung Galaxy 1", categories, 500, 20);
+        ProductInfo newProduct = new ProductInfo("Galaxy 1", "Samsung Galaxy 1", categories, 500, 20, "img");
         return newProduct;
     }
 
@@ -128,7 +128,7 @@ public abstract class ProjectTest{
         List<String> categories = new ArrayList<>();
         categories.add("Smartphones");
         categories.add("Apple");
-        ProductInfo newProduct = new ProductInfo("IPhone", "IPhone12 Appple", categories, -100, 20);
+        ProductInfo newProduct = new ProductInfo("IPhone", "IPhone12 Appple", categories, -100, 20, "img");
         return newProduct;
     }
 
@@ -137,7 +137,7 @@ public abstract class ProjectTest{
         List<String> categories = new ArrayList<>();
         categories.add("Smartphones");
         categories.add("Samsung");
-        ProductInfo newProduct = new ProductInfo("Galaxy 1", "Samsung Galaxy 1", categories, 500, 0);
+        ProductInfo newProduct = new ProductInfo("Galaxy 1", "Samsung Galaxy 1", categories, 500, 0, "img");
         return newProduct;
     }
 
@@ -146,7 +146,7 @@ public abstract class ProjectTest{
         List<String> categories = new ArrayList<>();
         categories.add("Smartphones");
         categories.add("Apple");
-        ProductInfo newProduct = new ProductInfo("IPhone", "IPhone11 Appple", categories, 2000, 1);
+        ProductInfo newProduct = new ProductInfo("IPhone", "IPhone11 Appple", categories, 2000, 1, "img");
         return newProduct;
     }
 
@@ -181,12 +181,12 @@ public abstract class ProjectTest{
         return bridge.changeDiscountPolicy(user, store, policy);
     }
 
-    public int appointmentOwnerInStore(int user, int store, int newOwnerID)
+    public int appointmentOwnerInStore(int user, int store, String newOwnerEmail)
     {
-        return bridge.appointmentOwnerInStore(user, store, newOwnerID);
+        return bridge.appointmentOwnerInStore(user, store, newOwnerEmail);
     }
 
-    public int appointmentMangerInStore(int user, int store, int newManagerID)
+    public int appointmentManagerInStore(int user, int store, String newManagerID)
     {
         return bridge.appointmentMangerInStore(user, store, newManagerID);
     }

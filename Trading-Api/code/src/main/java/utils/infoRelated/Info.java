@@ -7,24 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Info extends Information{
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-    public int getAge(){
-        return age;
-    }
 
     private int id;
     private String name;
@@ -52,6 +34,25 @@ public class Info extends Information{
     }
 
 
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+    public int getAge(){
+        return age;
+    }
     @Override
     public JSONObject toJson()
     {

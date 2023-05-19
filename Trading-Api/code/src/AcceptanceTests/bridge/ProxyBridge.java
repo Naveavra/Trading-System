@@ -188,14 +188,14 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int appointmentOwnerInStore(int user, int store, int owner) {
+    public int appointmentOwnerInStore(int user, int store, String owner) {
         if (real != null)
             return real.appointmentOwnerInStore(user, store, owner);
         return -1;
     }
 
     @Override
-    public int appointmentMangerInStore(int user, int store, int manger) {
+    public int appointmentMangerInStore(int user, int store, String manger) {
         if (real != null)
             return real.appointmentMangerInStore(user, store, manger);
         return -1;

@@ -10,8 +10,8 @@ import java.util.List;
 public class StoreManager extends UserState {
 
     public  StoreManager(){
+        super();
         role = Role.Manager;
-        permission = new Permission();
         List<Action> actions = new LinkedList<>();
         List<Action> addedActions = new LinkedList<>();
 
@@ -24,7 +24,6 @@ public class StoreManager extends UserState {
         permission.addActions(actions);
 
 
-        addedActions = new LinkedList<>();
         addedActions.add(Action.viewMessages);
         addedActions.add(Action.answerMessage);
         addedActions.add(Action.seeStoreHistory);
@@ -39,5 +38,26 @@ public class StoreManager extends UserState {
         addedActions.add(Action.removeProduct);
         addedActions.add(Action.updateProduct);
         permission.addPossibleActions(addedActions);
+    }
+
+    @Override
+    public void addAction(Action a) throws Exception{
+        if (!checkPermission(a)) {
+            if (checkHasAvailableAction(a)) {
+                permission.addAction(a);
+            }
+            else
+                throw new Exception("manager can't have this action");
+        }
+        else
+            throw new Exception("the manager already has this action");
+    }
+
+    @Override
+    public void removeAction(Action a) throws Exception{
+        if (checkPermission(a))
+            permission.removeAction(a);
+        else
+            throw new Exception("the manager does not have this action");
     }
 }
