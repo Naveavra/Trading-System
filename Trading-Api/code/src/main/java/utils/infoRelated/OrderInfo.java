@@ -4,6 +4,7 @@ import domain.user.ShoppingCart;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class OrderInfo extends Information{
 
@@ -28,7 +29,7 @@ public class OrderInfo extends Information{
         return totalPrice;
     }
 
-    public HashMap<Integer, HashMap<Integer,Integer>> getProductsInStores(){
+    public List<ProductInfo> getProductsInStores(){
         return productsInStores.getContent();
     }
 
@@ -42,7 +43,7 @@ public class OrderInfo extends Information{
         json.put("orderId", getOrderId());
         json.put("userId", getUserId());
         json.put("totalPrice", getTotalPrice());
-        json.put("productsInStores", productsInStores.toJson());
+        json.put("productsInStores", infosToJson(productsInStores.getContent()));
         return json;
     }
 }

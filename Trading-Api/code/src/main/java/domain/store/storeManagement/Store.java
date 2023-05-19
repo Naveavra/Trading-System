@@ -8,6 +8,7 @@ import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
 import domain.store.purchase.PurchasePolicy;
 
+import domain.user.Basket;
 import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
@@ -358,15 +359,15 @@ public class Store extends Information {
      * purchasing confirmed so this function adjust the quantity in the store inventory
      * @return true if success else false
      */
-    public boolean makeOrder(HashMap<Integer, Integer> basket) throws Exception{
-        for (Integer productId : basket.keySet())
+    public boolean makeOrder(Basket basket) throws Exception{
+        for (ProductInfo product : basket.getContent())
         {
-            Product p = inventory.getProduct(productId);
-            if (!(p != null && basket.get(productId) <= p.getQuantity()))
+            Product p = inventory.getProduct(product.id);
+            if (!(p != null && product.quantity <= p.getQuantity()))
             {
                 return false;
             }
-            inventory.getProduct(productId).setQuantity(basket.get(productId) * (-1));
+            inventory.getProduct(product.id).setQuantity(product.quantity * (-1));
         }
         return true;
     }
@@ -409,15 +410,15 @@ public class Store extends Information {
     }
 
     //TODO HANDLE DISCOUNTS FROM HERE MAYBE?
-    public synchronized int calculatePrice(HashMap<Integer, Integer> basket) throws Exception {
+    public synchronized int calculatePrice(Basket basket) throws Exception {
         int purchaseingprice = 0;
-        for (Integer productid : basket.keySet())
+        for (ProductInfo product : basket.getContent())
         {
-            Product p = inventory.getProduct(productid);
-            if (p != null && basket.get(productid) <= p.getQuantity())
+            Product p = inventory.getProduct(product.id);
+            if (p != null && product.quantity <= p.getQuantity())
             {
 //                int discount = discountPolicy.handleDiscounts(basket,inventory.getPrices());
-                purchaseingprice += p.price * basket.get(productid);
+                purchaseingprice += p.price * product.quantity;
 //                p.setQuantity(p.getQuantity()-basket.get(productid));
             }
             else throw new Exception("product isn't available");
@@ -494,7 +495,7 @@ public class Store extends Information {
     public double handleDiscount(Order order) throws Exception {
         double totalAmountToBeSubtracted = 0;
         for(Discount dis: discounts){
-            totalAmountToBeSubtracted += dis.handleDiscount(order.getProductsInStores().get(storeid),order);
+            totalAmountToBeSubtracted += dis.handleDiscount(order.getShoppingCart().getBasket(storeid),order);
         }
         order.setTotalPrice(order.getTotalPrice() - totalAmountToBeSubtracted);
         return order.getTotalPrice();

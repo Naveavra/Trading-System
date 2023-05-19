@@ -1,8 +1,11 @@
 package domain.store.storeManagement;
+import domain.store.product.Product;
+import domain.user.Basket;
 import domain.user.Member;
 import domain.user.ShoppingCart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.orderRelated.Order;
@@ -23,6 +26,7 @@ class StoreTest {
     Member member;
 
     Order orderA, orderB;
+    ProductInfo p, p2;
 
 
     @BeforeEach
@@ -36,8 +40,10 @@ class StoreTest {
         store.appointUser(1, 2, Role.Manager);
         member = new Member(2, "lala@gmail.com", "aA12345", "31/08/2022");
         ShoppingCart cart = new ShoppingCart();
-        cart.addProductToCart(1, 0, 5);
-        cart.addProductToCart(1, 1, 10);
+        p = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(0), 10);
+        p2 = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(1), 10);
+        cart.addProductToCart(1, p, 5);
+        cart.addProductToCart(1, p2, 10);
         orderA = new Order(0, 2, cart);
         orderB = new Order(1,2,cart);
         store.addOrder(orderA);
@@ -107,9 +113,9 @@ class StoreTest {
 
     @Test
     void createOrderSuccess() throws Exception {
-        HashMap<Integer, Integer> basket = new HashMap<>();
-        basket.put(0, 5);
-        basket.put(1, 5);
+        Basket basket = new Basket(store.getStoreId());
+        basket.addProductToCart(p, 5);
+        basket.addProductToCart(p2, 5);
         int expectedPrice = 100;
 //        int actualPrice = store.createOrder(basket);
 //        assertEquals(expectedPrice, actualPrice);
@@ -120,29 +126,31 @@ class StoreTest {
 
     @Test
     void createOrderFailNotEnoughUnits() throws Exception {
-        HashMap<Integer, Integer> basket = new HashMap<>();
-        basket.put(0, 5);
-        basket.put(1, 11);
+        Basket basket = new Basket(store.getStoreId());
+        basket.addProductToCart(p, 5);
+        basket.addProductToCart(p2, 11);
         assertFalse(store.makeOrder(basket), "store quantity is 10, user wanted 11");
     }
 
     @Test
     void createOrderFailNotEnoughUnitsAfterPurchasing() throws Exception {
-        HashMap<Integer, Integer> basket = new HashMap<>();
-        basket.put(0, 5);
-        basket.put(1, 9);
+        Basket basket = new Basket(store.getStoreId());
+        basket.addProductToCart(p, 5);
+        basket.addProductToCart(p2, 9);
         //store.createOrder(basket);
         store.makeOrder(basket);
-        HashMap<Integer, Integer> basket2 = new HashMap<>();
-        basket2.put(1, 3);
+        Basket basket2 = new Basket(store.getStoreId());
+        basket2.addProductToCart(p2, 2);
         assertFalse(store.makeOrder(basket2), "store quantity is 1, user wanted 3");
     }
 
     @Test
     void createOrderFailProductNotExist() throws Exception {
-        HashMap<Integer, Integer> basket = new HashMap<>();
-        basket.put(0, 5);
-        basket.put(2, 11);
+        Basket basket = new Basket(store.getStoreId());
+        basket.addProductToCart(p, 5);
+        ProductInfo p3 =  new ProductInfo(store.getStoreId(), store.getInventory().getProduct(1), 11);
+        p3.id = 2;
+        basket.addProductToCart(p3, 11);
         Exception exception = assertThrows(Exception.class, () -> {
             store.makeOrder(basket);
         });

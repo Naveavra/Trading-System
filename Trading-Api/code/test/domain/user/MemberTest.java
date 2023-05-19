@@ -5,10 +5,12 @@ import domain.states.StoreCreator;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
 import domain.states.UserState;
+import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.Pair;
+import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -26,19 +28,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MemberTest {
     private Member m;
     private Store s;
-    private Gson gson;
+
+    private Product apple;
+    private ProductInfo p;
+    private Product banana;
+    private ProductInfo p2;
+
     private LinkedList<String> answers;
     @BeforeEach
     void setUp(){
         m = new Member(1, "ziv@gmail.com", "ziv1234", "22/04/2002");
         s = new Store(0, "", 1);
         try {
-            s.addNewProduct("apppe", "pink apple", new AtomicInteger(1), 5, 3);
+            s.addNewProduct("apple", "pink apple", new AtomicInteger(1), 5, 3);
+            apple = s.getInventory().getProduct(1);
+            p =  new ProductInfo(0, apple, 10);
         }catch (Exception e){
             assert false;
         }
         answers = new LinkedList<>();
-        gson =new Gson();
     }
     @Test
     void connect() {
@@ -56,7 +64,7 @@ class MemberTest {
     void changeRoleInStore_success() {
         try{
             m.login("ziv1234");
-            UserState u = new StoreCreator();
+            UserState u = new StoreCreator(m.getId(), s);
             m.changeRoleInStore(u,s);
             m.checkPermission(Action.appointOwner,0);
             assert true;
@@ -68,7 +76,7 @@ class MemberTest {
     void changeRoleInStore_fail() {
         try{
             m.login("ziv1234");
-            UserState u =new StoreManager();
+            UserState u =new StoreManager(m.getId(), s);
             m.changeRoleInStore(u,s);
             m.checkPermission(Action.appointOwner,0);
             assert false;
@@ -103,16 +111,17 @@ class MemberTest {
     @Test
     void purchaseMade() {
         try{
-        m.addProductToCart(0,1,100);
+        m.addProductToCart(0,p,100);
         m.purchaseMade(0,100);
-        HashMap<Integer, HashMap<Integer, Integer>> cart = m.getCartContent();
-            assertEquals(0, cart.size());
-        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> history = m.getUserPurchaseHistoryHash();
-        assertEquals(history.size(), 1);
-        for(int orderId : history.keySet())
-            for(int storeId : history.get(orderId).keySet())
-                for(int productId : history.get(orderId).get(storeId).keySet())
-                        assertTrue(productId == 1 && history.get(orderId).get(storeId).get(productId) == 100);
+        ShoppingCart cart = m.getShoppingCart();
+        assertEquals(0, cart.getContent().size());
+        PurchaseHistory history = m.getUserPurchaseHistory();
+        assertEquals(history.getHisSize(), 1);
+        for(int orderId : history.getPurchaseHistory().keySet()) {
+            ShoppingCart his = history.getPurchaseHistory().get(orderId);
+            for (ProductInfo product : his.getContent())
+                assertTrue(p.id == product.id && product.quantity == 100);
+        }
         }catch (Exception e){
             assert false;
         }
@@ -134,7 +143,7 @@ class MemberTest {
     void writeReview() {
         try{
             m.login("ziv1234" );
-            m.addProductToCart(0,1,100);
+            m.addProductToCart(0,p,100);
             m.purchaseMade(0,100);
             Message message =  m.writeReview(0,0,0,"good review",2);
             assertTrue(message.getOrderId()==0);
@@ -149,7 +158,7 @@ class MemberTest {
     void writeReview_fail() {
         try{
             m.login("ziv1234" );
-            m.addProductToCart(0,1,100);
+            m.addProductToCart(0,p,100);
             m.purchaseMade(0,100);
             Message message =  m.writeReview(0,0,1,"good review",2);
         }catch (Exception e) {
@@ -161,7 +170,7 @@ class MemberTest {
     void writeComplaint() {
         try {
             m.login("ziv1234");
-            m.addProductToCart(0, 1, 100);
+            m.addProductToCart(0, p, 100);
             m.purchaseMade(0, 100);
             Message message = m.writeComplaint(0,0,0,"u sacks!!");
             assertTrue(message.getOrderId()==0);
@@ -175,7 +184,7 @@ class MemberTest {
     void writeComplaint_fail() {
         try{
             m.login("ziv1234" );
-            m.addProductToCart(0,1,100);
+            m.addProductToCart(0,p,100);
             m.purchaseMade(0,100);
             Message message =  m.writeComplaint(0,0,1,"u sacks!!");
         }catch (Exception e) {
@@ -219,13 +228,13 @@ class MemberTest {
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             newMem1.login("Ziv12345");
             s.appointUser(m.getId(),newMem1.getId(), Role.Manager);
-            StoreManager sm = new StoreManager();
+            StoreManager sm = new StoreManager(newMem1.getId(), s);
             newMem1.changeRoleInStore(sm, s);
             newMem1.checkPermission(Action.viewMessages,s.getStoreId());
             Member newMem2 = new Member(5,"ziv1@gmail.com","Ziv12345","1/1/2000");
             newMem2.login("Ziv12345");
             s.appointUser(m.getId(),newMem2.getId(), Role.Owner);
-            StoreOwner so = new StoreOwner();
+            StoreOwner so = new StoreOwner(newMem2.getId(), s);
             newMem2.changeRoleInStore(so, s);
             newMem2.checkPermission(Action.viewMessages, s.getStoreId());
         }catch (Exception e){
@@ -243,13 +252,13 @@ class MemberTest {
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             newMem1.login("Ziv12345");
             s.appointUser(m.getId(),newMem1.getId(), Role.Manager);
-            StoreManager sm = new StoreManager();
+            StoreManager sm = new StoreManager(newMem1.getId(), s);
             newMem1.changeRoleInStore(sm, s);
             newMem1.checkPermission(Action.answerMessage, s.getStoreId());
             Member newMem2 = new Member(5,"ziv1@gmail.com","Ziv12345","1/1/2000");
             newMem2.login("Ziv12345");
             s.appointUser(m.getId(),newMem2.getId(), Role.Owner);
-            StoreOwner so = new StoreOwner();
+            StoreOwner so = new StoreOwner(newMem2.getId(), s);
             newMem2.changeRoleInStore(so, s);
             newMem2.checkPermission(Action.answerMessage, s.getStoreId());
         }catch (Exception e){
@@ -258,23 +267,6 @@ class MemberTest {
         }
     }
 
-    @Test
-    void getUserPurchaseHistory() {
-        try{
-        m.login("ziv1234");
-        m.addProductToCart(s.getStoreId(),1,100);
-        m.purchaseMade(0,10);
-        HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>> res = m.getUserPurchaseHistoryHash();
-        System.out.println(res);
-        System.out.println(res.get(0));
-        //assertTrue(cart.get(0).get(0).keySet().contains(1));
-
-       // assertTrue(cart.get(0).get(0).get(1)==100);
-    }catch (Exception e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
-        }
-    }
 
     @Test
     void getPrivateInformation() {
@@ -329,7 +321,7 @@ class MemberTest {
             assertEquals( m.getRole(0).getRole() ,Role.Creator);
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             m.appointToManager(3, 0);
-            newMem1.changeRoleInStore(new StoreManager(),s);
+            newMem1.changeRoleInStore(new StoreManager(newMem1.getId(), s),s);
             newMem1.checkPermission(Action.viewMessages, s.getStoreId());
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -384,7 +376,7 @@ class MemberTest {
             m.openStore(s);
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             m.appointToManager(newMem1.getId(), s.getStoreId());
-            StoreManager sm = new StoreManager();
+            StoreManager sm = new StoreManager(newMem1.getId(), s);
             newMem1.changeRoleInStore(sm, s);
             List<Action> act = new LinkedList<>(sm.getActions());
             for(Action a : act){

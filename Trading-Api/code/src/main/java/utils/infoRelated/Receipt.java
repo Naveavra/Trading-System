@@ -1,5 +1,6 @@
 package utils.infoRelated;
 
+import domain.user.Basket;
 import domain.user.ShoppingCart;
 import org.json.JSONObject;
 
@@ -27,16 +28,18 @@ public class Receipt extends Information{
 
     public double getTotalPrice(){return totalPrice;}
 
-    public HashMap<Integer, HashMap<Integer, Integer>> getProducts(){
+    public List<ProductInfo> getProducts(){
         return products.getContent();
     }
+
+    public List<Basket> getContent(){return products.getBaskets();}
 
     public JSONObject toJson(){
         JSONObject json = new JSONObject();
         json.put("userId", userId);
         json.put("orderId", orderId);
         json.put("totalPrice", totalPrice);
-        json.put("products", products.toJson());
+        json.put("products", infosToJson(products.getContent()));
         return json;
     }
 

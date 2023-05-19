@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PurchaseInfo {
-    HashMap<Integer, HashMap<Integer, Integer>> purchases;
+    List<ProductInfo> purchases;
 
-    public PurchaseInfo(HashMap<Integer, HashMap<Integer, Integer>> purchases) {
+    public PurchaseInfo(List<ProductInfo> purchases) {
         this.purchases = purchases;
     }
 }

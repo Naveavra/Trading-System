@@ -11,7 +11,7 @@ import java.util.List;
 public class ProductInfo extends Information{
 
     public final int storeId;
-    public final int id;
+    public int id;
     private List<String> categories;
     public String name;
     public String description;

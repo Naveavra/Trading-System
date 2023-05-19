@@ -22,6 +22,8 @@ public class PurchaseHistory extends Information {
         purchaseHistory.put(orderId, add);
         ordersAndPrices.put(orderId, totalPrice);
     }
+
+    //TODO: add toJson
     @Override
     public JSONObject toJson() {
         return null;
@@ -43,11 +45,11 @@ public class PurchaseHistory extends Information {
         return false;
     }
 
-    public HashMap<Integer, List<Basket>> getHash(){
-        HashMap<Integer, List<Basket>> ans = new HashMap<>();
-        for(int orderId : purchaseHistory.keySet())
-            ans.put(orderId, purchaseHistory.get(orderId).getContent());
-        return ans;
+    public int getHisSize(){
+        return purchaseHistory.size();
     }
 
+    public HashMap<Integer, ShoppingCart> getPurchaseHistory(){
+        return purchaseHistory;
+    }
 }

@@ -33,9 +33,11 @@ public class ShoppingCart{
             throw new Exception("quantity must be bigger then 0");
         }
         Basket b = getBasket(storeId);
-        if(b == null)
-            baskets.add(new Basket(storeId));
-        baskets.get(storeId).addProductToCart(product, quantity);
+        if(b == null) {
+            b = new Basket(storeId);
+            baskets.add(b);
+        }
+        b.addProductToCart(product, quantity);
     }
 
     public void removeProductFromCart(int storeId, int productId) throws Exception {
@@ -43,7 +45,7 @@ public class ShoppingCart{
         if(basket != null) {
             boolean check = basket.removeProductFromCart(productId);
             if(!check)
-                baskets.remove(storeId);
+                baskets.remove(getBasket(storeId));
         }
         else
             throw new Exception("the product isn't in the cart");
@@ -52,7 +54,7 @@ public class ShoppingCart{
     public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
         Basket b = getBasket(storeId);
         if(b != null) {
-            boolean check = baskets.get(storeId).changeQuantityInCart(product, change);
+            boolean check = b.changeQuantityInCart(product, change);
             if(!check)
                 baskets.remove(storeId);
         }
@@ -71,12 +73,7 @@ public class ShoppingCart{
         return false;
     }
 
-
-    public HashMap<Integer, HashMap<Integer, Integer>> getContent(){
-        for(Basket b : )
-        return null;
-    }
-    public List<ProductInfo> getCart()
+    public List<ProductInfo> getContent()
     {
         List<ProductInfo> ans = new ArrayList();
         for (Basket b : baskets) {
@@ -85,6 +82,8 @@ public class ShoppingCart{
         }
         return ans;
     }
+
+    public List<Basket> getBaskets(){return baskets;}
 
     public void emptyCart() {
         for(Basket b : baskets)

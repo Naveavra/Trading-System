@@ -4,6 +4,7 @@ import domain.store.product.Product;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.infoRelated.ProductInfo;
 
 import java.util.HashMap;
 
@@ -11,10 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BasketTest {
     private Basket basket;
+    private Product apple;
+    private ProductInfo p;
+    private Product banana;
+    private ProductInfo p2;
 
     @BeforeEach
     void setUp() {
         basket = new Basket(0);
+        apple = new Product(0, "apple", "red apple");
+        p =  new ProductInfo(0, apple, 10);
+        banana = new Product(1, "banana", "yellow banana");
+        p2 =  new ProductInfo(0, banana, 10);
     }
 
     //product - int prod_id, String _name, String desc
@@ -25,14 +34,11 @@ class BasketTest {
     @Test
     void addProductToCart_success() {
         try {
-            Product apple = new Product(0, "apple", "red apple");
-            Product banana = new Product(1, "banana", "yellow banana");
-            basket.addProductToCart(0, 10);
-            basket.addProductToCart(1, 10);
-            HashMap<Integer, Integer> products = basket.getContent();
-            assertTrue(products.get(0) != null);
-            assertTrue(products.get(0) == 10);
-            assertTrue(products.keySet().size() == 2);
+            basket.addProductToCart(p, 10);
+            basket.addProductToCart(p2, 10);
+            assertTrue(basket.getProduct(0) != null);
+            assertTrue(basket.getProduct(0).quantity == 10);
+            assertTrue(basket.getContent().size() == 2);
         }catch (Exception e){
             assert false;
         }
@@ -40,9 +46,8 @@ class BasketTest {
 
     @Test
     void addProductToCart_failed() {
-        Product apple = new Product(0, "apple", "red apple");
         try {
-            basket.changeQuantityInCart(0, -1);
+            basket.changeQuantityInCart(p, -1);
             assertFalse(true);
         } catch (Exception e) {
             assert true;
@@ -53,14 +58,11 @@ class BasketTest {
     @Test
     void removeProductFromCart() {
         try {
-            Product apple = new Product(0, "apple", "red apple");
-            Product banana = new Product(1, "banana", "yellow banana");
-            basket.addProductToCart(0, 10);
-            basket.addProductToCart(1, 10);
+            basket.addProductToCart(p, 10);
+            basket.addProductToCart(p2, 10);
             basket.removeProductFromCart(0);
-            HashMap<Integer, Integer> products = basket.getContent();
-            assertTrue(products.get(0) == null);
-            assertTrue(products.keySet().size() == 1);
+            assertTrue(basket.getProduct(0) == null);
+            assertTrue(basket.getContent().size() == 1);
         }catch (Exception e){
             assert false;
         }
@@ -69,12 +71,10 @@ class BasketTest {
     @Test
     void changeQuantityInCart() {
         try {
-            Product apple = new Product(0,"apple","red apple");
-            basket.addProductToCart(0,10);
-            basket.changeQuantityInCart(0, 100);
-            HashMap<Integer, Integer> products = basket.getContent();
-            assertTrue(products.get(0) != null);
-            assertTrue(products.get(0) == 110);
+            basket.addProductToCart(p,10);
+            basket.changeQuantityInCart(p, 100);
+            assertTrue(basket.getProduct(0) != null);
+            assertTrue(basket.getProduct(0).quantity == 110);
         }catch (Exception e){
             assert false;
         }

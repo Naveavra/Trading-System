@@ -4,6 +4,7 @@ import domain.store.discount.Discount;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
 import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.discount.predicates.DiscountPredicate;
+import domain.user.Basket;
 import utils.orderRelated.Order;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class NumericDiscountComposite extends AbstractDiscountComposite{
 
 
     @Override
-    public double handleDiscount(HashMap<Integer, Integer> basket, Order order) throws Exception {
+    public double handleDiscount(Basket basket, Order order) throws Exception {
         double discountValue = 0;
         switch (type){
             case Max -> {

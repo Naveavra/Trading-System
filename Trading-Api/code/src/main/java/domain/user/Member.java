@@ -59,7 +59,13 @@ public class Member implements User{
 
     public void changeRoleInStore(UserState userState, Store store) throws Exception{
         int storeId = store.getStoreId();
-        UserState state = getRole(storeId);
+        UserState state;
+        try {
+            state = getRole(storeId);
+        }catch (Exception e){
+            roles.add(userState);
+            return;
+        }
         if (state.getRole() == userState.getRole())
             throw new Exception("the member already has this role in this store");
         roles.add(userState);
@@ -121,7 +127,7 @@ public class Member implements User{
         g.changeQuantityInCart(storeId, product, change);
     }
 
-    public List<Basket> getCartContent() {
+    public List<ProductInfo> getCartContent() {
         return g.getCartContent();
     }
 
@@ -329,11 +335,6 @@ public class Member implements User{
             ans.put(state.getStore().getStoreId(), state.getActions());
         return ans;
     }
-
-    public List<JSONObject> getCartJson(){
-        return g.getCartJson();
-    }
-
 
     public ShoppingCart getShoppingCart() {
         return g.getShoppingCart();

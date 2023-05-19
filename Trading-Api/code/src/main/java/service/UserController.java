@@ -417,9 +417,4 @@ public class UserController {
         User user = getUser(userId);
         user.emptyCart();
     }
-
-    public List<JSONObject> getUserCartJson(int id) throws Exception{
-        User user = getUser(id);
-        return user.getCartJson();
-    }
 }

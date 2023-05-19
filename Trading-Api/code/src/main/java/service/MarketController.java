@@ -35,13 +35,13 @@ public class MarketController {
 
 
     public int calculatePrice(ShoppingCart cart) throws Exception{
-        return storectrl.calculatePrice(cart.getContent());
+        return storectrl.calculatePrice(cart);
     }
     public Pair<Receipt, Set<Integer>> purchaseProducts(ShoppingCart shoppingCart, int userId) throws Exception
     {
         Order order = orderctrl.createNewOrder(userId,shoppingCart, storectrl :: calculatePrice,storectrl :: setPrices);
         order.setStatus(Status.pending);
-        Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart.getContent(), order);
+        Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
         order.setStatus(Status.submitted);
         Receipt receipt = new Receipt(userId, order.getOrderId(), shoppingCart, order.getTotalPrice());
         Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);

@@ -213,11 +213,6 @@ public class API {
         return fromResToPairInfo(res);
     }
 
-    public Pair<Boolean, JSONObject> getUserPurchaseHistory(int userId, String token, int buyerId){
-        //               orderId,         storeId,       productId, quantity
-        Response<HashMap<Integer, HashMap<Integer, HashMap<Integer, Integer>>>> res = market.getUserPurchaseHistoryHash(userId, token, buyerId);
-        return fromResToPair(res);
-    }
 
     public Pair<Boolean, JSONObject> writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading){
         Response<String> res = market.writeReviewToStore(userId, token, orderId, storeId, content, grading);

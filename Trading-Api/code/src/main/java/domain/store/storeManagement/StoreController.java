@@ -1,5 +1,7 @@
 package domain.store.storeManagement;
 
+import domain.user.Basket;
+import domain.user.ShoppingCart;
 import utils.infoRelated.ProductInfo;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.StoreInfo;
@@ -111,24 +113,22 @@ public class StoreController {
         throw new Exception("the storeId given does not belong to any active store");
     }
 
-    public int calculatePrice(HashMap<Integer,HashMap<Integer,Integer>> basket) throws Exception{
+    public int calculatePrice(ShoppingCart cart) throws Exception{
         int total = 0;
-        for(Integer id : basket.keySet()){
-            total += getStore(id).calculatePrice(basket.get(id));
+        for(Basket basket : cart.getBaskets()){
+            total += getStore(basket.getStoreId()).calculatePrice(basket);
         }
         return total;
     }
     public void setPrices(Order or) throws Exception {
-        HashMap<Integer,HashMap<Integer,Integer>> shoppingCart = or.getProductsInStores();
+        List<ProductInfo> shoppingCart = or.getProductsInStores();
         HashMap<Integer,HashMap<Integer,Integer>> prices = or.getPrices();
-        for(Integer storeId: shoppingCart.keySet()){
-            prices.put(storeId,new HashMap<>());
-            for(Integer prodId : shoppingCart.get(storeId).keySet()){
-                int quantity = shoppingCart.get(storeId).get(prodId);
-                Store s = getStore(storeId);
-                Product p = s.getInventory().getProduct(prodId);
-                prices.get(storeId).put(prodId,p.getPrice() * quantity);
-            }
+        for(ProductInfo product : shoppingCart){
+            prices.put(product.getStoreId(),new HashMap<>());
+            int quantity = product.quantity;
+            Store s = getStore(product.getStoreId());
+            Product p = s.getInventory().getProduct(product.getId());
+            prices.get(product.getStoreId()).put(product.getId(),p.getPrice() * quantity);
         }
     }
 //    /**
@@ -155,13 +155,13 @@ public class StoreController {
      * @param shoppingCart the client shopping cart
      * @return if successful returns the store owners ids else null
      */
-    public synchronized Set<Integer> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, Order order) throws Exception {
+    public synchronized Set<Integer> purchaseProducts(ShoppingCart shoppingCart, Order order) throws Exception {
         Set<Integer> storeOwnersIDS = new HashSet<>();
         //should apply discounts here
-        for (Integer storeId : shoppingCart.keySet()) {
-            Store store = storeList.get(storeId);
+        for (Basket b : shoppingCart.getBaskets()) {
+            Store store = storeList.get(b.getStoreId());
             store.handleDiscount(order);
-            if (!(store.makeOrder(shoppingCart.get(storeId)))) {
+            if (!(store.makeOrder(b))) {
                 return null;
             }
             storeOwnersIDS.add(store.getCreatorId());
@@ -345,11 +345,13 @@ public class StoreController {
     }
 
     public void purchaseMade(Receipt receipt) throws Exception {
-        HashMap<Integer, HashMap<Integer, Integer>> cart = receipt.getProducts();
-        for(int storeId : cart.keySet()){
+        List<Basket> cart = receipt.getContent();
+        for(Basket b : cart){
+            int storeId = b.getStoreId();
             Store store = getStore(storeId);
-            for(int productId : cart.get(storeId).keySet()){
-                store.setProductQuantity(productId, store.getQuantityOfProduct(productId) - cart.get(storeId).get(productId));
+            for(ProductInfo product: b.getContent()){
+                int productId = product.id;
+                store.setProductQuantity(productId, store.getQuantityOfProduct(productId) - product.quantity);
             }
         }
     }

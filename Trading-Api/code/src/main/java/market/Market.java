@@ -238,7 +238,7 @@ public class Market implements MarketInterface {
 
     public Response<List<? extends Information>> getCart(int id) {
         try {
-            List<? extends Information> baskets = userController.getUserCart(id).getCart();
+            List<? extends Information> baskets = userController.getUserCart(id).getContent();
             String name = userController.getUserName(id);
             return logAndRes(Logger.logStatus.Success, "user" + name + "ask for his cart on " + LocalDateTime.now(),
                     baskets, null, null);

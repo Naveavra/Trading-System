@@ -3,6 +3,8 @@ package domain.store.discount;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
 import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.discount.predicates.DiscountPredicate;
+import domain.user.Basket;
+import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
 
 import java.util.HashMap;
@@ -15,7 +17,7 @@ public interface Discount {
      * @param order
      * @return
      */
-    public double handleDiscount(HashMap<Integer, Integer> basket, Order order) throws Exception;
+    public double handleDiscount(Basket basket, Order order) throws Exception;
     public void addPredicate(DiscountPredicate.PredicateTypes type, String params, DiscountPredicate.composore comp);
     public DiscountPredicate getPred();
     public void setOperations(GetProductOperation getP, GetCategoriesOperation getCat);

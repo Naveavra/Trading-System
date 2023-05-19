@@ -35,12 +35,8 @@ public class Guest implements User{
         cart.changeQuantityInCart(storeId, product, change);
     }
 
-    public List<Basket> getCartContent() {
+    public List<ProductInfo> getCartContent() {
         return cart.getContent();
-    }
-
-    public List<JSONObject> getCartJson(){
-        return cart.toJson();
     }
 
     public void emptyCart() {

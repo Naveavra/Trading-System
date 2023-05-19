@@ -1,7 +1,9 @@
 package utils.orderRelated;
 
 
+import domain.store.product.Product;
 import domain.user.ShoppingCart;
+import utils.infoRelated.ProductInfo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +40,7 @@ public class Order {
     public synchronized int getUserId() {
         return userId;
     }
-    public synchronized HashMap<Integer, HashMap<Integer, Integer>> getProductsInStores() {
+    public synchronized List<ProductInfo> getProductsInStores() {
         return productsInStores.getContent();
     }
 
@@ -54,12 +56,12 @@ public class Order {
      * @param storeID int
      * @param products HashMap<productID,quantity>
      */
-    public synchronized void addProductsToOrder(int storeID,HashMap<Integer, Integer> products) throws Exception {
+    public synchronized void addProductsToOrder(int storeID,List<ProductInfo> products) throws Exception {
         if(storeID<0){
             throw new Exception("Invalid store id, unable to add products to order.");
         }
-        for(int productId : products.keySet())
-            productsInStores.changeQuantityInCart(storeID, productId, products.get(productId));
+        for(ProductInfo product : products)
+            productsInStores.changeQuantityInCart(storeID, product, product.quantity);
     }
 
     /**
@@ -67,7 +69,7 @@ public class Order {
      * @param storeID int
      * @param products HashMap<productID,quantity>
      */
-    public synchronized void replaceProductsInOrder(int storeID,HashMap<Integer, Integer> products) throws Exception{
+    public synchronized void replaceProductsInOrder(int storeID,List<ProductInfo> products) throws Exception{
         addProductsToOrder(storeID, products);
         //this.productsInStores.put(storeID,products);
     }
