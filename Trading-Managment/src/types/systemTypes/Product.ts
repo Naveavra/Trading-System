@@ -7,8 +7,8 @@ export interface Product {
     price: number;
     quantity: number;
     img: string;
-    rating: { value: number, content: string }[];
-    reviewNumber: number;
+    rating: number;
+    revies: { value: number, content: string }[];
 }
 export const EmptyProduct: Product = {
     productId: -1,
@@ -18,7 +18,7 @@ export const EmptyProduct: Product = {
     price: 0,
     quantity: 0,
     img: "",
-    rating: [],
-    reviewNumber: 0,
+    rating: 0,
+    revies: [],
     storeId: 0
 }

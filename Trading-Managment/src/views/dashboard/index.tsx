@@ -3,9 +3,9 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
 import AlertDialog from '../../components/Dialog/AlertDialog';
-import { clearAuthError, getClientData } from '../../reducers/authSlice';
+import { clearAuthError, getNotifications } from '../../reducers/authSlice';
 import CartLogo from '../../components/Loaders/cartLoader';
-import { clearStoresError, getStoresInfo } from '../../reducers/storesSlice';
+import { clearStoresError, clearStoresResponse, getStoresInfo } from '../../reducers/storesSlice';
 import axios from 'axios';
 import { Outlet } from 'react-router-dom';
 import { clearProductsError, getProducts } from '../../reducers/productsSlice';
@@ -18,11 +18,13 @@ import ProductCard from '../../components/ProductCard/Card';
 import { Product } from '../../types/systemTypes/Product';
 import Products from '../../components/Product/Products';
 import { getCart } from '../../reducers/cartSlice';
+import SuccessAlert from '../../components/Alerts/success';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
-
     const [text, setText] = useState('');
+
+
     const isLoadingShops = useAppSelector((state) => !!state.store.isLoading);
     const isLoadingProducts = useAppSelector((state) => !!state.product.isLoading);
     const userId = useAppSelector((state) => state.auth.userId);
@@ -31,6 +33,11 @@ const DashboardPage: React.FC = () => {
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
     const products = useAppSelector((state) => state.product.responseData);
+
+    //success alerts
+    const openStoreAlert = useAppSelector((state) => state.store.storeState.responseData);
+
+
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
     const PING_INTERVAL2 = 5000;
     // Send a ping to the server
@@ -47,8 +54,8 @@ const DashboardPage: React.FC = () => {
         }
     }
     const getC = () => {
-        if (token) {
-            dispatch(getClientData({ userId: userId, token: token }));
+        if (token != "") {
+            dispatch(getNotifications({ userId: userId, token: token }));
         }
     }
     useEffect(() => {
@@ -66,7 +73,6 @@ const DashboardPage: React.FC = () => {
 
     }, [])
     const handleSet = (text: string) => {
-        console.log(text);
         setText(text);
     }
     //for each product check  for ech category if text is in the category
@@ -83,6 +89,7 @@ const DashboardPage: React.FC = () => {
                                 <Bar headLine={"Trading System"} />
                                 <SearchBar text={text} set={handleSet} />
                                 <Divider sx={{ marginTop: 1 }} />
+                                {openStoreAlert ? <SuccessAlert message={openStoreAlert} onClose={() => { dispatch(clearStoresResponse({})) }} /> : null}
                                 <ShopsBar />
                                 <Divider />
                                 {/* <Categories /> */}
@@ -92,7 +99,9 @@ const DashboardPage: React.FC = () => {
                                 <Outlet />
                             </>
             }
+
             <Outlet />
+
         </>
 
 

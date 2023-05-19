@@ -16,6 +16,7 @@ export interface PatchStoreParams {
     desc: string | null,
     isActive: boolean | null
     img: string,
+    name: string,
 }
 
 export interface DeleteStoreParams {

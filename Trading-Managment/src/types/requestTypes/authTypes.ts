@@ -7,7 +7,11 @@ export interface RegisterPostData {
     password: string;
     birthday: string;
 };
-export interface getUserData {
+export interface getUserNotifications {
     userId: number;
     token: string;
+};
+export interface getUserData {
+    userId: number;
+
 };

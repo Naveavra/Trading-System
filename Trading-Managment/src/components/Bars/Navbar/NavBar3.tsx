@@ -1,37 +1,30 @@
 import * as React from 'react';
-import { StoreRole } from '../../../types/systemTypes/StoreRole';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { getStore, patchStore } from '../../../reducers/storesSlice';
-import { useAppSelector, useAppDispatch } from '../../../redux/store';
-import { logout, guestEnter, getNotifications, clearNotifications } from '../../../reducers/authSlice';
-
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import Switch from '@mui/material/Switch';
+import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox } from '@mui/material';
+import { logout, getNotifications, clearNotifications } from '../../../reducers/authSlice';
+import { getStore } from '../../../reducers/storesSlice';
+import { useAppSelector, useAppDispatch } from '../../../redux/store';
+import './NavBar3.css';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
-import SideDrawer from '../../SideDrawer';
-
-import './NavBar2.css';
-
+import { StoreRole } from '../../../types/systemTypes/StoreRole';
+import { useEffect, useState } from 'react';
 
 
 interface Props {
     headLine: string;
 }
 const DRAWER_WIDTH = 240;
-const Bar2: React.FC<Props> = ({ headLine }) => {
+const Bar3: React.FC<Props> = ({ headLine }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [storeOpen, setStoreOpen] = useState(false);
@@ -47,6 +40,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
 
     const cart = useAppSelector((state) => state.cart.responseData);
     const numProductsIncart = cart?.reduce((acc, item) => acc + item.products?.reduce((acc1, curr1) => acc1 + curr1.quantity, 0), 0) ?? 0;
+
     const stores_roles: StoreRole[] = useAppSelector((state) => state.auth.storeRoles);
     const stores_names = useAppSelector((state) => state.auth.storeNames);
     const store_images = useAppSelector((state) => state.auth.storeImgs);
@@ -58,7 +52,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
             storeImg: store_images[index].storeImg,
         }
     }) : [];
-    const store = useAppSelector((state) => state.store.storeState.watchedStore);
+
     const storeInfo = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -71,12 +65,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
         navigate('/dashboard/store/superior');
         setStoreOpen(false);
     }
-    const handleDrawerClose = () => {
-        setOpenDrawer(false);
-    }
-    const handleDrawerOpen = () => {
-        setOpenDrawer(true);
-    }
+
     const handleNotification = () => {
         setNotificationDialogOpen(true);
     }
@@ -88,7 +77,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
             dispatch(getNotifications({ userId: userId, token: token }));
         }
 
-    }, [dispatch, store])
+    }, [dispatch])
 
     return (
         <>
@@ -96,27 +85,14 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                 <AppBar position="static">
                     <Toolbar>
 
-                        <IconButton
-                            size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            className="icon"
-                            onClick={handleDrawerOpen}
-                            sx={{ mr: 2, ...(openDrawer && { display: 'none' }) }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-
 
                         <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
-                            {headLine} {store.storeName}
+                            {headLine}
                         </Typography>
 
                         {isLoggedIn &&
                             <>
 
-                                <Switch {...label} defaultChecked color="warning" value={store.isActive} onClick={() => { dispatch(patchStore({ isActive: !store.isActive, storeId: store.storeId, userId: userId, img: "", desc: "", name: "" })) }} />
                                 <IconButton className="icon" color="inherit" onClick={handleLogout}>
                                     <LogoutIcon />
                                 </IconButton>
@@ -276,10 +252,8 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Box sx={{ display: 'flex', flexGrow: 1 }}>
-                <SideDrawer drawerWidth={DRAWER_WIDTH} onDrawerClose={handleDrawerClose} open={openDrawer} />
-            </Box>
+
         </>
     );
 }
-export default Bar2;
+export default Bar3;

@@ -10,7 +10,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import { addToCart } from "../../reducers/cartSlice";
+import { addToCart, getCart } from "../../reducers/cartSlice";
 interface CardProps {
     item: Product;
     canEdit: boolean;
@@ -30,6 +30,7 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
 
     const handleAddToCart = () => {
         dispatch(addToCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: quantity }));
+        dispatch(getCart({ userId: userId }));
         setQuantity(0);
     }
     const addProdut = () => {

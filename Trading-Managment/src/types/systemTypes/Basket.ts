@@ -1,3 +1,4 @@
 export interface Basket {
-    productsList: {quantity: number, productId: number}[]
+    storeId: number,
+    products: { quantity: number, productId: number }[]
 }

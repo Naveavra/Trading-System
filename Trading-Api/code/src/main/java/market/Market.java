@@ -1649,4 +1649,19 @@ public Response<List<ProductInfo>> getProducts(int storeId){
         return activeAdmins.size() + inActiveAdmins.size();
     }
 
+    public Response<List<String>> getMemberNotifications(int userId, String token) {
+        try {
+            userAuth.checkUser(userId, token);
+            if (userId % 2 == 1 && userController.isActiveUser(userId)) {
+                return new Response<List<String>>(displayNotifications(userId, token).getValue(), null, null);
+            }
+            else if(activeAdmins.containsKey(userId)){
+                return new Response<List<String>>(null, null, null);
+            }
+            else
+                return new Response<>(null, "get member failed", "the userId given does not belong to any user");
+        }catch (Exception e){
+            return new Response<>(null, "get member failed", e.getMessage());
+        }
+    }
 }

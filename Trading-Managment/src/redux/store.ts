@@ -8,7 +8,7 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import storageSession from 'reduxjs-toolkit-persist/lib/storage/session'
 import orderReducer from '../reducers/orderSlice';
-
+import { getPersistConfig } from 'redux-deep-persist';
 
 
 const authPersistConfig = {
@@ -17,14 +17,21 @@ const authPersistConfig = {
     whitelist: ['token', 'isAuthenticated', 'userId', 'userName'],
 };
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer)
-// const persistedStoreReducer = persistReducer(persistConfig, storeReducer)
+
+const storePersistConfig = getPersistConfig({
+    key: 'store',
+    storage: storageSession,
+    whitelist: ['storeState.watchedStore.storeId'],
+    rootReducer: storeReducer,
+});
+const persistedStoreReducer = persistReducer(storePersistConfig, storeReducer)
 // const persistedProductsReducer = persistReducer(persistConfig, productsReducer)
 // const persistedCartReducer = persistReducer(persistConfig, cartReducer)
 
 export const store = configureStore({
     reducer: {
         auth: persistedAuthReducer,
-        store: storeReducer,
+        store: persistedStoreReducer,
         product: productsReducer,
         cart: cartReducer,
         order: orderReducer,

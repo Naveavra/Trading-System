@@ -31,6 +31,7 @@
     "react-hook-form": "^7.43.9",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.0",
+    "redux-deep-persist": "^1.0.7",
     "redux-persist": "^6.0.0",
     "reduxjs-toolkit-persist": "^7.2.1",
     "signalr-no-jquery": "^0.2.0",

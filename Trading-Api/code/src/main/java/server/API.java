@@ -195,6 +195,27 @@ public class API {
             return new Pair<>(true, json);
         }
     }
+    public Pair<Boolean, JSONObject> getClientNotifications(int userId, String token) {
+        Response<List<String>> res = market.getMemberNotifications(userId, token);
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", NotificationsToJson(res.getValue()));
+            return new Pair<>(true, json);
+        }
+    }
+
+    public JSONObject NotificationsToJson(List<String> list)
+    {
+        JSONObject json = new JSONObject();
+        json.put("notifications", list);
+        return json;
+    }
+
     public Pair<Boolean, JSONObject> getClient(int userId, String token) {
         Response<LoginInformation> res = market.getMember(userId, token);
         JSONObject json = new JSONObject();
@@ -865,7 +886,7 @@ public class API {
         categories.add("fresh");
         res2 = market.addProduct(id1, token1, sid1, categories, "air1", "comfy", 100, 20, "https://images.pexels.com/photos/13691727/pexels-photo-13691727.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
         int pid1 = res2.getValue();
-        res2 = market.addProduct(id1, token1, sid1, categories, "air2", "more comfy", 300, 10,"https://www.pexels.com/photo/person-wearing-air-jordan-1-4215840/");
+        res2 = market.addProduct(id1, token1, sid1, categories, "air2", "more comfy", 300, 10,"https://images.pexels.com/photos/4215840/pexels-photo-4215840.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
         int pid2 = res2.getValue();
         market.addProductToCart(id1, sid2, pid1, 3);
         market.addProductToCart(id2, sid1, pid1, 5);
