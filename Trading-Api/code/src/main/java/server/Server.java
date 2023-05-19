@@ -389,7 +389,7 @@ public class Server {
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int productId = Integer.parseInt(request.get("productId").toString());
             int quantity = Integer.parseInt(request.get("quantity").toString());
-            toSparkRes(res, api.addQuantityInCart(userId, storeId, productId, quantity));
+            toSparkRes(res, api.changeQuantityInCart(userId, storeId, productId, quantity));
             return res.body();
         });
         patch("api/cart/remove/:id", (req, res) -> {
@@ -401,7 +401,7 @@ public class Server {
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int productId = Integer.parseInt(request.get("productId").toString());
             int quantity = Integer.parseInt(request.get("quantity").toString());
-            toSparkRes(res, api.removeQuantityInCart(userId, storeId, productId, quantity));
+            toSparkRes(res, api.changeQuantityInCart(userId, storeId, productId, -1 * quantity));
             return res.body();
         });
         post("api/cart/buy/:id", (req, res) ->{

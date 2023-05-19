@@ -1,5 +1,7 @@
 package service.supplier;
 
+import domain.user.ShoppingCart;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +81,11 @@ public class ProxySupplier implements SupplierAdapter {
         if (real != null){
             real.orderSupplies(storeId, productId, quantity);
         }
+    }
+
+    @Override
+    public void checkSupply(ShoppingCart cart) throws Exception{
+
     }
 
     public void orderSupplies(String supplier, int storeId, int productId, int quantity) throws Exception {

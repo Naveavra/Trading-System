@@ -2,22 +2,22 @@ package service;
 
 
 import domain.store.storeManagement.AppHistory;
+import domain.user.ShoppingCart;
 import utils.Pair;
-import utils.ProductInfo;
-import utils.StoreInfo;
+import utils.infoRelated.ProductInfo;
+import utils.infoRelated.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
 import domain.store.storeManagement.StoreController;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
 import utils.messageRelated.Message;
-import utils.orderRelated.OrderInfo;
+import utils.infoRelated.OrderInfo;
 import utils.orderRelated.Status;
-import utils.userInfoRelated.Receipt;
+import utils.infoRelated.Receipt;
 
 public class MarketController {
 
@@ -33,11 +33,15 @@ public class MarketController {
         gson = new Gson();
     }
 
-    public Pair<Receipt, Set<Integer>> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId) throws Exception
+
+    public int calculatePrice(ShoppingCart cart) throws Exception{
+        return storectrl.calculatePrice(cart.getContent());
+    }
+    public Pair<Receipt, Set<Integer>> purchaseProducts(ShoppingCart shoppingCart, int userId) throws Exception
     {
         Order order = orderctrl.createNewOrder(userId,shoppingCart, storectrl :: calculatePrice,storectrl :: setPrices);
         order.setStatus(Status.pending);
-        Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
+        Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart.getContent(), order);
         order.setStatus(Status.submitted);
         Receipt receipt = new Receipt(userId, order.getOrderId(), shoppingCart, order.getTotalPrice());
         Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);
@@ -283,4 +287,7 @@ public class MarketController {
     }
 
 
+    public void checkProductInStore(int storeId, int productId) throws Exception{
+        storectrl.checkProductInStore(storeId, productId);
+    }
 }

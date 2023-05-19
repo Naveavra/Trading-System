@@ -1,5 +1,6 @@
 package domain.store.order;
 
+import domain.user.ShoppingCart;
 import utils.orderRelated.CalculatePriceOp;
 import utils.orderRelated.Order;
 import utils.orderRelated.SetPricesOp;
@@ -19,11 +20,11 @@ public class OrderController {
         orderID = new AtomicInteger();
     }
     
-    public synchronized Order createNewOrder(int userID, HashMap<Integer,HashMap<Integer,Integer>> products, CalculatePriceOp calcPrice, SetPricesOp setPricesOp) throws Exception {
+    public synchronized Order createNewOrder(int userID, ShoppingCart products, CalculatePriceOp calcPrice, SetPricesOp setPricesOp) throws Exception {
         int id = orderID.getAndIncrement();
         Order or =  new Order(id,userID,products);
         orders.put(id, or);
-        or.setTotalPrice(calcPrice.calculatePrice(products));
+        or.setTotalPrice(calcPrice.calculatePrice(products.getContent()));
         setPricesOp.setPrices(or); //sets the initial price values
         return or;
     }
@@ -36,7 +37,7 @@ public class OrderController {
     }
 
     //only a specific user will be the cause of calling this function, so no need to synchronize
-    public void replaceProductsInOrder(int order_ID,int store_ID,HashMap<Integer,Integer> products){
+    public void replaceProductsInOrder(int order_ID,int store_ID,HashMap<Integer,Integer> products) throws Exception{
         Order ord;
         if((ord = getOrder(order_ID)) != null){
             ord.replaceProductsInOrder(store_ID, products);

@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import domain.store.product.Product;
 import org.junit.jupiter.api.*;
 import utils.Filter.ProductFilter;
-import utils.ProductInfo;
+import utils.infoRelated.ProductInfo;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

@@ -14,7 +14,7 @@ class BasketTest {
 
     @BeforeEach
     void setUp() {
-        basket = new Basket();
+        basket = new Basket(0);
     }
 
     //product - int prod_id, String _name, String desc
@@ -24,21 +24,25 @@ class BasketTest {
 
     @Test
     void addProductToCart_success() {
-        Product apple = new Product(0, "apple", "red apple");
-        Product banana = new Product(1, "banana", "yellow banana");
-        basket.addProductToCart(0, 10);
-        basket.addProductToCart(1, 10);
-        HashMap<Integer, Integer> products = basket.getContent();
-        assertTrue(products.get(0) != null);
-        assertTrue(products.get(0) == 10);
-        assertTrue(products.keySet().size() == 2);
+        try {
+            Product apple = new Product(0, "apple", "red apple");
+            Product banana = new Product(1, "banana", "yellow banana");
+            basket.addProductToCart(0, 10);
+            basket.addProductToCart(1, 10);
+            HashMap<Integer, Integer> products = basket.getContent();
+            assertTrue(products.get(0) != null);
+            assertTrue(products.get(0) == 10);
+            assertTrue(products.keySet().size() == 2);
+        }catch (Exception e){
+            assert false;
+        }
     }
 
     @Test
     void addProductToCart_failed() {
         Product apple = new Product(0, "apple", "red apple");
         try {
-            basket.addQuantityInCart(0, -1);
+            basket.changeQuantityInCart(0, -1);
             assertFalse(true);
         } catch (Exception e) {
             assert true;
@@ -48,22 +52,26 @@ class BasketTest {
 
     @Test
     void removeProductFromCart() {
-        Product apple = new Product(0, "apple", "red apple");
-        Product banana = new Product(1, "banana", "yellow banana");
-        basket.addProductToCart(0, 10);
-        basket.addProductToCart(1, 10);
-        basket.removeProductFromCart(0);
-        HashMap<Integer, Integer> products = basket.getContent();
-        assertTrue(products.get(0) == null);
-        assertTrue(products.keySet().size() == 1);
+        try {
+            Product apple = new Product(0, "apple", "red apple");
+            Product banana = new Product(1, "banana", "yellow banana");
+            basket.addProductToCart(0, 10);
+            basket.addProductToCart(1, 10);
+            basket.removeProductFromCart(0);
+            HashMap<Integer, Integer> products = basket.getContent();
+            assertTrue(products.get(0) == null);
+            assertTrue(products.keySet().size() == 1);
+        }catch (Exception e){
+            assert false;
+        }
     }
 
     @Test
     void changeQuantityInCart() {
-        Product apple = new Product(0,"apple","red apple");
-        basket.addProductToCart(0,10);
         try {
-            basket.addQuantityInCart(0, 100);
+            Product apple = new Product(0,"apple","red apple");
+            basket.addProductToCart(0,10);
+            basket.changeQuantityInCart(0, 100);
             HashMap<Integer, Integer> products = basket.getContent();
             assertTrue(products.get(0) != null);
             assertTrue(products.get(0) == 110);

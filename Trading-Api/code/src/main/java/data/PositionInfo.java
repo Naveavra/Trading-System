@@ -1,7 +1,7 @@
 package data;
 
 import utils.stateRelated.Action;
-import utils.userInfoRelated.Info;
+import utils.infoRelated.Info;
 
 import java.util.List;
 

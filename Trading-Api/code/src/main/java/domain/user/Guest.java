@@ -1,8 +1,11 @@
 package domain.user;
 
-import java.util.HashMap;
+import org.json.JSONObject;
 
-public class Guest {
+import java.util.HashMap;
+import java.util.List;
+
+public class Guest implements User{
     private int id;
     private ShoppingCart cart;
 
@@ -30,18 +33,23 @@ public class Guest {
     public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
         cart.changeQuantityInCart(storeId, productId, change);
     }
-    public void addQuantityInCart(int storeId, int productId, int change) throws Exception{
-        cart.addQuantityInCart(storeId, productId, change);
-    }
-    public void removeQuantityInCart(int storeId, int productId, int change) throws Exception{
-        cart.removeQuantityInCart(storeId, productId, change);
-    }
 
     public HashMap<Integer, HashMap<Integer, Integer>> getCartContent() {
         return cart.getContent();
     }
 
+    public List<JSONObject> getCartJson(){
+        return cart.toJson();
+    }
+
     public void emptyCart() {
         cart.emptyCart();
+    }
+    public void purchaseMade(int orderId, double totalPrice){
+        emptyCart();
+    }
+
+    public ShoppingCart getShoppingCart() {
+        return cart;
     }
 }

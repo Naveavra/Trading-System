@@ -1,20 +1,15 @@
 package server;
 
-import domain.states.Permission;
 import domain.states.StoreCreator;
-import domain.store.storeManagement.StoreController;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import spark.http.matching.Halt;
 import utils.Logger;
-import utils.LoginInformation;
+import utils.infoRelated.LoginInformation;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
 import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class APITest {
     private HashMap<Integer, HashMap<Integer, Integer>> cart;
@@ -38,7 +33,7 @@ class APITest {
         si.put(0, "Role.Creator");
         StoreCreator sc = new StoreCreator();
         sa.put(0, sc.getActions());
-        li = new LoginInformation("5513", 1, "55", true, noti, false, sr, sn, si, sa);
+        li = new LoginInformation("5513", 1, "55", true, noti, sr, sn, si, sa);
         logs.put(Logger.logStatus.Success, new ArrayList<>());
         cart.put(1, new HashMap<>());
         logs.get(Logger.logStatus.Success).add("CREATE cart");
@@ -52,10 +47,10 @@ class APITest {
     void tearDown() {
     }
 
-    @Test
-    void getBaskets() {
-        System.out.println(api.getBaskets(cart));
-    }
+//    @Test
+//    void getBaskets() {
+//        System.out.println(api.getBaskets(cart));
+//    }
 
     @Test
     void logTest() {
@@ -67,11 +62,4 @@ class APITest {
 //        System.out.println(api.loginToJson(li).toString());
     }
 
-
-    @Test
-    void fromActionToString(){
-        StoreCreator sc = new StoreCreator();
-        List<String> s = api.fromActionToString(sc.getActions());
-        System.out.println(s);
-    }
 }

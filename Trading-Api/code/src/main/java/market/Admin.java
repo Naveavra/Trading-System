@@ -15,13 +15,24 @@ public class Admin {
     private String emailAdmin;
     private transient String passwordAdmin;
 
+    private boolean isActive;
+
     private MarketController marketController;
     private UserController userController;
     public Admin(int adminId, String email, String password){
         this.adminId = adminId;
         emailAdmin = email;
         passwordAdmin = password;
+        isActive = false;
 
+    }
+
+    public boolean getIsActive(){
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive){
+        this.isActive = isActive;
     }
     public int getAdminId(){
         return adminId;
@@ -37,7 +48,7 @@ public class Admin {
                 String notify = "the store: " + storeId + " has been permanently closed";
                 Notification<String> notification = new Notification<>(notify);
                 userController.addNotification(userId, notification);
-                userController.removeStoreRole(adminId, userId, storeId);
+                userController.removeStoreRole(userId, storeId);
             }
         }
     }

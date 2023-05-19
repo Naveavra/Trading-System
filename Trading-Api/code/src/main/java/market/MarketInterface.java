@@ -1,8 +1,9 @@
 package market;
 
 import domain.store.storeManagement.Store;
-import utils.LoginInformation;
-import utils.marketRelated.Response;
+import domain.user.PurchaseHistory;
+import utils.infoRelated.LoginInformation;
+import utils.Response;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +20,6 @@ public interface MarketInterface {
     public Response addProductToCart(int userId,int storeId ,int productId, int quantity);
     public Response removeProductFromCart(int userId,  int storeId, int productId);
     public Response changeQuantityInCart(int userId, int storeId, int productId, int change);
-    public Response addQuantityInCart(int userId, int storeId, int productId, int change);
-    public Response removeQuantityInCart(int userId, int storeId, int productId, int change);
     public Response getCart(int id);
     Response<String> removeCart(int userId);
     public Response makePurchase(int userId , String accountNumber);
@@ -35,23 +34,23 @@ public interface MarketInterface {
     //member methods
     public Response login(String email , String pass);
     Response<LoginInformation> getMember(int userId, String token);
-    public Response checkSecurityQuestions(int userId, String token, List<String> answers);
-    public Response addSecurityQuestion(int userId, String token, String question, String answer);
-    public Response changeAnswerForLoginQuestion(int userId, String token, String question, String answer);
-    public Response removeSecurityQuestion(int userId, String token, String question);
     public Response displayNotifications(int userId, String token);
     public Response logout(int userId);
     public Response changePassword(int userId, String token, String oldPass, String newPass);
 
     public Response changeName(int userId, String token, String newUserName);
     public Response changeEmail(int userId, String token, String newEmail);
-
-    public Response openStore(int userId,String token, String storeDescription);
     public Response openStore(int userId, String token, String storeName, String des, String img);
     public Response getMemberInformation(int userId, String token);
-    public Response getUserPurchaseHistory(int userId, String token, int buyerId);
+    public Response getUserPurchaseHistoryHash(int userId, String token, int buyerId);
+
+    Response<PurchaseHistory> getUserPurchaseHistory(int userId, String token, int buyerId);
+
     public Response writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading);
-    public Response writeReviewToProduct(int userId, String token, int orderId, int storeId,int productId, String content, int grading);
+
+    Response<String> sendNotification(int userId, String token, String receiverEmail, String notify);
+
+    public Response writeReviewToProduct(int userId, String token, int orderId, int storeId, int productId, String content, int grading);
     public Response checkReviews(int userId, String token, int storeId);
     public Response getProductInformation(int storeId , int productId);
     public Response getStoreInformation(int storeId);
@@ -62,13 +61,12 @@ public interface MarketInterface {
     public Response sendComplaint(int userId, String token, int orderId, int storeId, String msg);
 
     // manager methods
-    public Response appointManager(int userId, String token, int managerIdToAppoint, int storeId);
     public Response appointManager(int userId, String token, String managerToAppoint, int storeId);
     public Response changeStoreDescription(int userId, String token, int storeId, String description);
     Response<String> changeStoreImg(int userId, String token, int storeId, String img);
     Response<String> changeStoreName(int userId, String token, int storeId, String name);
     public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
-    public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
+    //public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
     public Response addPurchaseConstraint(int userId, String token, int storeId, String constraint);
     public Response fireManager(int userId, String token, int managerToFire, int storeId);
     public Response checkWorkerStatus(int userId, String token, int workerId, int storeId);
@@ -76,13 +74,10 @@ public interface MarketInterface {
     public Response viewQuestions(int userId, String token, int storeId);
     public Response answerQuestion(int userId, String token, int storeId, int questionId, String answer);
     public Response seeStoreHistory(int userId, String token, int storeId);
-    public Response addProduct(int useIid, String token, int storeId,List<String> categories, String name , String description , int price , int quantity);
-
     public Response<Integer> addProduct(int userId, String token, int storeId, List<String> categories, String name, String description,
                                         int price, int quantity, String img);
     public Response deleteProduct(int userId, String token, int storeId, int productId);
     //store owner methods
-    public Response appointOwner(int userId , String token,int ownerId, int storeId);
 
     //TODO: need to use supplierProxy for changing the quantity
     Response<String> updateProduct(int userId, String token, int storeId, int productId, List<String> categories, String name, String description,
@@ -90,11 +85,7 @@ public interface MarketInterface {
 
     public Response<String> appointOwner(int userId, String token, String owner, int storeId);
     public Response fireOwner(int userId , String token, int ownerId, int storeId);
-    public Response addManagerPermission (int ownerId, String token, int userId,int storeId, int permissionsId);
-
     Response<String> addManagerPermissions(int ownerId, String token, int userId, int storeId, List<Integer> permissionsIds);
-
-    public Response removeManagerPermission (int ownerId, String token, int userId, int storeId, int permissionsId);
 
     Response<String> removeManagerPermissions(int ownerId, String token, int userId, int storeId, List<Integer> permissionsIds);
 

@@ -1,7 +1,6 @@
 package data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ProductInfo {
@@ -11,16 +10,19 @@ public class ProductInfo {
     private List<String> categories;
     private int price;
     private int quantity;
+    private String img;
 
-    public ProductInfo(String name, String description, List<String> categories, int price, int quantity) {
+    public ProductInfo(String name, String description, List<String> categories, int price, int quantity, String img) {
         this.name = name;
         this.description = description;
-        this.categories = categories;
+        this.categories = new ArrayList<>();
+        this.categories.addAll(categories);
         this.price = price;
         this.quantity = quantity;
+        this.img = img;
     }
 
-    public ProductInfo(utils.ProductInfo product) {
+    public ProductInfo(utils.infoRelated.ProductInfo product) {
         this.productId = product.id;
         this.name = product.name;
         this.description = product.description;
@@ -28,6 +30,7 @@ public class ProductInfo {
         this.quantity = product.quantity;
         this.categories = new ArrayList<>();
         this.categories.addAll(product.getCategories());
+        this.img = product.img;
     }
 
     public int getProductId() {
@@ -77,4 +80,6 @@ public class ProductInfo {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public String getImg(){return img;}
 }

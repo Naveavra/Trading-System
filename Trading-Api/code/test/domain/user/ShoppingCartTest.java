@@ -65,7 +65,7 @@ class ShoppingCartTest {
     void changeQuantityInCart_success() {
         try{
             s.addProductToCart(1, 0, 100);
-            s.addQuantityInCart(1,0,10);
+            s.changeQuantityInCart(1,0,10);
             HashMap<Integer, HashMap<Integer, Integer>> cart = s.getContent();
             assertTrue(cart.get(1)!=null);
             assertTrue(cart.get(1).get(0)==110);
@@ -76,7 +76,7 @@ class ShoppingCartTest {
     @Test
     void changeQuantityInCart_fail() {
         try{
-            s.addQuantityInCart(0,0,-10);
+            s.changeQuantityInCart(0,0,-100);
             assertFalse(true);
         }catch (Exception e){
             assertTrue(true);

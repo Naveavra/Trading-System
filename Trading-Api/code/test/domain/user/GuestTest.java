@@ -68,7 +68,7 @@ class GuestTest {
     void changeQuantityInCart_success() {
         try{
             guest.addProductToCart(1, 0, 100);
-            guest.addQuantityInCart(1,0,10);
+            guest.changeQuantityInCart(1,0,10);
             HashMap<Integer, HashMap<Integer, Integer>> cart = guest.getCartContent();
             assertTrue(cart.get(1)!=null);
             assertTrue(cart.get(1).get(0)==110);

@@ -7,13 +7,14 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import domain.user.ShoppingCart;
 import utils.orderRelated.Order;
 import org.junit.jupiter.api.*;
 
 
 
 public class OrderTest {
-    private Order order = new Order(0,0,new HashMap<>());
+    private Order order = new Order(0,0,new ShoppingCart());
 
     @Test
     void testAddProductsToOrder() throws Exception{

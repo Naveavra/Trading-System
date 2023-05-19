@@ -1,24 +1,24 @@
 package utils.orderRelated;
 
 
+import domain.user.ShoppingCart;
+
 import java.util.HashMap;
+import java.util.List;
 
 public class Order {
     private int orderId;
     private Status status;
     private int userId;
-    private HashMap<Integer, HashMap<Integer,Integer>> productsInStores;    //<storeID,<productID, quantity>>
+    private ShoppingCart productsInStores;    //<storeID,<productID, quantity>>
     private HashMap<Integer,HashMap<Integer,Integer>> prices; //storeId,<prodId, price>
     private double totalPrice = 0;
-    public Order(int id, int user_id,HashMap<Integer,HashMap<Integer,Integer>> products){
+    public Order(int id, int user_id, ShoppingCart products){
         orderId = id;
         userId = user_id;
         status = Status.pending;
         productsInStores = products;
         prices = new HashMap<>();
-    }
-    public void clean(){
-        productsInStores = new HashMap<>();
     }
     public synchronized double getTotalPrice(){
         return totalPrice;
@@ -39,6 +39,10 @@ public class Order {
         return userId;
     }
     public synchronized HashMap<Integer, HashMap<Integer, Integer>> getProductsInStores() {
+        return productsInStores.getContent();
+    }
+
+    public synchronized ShoppingCart getShoppingCart(){
         return productsInStores;
     }
     /**
@@ -54,19 +58,8 @@ public class Order {
         if(storeID<0){
             throw new Exception("Invalid store id, unable to add products to order.");
         }
-        HashMap<Integer,Integer> prod4Store = products;
-        if(this.productsInStores.containsKey(storeID)){
-            prod4Store = this.productsInStores.get(storeID);
-            for(int prodId:products.keySet()){
-                if(prod4Store.containsKey(prodId)){
-                    prod4Store.put(prodId, prod4Store.get(prodId) + products.get(prodId));
-                }
-                else{
-                    prod4Store.put(prodId,products.get(prodId));
-                }
-            }
-        }
-        this.productsInStores.put(storeID,prod4Store);
+        for(int productId : products.keySet())
+            productsInStores.changeQuantityInCart(storeID, productId, products.get(productId));
     }
 
     /**
@@ -74,8 +67,9 @@ public class Order {
      * @param storeID int
      * @param products HashMap<productID,quantity>
      */
-    public synchronized void replaceProductsInOrder(int storeID,HashMap<Integer, Integer> products){
-        this.productsInStores.put(storeID,products);
+    public synchronized void replaceProductsInOrder(int storeID,HashMap<Integer, Integer> products) throws Exception{
+        addProductsToOrder(storeID, products);
+        //this.productsInStores.put(storeID,products);
     }
 
 
