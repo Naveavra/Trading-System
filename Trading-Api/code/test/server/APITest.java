@@ -1,65 +1,64 @@
-//package server;
-//
-//import domain.states.StoreCreator;
-//import org.junit.jupiter.api.AfterEach;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import utils.Logger;
-//import utils.infoRelated.LoginInformation;
-//import utils.stateRelated.Action;
-//import utils.stateRelated.Role;
-//
-//import java.util.*;
-//
-//class APITest {
-//    private HashMap<Integer, HashMap<Integer, Integer>> cart;
-//    private HashMap<Logger.logStatus, List<String>> logs;
-//    private LoginInformation li;
-//    private API api;
-//    @BeforeEach
-//    void setUp() {
-//        api = new API();
-//        cart = new HashMap<>();
-//        logs = new HashMap<>();
-//        List<String> noti = new ArrayList<>();
-//        HashMap<Integer, Role> sr = new HashMap<>();
-//        HashMap<Integer, String> sn = new HashMap<>();
-//        HashMap<Integer, String> si = new HashMap<>();
-//        HashMap<Integer, List<Action>> sa = new HashMap<>();
-//        noti.add("Hello");
-//        noti.add("World");
-//        sr.put(0, Role.Creator);
-//        sn.put(0, "Role.Creator");
-//        si.put(0, "Role.Creator");
-//        StoreCreator sc = new StoreCreator();
-//        sa.put(0, sc.getActions());
-//        li = new LoginInformation("5513", 1, "55", true, noti, sr, sn, si, sa);
-//        logs.put(Logger.logStatus.Success, new ArrayList<>());
-//        cart.put(1, new HashMap<>());
-//        logs.get(Logger.logStatus.Success).add("CREATE cart");
-//        cart.get(1).put(1, 1);
-//        logs.get(Logger.logStatus.Success).add("ADD cart (1, 1)");
-//        cart.put(5, new HashMap<>());
-//        cart.get(5).put(5, 5);
-//    }
-//
-//    @AfterEach
-//    void tearDown() {
-//    }
-//
-////    @Test
-////    void getBaskets() {
-////        System.out.println(api.getBaskets(cart));
-////    }
-//
+package server;
+
+import domain.states.StoreCreator;
+import jdk.jfr.Category;
+import market.Market;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import utils.Logger;
+import utils.infoRelated.LoginInformation;
+import utils.infoRelated.Receipt;
+import utils.stateRelated.Action;
+import utils.stateRelated.Role;
+
+import java.util.*;
+
+class APITest {
+    private HashMap<Integer, HashMap<Integer, Integer>> cart;
+    private HashMap<Logger.logStatus, List<String>> logs;
+    private LoginInformation li;
+    API api;
+    int userId;
+    String token;
+    int storeId;
+
+    List<String> categories;
+    int productId;
+
+    @BeforeEach
+    void setUp() {
+        api = new API();
+        Market m = api.market;
+        m.register("eli@gmail.com", "123Aaa", "24/02/2002");
+        userId = m.login("eli@gmail.com", "123Aaa").getValue().getUserId();
+        token = m.addTokenForTests();
+        storeId = m.openStore(userId, token, "eli store", "good store", "img").getValue();
+        categories = new ArrayList<>();
+        categories.add("food");
+        categories.add("hang out");
+        productId = m.addProduct(userId, token, storeId, categories, "burger", "from McDonald", 5, 2, "img").getValue();
+        m.addProductToCart(userId, storeId, productId, 1);
+
+    }
+
+    @Test
+    void getCart(){
+        System.out.println(api.getCart(userId).getSecond().get("value"));
+    }
 //    @Test
-//    void logTest() {
-////        System.out.println(api.logsToString(logs));
+//    void getBaskets() {
+//        System.out.println(api.getBaskets(cart));
 //    }
-//
-//    @Test
-//    void loginTest() {
-////        System.out.println(api.loginToJson(li).toString());
-//    }
-//
-//}
+
+    @Test
+    void logTest() {
+//        System.out.println(api.logsToString(logs));
+    }
+
+    @Test
+    void loginTest() {
+//        System.out.println(api.loginToJson(li).toString());
+    }
+
+}

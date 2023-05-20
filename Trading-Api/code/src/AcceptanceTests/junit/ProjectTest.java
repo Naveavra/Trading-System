@@ -55,7 +55,7 @@ public abstract class ProjectTest{
     }
 
     private void setUpAdmins() {
-        adminLogin(mainAdmin.getEmail(), mainAdmin.getPassword());
+        mainAdmin.setAdminId(adminLogin(mainAdmin.getEmail(), mainAdmin.getPassword()));
         for (String[] adminInfo : admins) {
             AdminInfo ai = new AdminInfo(adminInfo[ADMIN_USER], adminInfo[ADMIN_PASS]);
             this.bridge.addAdmin(mainAdmin.getAdminId(), adminInfo[ADMIN_USER], adminInfo[ADMIN_PASS]);

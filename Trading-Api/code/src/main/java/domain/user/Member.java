@@ -15,6 +15,7 @@ import utils.stateRelated.Role;
 import utils.infoRelated.Info;
 
 
+import java.net.http.WebSocketHandshakeException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -138,6 +139,7 @@ public class Member implements User{
 
     public void openStore(Store store) {
         UserState creator = new StoreCreator(id, store);
+
         roles.add(creator);
     }
 
@@ -201,7 +203,7 @@ public class Member implements User{
     private UserState getInActiveRole(int storeId) throws Exception{
         for (UserState state : roles) {
             if (state.getStore().getStoreId() == storeId) {
-                if (state.isActive()) {
+                if (!state.isActive()) {
                     return state;
                 }
                 else throw new Exception("the role in the store is active");
@@ -290,9 +292,8 @@ public class Member implements User{
         return state.getWorkerIds();
     }
 
-    public Info getInformation(int storeId) {
-
-        UserState state = roles.get(storeId);
+    public Info getInformation(int storeId) throws Exception{
+        UserState state = getRole(storeId);
         Info info = new Info(id, name, email, birthday, age);
         if(state != null && state.getRole() == Role.Manager)
             info.addManagerActions(state.getActions());
@@ -336,8 +337,10 @@ public class Member implements User{
         return ans;
     }
 
-    public ShoppingCart getShoppingCart() {
-        return g.getShoppingCart();
+    public ShoppingCart getShoppingCart() throws Exception {
+        if(isConnected)
+            return g.getShoppingCart();
+        throw new Exception("the member is not connected");
     }
 
 

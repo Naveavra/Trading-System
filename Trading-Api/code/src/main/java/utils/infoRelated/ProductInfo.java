@@ -22,10 +22,12 @@ public class ProductInfo extends Information{
     public HashMap<Integer, Message> reviews;
 
 
-    public ProductInfo(int storeId, int productId ,String name , String desc ,int price , int quantity, double rating, HashMap<Integer, Message> reviews,
+    public ProductInfo(int storeId, int productId, List<String> categories, String name, String desc, int price, int quantity, double rating, HashMap<Integer, Message> reviews,
                        String img){
         this.storeId = storeId;
         this.id = productId;
+        this.categories = new ArrayList<>();
+        this.categories.addAll(categories);
         this.name =name;
         this.description =desc;
         this.price = price;
@@ -38,6 +40,8 @@ public class ProductInfo extends Information{
     public ProductInfo(int storeId, Product product, int quantity){
         this.storeId = storeId;
         this.id = product.getID();
+        this.categories = new ArrayList<>();
+        this.categories.addAll(product.getCategories());
         this.name =product.getName();
         this.description = product.getDescription();
         this.price = product.getPrice();

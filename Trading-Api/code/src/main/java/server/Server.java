@@ -20,8 +20,6 @@ public class Server {
     public static API api = new API();
     static ConnectedThread connectedThread;
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
-    static int nextUser =1;
-    static Gson gson = new Gson();
     private static HashMap< Integer, ArrayBlockingQueue<String>> messageQueue = new HashMap<>();
     private static HashMap<String, BlockingQueue<String>> userQueues = new HashMap<>();
 

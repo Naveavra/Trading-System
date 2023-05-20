@@ -200,7 +200,7 @@ public class UserController {
     }
 
     public synchronized void addNotification(int userId, Notification notification) throws Exception{
-        Member m = getActiveMember(userId);
+        Member m = getMember(userId);
         m.addNotification(notification);
     }
     public synchronized void addNotification(String userEmail, Notification notification) throws Exception{

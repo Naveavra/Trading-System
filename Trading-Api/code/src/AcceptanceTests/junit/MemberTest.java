@@ -123,7 +123,7 @@ public class MemberTest extends ProjectTest{
         assertTrue(ci.getCountOfProduct() > 0);
         status = this.addExternalSupplierService(mainAdmin.getAdminId(), "UPS");
         assertTrue(status > 0);
-        status = this.replaceExternalPaymentService(mainAdmin.getAdminId(), "UPS");
+        status = this.replaceExternalSupplierService(mainAdmin.getAdminId(), "UPS");
         assertTrue(status > 0);
         //make purchase
         status  = makePurchase(buyer.getUserId(), "00000000000");

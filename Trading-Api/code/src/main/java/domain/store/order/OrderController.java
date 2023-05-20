@@ -22,11 +22,11 @@ public class OrderController {
         orderID = new AtomicInteger();
     }
     
-    public synchronized Order createNewOrder(int userID, ShoppingCart products, CalculatePriceOp calcPrice, SetPricesOp setPricesOp) throws Exception {
+    public synchronized Order createNewOrder(int userID, ShoppingCart products, int totalPrice, SetPricesOp setPricesOp) throws Exception {
         int id = orderID.getAndIncrement();
         Order or =  new Order(id,userID,products);
         orders.put(id, or);
-        or.setTotalPrice(calcPrice.calculatePrice(products));
+        or.setTotalPrice(totalPrice);
         setPricesOp.setPrices(or); //sets the initial price values
         return or;
     }

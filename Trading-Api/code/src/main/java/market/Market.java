@@ -1,7 +1,6 @@
 package market;
 
 import domain.store.storeManagement.AppHistory;
-import domain.user.Basket;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
 import service.security.UserAuth;
@@ -196,9 +195,8 @@ public class Market implements MarketInterface {
         try {
             marketController.checkProductInStore(storeId, productId);
             userController.addProductToCart(userId, storeId, marketController.getProductInformation(storeId, productId), quantity);
-            String name = userController.getUserName(userId);
             String productName = marketController.getProductName(storeId, productId);
-            return logAndRes(Logger.logStatus.Success, "user " + name + "add " + quantity + " " + productName + " to shopping cart on " + LocalDateTime.now(),
+            return logAndRes(Logger.logStatus.Success, "user " + userId + "add " + quantity + " " + productName + " to shopping cart on " + LocalDateTime.now(),
                     "user add to cart successfully", null, null);
         } catch (Exception e) {
             return logAndRes(Logger.logStatus.Fail, "user cant add product To Cart because " + e.getMessage() + "on " + LocalDateTime.now(),
@@ -212,9 +210,8 @@ public class Market implements MarketInterface {
     public Response<String> removeProductFromCart(int userId, int storeId, int productId) {
         try {
             userController.removeProductFromCart(userId, storeId, productId);
-            String name = userController.getUserName(userId);
             String productName = marketController.getProductName(storeId, productId);
-            return logAndRes(Logger.logStatus.Success, "user " + name + "remove " + productName + " from shopping cart on " + LocalDateTime.now(),
+            return logAndRes(Logger.logStatus.Success, "user " + userId + "remove " + productName + " from shopping cart on " + LocalDateTime.now(),
                     "user remove " + productName + " from cart successfully", null, null);
         } catch (Exception e) {
             return logAndRes(Logger.logStatus.Fail, "user cant remove product from Cart because " + e.getMessage() + "on " + LocalDateTime.now(),
@@ -226,9 +223,8 @@ public class Market implements MarketInterface {
     public Response<String> changeQuantityInCart(int userId, int storeId, int productId, int change) {
         try {
             userController.changeQuantityInCart(userId, storeId, marketController.getProductInformation(storeId, productId), change);
-            String name = userController.getUserName(userId);
             String productName = marketController.getProductName(storeId, productId);
-            return logAndRes(Logger.logStatus.Success, "user " + name + " change quantity to " + change + " on shopping cart on " + LocalDateTime.now(),
+            return logAndRes(Logger.logStatus.Success, "user " + userId + " change quantity to " + change + " on shopping cart on " + LocalDateTime.now(),
                     "user change Quantity of " + productName + " In Cart to " + change + " successfully ", null, null);
         } catch (Exception e) {
             return logAndRes(Logger.logStatus.Fail, "user cant remove change quantity in cart because " + e.getMessage() + "on " + LocalDateTime.now(),
@@ -239,8 +235,7 @@ public class Market implements MarketInterface {
     public Response<List<? extends Information>> getCart(int id) {
         try {
             List<? extends Information> baskets = userController.getUserCart(id).getContent();
-            String name = userController.getUserName(id);
-            return logAndRes(Logger.logStatus.Success, "user" + name + "ask for his cart on " + LocalDateTime.now(),
+            return logAndRes(Logger.logStatus.Success, "user" + id + "ask for his cart on " + LocalDateTime.now(),
                     baskets, null, null);
         } catch (Exception e) {
             return logAndRes(Logger.logStatus.Fail, "user cant get his cart because " + e.getMessage() + "on " + LocalDateTime.now(),
@@ -252,8 +247,7 @@ public class Market implements MarketInterface {
     public Response<String> removeCart(int userId) {
         try{
             userController.removeCart(userId);
-            String name = userController.getUserName(userId);
-            return logAndRes(Logger.logStatus.Success, "user" + name + "ask to remove his cart on " + LocalDateTime.now(),
+            return logAndRes(Logger.logStatus.Success, "user" + userId + "ask to remove his cart on " + LocalDateTime.now(),
                     "remove cart succeeded", null, null);
         } catch (Exception e) {
             return logAndRes(Logger.logStatus.Fail, "user cant remove his cart because " + e.getMessage() + "on " + LocalDateTime.now(),
@@ -270,7 +264,7 @@ public class Market implements MarketInterface {
             int totalPrice = marketController.calculatePrice(cart);
             proxyPayment.makePurchase(accountNumber, totalPrice);
             proxySupplier.checkSupply(cart);
-            Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userId);
+            Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userId, totalPrice);
             Receipt receipt = ans.getFirst();
             Set<Integer> creatorIds = ans.getSecond();
             userController.purchaseMade(userId, receipt.getOrderId(), receipt.getTotalPrice());
@@ -417,7 +411,6 @@ public class Market implements MarketInterface {
     public Response<HashMap<Integer, Message>> checkReviews(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.viewMessages, storeId);
             HashMap<Integer, Message> reviews = marketController.viewReviews(storeId);
             return logAndRes(Logger.logStatus.Success, "user checked reviews on store successfully on " + LocalDateTime.now(),
                     reviews, null, null);
@@ -466,7 +459,6 @@ public class Market implements MarketInterface {
     public Response<Store> getStore(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.seeStoreHistory, storeId);
             return logAndRes(Logger.logStatus.Success, "user get store information successfully on " + LocalDateTime.now(),
                     marketController.getStore(storeId), null, null);
         } catch (Exception e) {
@@ -566,7 +558,6 @@ public class Market implements MarketInterface {
     public Response<String> fireManager(int userId, String token, int managerToFire, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.fireManager, storeId);
             userController.fireManager(userId, managerToFire, storeId);
             return logAndRes(Logger.logStatus.Success, "user fire manager successfully on " + LocalDateTime.now(),
                     "user fire manager successfully", null, null);
@@ -592,7 +583,6 @@ public class Market implements MarketInterface {
     public Response<String> fireOwner(int userId, String token, int ownerId, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.fireOwner, storeId);
             userController.fireOwner(userId, ownerId, storeId);
             return logAndRes(Logger.logStatus.Success, "user fire owner successfully on " + LocalDateTime.now(),
                     "user fire owner successfully", null, null);
@@ -606,7 +596,6 @@ public class Market implements MarketInterface {
     public Response<String> changeStoreDescription(int userId, String token, int storeId, String description) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.changeStoreDetails, storeId);
             marketController.setStoreDescription(storeId, description);
             return logAndRes(Logger.logStatus.Success, "user change store description successfully on " + LocalDateTime.now(),
                     "user change store description successfully", null, null);
@@ -620,7 +609,6 @@ public class Market implements MarketInterface {
     public Response<String> changeStoreImg(int userId, String token, int storeId, String img) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.changeStoreDetails, storeId);
             marketController.setStoreImg(storeId, img);
             return logAndRes(Logger.logStatus.Success, "user change store img successfully on " + LocalDateTime.now(),
                     "user change store img successfully", null, null);
@@ -634,7 +622,6 @@ public class Market implements MarketInterface {
     public Response<String> changeStoreName(int userId, String token, int storeId, String name) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.changeStoreDetails, storeId);
             marketController.setStoreName(storeId, name);
             return logAndRes(Logger.logStatus.Success, "user change store name successfully on " + LocalDateTime.now(),
                     "user change store name successfully", null, null);
@@ -648,7 +635,6 @@ public class Market implements MarketInterface {
     public Response<String> changePurchasePolicy(int userId, String token, int storeId, String policy) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.changePurchasePolicy, storeId);
             marketController.setStorePurchasePolicy(storeId, policy);
             return logAndRes(Logger.logStatus.Success, "user change store purchase policy successfully on " + LocalDateTime.now(),
                     "user change store purchase policy successfully", null, null);
@@ -680,7 +666,6 @@ public class Market implements MarketInterface {
     public Response<String> addPurchaseConstraint(int userId, String token, int storeId, String constraint) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.addPurchaseConstraint, storeId);
             marketController.addPurchaseConstraint(storeId, constraint);
             return logAndRes(Logger.logStatus.Success, "user add purchase constraint successfully on " + LocalDateTime.now(),
                     "user add purchase constraint successfully", null, null);
@@ -694,7 +679,6 @@ public class Market implements MarketInterface {
     public Response<Info> checkWorkerStatus(int userId, String token, int workerId, int storeId) {
         try{
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.checkWorkersStatus, storeId);
             Info res = userController.getWorkerInformation(userId, workerId, storeId);
             return logAndRes(Logger.logStatus.Success, "user check worker status successfully on " + LocalDateTime.now(),
                     res, null, null);
@@ -708,7 +692,6 @@ public class Market implements MarketInterface {
     public Response<List<? extends Information>> checkWorkersStatus(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.checkWorkersStatus, storeId);
             List<Info> res = userController.getWorkersInformation(userId, storeId);
             return logAndRes(Logger.logStatus.Success, "user check worker status successfully on " + LocalDateTime.now(),
                     res, null, null);
@@ -722,7 +705,6 @@ public class Market implements MarketInterface {
     public Response<HashMap<Integer, ? extends Information>> viewQuestions(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.viewMessages, storeId);
             HashMap<Integer, Message> res = marketController.getQuestions(storeId);
             return logAndRes(Logger.logStatus.Success, "user get questions successfully on " + LocalDateTime.now(),
                     res, null, null);
@@ -736,7 +718,6 @@ public class Market implements MarketInterface {
     public Response<String> answerQuestion(int userId, String token, int storeId, int questionId, String answer) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.answerMessage, storeId);
             marketController.answerQuestion(storeId, questionId, answer);
             return logAndRes(Logger.logStatus.Success, "user answer question successfully on " + LocalDateTime.now(),
                     "user answer question successfully", null, null);
@@ -750,7 +731,8 @@ public class Market implements MarketInterface {
     public Response<List<? extends Information>> seeStoreHistory(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.seeStoreHistory, storeId);
+            if(!checkIsAdmin(userId))
+                userController.checkPermission(userId, Action.seeStoreHistory, storeId);
             List<OrderInfo> res = marketController.getStoreOrderHistory(storeId);
             return logAndRes(Logger.logStatus.Success, "user get store history successfully on " + LocalDateTime.now(),
                     res, null, null);
@@ -780,7 +762,6 @@ public class Market implements MarketInterface {
     public Response<String> deleteProduct(int userId, String token, int storeId, int productId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.removeProduct, storeId);
             marketController.deleteProduct(storeId, productId);
             return logAndRes(Logger.logStatus.Success, "Delete product successful on: " + LocalDateTime.now(),
                     "product was successfully deleted", null, null);
@@ -797,8 +778,7 @@ public class Market implements MarketInterface {
                                           int price, int quantity, String img) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.updateProduct, storeId);
-            proxySupplier.orderSupplies(storeId, productId, quantity);
+            //proxySupplier.orderSupplies(storeId, productId, quantity);
             marketController.updateProduct(storeId, productId, categories, name, description, price, quantity, img);
             return logAndRes(Logger.logStatus.Success, "Update product successful on: " + LocalDateTime.now(),
                     "updated product was successful", null, null);
@@ -845,7 +825,6 @@ public class Market implements MarketInterface {
     public Response<AppHistory> getAppointments(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            userController.checkPermission(userId, Action.seeStoreHistory, storeId);
             AppHistory res = marketController.getAppointments(storeId);
             return logAndRes(Logger.logStatus.Success, "user get appointments" + LocalDateTime.now(),
                     res, null, null);
@@ -922,7 +901,7 @@ public class Market implements MarketInterface {
 
     //check if admin
     public boolean checkIsAdmin(int adminId){
-        return !admins.containsKey(adminId);
+        return admins.containsKey(adminId);
     }
 
     public boolean checkIsAdmin(String email){

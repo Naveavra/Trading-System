@@ -13,7 +13,7 @@ public interface User {
     public void removeProductFromCart(int storeId, int productId) throws Exception;
     public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception;
     public List<ProductInfo> getCartContent();
-    public ShoppingCart getShoppingCart();
+    public ShoppingCart getShoppingCart() throws Exception;
     public void purchaseMade(int orderId, double totalPrice);
     public void emptyCart();
 }

@@ -404,7 +404,7 @@ public class Store extends Information {
         if (inventory.getProduct(productId) != null)
         {
             Product p = inventory.getProduct(productId);
-            return inventory.getProductInfo(productId);
+            return inventory.getProductInfo(storeid, productId);
         }
         throw new Exception("cant get product information");
     }

@@ -22,7 +22,7 @@ import utils.infoRelated.Receipt;
 
 public class API {
     public Market market;
-    Gson gson;
+    private Gson gson;
     public API(){
         market = new Market("elibenshimol6@gmail.com", "123Aaa");
         gson = new Gson();

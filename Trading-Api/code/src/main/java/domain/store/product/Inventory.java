@@ -145,7 +145,7 @@ public class Inventory {
         if(productList.containsKey(productID)){
             return productList.get(productID);
         }
-        throw new Exception("Product not found, ID: "+productID);
+        throw new Exception("Product not found, ID: " + productID);
     }
 
     public ArrayList<String> getAllCategories(){
@@ -185,7 +185,7 @@ public class Inventory {
     public List<ProductInfo> getProducts(){
         List<ProductInfo> productInfos = new LinkedList<>();
         for (Product p : productList.values()){
-            ProductInfo info = new ProductInfo(storeId, p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
+            ProductInfo info = new ProductInfo(storeId, p.getID(), p.getCategories(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
                     p.getRating(), getProductReviews(p.getID()), p.getImgUrl());
             info.setCategories(getProductCategories(p.getID()));
             productInfos.add(info);
@@ -240,6 +240,8 @@ public class Inventory {
             if(img != null)
                 changeImg(productId, img);
         }
+        else
+            throw new Exception("the product does not exist in the store");
     }
 
     private void changeImg(int productId, String img) throws Exception{
@@ -299,16 +301,16 @@ public class Inventory {
         ArrayList<Product> filtered = filter.filter(new ArrayList<>(productList.values()));
         ArrayList<ProductInfo> result = new ArrayList<>();
         for(Product p: filtered){
-            ProductInfo info = getProductInfo(p.getID());
+            ProductInfo info = getProductInfo(storeId, p.getID());
             info.setCategories(getProductCategories(p.getID()));
             result.add(info);
         }
         return result;
     }
 
-    public ProductInfo getProductInfo(int productId){
+    public ProductInfo getProductInfo(int storeId, int productId){
         Product p = productList.get(productId);
-        ProductInfo info = new ProductInfo(p.getID(), p.getID(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
+        ProductInfo info = new ProductInfo(storeId, p.getID(), p.getCategories(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
                 p.getRating(), getProductReviews(p.getID()), p.getImgUrl());
         return info;
     }

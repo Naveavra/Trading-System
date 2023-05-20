@@ -85,7 +85,9 @@ public class ProxySupplier implements SupplierAdapter {
 
     @Override
     public void checkSupply(ShoppingCart cart) throws Exception{
-
+        if (real != null){
+            real.checkSupply(cart);
+        }
     }
 
     public void orderSupplies(String supplier, int storeId, int productId, int quantity) throws Exception {

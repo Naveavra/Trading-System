@@ -82,13 +82,13 @@ public abstract class UserState {
 
     public Set<Integer> closeStore() throws Exception{
         checkPermission(Action.closeStore);
-        setIsActive(false);
+        //setIsActive(false);
         return store.closeStoreTemporary(userId);
     }
 
     public Set<Integer> reOpenStore() throws Exception{
         checkPermission(Action.reopenStore);
-        setIsActive(true);
+        //setIsActive(true);
         return store.reopenStore(userId);
     }
 
