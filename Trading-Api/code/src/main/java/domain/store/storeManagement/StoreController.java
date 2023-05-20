@@ -1,6 +1,7 @@
 package domain.store.storeManagement;
 
 import domain.user.Basket;
+import domain.user.Member;
 import domain.user.ShoppingCart;
 import utils.infoRelated.ProductInfo;
 import utils.Filter.ProductFilter;
@@ -82,14 +83,14 @@ public class StoreController {
         throw new Exception("store does not exist or is not open");
     }
 
-    public Store openStore(String desc, int userID) {
-        Store store = new Store(storescounter.getAndIncrement(), desc, userID);
+    public Store openStore(String desc, Member user) {
+        Store store = new Store(storescounter.getAndIncrement(), desc, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
 
-    public Store openStore(String name, String desc, String img, int userID) {
-        Store store = new Store(storescounter.getAndIncrement(), name, desc, img, userID);
+    public Store openStore(String name, String desc, String img, Member user) {
+        Store store = new Store(storescounter.getAndIncrement(), name, desc, img, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
@@ -164,7 +165,7 @@ public class StoreController {
             if (!(store.makeOrder(b))) {
                 return null;
             }
-            storeOwnersIDS.add(store.getCreatorId());
+            storeOwnersIDS.add(store.getCreator());
             store.addOrder(order);
         }
         return storeOwnersIDS;
@@ -189,8 +190,8 @@ public class StoreController {
     }
 
 
-    public Store createNewStore(int creatorid, String description) {
-        Store store = new Store(storescounter.get(), description, creatorid);
+    public Store createNewStore(Member creator, String description) {
+        Store store = new Store(storescounter.get(), description, creator);
         int storeid = storescounter.getAndIncrement();
         storeList.put(storeid, store);
         return store;

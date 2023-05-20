@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import domain.store.storeManagement.Store;
 import domain.store.storeManagement.StoreController;
+import domain.user.Member;
 import org.junit.jupiter.api.*;
 import utils.orderRelated.Order;
 
@@ -24,12 +25,14 @@ public class DiscountTest {
     Store s2;
     Inventory inv1;
     Inventory inv2;
+    Member creator = new Member(0, "eli@gmail.com", "123Aaa", "24/02/2002");
+    Member worker = new Member(1, "eli1@gmail.com", "123Aaa", "24/02/2002");
 
     void setUp() throws Exception{
         AtomicInteger inventoryIds1 = new AtomicInteger();
         AtomicInteger inventoryIds2 = new AtomicInteger();
         storeCtrl = new StoreController();
-        storeCtrl.createNewStore(0,"Shoes and stuff");
+        storeCtrl.createNewStore(creator,"Shoes and stuff");
         s1 = storeCtrl.getStore(0);
         inv1 = s1.getInventory();
         inv1.addProduct("Banana","",inventoryIds1,10,5);
@@ -39,7 +42,7 @@ public class DiscountTest {
         inv1.addToCategory("Yellow",0);
         inv1.addToCategory("Bananas",1);
         inv1.addToCategory("Fruits",1);
-        storeCtrl.createNewStore(1,"Slippers and stuff");
+        storeCtrl.createNewStore(worker,"Slippers and stuff");
         s2 = storeCtrl.getStore(1);
         inv2 = s2.getInventory();
         inv2.addProduct("Banana","",inventoryIds2,10,5);

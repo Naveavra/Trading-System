@@ -38,7 +38,7 @@ class MemberTest {
     @BeforeEach
     void setUp(){
         m = new Member(1, "ziv@gmail.com", "ziv1234", "22/04/2002");
-        s = new Store(0, "", 1);
+        s = new Store(0, "", m);
         try {
             s.addNewProduct("apple", "pink apple", new AtomicInteger(1), 5, 3);
             apple = s.getInventory().getProduct(1);
@@ -64,7 +64,7 @@ class MemberTest {
     void changeRoleInStore_success() {
         try{
             m.login("ziv1234");
-            UserState u = new StoreCreator(m.getId(), s);
+            UserState u = new StoreCreator(m.getId(), m.getName(), s);
             m.changeRoleInStore(u,s);
             m.checkPermission(Action.appointOwner,0);
             assert true;
@@ -76,7 +76,7 @@ class MemberTest {
     void changeRoleInStore_fail() {
         try{
             m.login("ziv1234");
-            UserState u =new StoreManager(m.getId(), s);
+            UserState u =new StoreManager(m.getId(), m.getName(),s);
             m.changeRoleInStore(u,s);
             m.checkPermission(Action.appointOwner,0);
             assert false;
@@ -111,16 +111,17 @@ class MemberTest {
     @Test
     void purchaseMade() {
         try{
-        m.addProductToCart(0,p,100);
-        m.purchaseMade(0,100);
-        ShoppingCart cart = m.getShoppingCart();
-        assertEquals(0, cart.getContent().size());
-        PurchaseHistory history = m.getUserPurchaseHistory();
-        assertEquals(history.getHisSize(), 1);
-        for(int orderId : history.getPurchaseHistory().keySet()) {
-            ShoppingCart his = history.getPurchaseHistory().get(orderId);
-            for (ProductInfo product : his.getContent())
-                assertTrue(p.id == product.id && product.quantity == 100);
+            m.login("ziv1234");
+            m.addProductToCart(0,p,100);
+            m.purchaseMade(0,100);
+            ShoppingCart cart = m.getShoppingCart();
+            assertEquals(0, cart.getContent().size());
+            PurchaseHistory history = m.getUserPurchaseHistory();
+            assertEquals(history.getHisSize(), 1);
+            for(int orderId : history.getPurchaseHistory().keySet()) {
+                ShoppingCart his = history.getPurchaseHistory().get(orderId);
+                for (ProductInfo product : his.getContent())
+                    assertTrue(p.id == product.id && product.quantity == 100);
         }
         }catch (Exception e){
             assert false;
@@ -227,14 +228,14 @@ class MemberTest {
             m.checkPermission(Action.viewMessages, s.getStoreId());
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             newMem1.login("Ziv12345");
-            s.appointUser(m.getId(),newMem1.getId(), Role.Manager);
-            StoreManager sm = new StoreManager(newMem1.getId(), s);
+            s.appointUser(m.getId(),newMem1, new StoreManager(newMem1.getId(), newMem1.getName(), s));
+            StoreManager sm = new StoreManager(newMem1.getId(), m.getName(),s);
             newMem1.changeRoleInStore(sm, s);
             newMem1.checkPermission(Action.viewMessages,s.getStoreId());
             Member newMem2 = new Member(5,"ziv1@gmail.com","Ziv12345","1/1/2000");
             newMem2.login("Ziv12345");
-            s.appointUser(m.getId(),newMem2.getId(), Role.Owner);
-            StoreOwner so = new StoreOwner(newMem2.getId(), s);
+            s.appointUser(m.getId(),newMem2, new StoreOwner(newMem2.getId(), newMem2.getName(), s));
+            StoreOwner so = new StoreOwner(newMem2.getId(), m.getName(), s);
             newMem2.changeRoleInStore(so, s);
             newMem2.checkPermission(Action.viewMessages, s.getStoreId());
         }catch (Exception e){
@@ -251,14 +252,14 @@ class MemberTest {
             m.checkPermission(Action.answerMessage, s.getStoreId());
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             newMem1.login("Ziv12345");
-            s.appointUser(m.getId(),newMem1.getId(), Role.Manager);
-            StoreManager sm = new StoreManager(newMem1.getId(), s);
+            s.appointUser(m.getId(),newMem1, new StoreManager(newMem1.getId(), newMem1.getName(), s));
+            StoreManager sm = new StoreManager(newMem1.getId(), m.getName(), s);
             newMem1.changeRoleInStore(sm, s);
             newMem1.checkPermission(Action.answerMessage, s.getStoreId());
             Member newMem2 = new Member(5,"ziv1@gmail.com","Ziv12345","1/1/2000");
             newMem2.login("Ziv12345");
-            s.appointUser(m.getId(),newMem2.getId(), Role.Owner);
-            StoreOwner so = new StoreOwner(newMem2.getId(), s);
+            s.appointUser(m.getId(),newMem2, new StoreManager(newMem2.getId(), newMem2.getName(), s));
+            StoreOwner so = new StoreOwner(newMem2.getId(), m.getName(), s);
             newMem2.changeRoleInStore(so, s);
             newMem2.checkPermission(Action.answerMessage, s.getStoreId());
         }catch (Exception e){
@@ -289,12 +290,13 @@ class MemberTest {
         try{
             m.login("ziv1234");
             m.openStore(s);
-            Store store =  m.appointToManager(2, 0);
-            Pair<Integer,Role> pairs= store.getAppHistory().getNode(2).getData();
-            assertTrue(store.getUsersInStore().contains(2));
-            assertEquals(pairs.getSecond(),Role.Manager);
-    }catch (Exception e) {
-            System.out.println();
+            Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
+            Store store =  m.appointToManager(newMem1, 0);
+            Pair<Member,UserState> pairs= store.getAppHistory().getNode(3).getData();
+            assertTrue(store.getUsersInStore().contains(3));
+            assertEquals(pairs.getSecond().getRole(),Role.Manager);
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
             assertTrue(false);
         }
         }
@@ -304,10 +306,11 @@ class MemberTest {
         try{
             m.login("ziv1234");
             m.openStore(s);
-            Store store =  m.appointToOwner(3, 0);
-            Pair<Integer,Role> pairs= store.getAppHistory().getNode(3).getData();
+            Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
+            Store store =  m.appointToOwner(newMem1, 0);
+            Pair<Member,UserState> pairs= store.getAppHistory().getNode(3).getData();
             assertTrue(store.getUsersInStore().contains(3));
-            assertEquals(pairs.getSecond(),Role.Owner);
+            assertEquals(pairs.getSecond().getRole(),Role.Owner);
         }catch (Exception e) {
             System.out.println();
             assertTrue(false);
@@ -320,8 +323,8 @@ class MemberTest {
             m.openStore(s);
             assertEquals( m.getRole(0).getRole() ,Role.Creator);
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
-            m.appointToManager(3, 0);
-            newMem1.changeRoleInStore(new StoreManager(newMem1.getId(), s),s);
+            m.appointToManager(newMem1, 0);
+            newMem1.changeRoleInStore(new StoreManager(newMem1.getId(), m.getName(), s),s);
             newMem1.checkPermission(Action.viewMessages, s.getStoreId());
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -334,7 +337,8 @@ class MemberTest {
     void fireOwner() {
         try {
             m.openStore(s);
-            Store store =  m.appointToOwner(3, 0);
+            Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
+            Store store =  m.appointToOwner(newMem1, 0);
             m.fireOwner(3, 0);
            assertEquals(store.getAppHistory().getNode(3),null);
         }catch (Exception e){
@@ -360,12 +364,13 @@ class MemberTest {
         try{
             m.login("ziv1234");
             m.openStore(s);
-            Store store =  m.appointToManager(2, 0);
-            m.fireManager(2,0);
+            Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
+            Store store =  m.appointToManager(newMem1, 0);
+            m.fireManager(3,0);
             assertTrue(!store.getUsersInStore().contains(2));
             assertEquals(store.getAppHistory().getNode(2 ),null);
         }catch (Exception e) {
-            System.out.println();
+            System.out.println(e.getMessage());
             assertTrue(false);
         }
     }
@@ -375,8 +380,8 @@ class MemberTest {
         try{
             m.openStore(s);
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
-            m.appointToManager(newMem1.getId(), s.getStoreId());
-            StoreManager sm = new StoreManager(newMem1.getId(), s);
+            m.appointToManager(newMem1, s.getStoreId());
+            StoreManager sm = new StoreManager(newMem1.getId(), m.getName(), s);
             newMem1.changeRoleInStore(sm, s);
             List<Action> act = new LinkedList<>(sm.getActions());
             for(Action a : act){

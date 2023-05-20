@@ -1,6 +1,8 @@
 package domain.store.storeManagement;
 
 import com.google.gson.Gson;
+import domain.states.StoreCreator;
+import domain.states.UserState;
 import domain.store.discount.Discount;
 import domain.store.discount.DiscountFactory;
 import domain.store.discount.discountDataObjects.CompositeDataObject;
@@ -9,6 +11,7 @@ import domain.store.product.Inventory;
 import domain.store.purchase.PurchasePolicy;
 
 import domain.user.Basket;
+import domain.user.Member;
 import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
@@ -32,7 +35,7 @@ public class Store extends Information {
     private final int storeid;
     private String storeName;
     private boolean isActive;
-    private final transient int creatorId;
+    private transient Member creator;
     private String storeDescription;
     private final AppHistory appHistory; //first one is always the store creator //n
     private final Inventory inventory; //<productID,<product, quantity>>
@@ -46,12 +49,12 @@ public class Store extends Information {
     private ArrayList<Discount> discounts;
     private DiscountFactory discountFactory;
     Gson gson ;
-    public Store(int id, String description, int creatorId){
-        Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
+    public Store(int id, String description, Member creator){
+        Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
         appHistory = new AppHistory(creatorNode);
         this.storeid = id;
         this.storeDescription = description;
-        this.creatorId = creatorId;
+        this.creator = creator;
         this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
@@ -64,12 +67,12 @@ public class Store extends Information {
         discounts = new ArrayList<>();
     }
 
-    public Store(int storeid, String storeName, String description, String imgUrl, int creatorId){
-        Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
+    public Store(int storeid, String storeName, String description, String imgUrl, Member creator){
+        Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
         appHistory = new AppHistory(creatorNode);
         this.storeid = storeid;
         this.storeDescription = description;
-        this.creatorId = creatorId;
+        this.creator = creator;
         this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
@@ -111,7 +114,7 @@ public class Store extends Information {
     public int addQuestion(Message m)
     {
         questions.put(m.getMessageId(), m);
-        return creatorId;
+        return creator.getId();
     }
 
     public void answerQuestion(int messageID, String answer) throws Exception {
@@ -143,7 +146,7 @@ public class Store extends Information {
         {
             inventory.addProductReview(m);
             //productReviews.put(m.getMessageId(), m);
-            return creatorId;
+            return creator.getId();
         }
         else
         {
@@ -156,8 +159,8 @@ public class Store extends Information {
         return storeid;
     }
 
-    public int getCreatorId() {
-        return creatorId;
+    public int getCreator() {
+        return creator.getId();
     }
 
     public HashMap<Integer, Message> getStoreReviews() {
@@ -200,15 +203,9 @@ public class Store extends Information {
         this.storeDescription = storeDescription;
     }
 
-    /**
-     *
-     * @param userinchargeid the user who wants to appoint another user
-     * @param newuserid the new user whom still doesn't have any role on the store
-     * @param role the new user role
-     * @return true if successfully else throws exception
-     */
-    public boolean appointUser(int userinchargeid, int newuserid, Role role) throws Exception {
-        Pair<Integer, Role> node = new Pair<>(newuserid, role);
+
+    public boolean appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
+        Pair<Member, UserState> node = new Pair<>(newUser, role);
         return appHistory.addNode(userinchargeid, node);
     }
 
@@ -216,7 +213,7 @@ public class Store extends Information {
         if (storeOrders.containsKey(orderId))
         {
             storeReviews.put(review.getMessageId(), review);
-            return creatorId;
+            return creator.getId();
         }
         throw new Exception("order doesnt exist");
     }
@@ -312,7 +309,7 @@ public class Store extends Information {
      * @throws Exception if the user isn't the store creator
      */
     public Set<Integer> closeStoreTemporary(int userID) throws Exception {
-        if (creatorId == userID){
+        if (creator.getId() == userID){
             isActive = false;
             return appHistory.getUsers();
         }
@@ -320,7 +317,7 @@ public class Store extends Information {
     }
 
     public Set<Integer> reopenStore(int userID) throws Exception{
-        if (creatorId == userID){
+        if (creator.getId() == userID){
             isActive = true;
             return appHistory.getUsers();
         }
@@ -488,7 +485,7 @@ public class Store extends Information {
     }
 
     public StoreInfo getStoreInformation() {
-        StoreInfo info = new StoreInfo(storeid, storeName, storeDescription, isActive, creatorId, getStoreRating(), imgUrl);
+        StoreInfo info = new StoreInfo(storeid, storeName, storeDescription, isActive, creator.getId(), getStoreRating(), imgUrl);
         return info;
     }
 
@@ -504,8 +501,8 @@ public class Store extends Information {
     public HashMap<Integer, List<Integer>> getApp(){
         return appHistory.getAppHistory();
     }
-    public HashMap<Integer, Role> getRoles(){
-        return appHistory.getRoles();
+    public List<UserState> getRoles(){
+        return new ArrayList<>(appHistory.getRoles().values());
     }
     public AppHistory getAppHistory(){
         return appHistory;
@@ -522,14 +519,14 @@ public class Store extends Information {
         json.put("storeName", getName());
         json.put("description", getStoreDescription());
         json.put("isActive", isActive());
-        json.put("creatorId", getCreatorId());
+        json.put("creatorId", getCreator());
         json.put("appHistory", getApp());
         json.put("inventory", infosToJson(getProducts()));
         json.put("storeOrders", infosToJson(getOrdersHistory()));
         json.put("reviews", hashMapToJson(getStoreReviews(), "messageId", "review"));
         json.put("questions", hashMapToJson(getStoreQuestions(), "messageId", "question"));
         json.put("img", getImgUrl());
-        json.put("roles", getRoles());
+        json.put("roles", infosToJson(getRoles()));
         return json;
     }
 

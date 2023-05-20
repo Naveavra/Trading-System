@@ -1,4 +1,5 @@
 package domain.store.storeManagement;
+import domain.states.StoreManager;
 import domain.store.product.Product;
 import domain.user.Basket;
 import domain.user.Member;
@@ -27,17 +28,19 @@ class StoreTest {
 
     Order orderA, orderB;
     ProductInfo p, p2;
-
+    Member creator = new Member(0, "eli@gmail.com", "123Aaa", "24/02/2002");
+    Member worker = new Member(1, "eli1@gmail.com", "123Aaa", "24/02/2002");
+    Member worker2 = new Member(2, "eli2@gmail.com", "123Aaa", "24/02/2002");
 
     @BeforeEach
     void setUp() throws Exception {
-        store = new Store(1, "candy shop", 0);
+        store = new Store(1, "candy shop", creator);
         store.addNewProduct("gum", "gumigun", new AtomicInteger(0), 10, 3);
         store.getInventory().getProduct(0).replaceQuantity(10);
         store.addNewProduct("coke", "diet", new AtomicInteger(1), 10, 3);
         store.getInventory().getProduct(1).replaceQuantity(10);
-        store.appointUser(0, 1, Role.Manager);
-        store.appointUser(1, 2, Role.Manager);
+        store.appointUser(0, worker, new StoreManager(worker.getId(), worker.getName(), null));
+        store.appointUser(1, worker2, new StoreManager(worker2.getId(), worker2.getName(), null));
         member = new Member(2, "lala@gmail.com", "aA12345", "31/08/2022");
         ShoppingCart cart = new ShoppingCart();
         p = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(0), 10);

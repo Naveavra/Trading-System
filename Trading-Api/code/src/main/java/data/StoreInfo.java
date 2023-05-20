@@ -28,7 +28,7 @@ public class StoreInfo {
 
     public StoreInfo(Store store) {
         this.storeId = store.getStoreId();
-        this.creatorId = store.getCreatorId();
+        this.creatorId = store.getCreator();
     }
 
     public int getStoreId() {

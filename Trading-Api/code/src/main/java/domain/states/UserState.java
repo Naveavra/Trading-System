@@ -1,22 +1,28 @@
 package domain.states;
 
 import domain.store.storeManagement.Store;
+import domain.user.Member;
+import market.Market;
+import org.json.JSONObject;
+import utils.infoRelated.Information;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
 import java.util.List;
 import java.util.Set;
 
-public abstract class UserState {
+public abstract class UserState extends Information {
 
     protected int userId;
+    protected String userName;
     protected Store store;
     protected Permission permission; //saves all the permission a user has for a store.
     protected Role role;
     protected boolean isActive;
 
-    public UserState(int userId, Store store){
+    public UserState(int userId, String name, Store store){
         this.userId = userId;
+        this.userName = name;
         this.store = store;
         permission = new Permission();
         isActive = true;
@@ -54,9 +60,9 @@ public abstract class UserState {
         return permission.getActions();
     }
 
-    public Store appointManager(int appointedId) throws Exception{
+    public Store appointManager(Member appointed) throws Exception{
         checkPermission(Action.appointManager);
-        store.appointUser(userId, appointedId, Role.Manager);
+        store.appointUser(userId, appointed, new StoreManager(appointed.getId(), appointed.getName(), store));
         return store;
     }
 
@@ -67,9 +73,9 @@ public abstract class UserState {
         store.fireUser(appointedId);
     }
 
-    public Store appointOwner(int appointedId) throws Exception{
+    public Store appointOwner(Member appointed) throws Exception{
         checkPermission(Action.appointOwner);
-        store.appointUser(userId, appointedId, Role.Owner);
+        store.appointUser(userId, appointed, new StoreOwner(appointed.getId(), appointed.getName(), store));
         return store;
     }
 
@@ -95,5 +101,14 @@ public abstract class UserState {
     public Set<Integer> getWorkerIds() throws Exception{
         checkPermission(Action.checkWorkersStatus);
         return store.getUsersInStore();
+    }
+
+    public JSONObject toJson(){
+        JSONObject json = new JSONObject();
+        json.put("userId", userId);
+        json.put("userName", userName);
+        json.put("storeRole", role.toString());
+        json.put("actions", getActions());
+        return json;
     }
 }

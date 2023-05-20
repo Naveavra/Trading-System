@@ -138,7 +138,7 @@ public class Member implements User{
     }
 
     public void openStore(Store store) {
-        UserState creator = new StoreCreator(id, store);
+        UserState creator = new StoreCreator(id, name, store);
 
         roles.add(creator);
     }
@@ -234,18 +234,18 @@ public class Member implements User{
         return userHistory.getInformation(info);
     }
 
-    public Store appointToManager(int appointedId, int storeId) throws Exception {
+    public Store appointToManager(Member appointed, int storeId) throws Exception {
         UserState state = getActiveRole(storeId);
-        return state.appointManager(appointedId);
+        return state.appointManager(appointed);
     }
 
     public void fireManager(int appointedId, int storeId) throws Exception{
         UserState state = getActiveRole(storeId);
         state.fireManager(appointedId);
     }
-    public Store appointToOwner(int appointedId, int storeId) throws Exception {
+    public Store appointToOwner(Member appointed, int storeId) throws Exception {
         UserState state = getActiveRole(storeId);
-        return state.appointOwner(appointedId);
+        return state.appointOwner(appointed);
     }
     public Set<Integer> fireOwner(int appointedId, int storeId) throws Exception{
         UserState state = getActiveRole(storeId);

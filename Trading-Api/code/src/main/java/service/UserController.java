@@ -158,11 +158,6 @@ public class UserController {
     }
 
 
-    public synchronized void canOpenStore(int userId) throws Exception{
-        getActiveMember(userId);
-    }
-
-
     public synchronized void openStore(int userId, Store store) throws Exception{
         Member m = getActiveMember(userId);
         m.openStore(store);
@@ -253,10 +248,10 @@ public class UserController {
     public synchronized void appointOwner(int ownerId, String appointedEmail, int storeId) throws Exception {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
-        Store store = owner.appointToOwner(appointed.getId(), storeId);
+        Store store = owner.appointToOwner(appointed, storeId);
         Notification<String> notify = new Notification<>("you have been appointed to owner in store: " + storeId);
         appointed.addNotification(notify);
-        appointed.changeRoleInStore(new StoreOwner(appointed.getId(), store), store);
+        appointed.changeRoleInStore(new StoreOwner(appointed.getId(), appointed.getName(), store), store);
     }
 
 
@@ -283,10 +278,10 @@ public class UserController {
     public synchronized void appointManager(int ownerId, String appointedEmail, int storeId) throws Exception {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
-        Store store = owner.appointToManager(appointed.getId(), storeId);
+        Store store = owner.appointToManager(appointed, storeId);
         Notification<String> notify = new Notification<>("you have been appointed to manager in store: " + storeId);
         appointed.addNotification(notify);
-        appointed.changeRoleInStore(new StoreManager(appointed.getId(), store), store);
+        appointed.changeRoleInStore(new StoreManager(appointed.getId(), appointed.getName(), store), store);
     }
 
     public synchronized void fireManager(int ownerId, int appointedId, int storeId) throws Exception {

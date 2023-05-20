@@ -9,8 +9,8 @@ import java.util.List;
 
 public class StoreCreator extends UserState {
 
-    public StoreCreator(int userId, Store store){
-        super(userId, store);
+    public StoreCreator(int userId, String name, Store store){
+        super(userId, name, store);
         role = Role.Creator;
         List<Action> actions = new LinkedList<>();
 

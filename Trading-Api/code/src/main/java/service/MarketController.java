@@ -2,6 +2,7 @@ package service;
 
 
 import domain.store.storeManagement.AppHistory;
+import domain.user.Member;
 import domain.user.ShoppingCart;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
@@ -48,19 +49,15 @@ public class MarketController {
         return ans;
     }
 
-    /**
-     * @param userID creator id
-     * @param description store description
-     */
-    public Store openStore(int userID, String description) throws Exception
+    public Store openStore(Member user, String description) throws Exception
     {
-        Store store = storectrl.openStore(description, userID);
+        Store store = storectrl.openStore(description, user);
        return store;
     }
 
-    public Store openStore(int userID, String name, String description, String img) throws Exception
+    public Store openStore(Member user, String name, String description, String img) throws Exception
     {
-        Store store = storectrl.openStore(name, description, img, userID);
+        Store store = storectrl.openStore(name, description, img, user);
         return store;
     }
 

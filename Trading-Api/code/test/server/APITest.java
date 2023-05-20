@@ -25,11 +25,13 @@ class APITest {
 
     List<String> categories;
     int productId;
+    int productId2;
 
     @BeforeEach
     void setUp() {
         api = new API();
         Market m = api.market;
+        api.mockData();
         m.register("eli@gmail.com", "123Aaa", "24/02/2002");
         userId = m.login("eli@gmail.com", "123Aaa").getValue().getUserId();
         token = m.addTokenForTests();
@@ -38,8 +40,9 @@ class APITest {
         categories.add("food");
         categories.add("hang out");
         productId = m.addProduct(userId, token, storeId, categories, "burger", "from McDonald", 5, 2, "img").getValue();
+        productId2 = m.addProduct(userId, token, storeId, categories, "burger2", "from McDonald", 5, 2, "img").getValue();
         m.addProductToCart(userId, storeId, productId, 1);
-
+        m.addProductToCart(userId, storeId, productId2, 1);
     }
 
     @Test

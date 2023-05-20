@@ -129,7 +129,7 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             LoginInformation loginInformation;
-            if (checkIsAdmin(userId)) {
+            if (!checkIsAdmin(userId)) {
                 loginInformation = getLoginInformation(token, userId, userController.getUserEmail(userId));
                 return new Response<LoginInformation>(loginInformation, null, null);
             }
@@ -331,8 +331,7 @@ public class Market implements MarketInterface {
     public Response<Integer> openStore(int userId, String token, String storeName, String des, String img) {
         try {
             userAuth.checkUser(userId, token);
-            userController.canOpenStore(userId);
-            Store store = marketController.openStore(userId, storeName, des, img);
+            Store store = marketController.openStore(userController.getActiveMember(userId), storeName, des, img);
             userController.openStore(userId, store);
             String name = userController.getUserName(userId);
             return logAndRes(Logger.logStatus.Success, "user" + name + "open store successfully on " + LocalDateTime.now(),
