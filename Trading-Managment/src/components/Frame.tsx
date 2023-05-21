@@ -10,7 +10,7 @@ import Categories2 from './Categories/category2';
 import ShopsBar from './Bars/ShopBar/ShopBar';
 import { Divider } from '@mui/material';
 import axios from 'axios';
-import ProductCard from './ProductCard/Card';
+import ProductCard from './ProductInStore/Card';
 import { Product } from '../types/systemTypes/Product';
 import { getStoresInfo } from '../reducers/storesSlice';
 import { getProducts } from '../reducers/productsSlice';

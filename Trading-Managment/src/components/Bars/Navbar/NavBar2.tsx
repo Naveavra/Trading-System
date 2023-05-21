@@ -15,11 +15,12 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Switch from '@mui/material/Switch';
-import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox, Icon } from '@mui/material';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SideDrawer from '../../SideDrawer';
 
@@ -46,7 +47,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
 
     const cart = useAppSelector((state) => state.cart.responseData);
-    const numProductsIncart = cart?.reduce((acc, item) => acc + item.products?.reduce((acc1, curr1) => acc1 + curr1.quantity, 0), 0) ?? 0;
+    const numProductsIncart = cart?.reduce((acc, item) => acc + item.quantity, 0) ?? 0;
     const stores_roles: StoreRole[] = useAppSelector((state) => state.auth.storeRoles);
     const stores_names = useAppSelector((state) => state.auth.storeNames);
     const store_images = useAppSelector((state) => state.auth.storeImgs);
@@ -112,6 +113,10 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
                             {headLine} {store.storeName}
                         </Typography>
+
+                        <IconButton className="icon" color="inherit" onClick={() => navigate(`/dashboard`)}>
+                            <HomeIcon />
+                        </IconButton>
 
                         {isLoggedIn &&
                             <>

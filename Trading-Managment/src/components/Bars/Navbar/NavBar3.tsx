@@ -39,7 +39,7 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
 
     const cart = useAppSelector((state) => state.cart.responseData);
-    const numProductsIncart = cart?.reduce((acc, item) => acc + item.products?.reduce((acc1, curr1) => acc1 + curr1.quantity, 0), 0) ?? 0;
+    const numProductsIncart = cart?.reduce((acc, item) => acc + item.quantity, 0) ?? 0;
 
     const stores_roles: StoreRole[] = useAppSelector((state) => state.auth.storeRoles);
     const stores_names = useAppSelector((state) => state.auth.storeNames);

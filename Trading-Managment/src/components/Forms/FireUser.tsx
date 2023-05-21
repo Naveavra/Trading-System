@@ -29,22 +29,15 @@ const FireUser: React.FC<props> = ({ role }) => {
     //maybe by id
 
     const store = useAppSelector((state) => state.store.storeState.watchedStore);
-    console.log(store, "store");
     const storeId = store.storeId;
 
-    console.log(store?.roles, "roles")
-    debugger;
-    console.log(store.roles[0].storeRole)
     const managers = store.roles?.filter((role) => role.storeRole === StoreRoleEnum.MANAGER);
     const managers_names = managers?.map((role) => role.userName);
 
     const owners = useAppSelector((state) => state.store.storeState.watchedStore.roles)?.filter((role) => role.storeRole === StoreRoleEnum.OWNER);
     const owners_names = owners?.map((role) => role.userName);
     const user_name = managers.filter((manager) => manager.userId === userToFireId)[0]?.userName;
-    console.log(owners_names, "owners_names");
-    console.log(managers_names, "managers_names");
-    console.log(user_name, "user_name");
-    console.log(managers, "managers");
+
 
     //maybe take it from params
     const handleOnClose = useCallback(() => {

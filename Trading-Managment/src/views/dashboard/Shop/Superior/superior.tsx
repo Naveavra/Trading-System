@@ -8,7 +8,7 @@ import Bar2 from "../../../../components/Bars/Navbar/NavBar2";
 import { Product } from "../../../../types/systemTypes/Product";
 import { products } from "../../../../mock/products";
 import { Box, CardContent, Typography, Card, Divider, Button } from "@mui/material";
-import ProductCard from "../../../../components/ProductCard/Card";
+import ProductCard from "../../../../components/ProductInStore/Card";
 import axios from "axios";
 import { getProducts } from "../../../../reducers/productsSlice";
 import { clearStoreError, clearStoresResponse, getStoresInfo } from "../../../../reducers/storesSlice";
@@ -141,7 +141,7 @@ const Superior: React.FC = () => {
 
 
     return (<>
-        <Bar2 headLine={`hellow ${privateName} , wellcome to `} />
+        <Bar2 headLine={`hello ${privateName} , wellcome to `} />
         <Box>
             <Card sx={{ minWidth: 275 }}>
                 <CardContent>

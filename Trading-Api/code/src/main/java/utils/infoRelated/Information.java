@@ -8,7 +8,7 @@ import java.util.*;
 public abstract class Information {
 
     public abstract JSONObject toJson();
-    public List<String> fromActionToString(List<Action> actions){
+    public static List<String> fromActionToString(List<Action> actions){
         List<String> ans = new LinkedList<>();
         for(Action a : actions){
             String as = a.toString();

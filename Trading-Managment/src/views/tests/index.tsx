@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import { useAppSelector } from '../../redux/store';
+import { Payment } from '../../types/systemTypes/externalService';
 const Tests: React.FC = () => {
     const [notification, setNotification] = useState('');
     const userId = 1; // Replace with the actual user ID
@@ -25,14 +26,26 @@ const Tests: React.FC = () => {
     }, [userId]);
     const sendNotifiy = () => {
         axios.post(`http://localhost:4567/notifications`, { userToSend: 1, message: `hiiii from ${userId}` })
-            .then(response => {
+            .then((response: any) => {
                 // Do something with the response if necessary
             })
-            .catch(error => {
+            .catch((error: any) => {
                 // Handle the error if necessary
             });
         // dispatch(ping(userId));
     }
+    const postContent: Record<string, string> = {
+        "action_type": "handshake"
+    };
+    const sendHandshake = () => {
+        axios.post(`https://php-server-try.000webhostapp.com/`, postContent)
+            .then((response: any) => {
+                console.log(response);
+            }, (error: any) => {
+                console.log(error);
+            });
+    }
+
     return (
         <>
             <Button
@@ -44,7 +57,15 @@ const Tests: React.FC = () => {
             >
                 {'notify'}
             </Button >
-
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={sendHandshake}
+                sx={{ color: 'black', '&:hover': { backgroundColor: 'green' }, width: '50%', }}
+            >
+                {'handshake'}
+            </Button >
         </>
     )
 }

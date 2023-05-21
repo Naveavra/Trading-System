@@ -85,7 +85,7 @@ public class ProductInfo extends Information{
     @Override
     public  JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("storeId", getId());
+        json.put("storeId", getStoreId());
         json.put("productId", getId());
         json.put("name", getName());
         json.put("description", getDescription());

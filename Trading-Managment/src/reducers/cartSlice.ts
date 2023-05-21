@@ -3,6 +3,7 @@ import { ApiError, ApiListData, ApiResponse } from "../types/apiTypes";
 import { DeleteCartParams, GetCartParams, PatchCartParams, PostBasketParams, buyCartParams } from "../types/requestTypes/cartTypes";
 import { cartApi } from "../api/cartApi";
 import { Basket } from "../types/systemTypes/Basket";
+import { Product } from "../types/systemTypes/Product";
 
 const reducerName = 'carts';
 
@@ -13,7 +14,7 @@ interface CartState {
         error: string | null;
     },
     isLoading: boolean;
-    responseData: Basket[];
+    responseData: Product[];
     error: string | null;
 };
 
@@ -64,14 +65,14 @@ export const deleteCart = createAsyncThunk<
     });
 
 export const getCart = createAsyncThunk<
-    Basket[],
+    Product[],
     GetCartParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/get`,
     async (formData, thunkApi) => {
         return cartApi.getCart(formData)
-            .then((res) => thunkApi.fulfillWithValue(res as Basket[]))
+            .then((res) => thunkApi.fulfillWithValue(res as Product[]))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
@@ -132,7 +133,6 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         });
         builder.addCase(getCart.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
-            debugger;
             console.log("cart!!!", payload);
             state.responseData = payload;
             state.error = null;

@@ -14,7 +14,7 @@ import Bar from '../../components/Bars/Navbar/Navbar';
 import { SearchBar } from '../../components/Bars/SearchBar/SearchBar';
 import ShopsBar from '../../components/Bars/ShopBar/ShopBar';
 import Categories2 from '../../components/Categories/category2';
-import ProductCard from '../../components/ProductCard/Card';
+import ProductCard from '../../components/ProductInStore/Card';
 import { Product } from '../../types/systemTypes/Product';
 import Products from '../../components/Product/Products';
 import { getCart } from '../../reducers/cartSlice';

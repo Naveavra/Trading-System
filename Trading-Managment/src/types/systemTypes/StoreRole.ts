@@ -1,7 +1,9 @@
+import { Action } from "redux-deep-persist/lib/types";
+
 export enum StoreRoleEnum {
-    CREATOR,
-    OWNER,
-    MANAGER,
+    CREATOR = "Creator",
+    OWNER = "Owner",
+    MANAGER = "Manager",
 };
 
 export interface StoreRole {
@@ -22,4 +24,5 @@ export interface RoleInStore {
     userId: number;
     userName: string;
     storeRole: StoreRoleEnum;
+    actions: Action[];
 }

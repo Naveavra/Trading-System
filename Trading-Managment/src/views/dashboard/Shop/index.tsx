@@ -2,7 +2,7 @@ import { Card, CardContent, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Outlet } from "react-router";
 import Bar2 from "../../../components/Bars/Navbar/NavBar2";
-import ProductCard from "../../../components/ProductCard/Card";
+import ProductCard from "../../../components/ProductInStore/Card";
 import { store, useAppSelector } from "../../../redux/store";
 
 const Shops: React.FC = () => {

@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
             >
                 <Grid item xs={12}>
                     <Typography variant="h2" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                        {'WELCOME TO THE TRAIDING SYSTEM'}
+                        {'WELCOME TO THE TRADING SYSTEM'}
                     </Typography>
                 </Grid>
             </Grid >

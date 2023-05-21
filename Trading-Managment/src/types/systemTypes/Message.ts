@@ -1,5 +1,6 @@
 export interface Message {
-    id: number;
+    messageId: number;
+    state: string;
     content: string;
     rating: number;
     reviewer: number;

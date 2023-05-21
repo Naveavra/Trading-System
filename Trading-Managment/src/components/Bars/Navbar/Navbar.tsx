@@ -33,7 +33,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     const store_images = useAppSelector((state) => state.auth.storeImgs);
     const token = useAppSelector((state) => state.auth.token) ?? "";
     const cart = useAppSelector((state) => state.cart.responseData);
-    const numProductsIncart = cart?.reduce((acc, item) => acc + item.products?.reduce((acc1, curr1) => acc1 + curr1.quantity, 0), 0) ?? 0;
+    const numProductsIncart = cart?.reduce((acc, item) => acc + item.quantity, 0) ?? 0;
 
     const stores = stores_roles ? stores_roles.map((role, index) => {
         return {

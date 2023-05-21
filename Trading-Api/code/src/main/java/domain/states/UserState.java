@@ -108,7 +108,7 @@ public abstract class UserState extends Information {
         json.put("userId", userId);
         json.put("userName", userName);
         json.put("storeRole", role.toString());
-        json.put("actions", getActions());
+        json.put("actions", fromActionToString(getActions()));
         return json;
     }
 }
