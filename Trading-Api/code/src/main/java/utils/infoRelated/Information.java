@@ -36,8 +36,7 @@ public abstract class Information {
         return jsonList;
     }
 
-    public static List<JSONObject> infosToJson(List<? extends Information> infos)
-    {
+    public static List<JSONObject> infosToJson(List<? extends Information> infos){
         List<JSONObject> ans = new LinkedList<>();
         for(Information info : infos)
             ans.add(info.toJson());

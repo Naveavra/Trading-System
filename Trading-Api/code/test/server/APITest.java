@@ -31,7 +31,7 @@ class APITest {
     void setUp() {
         api = new API();
         Market m = api.market;
-        api.mockData();
+        //api.mockData();
         m.register("eli@gmail.com", "123Aaa", "24/02/2002");
         userId = m.login("eli@gmail.com", "123Aaa").getValue().getUserId();
         token = m.addTokenForTests();
@@ -43,11 +43,18 @@ class APITest {
         productId2 = m.addProduct(userId, token, storeId, categories, "burger2", "from McDonald", 5, 2, "img").getValue();
         m.addProductToCart(userId, storeId, productId, 1);
         m.addProductToCart(userId, storeId, productId2, 1);
+        m.register("chai@gmail.com", "456Bbb", "01/01/2000");
+        m.appointManager(userId, token, "chai@gmail.com", storeId);
     }
 
     @Test
     void getCart(){
         System.out.println(api.getCart(userId).getSecond().get("value"));
+    }
+
+    @Test
+    void getStore(){
+        System.out.println(api.getStore(userId, token, storeId).getSecond().get("value"));
     }
 //    @Test
 //    void getBaskets() {

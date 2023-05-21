@@ -83,7 +83,7 @@ public class ProductInfo extends Information{
     public String getImg(){return img;}
 
     @Override
-    public  JSONObject toJson() {
+    public  JSONObject toJson(){
         JSONObject json = new JSONObject();
         json.put("storeId", getStoreId());
         json.put("productId", getId());

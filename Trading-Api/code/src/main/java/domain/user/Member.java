@@ -292,11 +292,15 @@ public class Member implements User{
         return state.getWorkerIds();
     }
 
-    public Info getInformation(int storeId) throws Exception{
-        UserState state = getRole(storeId);
+    public Info getInformation(int storeId){
         Info info = new Info(id, name, email, birthday, age);
-        if(state != null && state.getRole() == Role.Manager)
-            info.addManagerActions(state.getActions());
+        try {
+            UserState state = getRole(storeId);
+            info.addRole(state.getRole());
+            if (state.getRole() == Role.Manager)
+                info.addManagerActions(state.getActions());
+        }catch (Exception e){
+        }
         return info;
     }
 

@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
             node3 = new Pair<>(m3, new StoreManager(m3.getId(), m3.getName(), null));
             node4 = new Pair<>(m4, new StoreOwner(m4.getId(), m4.getName(), null));
             node5 = new Pair<>(m5, new StoreOwner(m5.getId(), m5.getName(), null));
-            root = new AppHistory(node0);
+            root = new AppHistory(0, node0);
         }
 
         @Test
@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
         @Test
         void circularAppointment() throws Exception {
-            AppHistory appHistory = new AppHistory(new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
+            AppHistory appHistory = new AppHistory(0, new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
 
             Exception exception = assertThrows(Exception.class, () -> {
                 appHistory.addNode(1, new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
@@ -67,7 +67,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
         @Test
         void testGetNode() throws Exception {
-            AppHistory appHistory = new AppHistory(new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
+            AppHistory appHistory = new AppHistory(0, new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
             appHistory.addNode(1, new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
             AppHistory.Node node = appHistory.getNode(2);
             assertNotNull(node);
@@ -127,7 +127,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
         @Test
         void testRemoveChild() throws Exception {
-            AppHistory appHistory = new AppHistory(new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
+            AppHistory appHistory = new AppHistory(0, new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
             appHistory.addNode(1, new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
             appHistory.removeChild(2);
             assertFalse(appHistory.isChild(1, 2));
@@ -135,7 +135,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
         @Test
         void testIsChild() throws Exception {
-            AppHistory appHistory = new AppHistory(new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
+            AppHistory appHistory = new AppHistory(0, new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
             appHistory.addNode(1, new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
             assertTrue(appHistory.isChild(1, 2));
             assertFalse(appHistory.isChild(2, 1));

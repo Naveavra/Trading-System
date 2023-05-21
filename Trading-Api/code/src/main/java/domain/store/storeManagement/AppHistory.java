@@ -2,13 +2,18 @@ package domain.store.storeManagement;
 
 import domain.states.UserState;
 import domain.user.Member;
+import org.json.JSONObject;
 import utils.Pair;
+import utils.infoRelated.Info;
+import utils.infoRelated.Information;
 import utils.stateRelated.Role;
 
 import java.util.*;
 
 
-public class AppHistory {
+public class AppHistory{
+    private int storeId;
+
     public static class Node{
         private Pair<Member, UserState> data; //userid and role
         private ArrayList<Node> children; //list of all the users this user appoint in this store
@@ -78,8 +83,9 @@ public class AppHistory {
 
     public Set<Integer> usersInStore;
 
-    public AppHistory(Pair<Member, UserState> creatorNode){
+    public AppHistory(int storeId, Pair<Member, UserState> creatorNode){
 
+        this.storeId = storeId;
         root = new Node(creatorNode);
         root.father = null;
         usersInStore = new HashSet<>();
@@ -167,31 +173,43 @@ public class AppHistory {
         usersInStore.removeAll(dismissedes);
     }
 
-    public HashMap<Integer, List<Integer>> getAppHistory(){
-        HashMap<Integer, List<Integer>> ans = new HashMap<>();
+    public List<Pair<Info, List<Info>>> getAppHistory(){
+        List<Pair<Info, List<Info>>> ans = new ArrayList<>();
         getChildren(root, ans);
         return ans;
     }
 
-    public void getChildren(Node n, HashMap<Integer, List<Integer>> add){
-        List<Integer> ans = new LinkedList<>();
+    public void getChildren(Node n, List<Pair<Info, List<Info>>> add){
+        List<Info> ans = new LinkedList<>();
         for(Node child: n.children) {
             getChildren(child, add);
-            ans.add(child.data.getFirst().getId());
+            ans.add(child.data.getFirst().getInformation(storeId));
         }
-        add.put(n.data.getFirst().getId(), ans);
+        add.add(new Pair<>(n.data.getFirst().getInformation(storeId), ans));
     }
 
-    public HashMap<Integer, UserState> getRoles(){
-        HashMap<Integer, UserState> ans = new HashMap<>();
+    public List<UserState> getRoles(){
+        List<UserState> ans = new ArrayList<>();
         getChildrenRoles(root, ans);
         return ans;
     }
 
-    public void getChildrenRoles(Node n, HashMap<Integer, UserState> add){
+    public void getChildrenRoles(Node n, List<UserState> add){
         for(Node child: n.children) {
             getChildrenRoles(child, add);
         }
-        add.put(n.data.getFirst().getId(), n.data.getSecond());
+        add.add(n.data.getSecond());
+    }
+
+    public List<JSONObject> toJson(){
+        List<JSONObject> ans = new ArrayList<>();
+        List<Pair<Info, List<Info>>> history = getAppHistory();
+        for(Pair<Info, List<Info>> branch : history) {
+            JSONObject jsonBranch = new JSONObject();
+            jsonBranch.put("memane", branch.getFirst().toJson());
+            jsonBranch.put("memoonim", Information.infosToJson(branch.getSecond()));
+            ans.add(jsonBranch);
+        }
+        return ans;
     }
 }

@@ -15,15 +15,12 @@ import domain.user.Member;
 import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
-import utils.infoRelated.Information;
-import utils.infoRelated.ProductInfo;
-import utils.infoRelated.StoreInfo;
+import utils.infoRelated.*;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.Pair;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
-import utils.infoRelated.OrderInfo;
 import utils.stateRelated.Role;
 
 import java.util.*;
@@ -31,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class Store extends Information {
+public class Store extends Information{
     private final int storeid;
     private String storeName;
     private boolean isActive;
@@ -51,8 +48,8 @@ public class Store extends Information {
     Gson gson ;
     public Store(int id, String description, Member creator){
         Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
-        appHistory = new AppHistory(creatorNode);
         this.storeid = id;
+        appHistory = new AppHistory(storeid, creatorNode);
         this.storeDescription = description;
         this.creator = creator;
         this.inventory = new Inventory(storeid);
@@ -69,8 +66,8 @@ public class Store extends Information {
 
     public Store(int storeid, String storeName, String description, String imgUrl, Member creator){
         Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
-        appHistory = new AppHistory(creatorNode);
         this.storeid = storeid;
+        appHistory = new AppHistory(storeid, creatorNode);
         this.storeDescription = description;
         this.creator = creator;
         this.inventory = new Inventory(storeid);
@@ -498,11 +495,15 @@ public class Store extends Information {
         return order.getTotalPrice();
     }
 
-    public HashMap<Integer, List<Integer>> getApp(){
+    public List<Pair<Info, List<Info>>> getApp() throws Exception{
         return appHistory.getAppHistory();
     }
+
+    public List<JSONObject> getAppJson(){
+        return appHistory.toJson();
+    }
     public List<UserState> getRoles(){
-        return new ArrayList<>(appHistory.getRoles().values());
+        return appHistory.getRoles();
     }
     public AppHistory getAppHistory(){
         return appHistory;
@@ -513,14 +514,14 @@ public class Store extends Information {
     }
 
     @Override
-    public JSONObject toJson() {
+    public JSONObject toJson(){
         JSONObject json = new JSONObject();
         json.put("storeId", getStoreId());
         json.put("storeName", getName());
         json.put("description", getStoreDescription());
         json.put("isActive", isActive());
         json.put("creatorId", getCreator());
-        json.put("appHistory", getApp());
+        json.put("appHistory", getAppJson());
         json.put("inventory", infosToJson(getProducts()));
         json.put("storeOrders", infosToJson(getOrdersHistory()));
         json.put("reviews", hashMapToJson(getStoreReviews(), "messageId", "review"));

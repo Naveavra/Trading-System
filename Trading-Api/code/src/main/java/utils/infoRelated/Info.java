@@ -2,6 +2,7 @@ package utils.infoRelated;
 
 import org.json.JSONObject;
 import utils.stateRelated.Action;
+import utils.stateRelated.Role;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class Info extends Information{
     private String email;
     private String birthday;
     private int age;
-
+    private Role role;
     private List<Action> managerActions;
 
     public Info(int id, String name, String email, String birthday, int age){
@@ -25,6 +26,7 @@ public class Info extends Information{
         managerActions = new LinkedList<>();
     }
 
+    public void addRole(Role role){this.role = role;}
     public void addManagerActions(List<Action> actions){
         managerActions.addAll(actions);
     }
@@ -62,6 +64,7 @@ public class Info extends Information{
         json.put("email", getEmail());
         json.put("birthday", getBirthday());
         json.put("age", getAge());
+        json.put("role", role);
         json.put("managerPermissions", fromActionToString(getManagerActions()));
         return json;
     }

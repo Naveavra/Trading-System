@@ -38,7 +38,7 @@ public class OrderInfo extends Information{
     }
 
     @Override
-    public JSONObject toJson() {
+    public JSONObject toJson(){
         JSONObject json = new JSONObject();
         json.put("orderId", getOrderId());
         json.put("userId", getUserId());
