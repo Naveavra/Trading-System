@@ -498,7 +498,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<List<ProductInfo>> getStoreProducts(int storeId) {
+    public Response<List<? extends Information>> getStoreProducts(int storeId) {
         try {
             List<ProductInfo> res = marketController.getStoreProducts(storeId);
             return logAndRes(Logger.logStatus.Success, "user get store products successfully on " + LocalDateTime.now(),
@@ -592,42 +592,32 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> changeStoreDescription(int userId, String token, int storeId, String description) {
+    public Response<String> changeStoreInfo(int userId, String token, int storeId, String name, String description,
+                                    String img, String isActive) {
         try {
+            String ans;
             userAuth.checkUser(userId, token);
-            marketController.setStoreDescription(storeId, description);
-            return logAndRes(Logger.logStatus.Success, "user change store description successfully on " + LocalDateTime.now(),
-                    "user change store description successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant change store description because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "change store description failed", e.getMessage());
+            if (isActive.equals("null"))
+                ans = changeStoreActive(userId, storeId, isActive);
+            else
+                ans = changeStoreAttributes(userId, storeId, name, description, img);
+            return logAndRes(Logger.logStatus.Success, ans, ans, null, null);
+        }catch (Exception e){
+            return logAndRes(Logger.logStatus.Fail,"change store info failed because " + e.getMessage(),
+                    null, "change info failed", e.getMessage());
         }
     }
 
     @Override
-    public Response<String> changeStoreImg(int userId, String token, int storeId, String img) {
-        try {
-            userAuth.checkUser(userId, token);
-            marketController.setStoreImg(storeId, img);
-            return logAndRes(Logger.logStatus.Success, "user change store img successfully on " + LocalDateTime.now(),
-                    "user change store img successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant change store img because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "change store img failed", e.getMessage());
-        }
+    public String changeStoreActive(int userId, int storeId, String isActive) throws Exception{
+        return userController.changeStoreActive(userId, storeId, isActive);
     }
 
     @Override
-    public Response<String> changeStoreName(int userId, String token, int storeId, String name) {
-        try {
-            userAuth.checkUser(userId, token);
-            marketController.setStoreName(storeId, name);
-            return logAndRes(Logger.logStatus.Success, "user change store name successfully on " + LocalDateTime.now(),
-                    "user change store name successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant change store img because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "change store name failed", e.getMessage());
-        }
+    public String changeStoreAttributes(int userId, int storeId, String name, String description, String img) throws Exception{
+        userController.checkPermission(userId, Action.changeStoreDetails, storeId);
+        marketController.setStoreAttributes(storeId, name, description, img);
+        return "the store attributes have been changed accordingly";
     }
 
     @Override
@@ -831,36 +821,6 @@ public class Market implements MarketInterface {
             return logAndRes(Logger.logStatus.Fail, "cant get appointments: " + e.getMessage() + "on " + LocalDateTime.now(),
                     null, "get appointments failed", e.getMessage());
         }
-    }
-
-    @Override
-    public Response<String> closeStore(int userId, String token, int storeId) {
-        try
-        {
-            userAuth.checkUser(userId, token);
-            userController.closeStore(userId, storeId);
-            return logAndRes(Logger.logStatus.Success, "user closed store" + LocalDateTime.now(),
-                    "close store was successful", null, null);
-
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant close store: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "close store failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<String> reopenStore(int userId, String token, int storeId) {
-        try
-        {
-            userAuth.checkUser(userId, token);
-            userController.reOpenStore(userId, storeId);
-            return logAndRes(Logger.logStatus.Success, "user reopened store" + LocalDateTime.now(),
-                    "reopen store was successful", null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant reopen store: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "reopen store failed", e.getMessage());
-        }
-
     }
 
     @Override

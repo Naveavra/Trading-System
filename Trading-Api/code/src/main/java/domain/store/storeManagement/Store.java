@@ -531,6 +531,15 @@ public class Store extends Information{
         return json;
     }
 
+    public void setStoreAttributes(String name, String description, String img) {
+        if(!description.equals("null"))
+            setStoreDescription(description);
+        if(!name.equals("null"))
+            changeName(name);
+        if(!img.equals("null"))
+            changeImg(img);
+    }
+
 //    public void setStoreDiscountPolicy(String policy) throws Exception {
 //        try {
 //            addDiscountConstraint(policy);

@@ -222,9 +222,9 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<ProductInfo> getProductsInStore(int store) {
-        Response<List<utils.infoRelated.ProductInfo>> res = market.getStoreProducts(store);
+        Response<List<? extends Information>> res = market.getStoreProducts(store);
         if (res != null && !res.errorOccurred()) {
-            return toProductsInfoList(res.getValue());
+            return toProductsInfoList((List<utils.infoRelated.ProductInfo>)res.getValue());
         }
         return null;
     }
@@ -261,22 +261,22 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public int closeStore(int user, int store) {
-        Response<String> res = market.closeStore(user, token, store);
-        if(res != null && !res.errorOccurred())
-        {
+        try {
+            String res = market.changeStoreActive(user, store, "false");
             return 1;
+        }catch (Exception e){
+            return -1;
         }
-        return -1;
     }
 
     @Override
     public int reopenStore(int user, int store) {
-        Response<String> res = market.reopenStore(user, token, store);
-        if(res != null && !res.errorOccurred())
-        {
+        try {
+            String res = market.changeStoreActive(user, store, "true");
             return 1;
+        }catch (Exception e){
+            return -1;
         }
-        return -1;
     }
 
     @Override

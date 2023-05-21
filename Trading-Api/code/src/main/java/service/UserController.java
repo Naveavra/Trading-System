@@ -314,7 +314,17 @@ public class UserController {
         }
     }
 
-
+    public synchronized String changeStoreActive(int userId, int storeId, String isActive) throws Exception{
+        if(isActive.equals("false")){
+            closeStore(userId, storeId);
+            return "close store was successful";
+        }
+        else if(isActive.equals("true")){
+            reOpenStore(userId, storeId);
+            return "reopen store was successful";
+        }
+        throw new Exception("the isActive given is not boolean");
+    }
     public synchronized void closeStore(int userId, int storeId) throws Exception {
         Member m = getActiveMember(userId);
         Set<Integer> workerIds = m.closeStore(storeId);
