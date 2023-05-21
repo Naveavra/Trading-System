@@ -160,8 +160,11 @@ public class Server {
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
-            int managerId = Integer.parseInt(request.get("managerId").toString());
-            List<String> permissions = (List<String>) request.get("permissions");
+            String managerEmail = request.get("managerEmail").toString();
+            String perStr = request.get("permissions").toString();
+            String[] arr = perStr.substring(1, perStr.length() - 1).split(",");
+            List<String> permissions = new ArrayList<>(Arrays.asList(arr));
+            //TODO: what to do with permissions and is it string or id
             return res.body();
         });
         delete("api/stores/:id", (req, res)-> {
@@ -237,17 +240,15 @@ public class Server {
             toSparkRes(res, api.addProduct(userId, token, storeId, categories, name, description, price, quantity, img));
             return res.body();
         });
-        delete("api/products", (req, res) ->
-                {
-                    JSONObject request = new JSONObject(req.body());
-                    int userId = Integer.parseInt(request.get("id").toString());
-                    String token = req.headers("Authorization");
-                    int storeId = Integer.parseInt(request.get("storeId").toString());
-                    int productId = Integer.parseInt(request.get("productId").toString());
-                    toSparkRes(res, api.deleteProduct(userId, token, storeId, productId));
-                    return res.body();
-                }
-        );
+        delete("api/products", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("id").toString());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int productId = Integer.parseInt(request.get("productId").toString());
+            toSparkRes(res, api.deleteProduct(userId, token, storeId, productId));
+            return res.body();
+        });
         //patch
         patch("api/products", (req, res) ->
                 {
