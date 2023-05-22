@@ -1,3 +1,4 @@
+import { Appointment } from "./Appointment";
 import { Message } from "./Message";
 import { Order } from "./Order";
 import { Product } from "./Product";
@@ -14,8 +15,8 @@ export interface Store {
     inventory: Product[];
     questions: { questionId: number, question: Message }[];
     storeOrders: Order[];
-    reviews: { messageId: number, message: Message }[];
-    //todo : check obout store role
+    reviews: { messageId: number, review: Message }[];
+    appHistory: Appointment[];
     roles: RoleInStore[];
     //todo add purchase and discount policy
 }
@@ -32,6 +33,7 @@ export const emptyStore: Store = {
     storeOrders: [],
     reviews: [],
     roles: [],
+    appHistory: [],
 }
 //    inventory: { id: number, product: { categories: string[], description: string, name: string, price: number, productId: number, quantity: number, img: string, rating: { value: number, content: string }[], reviewNumber: number } }[];
 //    storeOrders: { orderId: number, totalPrice: number, productsInStores: { storeId: number, products: { productId: number, quantity: number }[][] }, userId: number }[];

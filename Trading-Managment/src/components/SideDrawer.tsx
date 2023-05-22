@@ -43,6 +43,8 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, ope
     const store = useAppSelector((state) => state.store.storeState.watchedStore);
     const permissions = useAppSelector((state: RootState) => state.auth.permissions);
     const actions = permissions.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
+    //rearange actions by alphbetic order and nums of words in action
+
     for (const a of actions) {
         itemsMap[a] = {
             text: a,

@@ -216,8 +216,6 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.storeState.responseData = payload;
         });
         builder.addCase(patchStore.rejected, (state, { payload }) => {
-            debugger;
-            console.log(payload);
             state.storeState.error = payload?.message.data ?? "error during patchStore";
             state.storeState.isLoading = false;
         });

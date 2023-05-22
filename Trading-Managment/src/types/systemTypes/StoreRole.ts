@@ -1,4 +1,5 @@
-import { Action } from "redux-deep-persist/lib/types";
+import { Action } from "./Action";
+
 
 export enum StoreRoleEnum {
     CREATOR = "Creator",

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StoreRole } from '../../../types/systemTypes/StoreRole';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import { getStore, patchStore } from '../../../reducers/storesSlice';
 import { useAppSelector, useAppDispatch } from '../../../redux/store';
@@ -284,6 +284,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
             <Box sx={{ display: 'flex', flexGrow: 1 }}>
                 <SideDrawer drawerWidth={DRAWER_WIDTH} onDrawerClose={handleDrawerClose} open={openDrawer} />
             </Box>
+            <Outlet />
         </>
     );
 }

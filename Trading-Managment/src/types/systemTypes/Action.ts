@@ -24,5 +24,42 @@ export enum Action {
 
     closeStore = "close store", // creator //todo
     reopenStore = "reopen store", // creator //todo
-
 }
+export const actionOrder = {
+    [Action.addProduct]: 1,
+    [Action.removeProduct]: 2,
+    [Action.updateProduct]: 3,
+    [Action.changeStoreDescription]: 4,
+    [Action.deletePurchasePolicy]: 5,
+    [Action.deleteDiscountPolicy]: 6,
+    [Action.addPurchaseConstraint]: 7,
+    [Action.addDiscountConstraint]: 8,
+    [Action.viewMessages]: 9,
+    [Action.answerMessage]: 10,
+    [Action.seeStoreHistory]: 11,
+    [Action.seeStoreOrders]: 12,
+    [Action.checkWorkersStatus]: 13,
+    [Action.appointManager]: 14,
+    [Action.fireManager]: 15,
+    [Action.appointOwner]: 16,
+    [Action.fireOwner]: 17,
+    [Action.changeManagerPermission]: 18,
+    [Action.closeStore]: 19,
+    [Action.reopenStore]: 20,
+} as const;
+
+export const ManagerActions: Action[] = [
+    Action.addProduct,
+    Action.removeProduct,
+    Action.updateProduct,
+    Action.changeStoreDescription,
+    Action.deletePurchasePolicy,
+    Action.deleteDiscountPolicy,
+    Action.addPurchaseConstraint,
+    Action.addDiscountConstraint,
+    Action.viewMessages,
+    Action.answerMessage,
+    Action.seeStoreHistory,
+    Action.seeStoreOrders,
+    Action.checkWorkersStatus,
+];

@@ -11,6 +11,8 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { addToCart, getCart } from "../../reducers/cartSlice";
+import { deleteProduct } from "../../reducers/productsSlice";
+import { getStore } from "../../reducers/storesSlice";
 interface CardProps {
     item: Product;
     canEdit: boolean;
@@ -41,6 +43,10 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
         //dispatch(removeFromCart(item.id))
         setQuantity(quantity - 1);
     }
+    const handleDelete = () => {
+        dispatch(deleteProduct({ id: userId, storeId: storeId, productId: item.productId }))
+        dispatch(getStore({ userId: userId, storeId: storeId }))
+    }
     return (
         <Card className="h-100" sx={{ width: '50%', marginLeft: 'auto', mr: 10, mt: 2, flexBasis: '30%' }} >
             <CardMedia
@@ -50,9 +56,12 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
                 style={{ objectFit: 'cover' }}
             />
             <CardContent className="d-flex flex-column">
-                <Box width={'100%'} height={40}>
+                <Box width={'100%'} height={40} display={'flex'}>
                     <Typography gutterBottom variant="h5" component="div">
                         {item.name}
+                    </Typography>
+                    <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10 }}>
+                        price for unit : {item.price}$
                     </Typography>
                 </Box>
             </CardContent>
@@ -78,7 +87,7 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
                         </IconButton>
                     }
                     {canDelete &&
-                        <IconButton >
+                        <IconButton onClick={handleDelete}>
                             <DeleteIcon />
                         </IconButton>
                     }
@@ -87,9 +96,8 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
                     {quantity}
                 </Typography>
                 <Box>
-
                     <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10 }}>
-                        {(item.price * (quantity + 1)).toFixed(2)}$
+                        {(item.price * (quantity)).toFixed(2)}$
                     </Typography>
                 </Box>
             </CardActions>

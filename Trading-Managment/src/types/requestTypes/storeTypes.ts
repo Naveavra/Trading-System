@@ -46,4 +46,5 @@ export interface patchPermissionsParams {
     storeId: number,
     managerId: number,
     permissions: string[]
+    mode: string;
 }
