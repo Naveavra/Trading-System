@@ -141,8 +141,8 @@ public class StoreController {
 //    public int createOrder(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart) {
 //        int totalprice = 0;
 //        for (Integer storeid : shoppingcart.keySet()) {
-//            Store store = storeList.get(storeid);
-//            try {
+//            Store store = getStore(storeId
+;//            try {
 //                totalprice += store.createOrder(shoppingcart.get(storeid));
 //            } catch (Exception e) {
 //                return -1;
@@ -185,8 +185,10 @@ public class StoreController {
         return true;
     }
 
-    public Store getStore(int storeId) {
-        return storeList.get(storeId);
+    public Store getStore(int storeId) throws Exception{
+        if(storeList.containsKey(storeId))
+            return storeList.get(storeId);
+        throw new Exception("the storeId given does not belong to any store in the system");
     }
 
 
@@ -216,7 +218,7 @@ public class StoreController {
 //    }
 
     public String getProductName(int storeId, int productId) throws Exception {
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive()) {
             return store.getProductName(productId);
         } else {
@@ -225,7 +227,7 @@ public class StoreController {
     }
 
     public ArrayList<String> checkMessages(int storeID) throws Exception {
-        Store store = storeList.get(storeID);
+        Store store = getStore(storeID);
         if (store != null && store.isActive()) {
             return store.checkMessages();
         } else {
@@ -235,7 +237,7 @@ public class StoreController {
 
 
     public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive())
         {
             return store.getQuestions();
@@ -246,7 +248,7 @@ public class StoreController {
     }
 
     public void answerQuestion(int storeId, int questionId, String answer) throws Exception{
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive())
         {
             store.answerQuestion(questionId, answer);
@@ -254,7 +256,7 @@ public class StoreController {
     }
 
     public List<OrderInfo> getStoreOrderHistory(int storeId) throws Exception {
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive())
         {
             return store.getOrdersHistory();
@@ -263,7 +265,7 @@ public class StoreController {
     }
 
     public AppHistory getAppointments(int storeId) throws Exception{
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive())
         {
             return store.getAppHistory();
@@ -273,7 +275,7 @@ public class StoreController {
 
 
     public Set<Integer> closeStorePermanently(int storeId) throws Exception {
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if(store != null){
             storeList.remove(storeId);
             return store.getUsersInStore();
@@ -304,7 +306,7 @@ public class StoreController {
     }
 
     public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive())
         {
             return store.getStoreReviews();
@@ -335,7 +337,7 @@ public class StoreController {
             throw new Exception("the id given does not match any store");
     }
 
-    public StoreInfo getStoreInformation(int storeId){
+    public StoreInfo getStoreInformation(int storeId) throws Exception{
         Store store = getStore(storeId);
         return store.getStoreInformation();
 
@@ -367,7 +369,12 @@ public class StoreController {
     }
 
     public void checkProductInStore(int storeId, int productId) throws Exception{
-        Store s = storeList.get(storeId);
+        Store s = getStore(storeId);
         s.checkProductInStore(productId);
+    }
+
+    public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
+        Store s = getStore(storeId);
+        s.setStoreAttributes(name, description, img);
     }
 }

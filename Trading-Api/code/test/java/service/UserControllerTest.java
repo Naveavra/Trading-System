@@ -35,7 +35,7 @@ class UserControllerTest {
         assertTrue(sc.checkBirthday("24/02/2002"));
         assertFalse(sc.checkBirthday("24/02/1902"));
         assertFalse(sc.checkBirthday("24/02/2024"));
-        assertFalse(sc.checkBirthday("24/05/2023"));
+        assertFalse(sc.checkBirthday("24/05/2060"));
         assertFalse(sc.checkBirthday("29/02/2022"));
         //System.out.println(hour + " " + minute +" " + second);
     }

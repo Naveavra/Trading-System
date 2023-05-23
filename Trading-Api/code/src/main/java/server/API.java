@@ -16,8 +16,8 @@ import utils.infoRelated.*;
 import utils.Response;
 import utils.messageRelated.Message;
 import utils.infoRelated.Receipt;
-
-
+import utils.messageRelated.Notification;
+import utils.messageRelated.NotificationOpcode;
 
 
 public class API {
@@ -240,8 +240,8 @@ public class API {
     }
 
     public Pair<Boolean, JSONObject> getStoreProducts(int storeId){
-        Response<List<ProductInfo>> res = market.getStoreProducts(storeId);
-        return fromResToPair(res);
+        Response<List<? extends  Information>> res = market.getStoreProducts(storeId);
+        return fromResToPairList(res);
     }
 
     public Pair<Boolean, JSONObject> sendQuestion(int userId, String token, int storeId,String msg){
@@ -262,68 +262,10 @@ public class API {
 
     public Pair<Boolean, JSONObject> changeStoreInfo(int userId, String token, int storeId, String name, String desc,
                                                      String isActive, String img){
-        String ret = "";
-        Response<String> ans;
-        Pair<Boolean, JSONObject> check;
-        if(name != null) {
-            check = changeStoreName(userId, token, storeId, name);
-            ret = ret + "\n" + check.getSecond();
-            if(!check.getFirst()){
-                ans = new Response<>(null, "change name failed", ret);
-                return fromResToPair(ans);
-            }
-
-        }
-        if(img != null) {
-            check = changeStoreImg(userId, token, storeId, img);
-            ret = ret + "\n" + check.getSecond();
-            if(!check.getFirst()){
-                ans = new Response<>(null, "change img failed", ret);
-                return fromResToPair(ans);
-            }
-        }
-        if(desc != null) {
-            check = changeStoreDescription(userId, token, storeId, desc);
-            ret = ret + "\n" + check.getSecond();
-            if(!check.getFirst()){
-                ans = new Response<>(null, "change desc failed", ret);
-                return fromResToPair(ans);
-            }
-        }
-        if(isActive.equals("false")) {
-            check = closeStore(userId, token, storeId);
-            ret = ret + "\n" + check.getSecond();
-            if(!check.getFirst()){
-                ans = new Response<>(null, "close store failed", ret);
-                return fromResToPair(ans);
-            }
-        }
-        if(isActive.equals("true")) {
-            check = reopenStore(userId, token, storeId);
-            ret = ret + "\n" + check.getSecond();
-            if(!check.getFirst()){
-                ans = new Response<>(null, "reopen store failed", ret);
-                return fromResToPair(ans);
-            }
-        }
-        ans = new Response<>(ret, null, null);
-        return fromResToPair(ans);
-
-    }
-    public Pair<Boolean, JSONObject> changeStoreDescription(int userId, String token, int storeId, String description){
-        Response<String> res = market.changeStoreDescription(userId, token, storeId, description);
+        Response<String> res = market.changeStoreInfo(userId, token, storeId, name, desc, isActive, img);
         return fromResToPair(res);
-    }
-    public Pair<Boolean, JSONObject> changeStoreImg(int userId, String token, int storeId, String img) {
-        Response<String> res = market.changeStoreImg(userId, token, storeId, img);
-        return fromResToPair(res);
-    }
 
-    public Pair<Boolean, JSONObject> changeStoreName(int userId, String token, int storeId, String name) {
-        Response<String> res = market.changeStoreName(userId, token, storeId, name);
-        return fromResToPair(res);
     }
-
     public Pair<Boolean, JSONObject> changePurchasePolicy(int userId, String token, int storeId, String policy){
         Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
         return fromResToPair(res);
@@ -354,16 +296,6 @@ public class API {
     public Pair<Boolean, JSONObject> checkWorkersStatus(int userId, String token, int workerId){
         Response<List<? extends Information>> res = market.checkWorkersStatus(userId, token, workerId);
         return fromResToPairList(res);
-    }
-
-    public Pair<Boolean, JSONObject> closeStore(int userId, String token, int storeId){
-        Response<String> res = market.closeStore(userId, token, storeId);
-        return fromResToPair(res);
-    }
-
-    public Pair<Boolean, JSONObject> reopenStore(int userId, String token, int storeId){
-        Response<String> res = market.reopenStore(userId, token, storeId);
-        return fromResToPair(res);
     }
 
     public Pair<Boolean, JSONObject> addProduct(int userId, String token, int storeId, List<String> categories, String name , String description,
@@ -444,13 +376,6 @@ public class API {
     public Pair<Boolean, JSONObject> adminLogout(int adminId)
     {
         Response<String> res = market.adminLogout(adminId);
-        return fromResToPair(res);
-    }
-
-    public Pair<Boolean, JSONObject> getAdmins(int adminId, String token)
-    {
-        Response<HashMap<Integer, Admin>> res = market.getAdmins(adminId, token);
-        //TODO: fix that
         return fromResToPair(res);
     }
 
@@ -543,11 +468,9 @@ public class API {
         return fromResToPairInfo(res);
     }
 
-    public Pair<Boolean, JSONObject> getAppointments(int userId, String token, int storeId)
-    {
-        Response<AppHistory> res = market.getAppointments(userId, token, storeId);
-        // TODO: cast this to json
-        return fromResToPair(res);
+    public Pair<Boolean, JSONObject> getNotification(int userId, String token) {
+        Response<Notification> res =  market.getNotification(userId, token);
+        return fromResToPairInfo(res);
     }
 
     public Pair<Boolean, JSONObject> watchMarketStatus(int adminId, String token)
@@ -555,6 +478,11 @@ public class API {
         Response<MarketInfo> res = market.watchMarketStatus(adminId, token);
         // TODO: cast this to json
         return fromResToPairInfo(res);
+    }
+
+    public Pair<Boolean, JSONObject> sendNotification(int userId, String token, String username, String notification) {
+        Response<String> res = market.sendNotification(userId, token, NotificationOpcode.CHAT_MESSAGE, username, notification);
+        return fromResToPair(res);
     }
 
     public void mockData(){
@@ -591,5 +519,6 @@ public class API {
         market.logout(id1);
         market.logout(id2);
     }
+
 
 }

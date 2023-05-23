@@ -1,6 +1,7 @@
 package utils.infoRelated;
 
 import org.json.JSONObject;
+import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
@@ -12,13 +13,13 @@ public class LoginInformation extends Information{
     private int userId;
     private String userName;
     private boolean isAdmin;
-    private List<String> notifications;
+    private List<Notification> notifications;
     private HashMap<Integer, Role> storeRoles;
     private HashMap<Integer, String> storeNames;
     private HashMap<Integer, String> storeImg;
     private HashMap<Integer, List<Action>> permissions;
 
-    public LoginInformation(String t, int ui, String un, boolean isAdmin, List<String> notifications, HashMap<Integer, Role> storeRoles,
+    public LoginInformation(String t, int ui, String un, boolean isAdmin, List<Notification> notifications, HashMap<Integer, Role> storeRoles,
                             HashMap<Integer, String> storeName, HashMap<Integer, String> storeImg,
                             HashMap<Integer, List<Action>> permissions ){
         token=t;
@@ -42,7 +43,7 @@ public class LoginInformation extends Information{
     public String getUserName() {
         return userName;}
     public boolean getIsAdmin(){return isAdmin;}
-    public List<String> getNotifications(){return notifications;}
+    public List<Notification> getNotifications(){return notifications;}
     public HashMap<Integer, Role> getStoreRoles(){return storeRoles;}
     public HashMap<Integer, String> getStoreNames(){return storeNames;}
     public HashMap<Integer, String> getStoreImg(){return storeImg;}
@@ -58,7 +59,7 @@ public class LoginInformation extends Information{
         json.put("userId", getUserId());
         json.put("userName", getUserName());
         json.put("isAdmin", getIsAdmin());
-        json.put("notifications", getNotifications());
+        json.put("notifications", infosToJson(getNotifications()));
         json.put("storeNames", toJsonHM(getStoreNames(), "storeId", "storeName"));
         json.put("storeRoles", getStoreRole(getStoreRoles(), "storeId", "storeRole"));
         json.put("storeImgs", toJsonHM(getStoreImg(), "storeId", "storeImg"));

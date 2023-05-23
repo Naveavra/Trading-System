@@ -4,6 +4,7 @@ import domain.store.storeManagement.Store;
 import domain.user.PurchaseHistory;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
+import utils.messageRelated.NotificationOpcode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public interface MarketInterface {
 
     public Response writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading);
 
-    Response<String> sendNotification(int userId, String token, String receiverEmail, String notify);
+    Response<String> sendNotification(int userId, String token, NotificationOpcode opcode, String receiverEmail, String notify);
 
     public Response writeReviewToProduct(int userId, String token, int orderId, int storeId, int productId, String content, int grading);
     public Response checkReviews(int userId, String token, int storeId);
@@ -60,9 +61,10 @@ public interface MarketInterface {
 
     // manager methods
     public Response appointManager(int userId, String token, String managerToAppoint, int storeId);
-    public Response changeStoreDescription(int userId, String token, int storeId, String description);
-    Response<String> changeStoreImg(int userId, String token, int storeId, String img);
-    Response<String> changeStoreName(int userId, String token, int storeId, String name);
+
+    public Response changeStoreInfo(int userId, String token, int storeId, String name, String description, String img,
+                                    String isActive);
+    public String changeStoreAttributes(int userId, int storeId, String name, String description, String img) throws Exception;
     public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
     //public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
     public Response addPurchaseConstraint(int userId, String token, int storeId, String constraint);
@@ -90,8 +92,7 @@ public interface MarketInterface {
     public Response getAppointments(int userId, String token, int storeId);
 
     //store creator methods
-    public Response closeStore(int userId, String token, int storeId);
-    public Response reopenStore(int userId, String token, int storeId);
+    public String changeStoreActive(int userId, int storeId, String isActive) throws Exception;
 
     public Response closeStorePermanently(int adminId, String token, int storeId);
 

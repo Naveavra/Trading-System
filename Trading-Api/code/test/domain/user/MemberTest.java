@@ -13,6 +13,7 @@ import utils.Pair;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
+import utils.messageRelated.NotificationOpcode;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
@@ -207,12 +208,12 @@ class MemberTest {
     @Test
     void displayNotifications() {
         try {
-            Notification<String> n = new Notification<>("u have a new message");
+            Notification<String> n = new Notification<>(NotificationOpcode.CLOSE_STORE, "u have a new message");
             m.login("ziv1234");
             m.addNotification(n);
-           List<String> notifiy =  m.displayNotifications();
+           List<Notification> notifiy =  m.displayNotifications();
            assertTrue(notifiy.size()==1);
-           assertEquals(notifiy.get(0),"the value of the notification is: "+n.getNotification());
+           assertEquals(notifiy.get(0).toString(),"the value of the notification is: " + n.getNotification());
            assertTrue(m.displayNotifications().size()==0);
         }catch (Exception e) {
             System.out.println(e.getMessage());

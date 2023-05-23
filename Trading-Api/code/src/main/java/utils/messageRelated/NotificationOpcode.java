@@ -1,0 +1,12 @@
+package utils.messageRelated;
+
+public enum NotificationOpcode {
+        STORE_REVIEW(1), PRODUCT_REVIEW(2), PURCHASE_IN_STORE(3), QUESTION(4), CLOSE_STORE_PERMANENTLY(5), OPEN_STORE(6), CLOSE_STORE(7),
+        APPOINT_MANAGER(8), APPOINT_OWNER(9), FIRE_MANAGER(10), FIRE_OWNER(11),
+        ADD_MANGER_PERMISSTION(12), REMOVE_MANGER_PERMISSTION(13),
+        COMPLAINT(14), CHAT_MESSAGE(15),
+        REVIEW_FEEDBACK(16);
+
+        NotificationOpcode(int i) {
+        }
+}

@@ -108,7 +108,7 @@ public class MarketController {
         }
     }
 
-    public StoreInfo getStoreInformation(int storeId){
+    public StoreInfo getStoreInformation(int storeId) throws Exception{
         return storectrl.getStoreInformation(storeId);
     }
     public Store getStore(int storeId) throws Exception {
@@ -140,36 +140,9 @@ public class MarketController {
     public int addQuestion(Message m) throws Exception {
         return storectrl.addQuestion(m);
     }
-    public void setStoreDescription(int storeId,String des) throws Exception{
-        Store store = storectrl.getStore(storeId);
-        if (store != null )
-        {
-             store.setStoreDescription(des);
-        }
-        else {
-            throw new Exception("store does not exist");
-        }
-    }
-    public void setStoreImg(int storeId, String img) throws Exception{
-        Store store = storectrl.getStore(storeId);
-        if (store != null )
-        {
-            store.changeImg(img);
-        }
-        else {
-            throw new Exception("store does not exist");
-        }
-    }
 
-    public void setStoreName(int storeId, String name) throws Exception{
-        Store store = storectrl.getStore(storeId);
-        if (store != null )
-        {
-            store.changeName(name);
-        }
-        else {
-            throw new Exception("store does not exist");
-        }
+    public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
+        storectrl.setStoreAttributes(storeId, name, description, img);
     }
 
     public void setStorePurchasePolicy(int storeId,String policy) throws Exception{
