@@ -16,8 +16,8 @@ import utils.infoRelated.*;
 import utils.Response;
 import utils.messageRelated.Message;
 import utils.infoRelated.Receipt;
-
-
+import utils.messageRelated.Notification;
+import utils.messageRelated.NotificationOpcode;
 
 
 public class API {
@@ -468,11 +468,21 @@ public class API {
         return fromResToPairInfo(res);
     }
 
+    public Pair<Boolean, JSONObject> getNotification(int userId, String token) {
+        Response<Notification> res =  market.getNotification(userId, token);
+        return fromResToPairInfo(res);
+    }
+
     public Pair<Boolean, JSONObject> watchMarketStatus(int adminId, String token)
     {
         Response<MarketInfo> res = market.watchMarketStatus(adminId, token);
         // TODO: cast this to json
         return fromResToPairInfo(res);
+    }
+
+    public Pair<Boolean, JSONObject> sendNotification(int userId, String token, String username, String notification) {
+        Response<String> res = market.sendNotification(userId, token, NotificationOpcode.CHAT_MESSAGE, username, notification);
+        return fromResToPair(res);
     }
 
     public void mockData(){
@@ -509,5 +519,6 @@ public class API {
         market.logout(id1);
         market.logout(id2);
     }
+
 
 }
