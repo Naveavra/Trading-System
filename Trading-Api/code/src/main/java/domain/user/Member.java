@@ -2,12 +2,11 @@ package domain.user;
 
 import domain.states.StoreCreator;
 import domain.states.UserState;
-import domain.store.product.Product;
 import domain.store.storeManagement.Store;
-import org.json.JSONObject;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
+import utils.messageRelated.NotificationOpcode;
 import utils.messageRelated.MessageState;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -15,9 +14,10 @@ import utils.stateRelated.Role;
 import utils.infoRelated.Info;
 
 
-import java.net.http.WebSocketHandshakeException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
+
+import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
 
 
 public class Member implements User{
@@ -145,7 +145,7 @@ public class Member implements User{
 
     public Message writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
         if (userHistory.checkOrderContainsStore(orderId, storeId)) {
-            Message message = new Message(messageId, content, this, orderId, storeId, MessageState.reviewStore);
+            Message message = new Message(messageId, NotificationOpcode.STORE_REVIEW, content, this, orderId, storeId, MessageState.reviewStore);
             message.addRating(grading);
             return message;
         }
@@ -155,7 +155,7 @@ public class Member implements User{
 
     public Message writeReview(int messageId, int storeId, int productId, int orderId, String content, int grading) throws Exception{
         if(userHistory.checkOrderContainsProduct(orderId, storeId, productId)){
-            Message m = new Message(messageId, content, this, orderId, storeId, MessageState.reviewProduct);
+            Message m = new Message(messageId, PRODUCT_REVIEW, content, this, orderId, storeId, MessageState.reviewProduct);
             m.addRating(grading);
             m.addProductToReview(productId);
             return m;
@@ -166,13 +166,13 @@ public class Member implements User{
 
     public Message writeComplaint(int messageId, int orderId, int storeId, String comment) throws Exception {
         if(userHistory.checkOrderContainsStore(orderId, storeId))
-            return new Message(messageId, comment, this, orderId, storeId, MessageState.complaint);
+            return new Message(messageId, NotificationOpcode.COMPLAINT, comment, this, orderId, storeId, MessageState.complaint);
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
     }
 
     public Message sendQuestion(int messageId, int storeId, String question) {
-        return new Message(messageId, question, this, -1, storeId, MessageState.question);
+        return new Message(messageId, NotificationOpcode.QUESTION, question, this, -1, storeId, MessageState.question);
     }
 
     public synchronized void addNotification(Notification notification){

@@ -6,6 +6,7 @@ import utils.infoRelated.Information;
 
 public class Message extends Information {
     private transient int messageId;
+    private NotificationOpcode opcode;
     private String content;
     private String ownerEmail;
     private int rating;
@@ -17,13 +18,14 @@ public class Message extends Information {
     private boolean gotFeedback;
     private boolean seen;
 
-    public Message(int messageId, String content, Member reviewer, int orderId, int storeId, MessageState ms){
+    public Message(int messageId, NotificationOpcode opcode, String content, Member reviewer, int orderId, int storeId, MessageState ms){
         this.messageId = messageId;
         this.content = content;
         this.rating = -1;
         this.reviewer = reviewer;
         this.orderId = orderId;
         this.storeId = storeId;
+        this.opcode  = opcode;
         this.state = ms;
         productId = -1;
         ownerEmail = null;
@@ -66,7 +68,7 @@ public class Message extends Information {
     public void sendFeedback(String feedback) throws Exception{
         if(state != MessageState.reviewProduct && state != MessageState.reviewStore ){
             if(!gotFeedback) {
-                Notification<String> notification = new Notification<>(feedback);
+                Notification<String> notification = new Notification<>(NotificationOpcode.REVIEW_FEEDBACK, feedback);
                 reviewer.addNotification(notification);
                 sendEmail();
                 gotFeedback = true;
@@ -116,6 +118,7 @@ public class Message extends Information {
     public JSONObject toJson(){
         JSONObject json = new JSONObject();
         json.put("messageId", getMessageId());
+        json.put("opcode", opcode.ordinal());
         json.put("content", getContent());
         json.put("rating", getRating());
         json.put("state", getMessageState());

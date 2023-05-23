@@ -16,6 +16,7 @@ import utils.infoRelated.*;
 import utils.Response;
 import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
+import utils.messageRelated.NotificationOpcode;
 import utils.stateRelated.Action;
 import utils.infoRelated.Receipt;
 
@@ -143,10 +144,10 @@ public class Market implements MarketInterface {
 
 
     @Override
-    public Response<String> sendNotification(int userId, String token, String receiverEmail, String notify){
+    public Response<String> sendNotification(int userId, String token, NotificationOpcode opcode, String receiverEmail, String notify){
         try {
             userAuth.checkUser(userId, token);
-            Notification<String> notification = new Notification<>(notify);
+            Notification<String> notification = new Notification<>(opcode, notify);
             userController.addNotification(receiverEmail, notification);
             return logAndRes(Logger.logStatus.Success, "notification was sent to " + receiverEmail + " on " + LocalDateTime.now(),
                     "notification sent", null, null);
@@ -156,8 +157,8 @@ public class Market implements MarketInterface {
         }
     }
 
-    private void addNotification(int userId, String notify) throws Exception{
-        Notification<String> notification = new Notification<>(notify);
+    private void addNotification(int userId,NotificationOpcode opcode, String notify) throws Exception{
+        Notification<String> notification = new Notification<>(opcode, notify);
         userController.addNotification(userId, notification);
     }
     @Override
@@ -270,7 +271,7 @@ public class Market implements MarketInterface {
             userController.purchaseMade(userId, receipt.getOrderId(), receipt.getTotalPrice());
             //TODO: make an external service handle notifications
             for(int creatorId : creatorIds)
-                addNotification(creatorId, "a new purchase was made in your store");
+                addNotification(creatorId, NotificationOpcode.PURCHASE_IN_STORE, "a new purchase was made in your store");
             marketInfo.addPurchaseCount();
             return logAndRes(Logger.logStatus.Success, "user made purchase on " + LocalDateTime.now(),
                     receipt, null, null);
@@ -380,7 +381,7 @@ public class Market implements MarketInterface {
             Message m = userController.writeReviewForStore(orderId, storeId, content, grading, userId);
             int creatorId = marketController.addReviewToStore(m);
             m.addOwnerEmail(userController.getUserEmail(creatorId));
-            addNotification(creatorId,"a review of has been added for store: " + storeId);
+            addNotification(creatorId,NotificationOpcode.STORE_REVIEW, "a review of has been added for store: " + storeId);
             return logAndRes(Logger.logStatus.Success, "user write review on store successfully on " + LocalDateTime.now(),
                     "user write review on store successfully", null, null);
         } catch (Exception e) {
@@ -397,7 +398,7 @@ public class Market implements MarketInterface {
             Message m = userController.writeReviewForProduct(orderId, storeId, productId, content, grading, userId);
             int creatorId = marketController.writeReviewForProduct(m);
             m.addOwnerEmail(userController.getUserEmail(creatorId));
-            addNotification(creatorId,"a review of has been added for product: "+productId +" in store: " + storeId);
+            addNotification(creatorId,NotificationOpcode.PRODUCT_REVIEW,"a review of has been added for product: "+productId +" in store: " + storeId);
             return logAndRes(Logger.logStatus.Success, "user write review on product successfully on " + LocalDateTime.now(),
                     "user write review successfully", null, null);
         } catch (Exception e) {
@@ -517,7 +518,7 @@ public class Market implements MarketInterface {
             Message m = userController.sendQuestionToStore(userId, storeId, msg);
             int creatorId = marketController.addQuestion(m);
             m.addOwnerEmail(userController.getUserEmail(creatorId));
-            addNotification(creatorId, "a question of has been added for store: " + storeId);
+            addNotification(creatorId, NotificationOpcode.QUESTION, "a question of has been added for store: " + storeId);
             return logAndRes(Logger.logStatus.Success, "user send question successfully on " + LocalDateTime.now(),
                     "question added successfully", null, null);
         } catch (Exception e) {

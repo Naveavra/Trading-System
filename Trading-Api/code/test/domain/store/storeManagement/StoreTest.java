@@ -1,6 +1,5 @@
 package domain.store.storeManagement;
 import domain.states.StoreManager;
-import domain.store.product.Product;
 import domain.user.Basket;
 import domain.user.Member;
 import domain.user.ShoppingCart;
@@ -8,14 +7,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
+import utils.messageRelated.NotificationOpcode;
 import utils.messageRelated.MessageState;
 import utils.orderRelated.Order;
-import utils.stateRelated.Role;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -57,8 +56,8 @@ class StoreTest {
     }
     @Test
     void getStoreRating() throws Exception {
-        Message review = new Message(0, "great store", member, 0, 0, MessageState.reviewStore);
-        Message reviewB = new Message(1, "shitty store", member, 1, 0, MessageState.reviewStore);
+        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, 0, MessageState.reviewStore);
+        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, 0, MessageState.reviewStore);
         review.addRating(5);
         reviewB.addRating(1);
         store.addReview(0, review);
@@ -70,7 +69,7 @@ class StoreTest {
     @Test
     void invalidAddReview() throws Exception {
         Exception exception = assertThrows(Exception.class, () -> {
-            Message review = new Message(0, "great store", member, 3, 0, MessageState.reviewStore);
+            Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 3, 0, MessageState.reviewStore);
             review.addRating(5);
             store.addReview(3, review);
         });
@@ -164,8 +163,8 @@ class StoreTest {
 
     @Test
     void getMessages() throws Exception {
-        Message review = new Message(0, "great store", member, 0, 0, MessageState.reviewStore);
-        Message reviewB = new Message(1, "shitty store", member, 1, 0, MessageState.reviewStore);
+        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, 0, MessageState.reviewStore);
+        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, 0, MessageState.reviewStore);
         review.addRating(5);
         reviewB.addRating(1);
         store.addReview(0, review);
@@ -177,13 +176,6 @@ class StoreTest {
         assertEquals(expectedMessages, actualMessages);
         assertEquals(0, store.checkMessages().size(), "the messages already been seen");
     }
-
-
-
-
-
-
-
 
 
 }

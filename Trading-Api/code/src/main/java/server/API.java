@@ -418,7 +418,6 @@ public class API {
 
 
     //TODO: fix
-    dssd
     public Pair<Boolean, JSONObject> watchEventLog(int adminId, String token)
     {
         Response<List<String>> res1 = market.watchEventLog(adminId, token);
