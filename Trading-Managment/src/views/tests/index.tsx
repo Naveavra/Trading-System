@@ -9,7 +9,7 @@ const Tests: React.FC = () => {
     useEffect(() => {
         const fetchNotification = async () => {
             try {
-                const response = await axios.get(`http://localhost:4567/notifications/${userId}`);
+                const response = axios.get(`http://localhost:4567/notifications/${userId}`);
                 debugger;
                 if (response.status === 200) {
                     setNotification(response.data);

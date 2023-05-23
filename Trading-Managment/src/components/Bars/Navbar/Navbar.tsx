@@ -13,6 +13,7 @@ import { getNotifications, guestEnter, logout } from "../../../reducers/authSlic
 import { getStore } from "../../../reducers/storesSlice";
 import { StoreRole } from "../../../types/systemTypes/StoreRole";
 import { clearNotifications } from "../../../reducers/authSlice";
+import { MyNotification } from "../../../types/systemTypes/Notification";
 
 interface Props {
     headLine: string;
@@ -61,9 +62,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     const handleConfirm = (event: React.ChangeEvent<HTMLInputElement>, idx: number): void => {
         console.log(`confirm message ${idx}`);
     }
-    useEffect(() => {
-        dispatch(getNotifications({ userId: userId, token: token }));
-    }, [dispatch])
+
     return (
         <div className="navbar">
             <div className="wrapper">
@@ -204,11 +203,11 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                         >
                             <DialogTitle>your notifications</DialogTitle>
                             <>
-                                {notification?.map((not, index) => {
+                                {notification?.map((not: MyNotification, index) => {
                                     return (
                                         <DialogContent dividers key={index}>
                                             <Box ml={3} display={'flex'} key={index}>
-                                                <Typography sx={{ ml: 2, mr: 3 }}>{not}</Typography>
+                                                <Typography sx={{ ml: 2, mr: 3 }}>{not.content}</Typography>
                                                 <Checkbox {...label} defaultChecked onChange={(e) => { handleConfirm(e, index) }} />
                                             </Box>
                                         </DialogContent>

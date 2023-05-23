@@ -17,38 +17,7 @@ import './main.css';
 const App = () => {
   const userId = useAppSelector((state) => state.auth.userId);
   const dispatch = useAppDispatch();
-  //const retryConnection = useRef(0);
 
-  // const newConnection = hubConnection('http://localhost:4567/api/signalR', { logging: true, });
-  // const hubProxy = newConnection.createHubProxy('NotificationHub');
-  // hubProxy.on('firstConnection', () => { });
-  // newConnection.start()
-  //   .done(() => {
-  //     retryConnection.current = 0;
-  //   })
-  //   .fail((e: any) => {
-  //     console.log(e);
-  //     console.log("signalR could not connect")
-  //   })
-
-  // newConnection.disconnected(() => {
-  //   if (retryConnection.current <= 10) {
-  //     retryConnection.current++;
-  //     setTimeout(() => {
-  //       newConnection.start().done(() => {
-  //         retryConnection.current = 0;
-  //       });
-  //     }, 10000)
-  //   }
-  // })
-  // // set up event listeners i.e. for incoming "message" event
-  // hubProxy.on('SendNotification', function (idToSend, message) {
-
-  //   if (idToSend == userId) {
-  //     //dispatch(setNotification(message));
-  //     console.log(message, "came from server to u: " + idToSend);
-  //   }
-  // });
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>

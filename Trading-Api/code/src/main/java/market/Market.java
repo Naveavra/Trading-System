@@ -1274,6 +1274,7 @@ public class Market implements MarketInterface {
             return logAndRes(Logger.logStatus.Success, "Member get notification " + userId + " has successfully entered on " + LocalDateTime.now(),
                     notification, null, null);
         }catch (Exception e){
+            System.out.println(e.getMessage());
             return new Response<>(null, "get member notifications failed", e.getMessage());
         }
     }

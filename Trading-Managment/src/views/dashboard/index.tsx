@@ -29,6 +29,7 @@ const DashboardPage: React.FC = () => {
     const isLoadingProducts = useAppSelector((state) => !!state.product.isLoading);
     const userId = useAppSelector((state) => state.auth.userId);
     const token = useAppSelector((state) => state.auth.token) ?? "";
+    const userName = useAppSelector((state) => state.auth.userName);
     const error = useAppSelector((state) => state.auth.error);
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
@@ -53,25 +54,36 @@ const DashboardPage: React.FC = () => {
             // dispatch(ping(userId));
         }
     }
-    const getC = () => {
-        if (token != "") {
-            dispatch(getNotifications({ userId: userId, token: token }));
+    const fetchNotification = async () => {
+        try {
+            console.log("trying get notification")
+            if (token != "" && userName != 'guest') {
+                const response = await dispatch(getNotifications({ userId: userId, token: token }));
+                console.log("get notification")
+                if (response) {
+                    console.log(response);
+                    fetchNotification();
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching notification:', error);
         }
-    }
+    };
     useEffect(() => {
         // Call the sendPing function every 2 seconds
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        const pingInterval2 = setInterval(getC, PING_INTERVAL2);
+
         dispatch(getStoresInfo());
         dispatch(getProducts());
         dispatch(getCart({ userId: userId }));
         // Stop the ping interval when the user leaves the app
+        //---------------------notifications---------------------
+
+        fetchNotification();
         return () => {
             clearInterval(pingInterval)
-            clearInterval(pingInterval2)
         };
-
-    }, [])
+    }, [userId])
     const handleSet = (text: string) => {
         setText(text);
     }

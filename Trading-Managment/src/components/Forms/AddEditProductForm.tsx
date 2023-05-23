@@ -67,9 +67,9 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
         }
     }
     const getNotifiy = () => {
-        if (token != '') {
-            dispatch(getNotifications({ userId: userId, token: token }));
-        }
+        // if (token != '') {
+        //     dispatch(getNotifications({ userId: userId, token: token }));
+        // }
     }
     useEffect(() => {
         // Call the sendPing function every 2 seconds

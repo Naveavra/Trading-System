@@ -36,9 +36,9 @@ const Visitor: React.FC = () => {
         }
     }
     const getC = () => {
-        if (token) {
-            dispatch(getNotifications({ userId: userId, token: token }));
-        }
+        // if (token) {
+        //     dispatch(getNotifications({ userId: userId, token: token }));
+        // }
     }
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);

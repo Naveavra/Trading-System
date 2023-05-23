@@ -336,16 +336,18 @@ public class Server {
         //----------------------------- notifications------------------------
 
         // Endpoint for client to subscribe for notifications
-        get("notifications/:userId", (req, res) -> {
+        post("api/auth/notifications", (req, res) -> {
+            System.out.println(req.body());
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             toSparkRes(res, api.getNotification(userId, token));
+            System.out.println(res.body());
             return res.body();
         });
 
         // Endpoint for the server to push notifications to a user's queue
-        post("/notifications", (req, res) -> {
+        post("api/auth/notifications/msg", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
@@ -357,11 +359,4 @@ public class Server {
         });
 
     }
-
-    private static BlockingQueue<String> getUserQueue(String userId) {
-        synchronized (userQueues) {
-            return userQueues.computeIfAbsent(userId, k -> new LinkedBlockingQueue<>());
-        }
-    }
-
 }

@@ -84,12 +84,12 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const handleConfirm = (event: React.ChangeEvent<HTMLInputElement>, idx: number): void => {
         console.log(`confirm message ${idx}`);
     }
-    useEffect(() => {
-        if (token != '') {
-            dispatch(getNotifications({ userId: userId, token: token }));
-        }
+    // useEffect(() => {
+    //     if (token != '') {
+    //         dispatch(getNotifications({ userId: userId, token: token }));
+    //     }
 
-    }, [dispatch, store])
+    // }, [dispatch, store])
 
     return (
         <>
@@ -258,11 +258,11 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
             >
                 <DialogTitle>your notifications</DialogTitle>
                 <>
-                    {notifications.map((not, index) => {
+                    {notifications?.map((not, index) => {
                         return (
                             <DialogContent dividers key={index}>
                                 <Box ml={3} display={'flex'} key={index}>
-                                    <Typography sx={{ ml: 2, mr: 3 }}>{not}</Typography>
+                                    <Typography sx={{ ml: 2, mr: 3 }}>{not.content}</Typography>
                                     <Checkbox {...label} defaultChecked onChange={(e) => { handleConfirm(e, index) }} />
                                 </Box>
                             </DialogContent>

@@ -178,7 +178,7 @@ public class Member implements User{
     }
 
     public synchronized void addNotification(Notification notification){
-        notifications.add(notification);
+            notifications.offer(notification);
     }
 
     public List<Notification> displayNotifications(){
@@ -190,7 +190,9 @@ public class Member implements User{
     }
 
     public Notification getNotification() throws InterruptedException {
-        return notifications.take();
+        synchronized (notifications) {
+            return notifications.take();
+        }
     }
 
     private UserState getActiveRole(int storeId) throws Exception {

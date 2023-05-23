@@ -3,6 +3,7 @@ import { apiErrorHandlerWrapper } from './util';
 import { EnterGuestResponseData, RegisterResponseData, TokenResponseBody, getClientNotifications, getClientResponseData } from '../types/responseTypes/authTypes';
 import { LoginPostData, RegisterPostData, getUserData, getUserNotifications } from '../types/requestTypes/authTypes';
 import { ApiResponse, ApiResponseListData } from '../types/apiTypes';
+import { MyNotification } from '../types/systemTypes/Notification';
 
 
 
@@ -19,8 +20,8 @@ export const authApi = {
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/guest/enter')),
     ping: (credential: number): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/ping', { userId: credential })),
-    getNotifications: (credentials: getUserNotifications): Promise<ApiResponse<getClientNotifications>> =>
-        apiErrorHandlerWrapper(getApiClient().post('api/auth/getNotifications', { userId: credentials.userId, token: credentials.token })),
+    getNotifications: (credentials: getUserNotifications): Promise<ApiResponse<MyNotification>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/auth/notifications`, { userId: credentials.userId, token: credentials.token })),
     getClient: (credentials: getUserData): Promise<ApiResponse<getClientResponseData>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/auth/getClient', { userId: credentials.userId })),
 

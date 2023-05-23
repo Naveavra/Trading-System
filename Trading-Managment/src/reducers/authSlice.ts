@@ -7,13 +7,14 @@ import { localStorage } from '../config'
 import { RegisterPostData, getUserData, getUserNotifications } from "../types/requestTypes/authTypes";
 import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
+import { MyNotification } from "../types/systemTypes/Notification";
 
 interface AuthState {
     token: string;
     userId: number;
     userName: string;
     isAdmin: boolean;
-    notifications: string[]; // todo : change to notification type {id , message[] ,}
+    notifications: MyNotification[]; // todo : change to notification type {id , message[] ,}
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];
@@ -21,6 +22,7 @@ interface AuthState {
     storeImgs: StoreImg[];
     permissions: Permission[];
     error: string | null;
+    isLoading: boolean;
     isLoginLoading: boolean;
     isRegisterLoading: boolean;
     isLogoutLoading: boolean;
@@ -45,6 +47,7 @@ const initialState: AuthState = {
     permissions: [],
     message: null,
     error: null,
+    isLoading: false,
     isLoginLoading: false,
     isRegisterLoading: false,
     isLogoutLoading: false,
@@ -117,14 +120,14 @@ export const ping = createAsyncThunk<
     });
 
 export const getNotifications = createAsyncThunk<
-    getClientNotifications,
+    MyNotification,
     getUserNotifications,
     { rejectValue: ApiError }
 >(
     `${reducrName}/getNotifications`,
     async (credential, thunkApi) => {
         return authApi.getNotifications(credential)
-            .then((res) => thunkApi.fulfillWithValue(res as getClientNotifications))
+            .then((res) => thunkApi.fulfillWithValue(res as MyNotification))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 export const getClientData = createAsyncThunk<
@@ -231,38 +234,42 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         //guest enter
         builder.addCase(guestEnter.pending, (state) => {
-            state.isLoginLoading = true;
+            state.isLoading = true;
             state.error = null;
         });
         builder.addCase(guestEnter.fulfilled, (state, { payload }) => {
-            state.isLoginLoading = false;
+            state.isLoading = false;
             state.token = "";
             state.userId = payload;
             state.userName = "guest";
         });
         builder.addCase(guestEnter.rejected, (state, { payload }) => {
-            state.isLoginLoading = false;
+            state.isLoading = false;
             state.error = payload?.message.data ?? "error during guest enter";
         });
-        // get client data
+        // get notifications
         builder.addCase(getNotifications.pending, (state) => {
-            state.isLoginLoading = true;
+            state.isLoading = true;
             state.error = null;
         });
         builder.addCase(getNotifications.fulfilled, (state, { payload }) => {
-            state.isLoginLoading = false;
-            state.notifications = state.notifications.concat(payload.notifications);
+            state.isLoading = false;
+            console.log("payload", payload);
+            const arr: MyNotification[] = [payload];
+            state.notifications = state.notifications.concat(arr);
+            console.log("state.notifications", state.notifications);
+
         });
         builder.addCase(getNotifications.rejected, (state, { payload }) => {
-            state.isLoginLoading = false;
+            state.isLoading = false;
         });
         // get client data
         builder.addCase(getClientData.pending, (state) => {
-            state.isLoginLoading = true;
+            state.isLoading = true;
             state.error = null;
         });
         builder.addCase(getClientData.fulfilled, (state, { payload }) => {
-            state.isLoginLoading = false;
+            state.isLoading = false;
             state.userName = payload.userName;
             state.isAdmin = payload.isAdmin;
             state.hasQestions = payload.hasQestions;
@@ -273,7 +280,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.permissions = payload.permissions;
         });
         builder.addCase(getClientData.rejected, (state, { payload }) => {
-            state.isLoginLoading = false;
+            state.isLoading = false;
             state.error = payload?.message.data ?? "error during get client data";
         });
     }

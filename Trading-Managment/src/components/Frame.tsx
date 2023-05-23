@@ -41,19 +41,19 @@ const DashboardFrame: React.FC = () => {
             dispatch(ping(userId));
         }
     }
-    const getC = () => {
-        if (token != "") {
-            dispatch(getNotifications({ userId: userId, token: token }));
-        }
-    }
+    // const getC = () => {
+    //     if (token != "") {
+    //         dispatch(getNotifications({ userId: userId, token: token }));
+    //     }
+    // }
     useEffect(() => {
         // Call the sendPing function every 2 seconds
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        const pingInterval2 = setInterval(getC, PING_INTERVAL2);
+        //const pingInterval2 = setInterval(getC, PING_INTERVAL2);
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
-            clearInterval(pingInterval2)
+            //clearInterval(pingInterval2)
         };
 
     }, [])

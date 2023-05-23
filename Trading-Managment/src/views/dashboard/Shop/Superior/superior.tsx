@@ -39,7 +39,7 @@ const Superior: React.FC = () => {
     const storeMessage = useAppSelector((state) => state.store.storeState.responseData);
 
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    const PING_INTERVAL2 = 5000; // 10 seconds in milliseconds
+    //const PING_INTERVAL2 = 5000; // 10 seconds in milliseconds
 
     const sendPing = () => {
         if (userId != 0) {
@@ -55,22 +55,22 @@ const Superior: React.FC = () => {
     }
 
 
-    const getC = () => {
-        if (token) {
-            dispatch(getNotifications({ userId: userId, token: token }));
-        }
-    }
+    // const getC = () => {
+    //     if (token) {
+    //         dispatch(getNotifications({ userId: userId, token: token }));
+    //     }
+    // }
 
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        const pingInterval2 = setInterval(getC, PING_INTERVAL2);
+        //const pingInterval2 = setInterval(getC, PING_INTERVAL2);
 
         dispatch(getStoresInfo());
         dispatch(getProducts());
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
-            clearInterval(pingInterval2)
+            //clearInterval(pingInterval2)
         };
     }, []);
 

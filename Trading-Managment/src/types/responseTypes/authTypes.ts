@@ -1,3 +1,4 @@
+import { MyNotification } from "../systemTypes/Notification";
 import { Permission } from "../systemTypes/Permission";
 import { StoreRole, StoreName, StoreImg } from "../systemTypes/StoreRole";
 
@@ -6,7 +7,7 @@ export interface TokenResponseBody {
     userId: number;
     userName: string;
     isAdmin: boolean;
-    notifications: string[];
+    notifications: MyNotification[];
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];
@@ -23,7 +24,7 @@ export interface EnterGuestResponseData {
 export interface getClientResponseData {
     userName: string;
     isAdmin: boolean;
-    notifications: string[];
+    notifications: MyNotification[];
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];

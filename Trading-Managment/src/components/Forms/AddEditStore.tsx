@@ -73,9 +73,9 @@ const AddEditStore: React.FC<storeProps> = ({ mode }) => {
         }
     }
     const getC = () => {
-        if (token != "") {
-            dispatch(getNotifications({ userId: userId, token: token }));
-        }
+        // if (token != "") {
+        //     dispatch(getNotifications({ userId: userId, token: token }));
+        // }
     }
     useEffect(() => {
         // Call the sendPing function every 2 seconds
