@@ -4,6 +4,7 @@ import domain.store.storeManagement.Store;
 import domain.user.PurchaseHistory;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
+import utils.messageRelated.NotificationOpcode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public interface MarketInterface {
 
     public Response writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading);
 
-    Response<String> sendNotification(int userId, String token, String receiverEmail, String notify);
+    Response<String> sendNotification(int userId, String token, NotificationOpcode opcode, String receiverEmail, String notify);
 
     public Response writeReviewToProduct(int userId, String token, int orderId, int storeId, int productId, String content, int grading);
     public Response checkReviews(int userId, String token, int storeId);

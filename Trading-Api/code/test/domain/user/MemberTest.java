@@ -13,6 +13,7 @@ import utils.Pair;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
+import utils.messageRelated.NotificationOpcode;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
@@ -207,7 +208,7 @@ class MemberTest {
     @Test
     void displayNotifications() {
         try {
-            Notification<String> n = new Notification<>("u have a new message");
+            Notification<String> n = new Notification<>(NotificationOpcode.CLOSE_STORE, "u have a new message");
             m.login("ziv1234");
             m.addNotification(n);
            List<String> notifiy =  m.displayNotifications();
