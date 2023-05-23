@@ -15,7 +15,9 @@ import utils.infoRelated.Info;
 
 
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
 
@@ -31,7 +33,7 @@ public class Member implements User{
     private transient String password;
 
     private List<UserState> roles; //connection between registered to the shops
-    private transient ConcurrentLinkedDeque<Notification> notifications;
+    private transient BlockingQueue<Notification> notifications;
     private UserHistory userHistory;
     private boolean isConnected;
     public Member(int id, String email, String password, String birthday){
@@ -45,7 +47,7 @@ public class Member implements User{
         roles = new ArrayList<>();
         userHistory = new UserHistory(this.email, this.name, this.password);
         g = new Guest(id);
-        notifications = new ConcurrentLinkedDeque<>();
+        notifications = new LinkedBlockingQueue<>();
     }
     public boolean getIsConnected(){
         return isConnected;
@@ -179,14 +181,17 @@ public class Member implements User{
         notifications.add(notification);
     }
 
-    public List<String> displayNotifications(){
-        List<String> display = new LinkedList<>();
+    public List<Notification> displayNotifications(){
+        List<Notification> display = new LinkedList<>();
         for (Notification notification : notifications)
-            display.add(notification.toString());
+            display.add(notification);
         notifications.clear();
         return display;
     }
 
+    public Notification getNotification() throws InterruptedException {
+        return notifications.take();
+    }
 
     private UserState getActiveRole(int storeId) throws Exception {
         for (UserState state : roles) {

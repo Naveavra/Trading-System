@@ -143,6 +143,7 @@ public class Market implements MarketInterface {
     }
 
 
+
     @Override
     public Response<String> sendNotification(int userId, String token, NotificationOpcode opcode, String receiverEmail, String notify){
         try {
@@ -157,6 +158,7 @@ public class Market implements MarketInterface {
         }
     }
 
+
     private void addNotification(int userId,NotificationOpcode opcode, String notify) throws Exception{
         Notification<String> notification = new Notification<>(opcode, notify);
         userController.addNotification(userId, notification);
@@ -165,7 +167,7 @@ public class Market implements MarketInterface {
     public Response<List<String>> displayNotifications(int userId, String token) {
         try {
             userAuth.checkUser(userId, token);
-            List<String> notifications = userController.displayNotifications(userId);
+            List<Notification> notifications = userController.displayNotifications(userId);
             return logAndRes(Logger.logStatus.Success, "user: " + userId + "got notifications successfully on " + LocalDateTime.now(),
                     notifications, null, null);
         }
@@ -479,7 +481,6 @@ public class Market implements MarketInterface {
             null, "get product information failed", e.getMessage());
         }
     }
-
 
     //TODO: need someone to edit filter(both functions) to fit the template of the rest of the functions
     @Override
@@ -1260,6 +1261,18 @@ public class Market implements MarketInterface {
     public Response<List<String>> getMemberNotifications(int userId, String token) {
         try {
             return new Response<List<String>>(displayNotifications(userId, token).getValue(), null, null);
+        }catch (Exception e){
+            return new Response<>(null, "get member notifications failed", e.getMessage());
+        }
+    }
+
+    public Response<Notification> getNotification(int userId, String token) {
+        Notification notification = null;
+        try {
+            userAuth.checkUser(userId, token);
+            userController.getNotification(userId);
+            return logAndRes(Logger.logStatus.Success, "Member get notification " + userId + " has successfully entered on " + LocalDateTime.now(),
+                    notification, null, null);
         }catch (Exception e){
             return new Response<>(null, "get member notifications failed", e.getMessage());
         }

@@ -92,7 +92,15 @@ public class UserController {
         return g.getId();
     }
 
-
+    public Notification getNotification(int userId) throws Exception {
+        if(memberList.containsKey(userId)) {
+            if (memberList.get(userId).getIsConnected()) {
+                return memberList.get(userId).getNotification();
+            }
+            throw new Exception("the id given belongs to an inactive member");
+        }
+        throw new Exception("the id given does not belong to any member");
+    }
 
     public void exitGuest(int id) throws Exception {
         Guest g = getGuest(id);
@@ -204,7 +212,7 @@ public class UserController {
         m.addNotification(notification);
     }
 
-    public synchronized List<String> displayNotifications(int userId) throws Exception{
+    public synchronized List<Notification> displayNotifications(int userId) throws Exception{
         Member m = getActiveMember(userId);
         return m.displayNotifications();
     }

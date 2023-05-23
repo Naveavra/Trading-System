@@ -336,32 +336,24 @@ public class Server {
         //----------------------------- notifications------------------------
 
         // Endpoint for client to subscribe for notifications
-        get("notifications/:userId", (request, response) -> {
-            String userId = request.params("userId");
-            BlockingQueue<String> userQueue = getUserQueue(userId);
-
-            try {
-                // Take the user's notification from the queue (block until available)
-                String notification = userQueue.take();
-                response.status(200);
-                response.body(notification);
-                return response.body();
-            } catch (InterruptedException e) {
-                response.status(500);
-                return "Error retrieving notification";
-            }
+        get("notifications/:userId", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.getNotification(userId, token));
+            return res.body();
         });
 
         // Endpoint for the server to push notifications to a user's queue
-        post("/notifications", (req, response) -> {
+        post("/notifications", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            String userId = request.get("userToSend").toString();
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            String userToName = request.get("userName").toString();
             String notification = request.get("message").toString();
-            BlockingQueue<String> userQueue = getUserQueue(userId);
-            userQueue.offer(notification);
-
-            response.status(200);
-            return "Notification received";
+            //TODO:
+            toSparkRes(res, api.sendNotification(userId, token, userToName, notification));
+            return res.body();
         });
 
     }
