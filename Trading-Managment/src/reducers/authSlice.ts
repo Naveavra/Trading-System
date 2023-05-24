@@ -8,7 +8,6 @@ import { RegisterPostData, getUserData, getUserNotifications } from "../types/re
 import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
 import { MyNotification } from "../types/systemTypes/Notification";
-import { getStore } from "./storesSlice";
 
 interface AuthState {
     token: string;
