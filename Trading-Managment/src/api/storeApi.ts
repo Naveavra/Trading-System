@@ -34,7 +34,7 @@ export const storeApi =
         apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/appointments/managers`, params)),
 
     fireManager: (params: fireUserParams): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().delete(`api/stores/${params.storeId}/appointments/managers`, { params: params })),
+        apiErrorHandlerWrapper(getApiClient().patch(`api/stores/${params.storeId}/appointments/managers`, params)),
 
     fireOwner: (params: fireUserParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().delete(`api/stores/${params.storeId}/appointments/owners`, { params: params })),

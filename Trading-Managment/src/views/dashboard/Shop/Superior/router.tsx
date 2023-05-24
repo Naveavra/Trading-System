@@ -6,8 +6,9 @@ import FireUser from "../../../../components/Forms/FireUser";
 import AddEditStore from "../../../../components/Forms/AddEditStore";
 import OpenCloseStore from "../../../../components/Forms/OpenCloseStore";
 import UpdatePermissions from "../../../../components/Forms/UpdatePermissions";
-import StoreOrders from "../../../../components/storePages/StoreOrders";
 import MainScreen from "../../../../components/Forms/Discounts/MainScreen";
+import RegularDiscount from "../../../../components/Forms/Discounts/RegularDiscount";
+import AddPredicate from "../../../../components/Forms/Discounts/AddPredicate";
 
 export const SuperiorShopRoutes =
     <Route key="routes" path="superior" element={<Superior />}>
@@ -22,5 +23,7 @@ export const SuperiorShopRoutes =
         <Route path="reopenStore" element={<OpenCloseStore />} />
         <Route path="changemanagerpermission" element={<UpdatePermissions />} />
         <Route path="addpurchaseconstraint" element={<MainScreen />} />
+        <Route path="regularDiscount" element={<RegularDiscount />} />
+        <Route path="regularDiscount/addPredicate" element={<AddPredicate />} />
     </Route>
     ;

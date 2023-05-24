@@ -197,7 +197,7 @@ public class Server {
             toSparkRes(res, api.appointManager(userId, token, newManager, storeId));
             return res.body();
         });
-        delete("api/stores/:id/appointments/managers", (req, res) -> {
+        patch("api/stores/:id/appointments/managers", (req, res) -> {
             //fire manager
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
@@ -337,12 +337,10 @@ public class Server {
 
         // Endpoint for client to subscribe for notifications
         post("api/auth/notifications", (req, res) -> {
-            System.out.println(req.body());
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             toSparkRes(res, api.getNotification(userId, token));
-            System.out.println(res.body());
             return res.body();
         });
 

@@ -46,6 +46,9 @@ const FireUser: React.FC<props> = ({ role }) => {
     }, []);
     const handleOnSubmit = () => {
         let response;
+        form.setValue("storeId", storeId);
+        form.setValue("userId", userId);
+        form.setValue("userToFire", userToFireId);
         switch (role) {
             case 'owner':
                 response = dispatch(fireOwner(form.getValues()));

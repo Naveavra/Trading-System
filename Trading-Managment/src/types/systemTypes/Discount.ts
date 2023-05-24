@@ -1,3 +1,4 @@
+export type Discount = DiscountDataObject | CompositeDataObject;
 export interface DiscountDataObject {
     percentage: Number;
     discountType: DiscountType;
@@ -6,19 +7,18 @@ export interface DiscountDataObject {
     predicates: PredicateDataObject[];
 }
 
-
+export interface CompositeDataObject {
+    percentage: Number;
+    numericType: Numeric;
+    logicalType: Composore;
+    xorDecidingRule: XorDecidingRules;
+    discounts: DiscountDataObject[];
+    composores: CompositeDataObject[];
+}
 export interface PredicateDataObject {
     predType: PredicateType;
     params: string;
     composore: Composore;
-}
-export interface CompositeDataObject {
-    precentage: Number;
-    numericType: Numeric;
-    locigalType: Composore;
-    xorDecidingRule: XorDecidingRules;
-    discounts: DiscountDataObject[];
-    composores: CompositeDataObject[] | null;
 }
 export enum Numeric {
     Max = "Max",
@@ -46,4 +46,19 @@ export enum PredicateType {
 export enum XorDecidingRules {
     MaxDiscountValue = "MaxDiscountValue",
     MinDiscountValue = "MinDiscountValue"
+}
+export const empryRegularDiscount: DiscountDataObject = {
+    percentage: 0,
+    discountType: DiscountType.Product,
+    prodId: 0,
+    discountedCategory: "",
+    predicates: []
+}
+export const empryCompositeDiscount: CompositeDataObject = {
+    percentage: 0,
+    numericType: Numeric.Max,
+    logicalType: Composore.AND,
+    xorDecidingRule: XorDecidingRules.MaxDiscountValue,
+    discounts: [],
+    composores: []
 }
