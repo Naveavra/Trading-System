@@ -15,11 +15,15 @@ const addPreducate = () => {
     const [secondType, setSecondType] = useState('');
     const [thirdType, setThirdType] = useState('');
     const [last, setLast] = useState(false);
-    var predicate: PredicateDataObject;
+    let predicate: PredicateDataObject = {
+        predType: PredicateType.MinPrice,
+        params: "",
+        composore: Composore.AND
+    };
 
     const userId = useAppSelector((state: RootState) => state.auth.userId);
     const storeId = useAppSelector((state: RootState) => state.store.storeState.watchedStore.storeId);
-    const precentage = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.percentage);
+    const percentage = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.percentage);
     const discountType = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.discountType);
     const prodId = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.prodId);
     const discountedCategory = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.discountedCategory);
@@ -48,24 +52,28 @@ const addPreducate = () => {
         firstType === 'Min' ? predicate.predType = PredicateType.MinNumFromCategory : PredicateType.MaxNumFromCategory;
     }
     const handleSetProductId = (input: string) => {
+        console.log(input);
         // const productId = parseInt(input);
         predicate.params = input
         //dispatch(setProductIdToRegularDiscount(productId));
     }
     const handleSetCategory = (input: string) => {
+        console.log(input);
         predicate.params = input
         //dispatch(setCategoryToRegularDiscount(input));
     }
     const handleSetPrice = (input: string) => {
+        console.log(input);
         predicate.params = input
-        //dispatch(setPrecentageToRegularDiscount(precentage));
+        //dispatch(setpercentageToRegularDiscount(percentage));
     }
     const handleOnSubmit = () => {
+        debugger;
         dispatch(addPredicateToRegularDiscount(predicate));
         dispatch(addRegularDiscount({
             storeId: userId,
             userId: storeId,
-            percentage: precentage,
+            percentage: percentage,
             discountType: discountType,
             prodId: prodId,
             discountedCategory: discountedCategory,

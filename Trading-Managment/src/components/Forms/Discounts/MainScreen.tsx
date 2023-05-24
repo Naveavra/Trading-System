@@ -41,7 +41,7 @@ const mainScreen = () => {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
-                        onClick={() => navigate('/dashboard/store/superior/RegularDiscount')}
+                        onClick={() => navigate('/dashboard/store/superior/regularDiscount')}
                     >
                         Regular
                     </Button>
@@ -51,7 +51,7 @@ const mainScreen = () => {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
-                        onClick={() => navigate('/dashboard/store/superior/ConditionalDiscount')}
+                        onClick={() => navigate('/dashboard/store/superior/conditionalDiscount')}
                     >
                         Composite
                     </Button>

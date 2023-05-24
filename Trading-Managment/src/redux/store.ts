@@ -9,6 +9,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storageSession from 'reduxjs-toolkit-persist/lib/storage/session'
 import orderReducer from '../reducers/orderSlice';
 import { getPersistConfig } from 'redux-deep-persist';
+import discountReducer from '../reducers/discountSlice';
 
 
 const authPersistConfig = {
@@ -35,6 +36,7 @@ export const store = configureStore({
         product: productsReducer,
         cart: cartReducer,
         order: orderReducer,
+        discount: discountReducer,
 
     },
     middleware(getDefaultMiddleware) {

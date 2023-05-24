@@ -51,14 +51,13 @@ const AddEditStore: React.FC<storeProps> = ({ mode }) => {
         handleOnClose();
     }
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard/store/superior');
+        navigate('/dashboard');
         dispatch(getClientData({ userId: userId }));
         dispatch(getStore({ userId: userId, storeId: store_id }));
     }, []);
 
 
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    const PING_INTERVAL2 = 5000;
     // Send a ping to the server
     const sendPing = () => {
         if (userId != 0) {
@@ -72,22 +71,16 @@ const AddEditStore: React.FC<storeProps> = ({ mode }) => {
             // dispatch(ping(userId));
         }
     }
-    const getC = () => {
-        // if (token != "") {
-        //     dispatch(getNotifications({ userId: userId, token: token }));
-        // }
-    }
     useEffect(() => {
         // Call the sendPing function every 2 seconds
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        const pingInterval2 = setInterval(getC, PING_INTERVAL2);
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
-            clearInterval(pingInterval2)
         };
 
     }, [])
+
     return (
         <>
             <Dialog onClose={handleOnClose} open={true}>

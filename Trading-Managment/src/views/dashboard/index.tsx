@@ -3,9 +3,9 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
 import AlertDialog from '../../components/Dialog/AlertDialog';
-import { clearAuthError, getNotifications } from '../../reducers/authSlice';
+import { clearAuthError, getClientData, getNotifications } from '../../reducers/authSlice';
 import CartLogo from '../../components/Loaders/cartLoader';
-import { clearStoresError, clearStoresResponse, getStoresInfo } from '../../reducers/storesSlice';
+import { clearStoresError, clearStoresResponse, getStore, getStoresInfo } from '../../reducers/storesSlice';
 import axios from 'axios';
 import { Outlet } from 'react-router-dom';
 import { clearProductsError, getProducts } from '../../reducers/productsSlice';
@@ -23,13 +23,14 @@ import SuccessAlert from '../../components/Alerts/success';
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const [text, setText] = useState('');
-
-
     const isLoadingShops = useAppSelector((state) => !!state.store.isLoading);
     const isLoadingProducts = useAppSelector((state) => !!state.product.isLoading);
+
     const userId = useAppSelector((state) => state.auth.userId);
     const token = useAppSelector((state) => state.auth.token) ?? "";
     const userName = useAppSelector((state) => state.auth.userName);
+    const isAdmin = useAppSelector((state) => state.auth.isAdmin);
+    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
     const error = useAppSelector((state) => state.auth.error);
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
@@ -40,7 +41,7 @@ const DashboardPage: React.FC = () => {
 
 
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    const PING_INTERVAL2 = 5000;
+
     // Send a ping to the server
     const sendPing = () => {
         if (userId != 0) {
@@ -59,11 +60,18 @@ const DashboardPage: React.FC = () => {
             console.log("trying get notification")
             if (token != "" && userName != 'guest') {
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
-                console.log("get notification")
-                if (response) {
-                    console.log(response);
-                    fetchNotification();
+                console.log("response", response);
+                console.log("get notification");
+                if (response.payload?.opcode >= 0 && response.payload?.opcode <= 6) {
+                    getStore({ userId: userId, storeId: storeId });
                 }
+                else if (!isAdmin && (response.payload?.opcode >= 7 && response.payload?.opcode <= 12 || response.payload?.opcode == 14 || response.payload?.opcode == 15)) {
+                    getClientData({ userId: userId });
+                }
+                if (isAdmin && (response.payload?.opcode == 14 || response.payload?.opcode == 13)) {
+                    //getAdminData();
+                }
+                fetchNotification();
             }
         } catch (error) {
             console.error('Error fetching notification:', error);

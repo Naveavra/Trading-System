@@ -89,12 +89,12 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
         setCurrentRegularDiscount: (state, { payload }) => {
             state.currentRegularDiscount = payload;
         },
-        setPrecentageToRegularDiscount: (state, { payload }) => {
+        setpercentageToRegularDiscount: (state, { payload }) => {
             return {
                 ...state,
                 currentRegularDiscount: {
                     ...state.currentRegularDiscount,
-                    precentage: payload
+                    percentage: payload
                 }
             }
         },
@@ -132,12 +132,12 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
         setCurrentCompositeDiscount: (state, { payload }) => {
             state.currentCompositeDiscount = payload;
         },
-        setPrecentageToCompositeDiscount: (state, { payload }) => {
+        setpercentageToCompositeDiscount: (state, { payload }) => {
             return {
                 ...state,
                 currentCompositeDiscount: {
                     ...state.currentCompositeDiscount,
-                    precentage: payload
+                    percentage: payload
                 }
             }
         },
@@ -245,13 +245,13 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
 
 export const {
     setCurrentRegularDiscount,
-    setPrecentageToRegularDiscount,
+    setpercentageToRegularDiscount,
     setDiscountTypeToRegularDiscount,
     setProductIdToRegularDiscount,
     setCategoryToRegularDiscount,
     addPredicateToRegularDiscount,
     setCurrentCompositeDiscount,
-    setPrecentageToCompositeDiscount,
+    setpercentageToCompositeDiscount,
     setNumericTypeToCompositeDiscount,
     setlogicalTypeToCompositeDiscount,
     setXorDecidingRuleToCompositeDiscount,

@@ -12,7 +12,7 @@ export interface postRegularDicountParams {
 export interface postCompositeDicountParams {
     storeId: number;
     userId: number;
-    precentage: Number;
+    percentage: Number;
     numericType: Numeric;
     locigalType: Composore;
     xorDecidingRule: XorDecidingRules;

@@ -254,10 +254,8 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(getNotifications.fulfilled, (state, { payload }) => {
             state.isLoading = false;
-            console.log("payload", payload);
             const arr: MyNotification[] = [payload];
             state.notifications = state.notifications.concat(arr);
-            console.log("state.notifications", state.notifications);
 
         });
         builder.addCase(getNotifications.rejected, (state, { payload }) => {
