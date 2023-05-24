@@ -66,11 +66,11 @@ public abstract class UserState extends Information {
         return store;
     }
 
-    public void fireManager(int appointedId) throws Exception{
+    public Set<Integer> fireManager(int appointedId) throws Exception{
         if(userId == appointedId)
-            store.fireUser(appointedId);
+            return store.fireUser(appointedId);
         checkPermission(Action.fireManager);
-        store.fireUser(appointedId);
+        return store.fireUser(appointedId);
     }
 
     public Store appointOwner(Member appointed) throws Exception{

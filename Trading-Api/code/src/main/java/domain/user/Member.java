@@ -246,9 +246,9 @@ public class Member implements User{
         return state.appointManager(appointed);
     }
 
-    public void fireManager(int appointedId, int storeId) throws Exception{
+    public Set<Integer> fireManager(int appointedId, int storeId) throws Exception{
         UserState state = getActiveRole(storeId);
-        state.fireManager(appointedId);
+        return state.fireManager(appointedId);
     }
     public Store appointToOwner(Member appointed, int storeId) throws Exception {
         UserState state = getActiveRole(storeId);

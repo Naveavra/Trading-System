@@ -296,7 +296,8 @@ public class UserController {
     public synchronized void fireManager(int ownerId, int appointedId, int storeId) throws Exception {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedId);
-        owner.fireManager(appointed.getId(), storeId);
+        Set<Integer> ids = owner.fireManager(appointed.getId(), storeId);
+        fireIds(ids, storeId);
     }
 
 

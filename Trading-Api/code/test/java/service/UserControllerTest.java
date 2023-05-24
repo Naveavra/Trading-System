@@ -1,5 +1,6 @@
 package service;
 
+import domain.store.storeManagement.Store;
 import domain.user.StringChecks;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,24 @@ class UserControllerTest {
     void checkPassword() {
     }
 
+
+    @Test
+    void fireManager(){
+        UserController us = new UserController();
+        try {
+            us.register(1, "eli@gmail.com", "123Aaa", "aaaaaa", "24/02/2002");
+            us.register(2, "eli2@gmail.com", "123Aaa", "aaaaaa", "24/02/2002");
+            us.login("eli@gmail.com", "aaaaaa");
+            us.openStore(1, new Store(0, "nike", "good store", "img", us.getMember(1)));
+            us.appointManager(1, "eli2@gmail.com", 0);
+            System.out.println(us.getMember(2).getRole(0).getRole());
+            us.fireManager(1, 2, 0);
+            System.out.println(us.getMember(2).getRole(0).getRole());
+            assert false;
+        }catch (Exception e){
+            assert true;
+        }
+    }
     @Test
     void checkBirthday() {
         StringChecks sc = new StringChecks();
