@@ -8,7 +8,6 @@ import { RegisterPostData, getUserData, getUserNotifications } from "../types/re
 import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
 import { MyNotification } from "../types/systemTypes/Notification";
-import { getStore } from "./storesSlice";
 
 interface AuthState {
     token: string;
@@ -259,15 +258,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             const arr: MyNotification[] = [payload];
             state.notifications = state.notifications.concat(arr);
             console.log("state.notifications", state.notifications);
-            debugger;
-            switch (payload.opcode) {
-                case 7: {
-                    getClientData({ userId: state.userId });
-                    break;
-                }
-                default:
-                    break;
-            }
 
         });
         builder.addCase(getNotifications.rejected, (state, { payload }) => {
