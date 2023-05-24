@@ -1270,7 +1270,7 @@ public class Market implements MarketInterface {
         Notification notification = null;
         try {
             userAuth.checkUser(userId, token);
-            userController.getNotification(userId);
+            notification = userController.getNotification(userId);
             return logAndRes(Logger.logStatus.Success, "Member get notification " + userId + " has successfully entered on " + LocalDateTime.now(),
                     notification, null, null);
         }catch (Exception e){
