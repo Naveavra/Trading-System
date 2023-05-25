@@ -241,18 +241,18 @@ public class Member implements User{
         return userHistory.getInformation(info);
     }
 
-    public Store appointToManager(Member appointed, int storeId) throws Exception {
+    public void appointToManager(Member appointed, int storeId) throws Exception {
         UserState state = getActiveRole(storeId);
-        return state.appointManager(appointed);
+        state.appointManager(appointed);
     }
 
     public Set<Integer> fireManager(int appointedId, int storeId) throws Exception{
         UserState state = getActiveRole(storeId);
         return state.fireManager(appointedId);
     }
-    public Store appointToOwner(Member appointed, int storeId) throws Exception {
+    public void appointToOwner(Member appointed, int storeId) throws Exception {
         UserState state = getActiveRole(storeId);
-        return state.appointOwner(appointed);
+        state.appointOwner(appointed);
     }
     public Set<Integer> fireOwner(int appointedId, int storeId) throws Exception{
         UserState state = getActiveRole(storeId);

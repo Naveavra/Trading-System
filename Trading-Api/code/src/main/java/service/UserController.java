@@ -257,10 +257,9 @@ public class UserController {
     public synchronized void appointOwner(int ownerId, String appointedEmail, int storeId) throws Exception {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
-        Store store = owner.appointToOwner(appointed, storeId);
+        owner.appointToOwner(appointed, storeId);
         Notification<String> notify = new Notification<>(NotificationOpcode.APPOINT_OWNER, "you have been appointed to owner in store: " + storeId);
         appointed.addNotification(notify);
-        appointed.changeRoleInStore(new StoreOwner(appointed.getId(), appointed.getName(), store), store);
     }
 
 
@@ -287,10 +286,9 @@ public class UserController {
     public synchronized void appointManager(int ownerId, String appointedEmail, int storeId) throws Exception {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
-        Store store = owner.appointToManager(appointed, storeId);
+        owner.appointToManager(appointed, storeId);
         Notification<String> notify = new Notification<>(NotificationOpcode.APPOINT_MANAGER, "you have been appointed to manager in store: " + storeId);
         appointed.addNotification(notify);
-        appointed.changeRoleInStore(new StoreManager(appointed.getId(), appointed.getName(), store), store);
     }
 
     public synchronized void fireManager(int ownerId, int appointedId, int storeId) throws Exception {

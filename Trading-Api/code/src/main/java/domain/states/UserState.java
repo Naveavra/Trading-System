@@ -60,10 +60,11 @@ public abstract class UserState extends Information {
         return permission.getActions();
     }
 
-    public Store appointManager(Member appointed) throws Exception{
+    public void appointManager(Member appointed) throws Exception{
         checkPermission(Action.appointManager);
-        store.appointUser(userId, appointed, new StoreManager(appointed.getId(), appointed.getName(), store));
-        return store;
+        StoreManager m = new StoreManager(appointed.getId(), appointed.getName(), store);
+        store.appointUser(userId, appointed, m);
+        appointed.changeRoleInStore(m, store);
     }
 
     public Set<Integer> fireManager(int appointedId) throws Exception{
@@ -73,10 +74,11 @@ public abstract class UserState extends Information {
         return store.fireUser(appointedId);
     }
 
-    public Store appointOwner(Member appointed) throws Exception{
+    public void appointOwner(Member appointed) throws Exception{
         checkPermission(Action.appointOwner);
-        store.appointUser(userId, appointed, new StoreOwner(appointed.getId(), appointed.getName(), store));
-        return store;
+        StoreOwner s = new StoreOwner(appointed.getId(), appointed.getName(), store);
+        store.appointUser(userId, appointed, s);
+        appointed.changeRoleInStore(s, store);
     }
 
     public Set<Integer> fireOwner(int appointedId) throws Exception{
