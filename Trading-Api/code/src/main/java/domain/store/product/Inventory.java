@@ -225,10 +225,10 @@ public class Inventory {
             if(categories!=null){
                 replaceCategories(productId,categories);
             }
-            if(name!=null){
+            if(!name.equals("null")){
                 setName(productId,name);
             }
-            if(description!=null){
+            if(!description.equals("null")){
                 setDescription(productId,description);
             }
             if(price > 0){
@@ -237,7 +237,7 @@ public class Inventory {
             if(quantity > 0){
                 replaceQuantity(productId,quantity);
             }
-            if(img != null)
+            if(!img.equals("null"))
                 changeImg(productId, img);
         }
         else
