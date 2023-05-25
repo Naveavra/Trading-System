@@ -151,7 +151,7 @@ public class Server {
             String desc = request.get("desc").toString();
             String isActive = request.get("isActive").toString();
             String img = request.get("img").toString();
-            toSparkRes(res, api.changeStoreInfo(userId, token, storeId, name, desc, isActive, img));
+            toSparkRes(res, api.changeStoreInfo(userId, token, storeId, name, desc, img, isActive));
             return res.body();
 
         });
@@ -160,11 +160,17 @@ public class Server {
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
-            String managerEmail = request.get("managerEmail").toString();
+            int managerId = Integer.parseInt(request.get("managerId").toString());
             String perStr = request.get("permissions").toString();
             String[] arr = perStr.substring(1, perStr.length() - 1).split(",");
-            List<String> permissions = new ArrayList<>(Arrays.asList(arr));
-            //TODO: what to do with permissions and is it string or id
+            List<String> permissions = new ArrayList<>();
+            for (String s : arr) permissions.add(s.substring(1, s.length() - 1));
+            String mode = request.get("mode").toString();
+            if(mode.equals("add"))
+                toSparkRes(res, api.addManagerPermissions(userId, token, managerId, storeId, permissions));
+            else{
+                toSparkRes(res, api.removeManagerPermissions(userId, token, managerId, storeId, permissions));
+            }
             return res.body();
         });
         delete("api/stores/:id", (req, res)-> {

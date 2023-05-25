@@ -1,10 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import domain.store.storeManagement.AppHistory;
 import domain.store.storeManagement.Store;
-import domain.user.ShoppingCart;
-import market.Admin;
 import market.Market;
 import org.json.JSONObject;
 import utils.*;
@@ -18,14 +15,19 @@ import utils.messageRelated.Message;
 import utils.infoRelated.Receipt;
 import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
+import utils.stateRelated.Action;
 
 
 public class API {
     public Market market;
+    private HashMap<String, Integer> actionStrings;
     private Gson gson;
     public API(){
         market = new Market("elibenshimol6@gmail.com", "123Aaa");
         gson = new Gson();
+        actionStrings = new HashMap<>();
+        getActionStrings();
+
     }
 
     public Pair<Boolean, JSONObject> fromResToPair(Response res){
@@ -261,8 +263,8 @@ public class API {
     }
 
     public Pair<Boolean, JSONObject> changeStoreInfo(int userId, String token, int storeId, String name, String desc,
-                                                     String isActive, String img){
-        Response<String> res = market.changeStoreInfo(userId, token, storeId, name, desc, isActive, img);
+                                                     String img, String isActive){
+        Response<String> res = market.changeStoreInfo(userId, token, storeId, name, desc, img, isActive);
         return fromResToPair(res);
 
     }
@@ -329,15 +331,23 @@ public class API {
     }
 
 
-    public Pair<Boolean, JSONObject> addManagerPermissions(int ownerId, String token, int userId,int storeId, List<Integer> permissionsIds)
+    public Pair<Boolean, JSONObject> addManagerPermissions(int ownerId, String token, int userId,int storeId, List<String> permissionsIds)
     {
-        Response<String> res = market.addManagerPermissions(ownerId, token, userId, storeId, permissionsIds);
+        List<String> actionStr = Information.fromStringToActionString(permissionsIds);
+        List<Integer> permissions = new ArrayList<>();
+        for(String str : actionStr)
+            permissions.add(actionStrings.get(str));
+        Response<String> res = market.addManagerPermissions(ownerId, token, userId, storeId, permissions);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> removeManagerPermissions(int ownerId, String token, int userId,int storeId, List<Integer> permissionsIds)
+    public Pair<Boolean, JSONObject> removeManagerPermissions(int ownerId, String token, int userId,int storeId, List<String> permissionsIds)
     {
-        Response<String> res = market.removeManagerPermissions(ownerId, token, userId, storeId, permissionsIds);
+        List<String> actionStr = Information.fromStringToActionString(permissionsIds);
+        List<Integer> permissions = new ArrayList<>();
+        for(String str : actionStr)
+            permissions.add(actionStrings.get(str));
+        Response<String> res = market.removeManagerPermissions(ownerId, token, userId, storeId, permissions);
         return fromResToPair(res);
     }
 
@@ -485,7 +495,31 @@ public class API {
         return fromResToPair(res);
     }
 
-    public void mockData(){
+    //for actions to actionString
+    private void getActionStrings(){
+        actionStrings.put(Action.addProduct.toString(), 0);
+        actionStrings.put(Action.removeProduct.toString(), 1);
+        actionStrings.put(Action.updateProduct.toString(), 2);
+        actionStrings.put(Action.changeStoreDetails.toString(), 3);
+        actionStrings.put(Action.changePurchasePolicy.toString(),4);
+        actionStrings.put(Action.changeDiscountPolicy.toString(),5);
+        actionStrings.put(Action.addPurchaseConstraint.toString(), 6);
+        actionStrings.put(Action.addDiscountConstraint.toString(),7);
+        actionStrings.put(Action.viewMessages.toString(),8);
+        actionStrings.put(Action.answerMessage.toString(),9);
+        actionStrings.put(Action.seeStoreHistory.toString(), 10);
+        actionStrings.put(Action.seeStoreOrders.toString(), 11);
+        actionStrings.put(Action.checkWorkersStatus.toString(), 12);
+        actionStrings.put(Action.appointManager.toString(), 13);
+        actionStrings.put(Action.fireManager.toString(), 14);
+        actionStrings.put(Action.appointOwner.toString(),15);
+        actionStrings.put(Action.fireOwner.toString(),16);
+        actionStrings.put(Action.changeManagerPermission.toString(),17);
+        actionStrings.put(Action.closeStore.toString(), 18);
+        actionStrings.put(Action.reopenStore.toString(), 19);
+    }
+
+    public void mockData() {
         market.register("eli@gmail.com", "123Aaa", "24/02/2002");
         market.register("ziv@gmail.com", "456Bbb", "01/01/2002");
         market.register("nave@gmail.com", "789Ccc", "01/01/1996");
@@ -505,7 +539,7 @@ public class API {
         categories.add("fresh");
         res2 = market.addProduct(id1, token1, sid1, categories, "air1", "comfy", 100, 20, "https://images.pexels.com/photos/13691727/pexels-photo-13691727.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
         int pid1 = res2.getValue();
-        res2 = market.addProduct(id1, token1, sid1, categories, "air2", "more comfy", 300, 10,"https://images.pexels.com/photos/4215840/pexels-photo-4215840.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+        res2 = market.addProduct(id1, token1, sid1, categories, "air2", "more comfy", 300, 10, "https://images.pexels.com/photos/4215840/pexels-photo-4215840.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
         int pid2 = res2.getValue();
         market.addProductToCart(id1, sid2, pid1, 3);
         market.addProductToCart(id2, sid1, pid1, 5);

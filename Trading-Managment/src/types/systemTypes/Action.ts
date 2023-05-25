@@ -4,9 +4,9 @@ export enum Action {
     removeProduct = "remove product", //removes a product from store
     updateProduct = "update product", //updates product fields
 
-    changeStoreDescription = "change store description", // manager, owner, creator //todo
-    deletePurchasePolicy = "delete purchase policy", // manager, owner, creator //todo
-    deleteDiscountPolicy = "delete discount policy", // manager, owner, creator //todo
+    changeStoreDetails = "change store details", // manager, owner, creator //todo
+    changePurchasePolicy = "change purchase policy", // manager, owner, creator //todo
+    changeDiscountPolicy = "change discount policy", // manager, owner, creator //todo
     addPurchaseConstraint = "add purchase constraint", // manager, owner, creator //todo
     addDiscountConstraint = "add discount constraint", // manager, owner, creator //todo 
 
@@ -29,9 +29,9 @@ export const actionOrder = {
     [Action.addProduct]: 1,
     [Action.removeProduct]: 2,
     [Action.updateProduct]: 3,
-    [Action.changeStoreDescription]: 4,
-    [Action.deletePurchasePolicy]: 5,
-    [Action.deleteDiscountPolicy]: 6,
+    [Action.changeStoreDetails]: 4,
+    [Action.changePurchasePolicy]: 5,
+    [Action.changeDiscountPolicy]: 6,
     [Action.addPurchaseConstraint]: 7,
     [Action.addDiscountConstraint]: 8,
     [Action.viewMessages]: 9,
@@ -52,9 +52,9 @@ export const ManagerActions: Action[] = [
     Action.addProduct,
     Action.removeProduct,
     Action.updateProduct,
-    Action.changeStoreDescription,
-    Action.deletePurchasePolicy,
-    Action.deleteDiscountPolicy,
+    Action.changeStoreDetails,
+    Action.changePurchasePolicy,
+    Action.changeDiscountPolicy,
     Action.addPurchaseConstraint,
     Action.addDiscountConstraint,
     Action.viewMessages,

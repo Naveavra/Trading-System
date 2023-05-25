@@ -72,7 +72,7 @@ public class UserController {
             if (!memberList.get(id).getIsConnected()) {
                 return memberList.get(id);
             }
-            throw new Exception("the id given belongs to an inactive member");
+            throw new Exception("the id given belongs to an active member");
         }
         throw new Exception("the id given does not belong to any member");
     }

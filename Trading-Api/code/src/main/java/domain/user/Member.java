@@ -322,8 +322,10 @@ public class Member implements User{
 
     public HashMap<Integer, Role> getRoles() {
         HashMap<Integer, Role> ans = new HashMap<>();
-        for(UserState state : roles)
-            ans.put(state.getStore().getStoreId(), state.getRole());
+        for(UserState state : roles) {
+            if(state.isActive() || state.getRole() == Role.Creator)
+                ans.put(state.getStore().getStoreId(), state.getRole());
+        }
         return ans;
     }
 

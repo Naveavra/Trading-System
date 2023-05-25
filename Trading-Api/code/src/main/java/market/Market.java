@@ -599,7 +599,7 @@ public class Market implements MarketInterface {
         try {
             String ans;
             userAuth.checkUser(userId, token);
-            if (isActive.equals("null"))
+            if (!isActive.equals("null"))
                 ans = changeStoreActive(userId, storeId, isActive);
             else
                 ans = changeStoreAttributes(userId, storeId, name, description, img);
@@ -1270,9 +1270,8 @@ public class Market implements MarketInterface {
         Notification notification = null;
         try {
             userAuth.checkUser(userId, token);
-            userController.getNotification(userId);
             return logAndRes(Logger.logStatus.Success, "Member get notification " + userId + " has successfully entered on " + LocalDateTime.now(),
-                    notification, null, null);
+                    userController.getNotification(userId), null, null);
         }catch (Exception e){
             System.out.println(e.getMessage());
             return new Response<>(null, "get member notifications failed", e.getMessage());

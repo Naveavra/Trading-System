@@ -23,6 +23,20 @@ public abstract class Information {
         return ans;
     }
 
+    public static List<String> fromStringToActionString(List<String> actions){
+        List<String> ans = new LinkedList<>();
+        for(String a : actions){
+            for(int i = 0; i<a.length(); i++) {
+                if (a.charAt(i) == ' ') {
+                    char add = (char)(a.charAt(i+1) - 32);
+                    a = a.substring(0, i)+ add + a.substring(i + 2);
+                }
+            }
+            ans.add(a);
+        }
+        return ans;
+    }
+
     public static List<JSONObject> hashMapToJson(HashMap<Integer, ? extends Information> hashMap, String key, String value){
         List<JSONObject> jsonList = new ArrayList();
         if(hashMap != null) {
