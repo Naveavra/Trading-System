@@ -14,8 +14,6 @@ import Bar from '../../components/Bars/Navbar/Navbar';
 import { SearchBar } from '../../components/Bars/SearchBar/SearchBar';
 import ShopsBar from '../../components/Bars/ShopBar/ShopBar';
 import Categories2 from '../../components/Categories/category2';
-import ProductCard from '../../components/ProductInStore/Card';
-import { Product } from '../../types/systemTypes/Product';
 import Products from '../../components/Product/Products';
 import { getCart } from '../../reducers/cartSlice';
 import SuccessAlert from '../../components/Alerts/success';
@@ -31,10 +29,10 @@ const DashboardPage: React.FC = () => {
     const userName = useAppSelector((state) => state.auth.userName);
     const isAdmin = useAppSelector((state) => state.auth.isAdmin);
     const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
+    //const opcode = useAppSelector((state) => state.auth.opcode);
     const error = useAppSelector((state) => state.auth.error);
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
-    const products = useAppSelector((state) => state.product.responseData);
 
     //success alerts
     const openStoreAlert = useAppSelector((state) => state.store.storeState.responseData);
@@ -60,16 +58,14 @@ const DashboardPage: React.FC = () => {
             console.log("trying get notification")
             if (token != "" && userName != 'guest') {
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
-                console.log("response", response);
-                console.log("get notification");
                 if (response.payload?.opcode >= 0 && response.payload?.opcode <= 6) {
-                    getStore({ userId: userId, storeId: storeId });
+                    dispatch(getStore({ userId: userId, storeId: storeId }));
                 }
-                else if (!isAdmin && (response.payload?.opcode >= 7 && response.payload?.opcode <= 12 || response.payload?.opcode == 14 || response.payload?.opcode == 15)) {
-                    getClientData({ userId: userId });
+                else if (!isAdmin && ((response.payload?.opcode >= 7 && response.payload?.opcode <= 12) || response.payload?.opcode == 14 || response.payload?.opcode == 15)) {
+                    dispatch(getClientData({ userId: userId }));
                 }
                 if (isAdmin && (response.payload?.opcode == 14 || response.payload?.opcode == 13)) {
-                    //getAdminData();
+                    //dispatch(getAdminData());
                 }
                 fetchNotification();
             }

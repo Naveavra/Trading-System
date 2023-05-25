@@ -84,6 +84,10 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const handleConfirm = (event: React.ChangeEvent<HTMLInputElement>, idx: number): void => {
         console.log(`confirm message ${idx}`);
     }
+    const handleChangeOpen = () => {
+        dispatch(patchStore({ isActive: !store.isActive, storeId: store.storeId, userId: userId, img: "", desc: "", name: "" }));
+        dispatch(getStore({ userId: userId, storeId: store.storeId }));
+    }
     // useEffect(() => {
     //     if (token != '') {
     //         dispatch(getNotifications({ userId: userId, token: token }));
@@ -113,7 +117,9 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
                             {headLine} {store.storeName}
                         </Typography>
-
+                        <Typography variant="h6" component="div" sx={{ width: 50, flexGrow: 2 }}>
+                            {store.isActive ? "store is active" : "store is not active"}
+                        </Typography>
                         <IconButton className="icon" color="inherit" onClick={() => navigate(`/dashboard`)}>
                             <HomeIcon />
                         </IconButton>
@@ -121,7 +127,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                         {isLoggedIn &&
                             <>
 
-                                <Switch {...label} defaultChecked color="warning" value={store.isActive} onClick={() => { dispatch(patchStore({ isActive: !store.isActive, storeId: store.storeId, userId: userId, img: "", desc: "", name: "" })) }} />
+                                <Switch {...label} defaultChecked color="warning" value={store.isActive} onClick={handleChangeOpen} />
                                 <IconButton className="icon" color="inherit" onClick={handleLogout}>
                                     <LogoutIcon />
                                 </IconButton>

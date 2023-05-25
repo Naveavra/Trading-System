@@ -26,6 +26,7 @@ interface AuthState {
     isLoginLoading: boolean;
     isRegisterLoading: boolean;
     isLogoutLoading: boolean;
+    opcode: number;
 }
 const reducrName = 'auth';
 const initialState: AuthState = {
@@ -51,6 +52,7 @@ const initialState: AuthState = {
     isLoginLoading: false,
     isRegisterLoading: false,
     isLogoutLoading: false,
+    opcode: 0,
 };
 
 export const login = createAsyncThunk<
@@ -254,12 +256,15 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(getNotifications.fulfilled, (state, { payload }) => {
             state.isLoading = false;
+            debugger;
             const arr: MyNotification[] = [payload];
+            //state.opcode = arr[0].opcode;
             state.notifications = state.notifications.concat(arr);
 
         });
         builder.addCase(getNotifications.rejected, (state, { payload }) => {
             state.isLoading = false;
+            // state.opcode = -1;
         });
         // get client data
         builder.addCase(getClientData.pending, (state) => {

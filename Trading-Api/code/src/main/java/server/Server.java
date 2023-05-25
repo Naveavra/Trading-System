@@ -185,10 +185,10 @@ public class Server {
             //appoint new owner
             //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
             JSONObject request = new JSONObject(req.body());
-            int userId = Integer.parseInt(request.get("userIncharge").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
-            String newOwner = request.get("newOwner").toString();
+            String newOwner = request.get("emailOfUser").toString();
             toSparkRes(res, api.appointOwner(userId, token, newOwner, storeId));
             return res.body();
         });
@@ -213,7 +213,7 @@ public class Server {
             toSparkRes(res, api.fireManager(userId, token, managerToFire, storeId));
             return res.body();
         });
-        delete("api/stores/:id/appointments/owners", (req, res) -> {
+        patch("api/stores/:id/appointments/owners", (req, res) -> {
             //fire owner
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());

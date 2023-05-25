@@ -4,22 +4,16 @@ import { Dialog, Box, Grid, Typography, Button, TextField } from "@mui/material"
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../../redux/store";
-import { addPredicateToRegularDiscount, addRegularDiscount } from "../../../reducers/discountSlice";
+import { addPredicateToRegularDiscount, addRegularDiscount, setParamsToTmpPredicate, setPredicateTypeToTmpPredicate, setComposoreToTmpPredicate, clearTmpPredicate, cleanRegularDiscount } from "../../../reducers/discountSlice";
 import { Composore, PredicateDataObject, PredicateType } from "../../../types/systemTypes/Discount";
 
-const addPreducate = () => {
-
+const addPredicate = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [firstType, setFirstType] = useState('');
     const [secondType, setSecondType] = useState('');
     const [thirdType, setThirdType] = useState('');
     const [last, setLast] = useState(false);
-    let predicate: PredicateDataObject = {
-        predType: PredicateType.MinPrice,
-        params: "",
-        composore: Composore.AND
-    };
 
     const userId = useAppSelector((state: RootState) => state.auth.userId);
     const storeId = useAppSelector((state: RootState) => state.store.storeState.watchedStore.storeId);
@@ -28,6 +22,7 @@ const addPreducate = () => {
     const prodId = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.prodId);
     const discountedCategory = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.discountedCategory);
     const predicates = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.predicates);
+    const predicate: PredicateDataObject = useAppSelector((state: RootState) => state.discount?.tmpPredicate);
 
     const handleOnClose = useCallback(() => {
         navigate(-1);
@@ -41,34 +36,29 @@ const addPreducate = () => {
     }
     const handleOnPrice = () => {
         setSecondType('Price');
-        firstType === 'Min' ? predicate.predType = PredicateType.MinPrice : PredicateType.MaxPrice;
+        firstType === 'Min' ? dispatch(setPredicateTypeToTmpPredicate(PredicateType.MinPrice)) : dispatch(setPredicateTypeToTmpPredicate(PredicateType.MaxPrice));
     }
     const handleOnItem = () => {
         setSecondType('Item');
-        firstType === 'Min' ? predicate.predType = PredicateType.MinNumOfItem : PredicateType.MaxNumOfItem;
+        firstType === 'Min' ? dispatch(setPredicateTypeToTmpPredicate(PredicateType.MinNumOfItem)) : dispatch(setPredicateTypeToTmpPredicate(PredicateType.MaxNumOfItem));
     }
     const handleOnCategory = () => {
         setSecondType('Category');
-        firstType === 'Min' ? predicate.predType = PredicateType.MinNumFromCategory : PredicateType.MaxNumFromCategory;
+        firstType === 'Min' ? dispatch(setPredicateTypeToTmpPredicate(PredicateType.MinNumFromCategory)) : dispatch(setPredicateTypeToTmpPredicate(PredicateType.MaxNumFromCategory));
     }
     const handleSetProductId = (input: string) => {
         console.log(input);
-        // const productId = parseInt(input);
-        predicate.params = input
-        //dispatch(setProductIdToRegularDiscount(productId));
+        dispatch(setParamsToTmpPredicate(input));
     }
     const handleSetCategory = (input: string) => {
         console.log(input);
-        predicate.params = input
-        //dispatch(setCategoryToRegularDiscount(input));
+        dispatch(setParamsToTmpPredicate(input));
     }
     const handleSetPrice = (input: string) => {
         console.log(input);
-        predicate.params = input
-        //dispatch(setpercentageToRegularDiscount(percentage));
+        dispatch(setParamsToTmpPredicate(input));
     }
     const handleOnSubmit = () => {
-        debugger;
         dispatch(addPredicateToRegularDiscount(predicate));
         dispatch(addRegularDiscount({
             storeId: userId,
@@ -79,6 +69,8 @@ const addPreducate = () => {
             discountedCategory: discountedCategory,
             predicates: predicates,
         }));
+        dispatch(clearTmpPredicate());
+        dispatch(cleanRegularDiscount());
         navigate("/dashboard/store/superior");
     };
     const handleAddComposore = () => {
@@ -86,15 +78,15 @@ const addPreducate = () => {
     }
     const handleAnd = () => {
         setThirdType('And');
-        predicate.composore = Composore.AND;
+        dispatch(setComposoreToTmpPredicate(Composore.AND));
     }
     const handleOr = () => {
         setThirdType('Or');
-        predicate.composore = Composore.OR;
+        dispatch(setComposoreToTmpPredicate(Composore.OR));
     }
     const handleXor = () => {
         setThirdType('Xor');
-        predicate.composore = Composore.XOR;
+        dispatch(setComposoreToTmpPredicate(Composore.XOR));
     }
 
     return (
@@ -271,4 +263,4 @@ const addPreducate = () => {
         </Dialog >
     )
 }
-export default addPreducate;
+export default addPredicate;

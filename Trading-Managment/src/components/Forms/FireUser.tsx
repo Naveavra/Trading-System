@@ -34,7 +34,7 @@ const FireUser: React.FC<props> = ({ role }) => {
     const managers = store.roles?.filter((role) => role.storeRole === StoreRoleEnum.MANAGER);
     const managers_names = managers?.map((role) => role.userName);
 
-    const owners = useAppSelector((state) => state.store.storeState.watchedStore.roles)?.filter((role) => role.storeRole === StoreRoleEnum.OWNER);
+    const owners = store.roles?.filter((role) => role.storeRole === StoreRoleEnum.OWNER);
     const owners_names = owners?.map((role) => role.userName);
     const user_name = managers.filter((manager) => manager.userId === userToFireId)[0]?.userName;
 

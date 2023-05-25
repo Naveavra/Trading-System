@@ -22,7 +22,6 @@ export interface PredicateDataObject {
 }
 export enum Numeric {
     Max = "Max",
-    Min = "Min",
     Addition = "Addition",
 }
 export enum Composore {
@@ -61,4 +60,9 @@ export const empryCompositeDiscount: CompositeDataObject = {
     xorDecidingRule: XorDecidingRules.MaxDiscountValue,
     discounts: [],
     composores: []
+}
+export const emptyPredicate: PredicateDataObject = {
+    predType: PredicateType.MinPrice,
+    params: "",
+    composore: Composore.AND
 }

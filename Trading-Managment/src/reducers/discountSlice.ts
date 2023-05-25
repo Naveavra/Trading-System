@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { discountApi } from "../api/discountApi";
 import { ApiError } from "../types/apiTypes";
-import { CompositeDataObject, Discount, DiscountDataObject, empryCompositeDiscount, empryRegularDiscount } from "../types/systemTypes/Discount";
+import { CompositeDataObject, Discount, DiscountDataObject, PredicateDataObject, empryCompositeDiscount, empryRegularDiscount, emptyPredicate } from "../types/systemTypes/Discount";
 import { deleteDiscountParams, postCompositeDicountParams, postRegularDicountParams } from "../types/requestTypes/discountTypes";
 
 const reducerName = 'discounts';
@@ -17,6 +17,9 @@ interface DiscountState {
     error: string | null;
     currentRegularDiscount: DiscountDataObject;
     currentCompositeDiscount: CompositeDataObject;
+    tmpPredicate: PredicateDataObject;
+    tmpComposite: CompositeDataObject;
+    first: boolean;
 };
 
 const initialState: DiscountState = {
@@ -30,6 +33,9 @@ const initialState: DiscountState = {
     error: null,
     currentRegularDiscount: empryRegularDiscount,
     currentCompositeDiscount: empryCompositeDiscount,
+    tmpPredicate: emptyPredicate,
+    tmpComposite: empryCompositeDiscount,
+    first: true,
 };
 
 
@@ -128,43 +134,119 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
         addPredicateToRegularDiscount: (state, { payload }) => {
             state.currentRegularDiscount?.predicates.push(payload);
         },
+        //-------------------tmp predicate---------------
+        setPredicateTypeToTmpPredicate: (state, { payload }) => {
+            return {
+                ...state,
+                tmpPredicate: {
+                    ...state.tmpPredicate,
+                    predType: payload
+                }
+            }
+        },
+        setParamsToTmpPredicate: (state, { payload }) => {
+            return {
+                ...state,
+                tmpPredicate: {
+                    ...state.tmpPredicate,
+                    params: payload
+                }
+            }
+        },
+        setComposoreToTmpPredicate: (state, { payload }) => {
+            return {
+                ...state,
+                tmpPredicate: {
+                    ...state.tmpPredicate,
+                    composore: payload
+                }
+            }
+        },
+        clearTmpPredicate: (state) => {
+            state.tmpPredicate = emptyPredicate;
+        },
         //-------------------composite-------------------
+        //if first set to current else set to tmp
         setCurrentCompositeDiscount: (state, { payload }) => {
             state.currentCompositeDiscount = payload;
         },
         setpercentageToCompositeDiscount: (state, { payload }) => {
-            return {
-                ...state,
-                currentCompositeDiscount: {
-                    ...state.currentCompositeDiscount,
-                    percentage: payload
+            if (state.first) {
+                return {
+                    ...state,
+                    currentCompositeDiscount: {
+                        ...state.currentCompositeDiscount,
+                        percentage: payload
+                    }
+                }
+            }
+            else {
+                return {
+                    ...state,
+                    tmpComposite: {
+                        ...state.tmpComposite,
+                        percentage: payload
+                    }
                 }
             }
         },
         setNumericTypeToCompositeDiscount: (state, { payload }) => {
-            return {
-                ...state,
-                currentCompositeDiscount: {
-                    ...state.currentCompositeDiscount,
-                    numericType: payload
+            if (state.first) {
+                return {
+                    ...state,
+                    currentCompositeDiscount: {
+                        ...state.currentCompositeDiscount,
+                        numericType: payload
+                    }
+                }
+            }
+            else {
+                return {
+                    ...state,
+                    tmpComposite: {
+                        ...state.tmpComposite,
+                        numericType: payload
+                    }
                 }
             }
         },
         setlogicalTypeToCompositeDiscount: (state, { payload }) => {
-            return {
-                ...state,
-                currentCompositeDiscount: {
-                    ...state.currentCompositeDiscount,
-                    logicalType: payload
+            if (state.first) {
+                return {
+                    ...state,
+                    currentCompositeDiscount: {
+                        ...state.currentCompositeDiscount,
+                        logicalType: payload
+                    }
+                }
+            }
+            else {
+                return {
+                    ...state,
+                    tmpComposite: {
+                        ...state.tmpComposite,
+                        logicalType: payload
+                    }
                 }
             }
         },
         setXorDecidingRuleToCompositeDiscount: (state, { payload }) => {
-            return {
-                ...state,
-                currentCompositeDiscount: {
-                    ...state.currentCompositeDiscount,
-                    xorDecidingRule: payload
+            if (state.first) {
+                return {
+                    ...state,
+                    currentCompositeDiscount: {
+                        ...state.currentCompositeDiscount,
+                        xorDecidingRule: payload
+                    }
+                }
+            }
+            else {
+                return {
+                    ...state,
+                    tmpComposite: {
+                        ...state.tmpComposite,
+                        xorDecidingRule: payload
+                    }
                 }
             }
         },
@@ -250,6 +332,10 @@ export const {
     setProductIdToRegularDiscount,
     setCategoryToRegularDiscount,
     addPredicateToRegularDiscount,
+    setPredicateTypeToTmpPredicate,
+    setParamsToTmpPredicate,
+    setComposoreToTmpPredicate,
+    clearTmpPredicate,
     setCurrentCompositeDiscount,
     setpercentageToCompositeDiscount,
     setNumericTypeToCompositeDiscount,
