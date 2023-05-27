@@ -1,7 +1,7 @@
 package market;
 
 import domain.store.storeManagement.AppHistory;
-import domain.user.PurchaseHistory;
+import domain.user.history.PurchaseHistory;
 import domain.user.ShoppingCart;
 import service.security.UserAuth;
 import service.supplier.ProxySupplier;
@@ -148,7 +148,8 @@ public class Market implements MarketInterface {
     public Response<String> sendNotification(int userId, String token, NotificationOpcode opcode, String receiverEmail, String notify){
         try {
             userAuth.checkUser(userId, token);
-            Notification<String> notification = new Notification<>(opcode, notify);
+            String senderEmail = userController.getUserEmail(userId);
+            Notification<String> notification = new Notification<>(opcode, notify + ". from " + senderEmail);
             userController.addNotification(receiverEmail, notification);
             return logAndRes(Logger.logStatus.Success, "notification was sent to " + receiverEmail + " on " + LocalDateTime.now(),
                     "notification sent", null, null);
@@ -410,7 +411,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<HashMap<Integer, Message>> checkReviews(int userId, String token, int storeId) {
+    public Response<HashMap<Integer, ? extends Information>> checkReviews(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
             HashMap<Integer, Message> reviews = marketController.viewReviews(storeId);
@@ -1255,7 +1256,7 @@ public class Market implements MarketInterface {
 
     public LoginInformation getAdminLoginInformation(String token, int userId, String email) {
         return new LoginInformation(token, userId, email, true, null,
-                null, null, null, null);
+                null, null, null, null, null, -1, null);
     }
       
     public Response<List<String>> getMemberNotifications(int userId, String token) {

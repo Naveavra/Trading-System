@@ -1,25 +1,26 @@
-package domain.user;
+package domain.user.history;
 
 
-import com.google.gson.Gson;
-import org.json.JSONObject;
+import domain.user.ShoppingCart;
+import domain.user.history.PurchaseHistory;
 import utils.infoRelated.Info;
 import utils.infoRelated.PrivateInfo;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 //TODO: need to decide if to keep security questions in history
 public class UserHistory {
 
-    public PurchaseHistory purchaseHistory;
+    private int userId;
+    private PurchaseHistory purchaseHistory;
     private List<String> names;
     private transient List<String> passwords;
     private List<String> emails;
 
-    public UserHistory(String email, String name, String pass){
-        purchaseHistory = new PurchaseHistory();
+    public UserHistory(int userId, String email, String name, String pass){
+        this.userId = userId;
+        purchaseHistory = new PurchaseHistory(userId);
         names = new LinkedList<>();
         passwords = new LinkedList<>();
         emails = new LinkedList<>();
@@ -29,7 +30,7 @@ public class UserHistory {
     }
 
     public void addPurchaseMade(int orderId, double totalPrice, ShoppingCart purchase){
-        purchaseHistory.addPurchaseMade(orderId, totalPrice, purchase);
+        purchaseHistory.addPurchaseMade(userId, orderId, totalPrice, purchase);
     }
 
     public void addName(String name){

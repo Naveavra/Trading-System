@@ -42,7 +42,7 @@ public class Inventory {
         Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
-            p = new Product(id,name,description);
+            p = new Product(id,name,description, "");
             p.setPrice(price);
             p.replaceQuantity(quantity);
             for(Product product : productList.values())
@@ -237,7 +237,7 @@ public class Inventory {
             if(quantity > 0){
                 replaceQuantity(productId,quantity);
             }
-            if(!img.equals("null"))
+            if(img != null && !img.equals("null"))
                 changeImg(productId, img);
         }
         else

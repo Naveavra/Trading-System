@@ -1,5 +1,7 @@
 package utils.infoRelated;
 
+import data.PurchaseInfo;
+import domain.user.history.PurchaseHistory;
 import org.json.JSONObject;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -18,10 +20,14 @@ public class LoginInformation extends Information{
     private HashMap<Integer, String> storeNames;
     private HashMap<Integer, String> storeImg;
     private HashMap<Integer, List<Action>> permissions;
+    private PurchaseHistory purchaseHistory;
+    private int age;
+    private String birthday;
 
     public LoginInformation(String t, int ui, String un, boolean isAdmin, List<Notification> notifications, HashMap<Integer, Role> storeRoles,
                             HashMap<Integer, String> storeName, HashMap<Integer, String> storeImg,
-                            HashMap<Integer, List<Action>> permissions ){
+                            HashMap<Integer, List<Action>> permissions, PurchaseHistory purchaseHistory,
+                            int age, String birthday){
         token=t;
         userId = ui;
         userName=un;
@@ -31,6 +37,9 @@ public class LoginInformation extends Information{
         this.storeNames = storeName;
         this.storeImg = storeImg;
         this.permissions = permissions;
+        this.purchaseHistory = purchaseHistory;
+        this.age = age;
+        this.birthday = birthday;
     }
     public int getUserId(){
         return userId;
@@ -58,6 +67,9 @@ public class LoginInformation extends Information{
         json.put("token", getToken());
         json.put("userId", getUserId());
         json.put("userName", getUserName());
+        json.put("purchaseHistory", purchaseHistory.toJson());
+        json.put("age", age);
+        json.put("birthday", birthday);
         json.put("isAdmin", getIsAdmin());
         json.put("notifications", infosToJson(getNotifications()));
         json.put("storeNames", toJsonHM(getStoreNames(), "storeId", "storeName"));
