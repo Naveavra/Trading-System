@@ -4,17 +4,20 @@ import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData, getCli
 import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
-import { RegisterPostData, getUserData, getUserNotifications } from "../types/requestTypes/authTypes";
+import { RegisterPostData, getUserData, getUserNotifications, messageParams } from "../types/requestTypes/authTypes";
 import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
 import { MyNotification } from "../types/systemTypes/Notification";
+import { Order } from "../types/systemTypes/Order";
 
 interface AuthState {
     token: string;
     userId: number;
     userName: string;
     isAdmin: boolean;
-    notifications: MyNotification[]; // todo : change to notification type {id , message[] ,}
+    birthday: string;
+    age: number;
+    notifications: MyNotification[];
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];
@@ -27,12 +30,15 @@ interface AuthState {
     isRegisterLoading: boolean;
     isLogoutLoading: boolean;
     opcode: number;
+    purchaseHistory: Order[];
 }
 const reducrName = 'auth';
 const initialState: AuthState = {
     token: window.localStorage.getItem(localStorage.auth.token.name) || '',
     userId: parseInt(window.localStorage.getItem(localStorage.auth.userId.name) || '0'),
     userName: window.localStorage.getItem(localStorage.auth.userName.name) || '',
+    age: parseInt(window.localStorage.getItem(localStorage.auth.age.name) || '0'),
+    birthday: window.localStorage.getItem(localStorage.auth.birthday.name) || '',
     //todo : add get function to all of the this
     // isAdmin: window.localStorage.getItem(localStorage.auth.isAdmin.name) === 'true' ? true : false,
     // hasQestions: window.localStorage.getItem(localStorage.auth.hasQestions.name) === 'true' ? true : false,
@@ -53,6 +59,7 @@ const initialState: AuthState = {
     isRegisterLoading: false,
     isLogoutLoading: false,
     opcode: 0,
+    purchaseHistory: [],
 };
 
 export const login = createAsyncThunk<
@@ -143,6 +150,17 @@ export const getClientData = createAsyncThunk<
             .then((res) => thunkApi.fulfillWithValue(res as getClientResponseData))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
+export const sendMessage = createAsyncThunk<
+    string,
+    messageParams,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/sendMessage`,
+    async (credential, thunkApi) => {
+        return authApi.sendMessage(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
 
 const { reducer: authReducer, actions: authActions } = createSlice({
     name: reducrName,
@@ -171,12 +189,15 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.userId = payload.responseBody.userId;
             state.userName = payload.responseBody.userName;
             state.isAdmin = payload.responseBody.isAdmin;
+            state.age = payload.responseBody.age;
+            state.birthday = payload.responseBody.birthday;
             state.hasQestions = payload.responseBody.hasQestions;
             state.storeRoles = payload.responseBody.storeRoles;
             state.storeNames = payload.responseBody.storeNames;
             state.storeImgs = payload.responseBody.storeImgs;
             state.notifications = payload.responseBody.notifications;
             state.permissions = payload.responseBody.permissions;
+            state.purchaseHistory = payload.responseBody.purchaseHistory;
             if (payload.rememberMe) {
                 window.localStorage.setItem(localStorage.auth.token.name, payload.responseBody.token);
                 window.localStorage.setItem(localStorage.auth.userId.name, payload.responseBody.userId.toString());
@@ -281,11 +302,28 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.storeImgs = payload.storeImgs;
             state.notifications = state.notifications.concat(payload.notifications);
             state.permissions = payload.permissions;
+            state.age = payload.age;
+            state.birthday = payload.birthday;
+            state.purchaseHistory = payload.purchaseHistory;
         });
         builder.addCase(getClientData.rejected, (state, { payload }) => {
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during get client data";
         });
+        //send message
+        builder.addCase(sendMessage.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(sendMessage.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(sendMessage.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during send message";
+        });
+
     }
 });
 // Action creators are generated for each case reducer function

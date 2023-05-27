@@ -14,6 +14,8 @@ export interface LocalSorage {
         notifications: Entry<string[] | null>;
         hasQestions: Entry<boolean | null>;
         storeRoles: Entry<string[] | null>;
+        age: Entry<number | null>;
+        birthday: Entry<string | null>;
     },
     settings: {
         login_page: {
@@ -50,8 +52,15 @@ export const localStorage: LocalSorage = {
         storeRoles: {
             name: 'auth.storeRoles',
             value: null,
+        },
+        age: {
+            name: 'auth.age',
+            value: null,
+        },
+        birthday: {
+            name: 'auth.birthday',
+            value: null,
         }
-
     },
     settings: {
         login_page: {

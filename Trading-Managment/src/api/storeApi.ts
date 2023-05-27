@@ -41,4 +41,6 @@ export const storeApi =
 
     patchPermissions: (params: patchPermissionsParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().patch(`api/stores/${params.storeId}/permissions`, params)),
+
+
 }   

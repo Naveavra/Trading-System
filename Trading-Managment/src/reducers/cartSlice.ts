@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ApiError, ApiListData, ApiResponse } from "../types/apiTypes";
-import { DeleteCartParams, GetCartParams, PatchCartParams, PostBasketParams, buyCartParams } from "../types/requestTypes/cartTypes";
+import { ApiError } from "../types/apiTypes";
+import { DeleteCartParams, GetCartParams, PatchCartParams, buyCartParams } from "../types/requestTypes/cartTypes";
 import { cartApi } from "../api/cartApi";
-import { Basket } from "../types/systemTypes/Basket";
 import { Product } from "../types/systemTypes/Product";
 
 const reducerName = 'carts';

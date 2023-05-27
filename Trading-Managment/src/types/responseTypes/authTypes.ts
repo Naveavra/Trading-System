@@ -1,4 +1,5 @@
 import { MyNotification } from "../systemTypes/Notification";
+import { Order } from "../systemTypes/Order";
 import { Permission } from "../systemTypes/Permission";
 import { StoreRole, StoreName, StoreImg } from "../systemTypes/StoreRole";
 
@@ -7,6 +8,8 @@ export interface TokenResponseBody {
     userId: number;
     userName: string;
     isAdmin: boolean;
+    age: number;
+    birthday: string;
     notifications: MyNotification[];
     message: string | null;
     hasQestions: boolean;
@@ -14,6 +17,7 @@ export interface TokenResponseBody {
     storeNames: StoreName[];
     storeImgs: StoreImg[];
     permissions: Permission[];
+    purchaseHistory: Order[];
 };
 export interface RegisterResponseData {
     answer: string | null;
@@ -24,6 +28,8 @@ export interface EnterGuestResponseData {
 export interface getClientResponseData {
     userName: string;
     isAdmin: boolean;
+    age: number;
+    birthday: string;
     notifications: MyNotification[];
     message: string | null;
     hasQestions: boolean;
@@ -31,6 +37,7 @@ export interface getClientResponseData {
     storeNames: StoreName[];
     storeImgs: StoreImg[];
     permissions: Permission[];
+    purchaseHistory: Order[];
 };
 export interface getClientNotifications {
     notifications: string[];

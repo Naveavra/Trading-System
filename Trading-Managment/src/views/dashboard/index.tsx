@@ -57,7 +57,9 @@ const DashboardPage: React.FC = () => {
         try {
             console.log("trying get notification")
             if (token != "" && userName != 'guest') {
+
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
+
                 if (response.payload?.opcode >= 0 && response.payload?.opcode <= 6) {
                     dispatch(getStore({ userId: userId, storeId: storeId }));
                 }
@@ -67,6 +69,7 @@ const DashboardPage: React.FC = () => {
                 if (isAdmin && (response.payload?.opcode == 14 || response.payload?.opcode == 13)) {
                     //dispatch(getAdminData());
                 }
+
                 fetchNotification();
             }
         } catch (error) {

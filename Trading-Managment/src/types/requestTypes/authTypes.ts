@@ -15,3 +15,9 @@ export interface getUserData {
     userId: number;
 
 };
+export interface messageParams {
+    userId: number;
+    token: string;
+    message: string;
+    userName: string;
+}
