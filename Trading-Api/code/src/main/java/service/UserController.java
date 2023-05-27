@@ -1,12 +1,9 @@
 package service;
 
-import domain.states.StoreManager;
-import domain.states.StoreOwner;
-import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import domain.user.*;
 
-import org.json.JSONObject;
+import domain.user.history.PurchaseHistory;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
@@ -16,7 +13,6 @@ import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;

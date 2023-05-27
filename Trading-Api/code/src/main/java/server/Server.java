@@ -114,7 +114,7 @@ public class Server {
         });
 
         //stores
-        get("api/stores/info" , (req,res)->{
+        get("api/stores/info", (req,res)->{
             toSparkRes(res, api.getStores());
             return res.body();
         });
@@ -349,7 +349,6 @@ public class Server {
             toSparkRes(res, api.getNotification(userId, token));
             return res.body();
         });
-
         // Endpoint for the server to push notifications to a user's queue
         post("api/auth/notifications/msg", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
@@ -357,10 +356,43 @@ public class Server {
             String token = req.headers("Authorization");
             String userToName = request.get("userName").toString();
             String notification = request.get("message").toString();
-            //TODO:
             toSparkRes(res, api.sendNotification(userId, token, userToName, notification));
             return res.body();
         });
 
+        //reviews and questions for store
+        post("api/auth/messages/:storeId", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt((request.get("userId").toString()));
+            String token = req.headers("Authorization");
+            int orderId = Integer.parseInt(request.get("orderId").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            String content = request.get("content").toString();
+            int rating = Integer.parseInt(request.get("rating").toString());
+            toSparkRes(res, api.writeReviewToStore(userId, token, orderId, storeId, content, rating));
+            return res.body();
+        });
+
+        post("api/auth/messages/:storeId/:productId", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt((request.get("userId").toString()));
+            String token = req.headers("Authorization");
+            int orderId = Integer.parseInt(request.get("orderId").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int productId = Integer.parseInt(request.get("productId").toString());
+            String content = request.get("content").toString();
+            int rating = Integer.parseInt(request.get("rating").toString());
+            toSparkRes(res, api.writeReviewToProduct(userId, token, orderId, storeId, productId, content, rating));
+            return res.body();
+        });
+
+        get("api/auth/messages/reviews", (req, res)->{
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt((request.get("userId").toString()));
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            toSparkRes(res, api.checkReviews(userId, token, storeId));
+            return res.body();
+        });
     }
 }

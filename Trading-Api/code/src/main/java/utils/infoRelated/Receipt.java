@@ -4,10 +4,7 @@ import domain.user.Basket;
 import domain.user.ShoppingCart;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Receipt extends Information{
 
@@ -28,8 +25,8 @@ public class Receipt extends Information{
 
     public double getTotalPrice(){return totalPrice;}
 
-    public List<ProductInfo> getProducts(){
-        return products.getContent();
+    public ShoppingCart getCart(){
+        return products;
     }
 
     public List<Basket> getContent(){return products.getBaskets();}

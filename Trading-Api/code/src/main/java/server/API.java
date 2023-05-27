@@ -227,8 +227,8 @@ public class API {
     }
 
     public Pair<Boolean, JSONObject> checkReviews(int userId, String token, int storeId){
-        Response<HashMap<Integer, Message>> res = market.checkReviews(userId, token, storeId);
-        return fromResToPair(res);
+        Response<HashMap<Integer, ? extends Information>> res = market.checkReviews(userId, token, storeId);
+        return fromResToPairHashMap(res, "reviewId", "review");
     }
 
     public Pair<Boolean, JSONObject> getProductInformation(int storeId, int productId){

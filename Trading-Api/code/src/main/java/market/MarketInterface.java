@@ -1,7 +1,7 @@
 package market;
 
 import domain.store.storeManagement.Store;
-import domain.user.PurchaseHistory;
+import domain.user.history.PurchaseHistory;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
 import utils.messageRelated.NotificationOpcode;

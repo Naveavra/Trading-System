@@ -3,7 +3,7 @@ package bridge;
 import data.*;
 import data.ProductInfo;
 import data.StoreInfo;
-import domain.user.PurchaseHistory;
+import domain.user.history.PurchaseHistory;
 import domain.user.ShoppingCart;
 import market.Admin;
 import market.Market;
@@ -356,8 +356,8 @@ public class BridgeImplement implements Bridge {
         List<PurchaseInfo> piList = new ArrayList<>();
         for (PurchaseHistory entry : purchaseHistory)
         {
-            for (ShoppingCart cart : entry.getPurchaseHistory().values())
-                piList.add(new PurchaseInfo(cart.getContent()));
+            for (Receipt receipt : entry.getPurchaseHistory().values())
+                piList.add(new PurchaseInfo(receipt.getCart().getContent()));
         }
         return piList;
     }

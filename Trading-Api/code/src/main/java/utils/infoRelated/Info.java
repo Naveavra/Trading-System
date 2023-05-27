@@ -1,5 +1,6 @@
 package utils.infoRelated;
 
+import domain.user.history.PurchaseHistory;
 import org.json.JSONObject;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
@@ -16,6 +17,7 @@ public class Info extends Information{
     private int age;
     private Role role;
     private List<Action> managerActions;
+    private PurchaseHistory purchaseHistory;
 
     public Info(int id, String name, String email, String birthday, int age){
         this.id = id;
@@ -24,6 +26,7 @@ public class Info extends Information{
         this.birthday = birthday;
         this.age = age;
         managerActions = new LinkedList<>();
+        purchaseHistory = new PurchaseHistory(id);
     }
 
     public void addRole(Role role){this.role = role;}
@@ -64,6 +67,7 @@ public class Info extends Information{
         json.put("email", getEmail());
         json.put("birthday", getBirthday());
         json.put("age", getAge());
+        json.put("purchaseHistory", purchaseHistory.toJson());
         json.put("role", role);
         json.put("managerPermissions", fromActionToString(getManagerActions()));
         return json;

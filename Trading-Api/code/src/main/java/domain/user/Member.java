@@ -3,6 +3,8 @@ package domain.user;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
+import domain.user.history.PurchaseHistory;
+import domain.user.history.UserHistory;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
@@ -16,7 +18,6 @@ import utils.infoRelated.Info;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
@@ -45,7 +46,7 @@ public class Member implements User{
         this.birthday = birthday;
         age = StringChecks.calculateAge(birthday);
         roles = new ArrayList<>();
-        userHistory = new UserHistory(this.email, this.name, this.password);
+        userHistory = new UserHistory(this.id, this.email, this.name, this.password);
         g = new Guest(id);
         notifications = new LinkedBlockingQueue<>();
     }
@@ -359,6 +360,6 @@ public class Member implements User{
 
     public LoginInformation getLoginInformation(String token) {
         return new LoginInformation(token, id, email, false, displayNotifications(),getRoles(),
-                getStoreNames(), getStoreImgs(), getPermissions());
+                getStoreNames(), getStoreImgs(), getPermissions(), getUserPurchaseHistory(), age, birthday);
     }
 }
