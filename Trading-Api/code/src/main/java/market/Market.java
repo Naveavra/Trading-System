@@ -1,6 +1,7 @@
 package market;
 
 import domain.store.storeManagement.AppHistory;
+import domain.user.StringChecks;
 import domain.user.history.PurchaseHistory;
 import domain.user.ShoppingCart;
 import service.security.UserAuth;
@@ -71,7 +72,8 @@ public class Market implements MarketInterface {
         int id = ids.getAndIncrement();
         int guestId = userController.enterGuest(id);
         marketInfo.addUserCount();
-        return logAndRes(Logger.logStatus.Success, "guest :" + guestId + " has successfully entered on " + LocalDateTime.now(),
+        return logAndRes(Event.LogStatus.Success, "guest has successfully entered",
+                StringChecks.curDayString(), userController.getUserName(guestId),
                 guestId, null, null);
     }
 
@@ -80,10 +82,12 @@ public class Market implements MarketInterface {
         try {
             userController.exitGuest(guestId);
             marketInfo.reduceUserCount();
-            return logAndRes(Logger.logStatus.Success, "guest :" + guestId + " has successfully exited on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "guest has successfully exited" ,
+                    StringChecks.curDayString(), userController.getUserName(guestId),
                     "existed successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant exit because " + e.getMessage() + " on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant exit because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(guestId),
                     null, "exit failed", e.getMessage());
         }
     }
@@ -95,10 +99,12 @@ public class Market implements MarketInterface {
             int id = ids.getAndIncrement();
             userController.register(id, email, pass, hashedPassword, birthday);
             marketInfo.addRegisteredCount();
-            return logAndRes(Logger.logStatus.Success, "user :" + email + " has successfully register on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "successfully registered",
+                    StringChecks.curDayString(), email,
                     "registered successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant register because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant register because " + e.getMessage(),
+                    StringChecks.curDayString(), email,
                     null, "register failed", e.getMessage());
         }
     }
@@ -113,14 +119,16 @@ public class Market implements MarketInterface {
                 marketInfo.addUserCount();
                 String token = userAuth.generateToken(memberId);
                 LoginInformation loginInformation = getLoginInformation(token, memberId, email);
-                return logAndRes(Logger.logStatus.Success, "user " + email + " logged in successfully on " + LocalDateTime.now(),
+                return logAndRes(Event.LogStatus.Success, "logged in successfully",
+                        StringChecks.curDayString(), email,
                         loginInformation, null, null);
             }
             else{
                 return adminLogin(email, pass);
             }
         } catch(Exception e){
-            return logAndRes(Logger.logStatus.Fail, "user cant get log in because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant get log in because " + e.getMessage(),
+                    StringChecks.curDayString(), email,
                     null, "log in failed", e.getMessage());
         }
     }
@@ -151,10 +159,12 @@ public class Market implements MarketInterface {
             String senderEmail = userController.getUserEmail(userId);
             Notification<String> notification = new Notification<>(opcode, notify + ". from " + senderEmail);
             userController.addNotification(receiverEmail, notification);
-            return logAndRes(Logger.logStatus.Success, "notification was sent to " + receiverEmail + " on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "notification was sent to " + receiverEmail,
+                    StringChecks.curDayString(), senderEmail,
                     "notification sent", null, null);
         }catch (Exception e){
-            return logAndRes(Logger.logStatus.Success, "notification was not sent to " + receiverEmail + " on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "notification was not sent to " + receiverEmail,
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "notification not sent", e.getMessage());
         }
     }
@@ -169,11 +179,13 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             List<Notification> notifications = userController.displayNotifications(userId);
-            return logAndRes(Logger.logStatus.Success, "user: " + userId + "got notifications successfully on " + LocalDateTime.now(),
-                    notifications, null, null);
+                return logAndRes(Event.LogStatus.Success, "user got notifications successfully",
+                        StringChecks.curDayString(), userController.getUserName(userId),
+                        notifications, null, null);
         }
         catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "user cant get his notifications because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant get his notifications because " + e.getMessage() ,
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "display notifications failed", e.getMessage());
         }
     }
@@ -184,26 +196,28 @@ public class Market implements MarketInterface {
         try {
             userController.logout(userId);
             marketInfo.reduceUserCount();
-            return logAndRes(Logger.logStatus.Success, "user log out successfully on " + LocalDateTime.now(),
-                    "user log out successfully", null, null);
+            return logAndRes(Event.LogStatus.Success, "user logged out successfully" ,
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    "user logged out successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant get log out because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant get log out because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "log out failed", e.getMessage());
         }
     }
 
-
-    //for each function of guest there will be 2 function , owns get an id and the other gets userName
     @Override
     public Response<String> addProductToCart(int userId, int storeId, int productId, int quantity) {
         try {
             marketController.checkProductInStore(storeId, productId);
             userController.addProductToCart(userId, storeId, marketController.getProductInformation(storeId, productId), quantity);
             String productName = marketController.getProductName(storeId, productId);
-            return logAndRes(Logger.logStatus.Success, "user " + userId + "add " + quantity + " " + productName + " to shopping cart on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user added " + productName + " " + quantity + " to shopping cart" ,
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user add to cart successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant add product To Cart because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant add product To Cart because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "add product to cart failed", e.getMessage());
         }
     }
@@ -215,10 +229,12 @@ public class Market implements MarketInterface {
         try {
             userController.removeProductFromCart(userId, storeId, productId);
             String productName = marketController.getProductName(storeId, productId);
-            return logAndRes(Logger.logStatus.Success, "user " + userId + "remove " + productName + " from shopping cart on " + LocalDateTime.now(),
-                    "user remove " + productName + " from cart successfully", null, null);
+            return logAndRes(Event.LogStatus.Success, "user removed " + productName + " from shopping cart",
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    "user removed " + productName + " from cart successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant remove product from Cart because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant remove product from Cart because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "remove product from cart failed", e.getMessage());
         }
     }
@@ -228,10 +244,12 @@ public class Market implements MarketInterface {
         try {
             userController.changeQuantityInCart(userId, storeId, marketController.getProductInformation(storeId, productId), change);
             String productName = marketController.getProductName(storeId, productId);
-            return logAndRes(Logger.logStatus.Success, "user " + userId + " change quantity to " + change + " on shopping cart on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user changed quantity for " + productName + " to " + change,
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user change Quantity of " + productName + " In Cart to " + change + " successfully ", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant remove change quantity in cart because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant remove change quantity in cart because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "remove product from cart failed", e.getMessage());
         }
     }
@@ -239,10 +257,12 @@ public class Market implements MarketInterface {
     public Response<List<? extends Information>> getCart(int id) {
         try {
             List<? extends Information> baskets = userController.getUserCart(id).getContent();
-            return logAndRes(Logger.logStatus.Success, "user" + id + "ask for his cart on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user asked for his cart",
+                    StringChecks.curDayString(), userController.getUserName(id),
                     baskets, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant get his cart because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant get his cart because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(id),
                     null, "get cart failed", e.getMessage());
         }
     }
@@ -251,16 +271,16 @@ public class Market implements MarketInterface {
     public Response<String> removeCart(int userId) {
         try{
             userController.removeCart(userId);
-            return logAndRes(Logger.logStatus.Success, "user" + userId + "ask to remove his cart on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user cleaned his cart",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "remove cart succeeded", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant remove his cart because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant remove his cart because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "remove cart failed", e.getMessage());
         }
     }
 
-
-    //TODO: add proxy supplier to the function(somewhere)
     @Override
     public synchronized Response<Receipt> makePurchase(int userId, String accountNumber) {
         try {
@@ -272,14 +292,15 @@ public class Market implements MarketInterface {
             Receipt receipt = ans.getFirst();
             Set<Integer> creatorIds = ans.getSecond();
             userController.purchaseMade(userId, receipt.getOrderId(), receipt.getTotalPrice());
-            //TODO: make an external service handle notifications
             for(int creatorId : creatorIds)
                 addNotification(creatorId, NotificationOpcode.PURCHASE_IN_STORE, "a new purchase was made in your store");
             marketInfo.addPurchaseCount();
-            return logAndRes(Logger.logStatus.Success, "user made purchase on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user made purchase",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     receipt, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant make purchase " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "make purchase failed", e.getMessage());
         }
     }
@@ -290,11 +311,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.changeUserName(userId, newUserName);
-            String name = userController.getUserName(userId);
-            return logAndRes(Logger.logStatus.Success, "user" + name + "changed name successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user changed name successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     " you changed details successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant change name because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant change name because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "change name failed", e.getMessage());
         }
     }
@@ -304,11 +326,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.changeUserEmail(userId, newEmail);
-            String name = userController.getUserName(userId);
-            return logAndRes(Logger.logStatus.Success, "user" + name + "changed email successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user changed email successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     " you changed details successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant change email because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant change email because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "change email failed", e.getMessage());
         }
     }
@@ -322,11 +345,12 @@ public class Market implements MarketInterface {
             String oldHashedPass = userAuth.hashPassword(email, oldPass, false);
             String newHashedPass = userAuth.hashPassword(email, newPass, true);
             userController.changeUserPassword(userId, oldHashedPass, newPass, newHashedPass);
-            String name = userController.getUserName(userId);
-            return logAndRes(Logger.logStatus.Success, "user" + name + "changed password successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user changed password successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     " you changed details successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant change password because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant change password because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "change password failed", e.getMessage());
         }
     }
@@ -337,11 +361,12 @@ public class Market implements MarketInterface {
             userAuth.checkUser(userId, token);
             Store store = marketController.openStore(userController.getActiveMember(userId), storeName, des, img);
             userController.openStore(userId, store);
-            String name = userController.getUserName(userId);
-            return logAndRes(Logger.logStatus.Success, "user" + name + "open store successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user opened store successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     store.getStoreId(), null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant open store  because " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user cant open store  because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "open store failed", e.getMessage());
         }
     }
@@ -351,10 +376,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             Info user = userController.getUserPrivateInformation(userId);
-            return logAndRes(Logger.logStatus.Success, "user received successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user info received successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     user, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user cant received because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user info cant be received because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "get user failed", e.getMessage());
         }
     }
@@ -368,10 +395,12 @@ public class Market implements MarketInterface {
                 orders = userController.getUserPurchaseHistory(userId, true);
             else
                 orders = userController.getUserPurchaseHistory(userId, false);
-            return logAndRes(Logger.logStatus.Success, "user received orders successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user received orders successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     orders, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant get user orders because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant get user orders because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "get user orders failed", e.getMessage());
         }
     }
@@ -385,10 +414,12 @@ public class Market implements MarketInterface {
             int creatorId = marketController.addReviewToStore(m);
             m.addOwnerEmail(userController.getUserEmail(creatorId));
             addNotification(creatorId,NotificationOpcode.STORE_REVIEW, "a review of has been added for store: " + storeId);
-            return logAndRes(Logger.logStatus.Success, "user write review on store successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user wrote review on store successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user write review on store successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant write review on store because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant write review on store because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "write review failed", e.getMessage());
         }
     }
@@ -402,10 +433,12 @@ public class Market implements MarketInterface {
             int creatorId = marketController.writeReviewForProduct(m);
             m.addOwnerEmail(userController.getUserEmail(creatorId));
             addNotification(creatorId,NotificationOpcode.PRODUCT_REVIEW,"a review of has been added for product: "+productId +" in store: " + storeId);
-            return logAndRes(Logger.logStatus.Success, "user write review on product successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user wrote review on product successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user write review successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant write review to product because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant write review to product because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "write review failed", e.getMessage());
         }
     }
@@ -415,10 +448,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             HashMap<Integer, Message> reviews = marketController.viewReviews(storeId);
-            return logAndRes(Logger.logStatus.Success, "user checked reviews on store successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user checked reviews of store " + storeId + " successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     reviews, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant check reviews to store because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant check reviews of store " + storeId + " because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "check review failed", e.getMessage());
         }
     }
@@ -427,11 +462,9 @@ public class Market implements MarketInterface {
     public Response<ProductInfo> getProductInformation(int storeId, int productId) {
         try {
             ProductInfo res = marketController.getProductInformation(storeId, productId);
-            return logAndRes(Logger.logStatus.Success, "user get product information successfully on " + LocalDateTime.now(),
-                    res, null, null);
+            return new Response<>(res, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant get product information because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "get product information failed", e.getMessage());
+            return new Response<>(null, "get product information failed", e.getMessage());
         }
     }
 
@@ -439,22 +472,18 @@ public class Market implements MarketInterface {
     public Response<List<? extends Information>> getStoresInformation() {
         try {
             List<StoreInfo> res = marketController.getStoresInformation();
-            return logAndRes(Logger.logStatus.Success, "user get store information successfully on " + LocalDateTime.now(),
-                    res, null, null);
+            return new Response<>(res, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant get store information because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "get product information failed", e.getMessage());
+            return new Response<>(null, "get product information failed", e.getMessage());
         }
     }
     @Override
     public Response<StoreInfo> getStoreInformation(int storeId) {
         try {
             StoreInfo res = marketController.getStoreInformation(storeId);
-            return logAndRes(Logger.logStatus.Success, "user get store information successfully on " + LocalDateTime.now(),
-                    res, null, null);
+            return new Response<>(res, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant get store information because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "get product information failed", e.getMessage());
+            return new Response<>(null, "get product information failed", e.getMessage());
         }
     }
 
@@ -462,24 +491,13 @@ public class Market implements MarketInterface {
     public Response<Store> getStore(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            return logAndRes(Logger.logStatus.Success, "user get store information successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user got store information successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     marketController.getStore(storeId), null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant get store because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant get store because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "get store failed", e.getMessage());
-        }
-    }
-
-
-    @Override
-    public Response<String> getStoreDescription(int storeId) {
-        try {
-            String res = marketController.getStoreDescription(storeId);
-            return logAndRes(Logger.logStatus.Success, "user get store information successfully on " + LocalDateTime.now(),
-                    res, null, null);
-        } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant get store information because: " + e.getMessage() + "on " + LocalDateTime.now(),
-            null, "get product information failed", e.getMessage());
         }
     }
 
@@ -493,10 +511,8 @@ public class Market implements MarketInterface {
     public Response filterBy(HashMap<String,String> filterOptions) {
         ArrayList<ProductInfo> result = marketController.filterBy(filterOptions);
         if(result.isEmpty()){
-            logger.log(Logger.logStatus.Fail, "No products found by those filter options, on " + LocalDateTime.now());
-            return new Response<>(null, "No products found by those filter options", "result array is empty, no products found");
+           return new Response<>(null, "No products found by those filter options", "result array is empty, no products found");
         }
-        logger.log(Logger.logStatus.Success,"Filtered products successfully on" + LocalDateTime.now());
         return new Response<>(result,null,null);
     }
 
@@ -504,11 +520,9 @@ public class Market implements MarketInterface {
     public Response<List<? extends Information>> getStoreProducts(int storeId) {
         try {
             List<ProductInfo> res = marketController.getStoreProducts(storeId);
-            return logAndRes(Logger.logStatus.Success, "user get store products successfully on " + LocalDateTime.now(),
-                    res, null, null);
+            return new Response<>(res, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant get store products because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "get products failed", e.getMessage());
+            return new Response<>(null, "get products failed", e.getMessage());
         }
     }
 
@@ -521,10 +535,12 @@ public class Market implements MarketInterface {
             int creatorId = marketController.addQuestion(m);
             m.addOwnerEmail(userController.getUserEmail(creatorId));
             addNotification(creatorId, NotificationOpcode.QUESTION, "a question of has been added for store: " + storeId);
-            return logAndRes(Logger.logStatus.Success, "user send question successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user sent question to store " + storeId + " successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "question added successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant send information because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant send information because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "send information failed", e.getMessage());
         }
     }
@@ -535,10 +551,12 @@ public class Market implements MarketInterface {
             userAuth.checkUser(userId, token);
             Message m = userController.writeComplaintToMarket(orderId, storeId, msg, userId);
             complaints.put(m.getMessageId(), m);
-            return logAndRes(Logger.logStatus.Success, "user send complaint successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user send complaint successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user send complaint successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant send complaint because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant send complaint because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "send Complaint failed", e.getMessage());
         }
     }
@@ -548,10 +566,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.appointManager(userId, managerToAppoint, storeId);
-            return logAndRes(Logger.logStatus.Success, "user appoint " + managerToAppoint + "to Manager in: " + storeId + " successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user appoint " + managerToAppoint + "to Manager in: " + storeId + " successfully" ,
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user appointManager successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant appoint Manager because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant appoint Manager because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "appoint Manager failed", e.getMessage());
         }
     }
@@ -561,10 +581,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.fireManager(userId, managerToFire, storeId);
-            return logAndRes(Logger.logStatus.Success, "user fire manager successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user fire manager successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user fire manager successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant fire manager because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant fire manager because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "fire manager failed", e.getMessage());
         }
     }
@@ -574,10 +596,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.appointOwner(userId, owner, storeId);
-            return logAndRes(Logger.logStatus.Success, "appointed user successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "appointed user successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user appoint owner successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant appoint owner because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant appoint owner because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "appoint owner failed", e.getMessage());
         }
     }
@@ -586,10 +610,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.fireOwner(userId, ownerId, storeId);
-            return logAndRes(Logger.logStatus.Success, "user fire owner successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user fire owner successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user fire owner successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant fire owner because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant fire owner because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "fire owner failed", e.getMessage());
         }
     }
@@ -604,9 +630,12 @@ public class Market implements MarketInterface {
                 ans = changeStoreActive(userId, storeId, isActive);
             else
                 ans = changeStoreAttributes(userId, storeId, name, description, img);
-            return logAndRes(Logger.logStatus.Success, ans, ans, null, null);
+            return logAndRes(Event.LogStatus.Success, ans,
+                    StringChecks.curDayString(), userController.getUserName(userId)
+                    , ans, null, null);
         }catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail,"change store info failed because " + e.getMessage(),
+            return logAndRes(Event.LogStatus.Fail,"change store info failed because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "change info failed", e.getMessage());
         }
     }
@@ -628,10 +657,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             marketController.setStorePurchasePolicy(storeId, policy);
-            return logAndRes(Logger.logStatus.Success, "user change store purchase policy successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user change store purchase policy successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user change store purchase policy successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant change store purchase policy because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant change store purchase policy because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "change store policy purchase failed", e.getMessage());
         }
     }
@@ -643,13 +674,13 @@ public class Market implements MarketInterface {
 //            userAuth.checkUser(userId, token);
 //            if (userController.checkPermission(userId, Action.changeDiscountPolicy, storeId)) {
 ////                marketController.setStoreDiscountPolicy(storeId, policy);
-//                logger.log(Logger.logStatus.Success, "user change store policy discount successfully on " + LocalDateTime.now());
+//                logger.log(Event.LogStatus.Success, "user change store policy discount successfully on " + LocalDateTime.now());
 //                return new Response<>("user change store discount policy successfully", null, null);
 //            }
-//            logger.log(Logger.logStatus.Fail, "cant change store policy discount because: user dont have access" + "on " + LocalDateTime.now());
+//            logger.log(Event.LogStatus.Fail, "cant change store policy discount because: user dont have access" + "on " + LocalDateTime.now());
 //            return new Response<>(null, "change store policy discount failed", "user dont have access");
 //        } catch (Exception e) {
-//            logger.log(Logger.logStatus.Fail, "cant change store discount policy because: " + e.getMessage() + "on " + LocalDateTime.now());
+//            logger.log(Event.LogStatus.Fail, "cant change store discount policy because: " + e.getMessage() + "on " + LocalDateTime.now());
 //            return new Response<>(null, "change store discount policy failed", e.getMessage());
 //        }
 //    }
@@ -659,10 +690,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             marketController.addPurchaseConstraint(storeId, constraint);
-            return logAndRes(Logger.logStatus.Success, "user add purchase constraint successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user add purchase constraint successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user add purchase constraint successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant add purchase constraint policy because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant add purchase constraint policy because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "add purchase constraint failed", e.getMessage());
         }
     }
@@ -672,10 +705,12 @@ public class Market implements MarketInterface {
         try{
             userAuth.checkUser(userId, token);
             Info res = userController.getWorkerInformation(userId, workerId, storeId);
-            return logAndRes(Logger.logStatus.Success, "user check worker status successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user check worker status successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     res, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant check worker status because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant check worker status because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "check worker status failed", e.getMessage());
         }
     }
@@ -685,10 +720,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             List<Info> res = userController.getWorkersInformation(userId, storeId);
-            return logAndRes(Logger.logStatus.Success, "user check worker status successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user check worker status successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     res, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant check worker status because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant check worker status because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "check worker status failed", e.getMessage());
         }
     }
@@ -698,10 +735,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             HashMap<Integer, Message> res = marketController.getQuestions(storeId);
-            return logAndRes(Logger.logStatus.Success, "user get questions successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user get questions successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     res, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant get questions because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant get questions because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "get questions failed", e.getMessage());
         }
     }
@@ -711,10 +750,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             marketController.answerQuestion(storeId, questionId, answer);
-            return logAndRes(Logger.logStatus.Success, "user answer question successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user answer question successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "user answer question successfully", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant answer question because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant answer question because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "answer question failed", e.getMessage());
         }
     }
@@ -726,10 +767,12 @@ public class Market implements MarketInterface {
             if(!checkIsAdmin(userId))
                 userController.checkPermission(userId, Action.seeStoreHistory, storeId);
             List<OrderInfo> res = marketController.getStoreOrderHistory(storeId);
-            return logAndRes(Logger.logStatus.Success, "user get store history successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user get store history successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     res, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant  get store history  because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant  get store history  because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, " get store history failed", e.getMessage());
         }
     }
@@ -741,10 +784,12 @@ public class Market implements MarketInterface {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.addProduct, storeId);
             int productId = marketController.addProduct(storeId, name, description, price, quantity, categories, img);
-            return logAndRes(Logger.logStatus.Success, "Add product successfull on: " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "Add product successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     productId, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "Cant add product because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "Cant add product because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "Product Addition Failed", e.getMessage());
         }
 
@@ -755,27 +800,28 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             marketController.deleteProduct(storeId, productId);
-            return logAndRes(Logger.logStatus.Success, "Delete product successful on: " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "Delete product successful",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "product was successfully deleted", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "Cant delete product because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "Cant delete product because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "Product deletion Failed", e.getMessage());
         }
     }
 
-
-    //TODO: need to use supplierProxy for changing the quantity
     @Override
     public Response<String> updateProduct(int userId, String token, int storeId, int productId, List<String> categories, String name, String description,
                                           int price, int quantity, String img) {
         try {
             userAuth.checkUser(userId, token);
-            //proxySupplier.orderSupplies(storeId, productId, quantity);
             marketController.updateProduct(storeId, productId, categories, name, description, price, quantity, img);
-            return logAndRes(Logger.logStatus.Success, "Update product successful on: " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "Update product successful",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "updated product was successful", null, null);
         }catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "Cant update product because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "Cant update product because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "Product Update Failed", e.getMessage());
         }
     }
@@ -789,10 +835,12 @@ public class Market implements MarketInterface {
             for(int permissionId : permissionsIds)
                 actions.add(actionIds.get(permissionId));
             userController.addManagerActions(ownerId, userId, actions, storeId);
-            return logAndRes(Logger.logStatus.Success, "added all permissions to "+ userId + " on time " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "added all permissions to "+ userId,
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "add manager permissions was successful", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "can't add all permissions because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "can't add all permissions because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "add permissions failed", e.getMessage());
         }
     }
@@ -804,10 +852,12 @@ public class Market implements MarketInterface {
             for(int permissionId : permissionsIds)
                 actions.add(actionIds.get(permissionId));
             userController.removeManagerActions(ownerId, userId, actions, storeId);
-            return logAndRes(Logger.logStatus.Success, "removed all permissions from "+ userId + " on time " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "removed all permissions from "+ userId,
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "remove manager permissions was successful", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "can't remove all permissions because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "can't remove all permissions because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "remove permissions failed", e.getMessage());
         }
     }
@@ -818,10 +868,12 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             AppHistory res = marketController.getAppointments(storeId);
-            return logAndRes(Logger.logStatus.Success, "user get appointments" + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "user get appointments",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     res, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "cant get appointments: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant get appointments: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "get appointments failed", e.getMessage());
         }
     }
@@ -830,11 +882,9 @@ public class Market implements MarketInterface {
     public Response<List<? extends Information>> getProducts() {
         try{
             List<ProductInfo> products = marketController.getAllProducts();
-            return logAndRes(Logger.logStatus.Success, "store get products successfully on " + LocalDateTime.now(),
-                    products, null, null);
+            return new Response<>(products, null, null);
         }catch(Exception e){
-            return logAndRes(Logger.logStatus.Fail, "cant get store products because: " + e.getMessage() + "on " + LocalDateTime.now(),
-                    null, "get store products failed", e.getMessage());
+            return new Response<>(null, "get store products failed", e.getMessage());
         }
     }
 
@@ -878,11 +928,13 @@ public class Market implements MarketInterface {
             userAuth.checkUser(adminId, token);
             Admin admin = getActiveAdmin(adminId);
             admin.closeStorePermanently(storeId, -1);
-            return logAndRes(Logger.logStatus.Success, "the store: " + storeId + " has been permanently closed by admin: " + adminId + " at time " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "the store: " + storeId + " has been permanently closed by admin: " + adminId,
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     "close was permanently closed", null, null);
         }
         catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "the user: " + adminId + "  cannot close store because: " + e.getMessage() + " at time " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "the user: " + adminId + "  cannot close store because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     null, "close permanent not successfully", e.getMessage());
         }
     }
@@ -897,10 +949,12 @@ public class Market implements MarketInterface {
             Admin a = new Admin(ids.getAndIncrement(), email, hashedPass);
             a.addControllers(userController, marketController);
             admins.put(a.getAdminId(), a);
-            return logAndRes(Logger.logStatus.Success, "admin added new admin successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "admin added new admin successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     "admin added new admin successfully", null, null);
         }catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "add admin failed, "+e.getMessage() + " on " +LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "add admin failed, "+e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     null, "add admin failed", e.getMessage());
         }
     }
@@ -912,11 +966,13 @@ public class Market implements MarketInterface {
             a.setIsActive(true);
             String token = userAuth.generateToken(a.getAdminId());
             LoginInformation loginInformation = getAdminLoginInformation(token, a.getAdminId(), a.getEmailAdmin());
-            return logAndRes(Logger.logStatus.Success, "admin logged in successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "admin logged in successfully",
+                    StringChecks.curDayString(), email,
                     loginInformation, null, null);
         }
         catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "cant login admin because: " + e.getMessage() + "on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant login admin because: " + e.getMessage(),
+                    StringChecks.curDayString(), email,
                     null, "login admin failed", e.getMessage());
         }
     }
@@ -926,10 +982,12 @@ public class Market implements MarketInterface {
         try {
             Admin a = getActiveAdmin(adminId);
             a.setIsActive(false);
-            logger.log(Logger.logStatus.Success, "admin logged out successfully on " + LocalDateTime.now());
-            return new Response<>("u logged out", null, null);
+            return logAndRes(Event.LogStatus.Success, "admin logged out successfully",
+                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    "u logged out", null, null);
         }catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "cant log out admin, " + e.getMessage() + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant log out admin because" + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     null, "log out admin failed", e.getMessage());
         }
     }
@@ -946,11 +1004,13 @@ public class Market implements MarketInterface {
             getActiveAdmin(adminId);
             checkRemoveAdmin();
             admins.remove(adminId);
-            return logAndRes(Logger.logStatus.Success, "admin removed himself successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "admin removed himself successfully",
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     "u removed u self successfully", null, null);
         }catch (Exception e){
-            logger.log(Logger.logStatus.Fail, "cant remove admin because: " + e.getMessage() +" on time: " + LocalDateTime.now());
-            return new Response<>(null, "remove admin failed", e.getMessage());
+            return logAndRes(Event.LogStatus.Fail, "cant remove admin because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    null, "remove admin failed", e.getMessage());
         }
     }
 
@@ -962,10 +1022,12 @@ public class Market implements MarketInterface {
             HashMap<Integer, Admin> list = new HashMap<>();
             for (int key : admins.keySet())
                 list.put(key, admins.get(key));
-            return logAndRes(Logger.logStatus.Success, "admin get all admins successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "admin get all admins successfully",
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     list, null, null);
         }catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "cant get admins because: " + e.getMessage() +" on time: " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant get admins because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     null, "get admins failed", e.getMessage());
         }
     }
@@ -980,10 +1042,12 @@ public class Market implements MarketInterface {
             userAuth.checkUser(adminId, token);
             getActiveAdmin(adminId);
             List<PurchaseHistory> users = userController.getUsersInformation();
-            return logAndRes(Logger.logStatus.Success, "admin get users successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "admin get users successfully",
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     users, null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user failed getting all users because :" + e.getMessage(),
+            return logAndRes(Event.LogStatus.Fail, "user failed getting all users because :" + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     null, "get users", e.getMessage());
         }
     }
@@ -1003,10 +1067,12 @@ public class Market implements MarketInterface {
             userAuth.checkUser(adminId, token);
             getActiveAdmin(adminId);
             sendFeedback(complaintId, ans);
-            return logAndRes(Logger.logStatus.Success, "admin answer complaint successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "admin answer complaint successfully",
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     "admin answer complaint", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user failed answer complaints because:" + e.getMessage() + " on" + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user failed answer complaints because:" + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     null, "answer complaint failed", e.getMessage());
         }
     }
@@ -1017,36 +1083,27 @@ public class Market implements MarketInterface {
             userAuth.checkUser(adminId, token);
             Admin admin = getActiveAdmin(adminId);
             admin.cancelMembership(userToRemove);
-            return logAndRes(Logger.logStatus.Success, "admin cancel Membership successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "admin cancel Membership successfully",
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     "admin cancel Membership complaint", null, null);
         } catch (Exception e) {
-            return logAndRes(Logger.logStatus.Fail, "user failed cancel Membership because:" + e.getMessage() + " on" + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "user failed cancel Membership because:" + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     null, "cancel Membership failed", e.getMessage());
         }
     }
 
     @Override
-    public Response<List<String>> watchEventLog(int adminId, String token){
+        public Response<List<? extends Information>> watchEventLog(int adminId, String token){
         try{
             userAuth.checkUser(adminId, token);
             getActiveAdmin(adminId);
-            return logAndRes(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "admin get log successfully",
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     logger.getEventMap(), null, null);
         }catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "cant watch log because: " + e.getMessage() +" on time: " + LocalDateTime.now(),
-                    null, "watch log failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<List<String>> watchFailLog(int adminId, String token){
-        try {
-            userAuth.checkUser(adminId, token);
-            getActiveAdmin(adminId);
-            return logAndRes(Logger.logStatus.Success, "admin get log successfully on " + LocalDateTime.now(),
-                    logger.getFailMap(), null, null);
-        }catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "cant watch log because: " + e.getMessage() +" on time: " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant watch log because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     null, "watch log failed", e.getMessage());
         }
     }
@@ -1057,10 +1114,12 @@ public class Market implements MarketInterface {
             userAuth.checkUser(adminId, token);
             getActiveAdmin(adminId);
             marketInfo.calculateAverages();
-            return logAndRes(Logger.logStatus.Success, "admin get market status successfully on  " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "admin get market status successfully",
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     marketInfo, null, null);
         }catch (Exception e){
-            return logAndRes(Logger.logStatus.Fail, "cant watch market status because: " + e.getMessage() +" on time: " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Fail, "cant watch market status because: " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(adminId),
                     null, "watch market status failed", e.getMessage());
         }
     }
@@ -1205,10 +1264,8 @@ public class Market implements MarketInterface {
     public Response<List<ProductInfo>> getProducts(int storeId){
         try{
             List<ProductInfo> products = marketController.getStoreProducts(storeId);
-            logger.log(Logger.logStatus.Success, "store get products successfully on " + LocalDateTime.now());
             return new Response<>(products, null, null);
         }catch(Exception e){
-            logger.log(Logger.logStatus.Fail, "cant get store products because: " + e.getMessage() + "on " + LocalDateTime.now());
             return new Response<>(null, "get store products failed", e.getMessage());
         }
     }
@@ -1243,8 +1300,9 @@ public class Market implements MarketInterface {
 
 
     //atomic function to log and get response
-    public Response logAndRes(Logger.logStatus state, String logString, Object value, String errorTi , String errorMsg) {
-        logger.log(state, logString);
+    public Response logAndRes(Event.LogStatus state, String content, String time, String userName,
+                              Object value, String errorTi , String errorMsg) {
+        logger.log(state, content, time, userName);
         return new Response<>(value, errorTi, errorMsg);
     }
 
@@ -1268,10 +1326,10 @@ public class Market implements MarketInterface {
     }
 
     public Response<Notification> getNotification(int userId, String token) {
-        Notification notification = null;
         try {
             userAuth.checkUser(userId, token);
-            return logAndRes(Logger.logStatus.Success, "Member get notification " + userId + " has successfully entered on " + LocalDateTime.now(),
+            return logAndRes(Event.LogStatus.Success, "Member get notification " + userId + " has successfully entered",
+                    StringChecks.curDayString(), userController.getUserName(userId),
                     userController.getNotification(userId), null, null);
         }catch (Exception e){
             System.out.println(e.getMessage());

@@ -386,9 +386,13 @@ public class UserController {
     }
 
 
-    public String getUserName(int id) throws Exception {
-        Member m = getMember(id);
-        return m.getName();
+    public String getUserName(int id){
+        try {
+            User user = getUser(id);
+            return user.getName();
+        }catch (Exception e){
+            return "illegal id" + id;
+        }
     }
 
     public void removeStoreRole(int userId, int storeId) throws Exception {

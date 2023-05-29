@@ -141,10 +141,6 @@ public class API {
         Response<Receipt> res = market.makePurchase(userId, accountNumber);
         return fromResToPairInfo(res);
     }
-    public Pair<Boolean, JSONObject> getStoreDescription(int storeId){
-        Response<String> res = market.getStoreDescription(storeId);
-        return fromResToPair(res);
-    }
 
 
     //member functions
@@ -413,46 +409,11 @@ public class API {
         return fromResToPair(res);
     }
 
-    private String logsToString(HashMap<Logger.logStatus, List<String>> logs){
-        List<String> logsList = new ArrayList();
-        for (Map.Entry<Logger.logStatus, List<String>> logEntry : logs.entrySet()) {
-            JSONObject productJson = new JSONObject();
-            productJson.put("status", logEntry.getKey());
-            productJson.put("messages", logEntry.getValue());
-            logsList.add(productJson.toString());
-        }
-        String logsMessages = logsList.stream()
-                .collect(Collectors.joining(",", "[", "]"));
-        return logsMessages;
-    }
-
-
     //TODO: fix
     public Pair<Boolean, JSONObject> watchEventLog(int adminId, String token)
     {
-        Response<List<String>> res1 = market.watchEventLog(adminId, token);
-        Response<List<String>> res2 = market.watchFailLog(adminId, token);
-        //[{"status": ["log1...", "log2...", ......]}, ...]
-        JSONObject json = new JSONObject();
-        if(res1.errorOccurred())
-        {
-            json.put("errorMsg", res1.getErrorMessage());
-            return new Pair<>(false, json);
-        }
-        else if(res2.errorOccurred())
-        {
-            json.put("errorMsg", res2.getErrorMessage());
-            return new Pair<>(false, json);
-        }
-        else {
-            List<String> event = res1.getValue();
-            List<String> fail = res2.getValue();
-            HashMap<Logger.logStatus, List<String>> ans = new HashMap<>();
-            ans.put(Logger.logStatus.Fail, fail);
-            ans.put(Logger.logStatus.Success, event);
-            json.put("value", logsToString(ans));
-            return new Pair<>(true, json);
-        }
+        Response<List<? extends Information>> res1 = market.watchEventLog(adminId, token);
+        return fromResToPairList(res1);
     }
 
     public Pair<Boolean, JSONObject> viewQuestions(int userId, String token, int storeId)

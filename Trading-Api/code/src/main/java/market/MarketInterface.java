@@ -23,7 +23,6 @@ public interface MarketInterface {
     public Response changeQuantityInCart(int userId, int storeId, int productId, int change);
     Response<String> removeCart(int userId);
     public Response makePurchase(int userId , String accountNumber);
-    public Response getStoreDescription(int storeId);
 
 
     //TODO: will change when miki adds all changes
@@ -97,8 +96,6 @@ public interface MarketInterface {
     public Response closeStorePermanently(int adminId, String token, int storeId);
 
     //store methods
-    //todo: decide if getStore will bring every thing together , products , orders , ..statistics
-    //public Response getStore(int storeId);
     public Response getProducts(int storeId);
     public Response getProducts();
 
@@ -112,8 +109,6 @@ public interface MarketInterface {
     public Response answerComplaint(int adminId, String token, int complaintId, String ans);
     public Response cancelMembership(int adminId, String token, int userToRemove);
     public Response watchEventLog(int adminId, String token);
-    public Response watchFailLog(int adminId, String token);
-
     public Response watchMarketStatus(int adminId, String token);
 
     public Response setPaymentService(int adminId, String token, String paymentService);
