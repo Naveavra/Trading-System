@@ -85,7 +85,7 @@ public class StringChecks {
         int[] curDay = curDay();
         int ans = 0;
         ans = ans + curDay[2] - bDay[2];
-        if(curDay[1] > bDay[1] || (curDay[1] == bDay[1] && curDay[0] > bDay[0]))
+        if(bDay[1] > curDay[1] || (curDay[1] == bDay[1] && curDay[0] > bDay[0]))
             ans = ans + 1;
         return ans;
     }

@@ -539,10 +539,10 @@ public class API {
         categories.add("fresh");
         res2 = market.addProduct(id1, token1, sid1, categories, "air1", "comfy", 100, 20, "https://images.pexels.com/photos/13691727/pexels-photo-13691727.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
         int pid1 = res2.getValue();
-        res2 = market.addProduct(id1, token1, sid1, categories, "air2", "more comfy", 300, 10, "https://images.pexels.com/photos/4215840/pexels-photo-4215840.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+        res2 = market.addProduct(id2, token2, sid2, categories, "air2", "more comfy", 300, 10, "https://images.pexels.com/photos/4215840/pexels-photo-4215840.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
         int pid2 = res2.getValue();
-        market.addProductToCart(id1, sid2, pid1, 3);
-        market.addProductToCart(id2, sid1, pid1, 5);
+        market.addProductToCart(id1, sid1, pid1, 3);
+        market.addProductToCart(id1, sid2, pid2, 5);
         Response<Receipt> res3 = market.makePurchase(id1, "9999999");
         market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), sid2, "bad store", 2);
         res3 = market.makePurchase(id2, "111111");
