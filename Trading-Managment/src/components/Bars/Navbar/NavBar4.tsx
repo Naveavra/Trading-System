@@ -23,12 +23,11 @@ import { useEffect, useState } from 'react';
 interface Props {
     headLine: string;
 }
-const DRAWER_WIDTH = 240;
-const Bar3: React.FC<Props> = ({ headLine }) => {
+
+const Bar4: React.FC<Props> = ({ headLine }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [storeOpen, setStoreOpen] = useState(false);
-    const [openDrawer, setOpenDrawer] = useState(false);
     const [profileDialogOpen, setProfileDialogOpen] = useState(false);
     const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
 
@@ -38,47 +37,18 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
     const token = useAppSelector((state) => state.auth.token) ?? "";
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
 
-    const cart = useAppSelector((state) => state.cart.responseData);
-    const numProductsIncart = cart?.reduce((acc, item) => acc + item.quantity, 0) ?? 0;
-
-    const stores_roles: StoreRole[] = useAppSelector((state) => state.auth.storeRoles);
-    const stores_names = useAppSelector((state) => state.auth.storeNames);
-    const store_images = useAppSelector((state) => state.auth.storeImgs);
-    const stores = stores_roles ? stores_roles.map((role, index) => {
-        return {
-            storeId: role.storeId,
-            storeRole: role.storeRole,
-            storeName: stores_names[index].storeName,
-            storeImg: store_images[index].storeImg,
-        }
-    }) : [];
-
-
-    const storeInfo = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const handleLogout = () => {
         dispatch(logout(userId));
         navigate('/auth/login');
     };
-    const handleChooseStore = (storeNumber: number) => () => {
-        dispatch(getStore({ userId: userId, storeId: storeNumber }));
-        navigate('/dashboard/store/superior');
-        setStoreOpen(false);
-    }
-
     const handleNotification = () => {
         setNotificationDialogOpen(true);
     }
     const handleConfirm = (event: React.ChangeEvent<HTMLInputElement>, idx: number): void => {
         console.log(`confirm message ${idx}`);
     }
-    // useEffect(() => {
-    //     if (token != '') {
-    //         dispatch(getNotifications({ userId: userId, token: token }));
-    //     }
-
-    // }, [dispatch])
 
     return (
         <>
@@ -112,13 +82,6 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                             setProfileDialogOpen(true);
                         }}>
                             <PersonOutlineOutlinedIcon />
-                        </IconButton>
-                        <IconButton className="icon" sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate(`/dashboard/cart`)}>
-                            <div className="numberIcon">
-                                <ShoppingCartOutlinedIcon />
-                                {/* {need to sum up products quantity in every basket} */}
-                                <span>{numProductsIncart}</span>
-                            </div>
                         </IconButton>
                     </Toolbar>
                 </AppBar>
@@ -179,47 +142,6 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                 }
             </Dialog>
 
-            <Dialog
-                open={storeOpen}
-                onClose={() => {
-                    setStoreOpen(false);
-                }}
-            >
-                <DialogTitle>your stores</DialogTitle>
-                <>
-                    {stores.map((store) => {
-                        return (
-                            <DialogContent dividers key={store.storeId}>
-                                <Button onClick={handleChooseStore(store.storeId)}>
-                                    <Avatar src={store.storeImg} />
-                                    <Box ml={3} display={'flex'} >
-                                        <Typography sx={{ ml: 2, mr: 3 }}>{store.storeName}</Typography>
-                                        <Typography>{store.storeRole}</Typography>
-                                    </Box>
-                                </Button>
-                            </DialogContent>
-                        )
-                    }
-                    )}
-                </>
-                <DialogActions>
-                    <Button
-                        onClick={() => {
-                            setStoreOpen(false);
-                        }}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            setStoreOpen(false);
-                            navigate('/dashboard/store/new');
-                        }}
-                    >
-                        add new store
-                    </Button>
-                </DialogActions>
-            </Dialog>
             {/*--------------notofications-----------*/}
             {/* -------------------------------------notofication---------------- */}
             <Dialog
@@ -257,4 +179,4 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
         </>
     );
 }
-export default Bar3;
+export default Bar4;

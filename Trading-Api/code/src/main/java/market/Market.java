@@ -143,7 +143,7 @@ public class Market implements MarketInterface {
                 return new Response<LoginInformation>(loginInformation, null, null);
             }
             Admin a = getActiveAdmin(userId);
-            loginInformation = getAdminLoginInformation(token, userId, a.getEmailAdmin());
+            loginInformation = getAdminLoginInformation(a, token);
             return new Response<LoginInformation>(loginInformation, null, null);
         }catch (Exception e){
             return new Response<>(null, "get member failed", e.getMessage());
@@ -929,7 +929,7 @@ public class Market implements MarketInterface {
             Admin admin = getActiveAdmin(adminId);
             admin.closeStorePermanently(storeId, -1);
             return logAndRes(Event.LogStatus.Success, "the store: " + storeId + " has been permanently closed by admin: " + adminId,
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), admin.getEmailAdmin(),
                     "close was permanently closed", null, null);
         }
         catch (Exception e){
@@ -965,7 +965,7 @@ public class Market implements MarketInterface {
             Admin a = getInActiveAdmin(email, hashedPass);
             a.setIsActive(true);
             String token = userAuth.generateToken(a.getAdminId());
-            LoginInformation loginInformation = getAdminLoginInformation(token, a.getAdminId(), a.getEmailAdmin());
+            LoginInformation loginInformation = getAdminLoginInformation(a, token);
             return logAndRes(Event.LogStatus.Success, "admin logged in successfully",
                     StringChecks.curDayString(), email,
                     loginInformation, null, null);
@@ -1312,8 +1312,9 @@ public class Market implements MarketInterface {
         return userController.getLoginInformation(memberId, token);
     }
 
-    public LoginInformation getAdminLoginInformation(String token, int userId, String email) {
-        return new LoginInformation(token, userId, email, true, null,
+    public LoginInformation getAdminLoginInformation(Admin a, String token) {
+
+        return new LoginInformation(token, a.getAdminId(), a.getEmailAdmin(), true, a.displayNotifications(),
                 null, null, null, null, null, -1, null);
     }
       

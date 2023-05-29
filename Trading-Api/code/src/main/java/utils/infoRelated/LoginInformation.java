@@ -67,15 +67,17 @@ public class LoginInformation extends Information{
         json.put("token", getToken());
         json.put("userId", getUserId());
         json.put("userName", getUserName());
-        json.put("purchaseHistory", purchaseHistory.toJson());
-        json.put("age", age);
-        json.put("birthday", birthday);
         json.put("isAdmin", getIsAdmin());
         json.put("notifications", infosToJson(getNotifications()));
-        json.put("storeNames", toJsonHM(getStoreNames(), "storeId", "storeName"));
-        json.put("storeRoles", getStoreRole(getStoreRoles(), "storeId", "storeRole"));
-        json.put("storeImgs", toJsonHM(getStoreImg(), "storeId", "storeImg"));
-        json.put("permissions", getStorePermissions(getPermissions(), "storeId", "actions"));
+        if(!isAdmin) {
+            json.put("purchaseHistory", purchaseHistory.toJson());
+            json.put("age", age);
+            json.put("birthday", birthday);
+            json.put("storeNames", toJsonHM(getStoreNames(), "storeId", "storeName"));
+            json.put("storeRoles", getStoreRole(getStoreRoles(), "storeId", "storeRole"));
+            json.put("storeImgs", toJsonHM(getStoreImg(), "storeId", "storeImg"));
+            json.put("permissions", getStorePermissions(getPermissions(), "storeId", "actions"));
+        }
         return json;
     }
 

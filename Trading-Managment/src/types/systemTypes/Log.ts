@@ -3,5 +3,5 @@ export interface LogRecord {
     userName: string;
     content: string;
     time: string;
-    status: number;
+    status: string;
 }

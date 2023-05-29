@@ -12,6 +12,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Dehaze } from "@mui/icons-material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import Bar4 from "../../../components/Bars/Navbar/NavBar4";
+import { getLogger } from "../../../reducers/adminSlice";
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -26,7 +28,8 @@ const Admin = () => {
     const isLoading = useAppSelector((state) => state.auth.isLoading);
     const [emailError, setEmailError] = useState("");
 
-    const logs = useAppSelector((state) => state.admin.logRecords);
+    const logs = useAppSelector((state) => state.admin.logRecords) ?? [{userName: "", id: 0, content: "", status: ""}];
+    const max = logs?.sort((a,b) => {if(a.content.length > b.content.length) {return a.content.length} else {return b.content.length}})[0]?.content?.length;
 
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
@@ -61,10 +64,10 @@ const Admin = () => {
         return [
             { field: 'id', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },
 
-            { field: 'userName', headerName: 'user name', width: 130, editable: true, align: 'center', headerAlign: 'center' },
+            { field: 'userName', headerName: 'user name', width: 330, editable: false, align: 'center', headerAlign: 'center' },
 
-            { field: 'time', headerName: 'time', width: 130, editable: true, align: 'center', headerAlign: 'center' },
-            { field: 'content', headerName: 'content', width: 350, editable: true, align: 'center', headerAlign: 'center' },
+            { field: 'time', headerName: 'time', width: 130, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'content', headerName: 'content', width: {max}, editable: false, align: 'center', headerAlign: 'center' },
             {
                 field: 'actions',
                 type: 'actions',
@@ -99,12 +102,12 @@ const Admin = () => {
 
 
     useEffect(() => {
-        // dispatch(getCustomers({ synagogue_id: synagogue_id, limit: pageState.pageSize, offset: (pageState.page - 1) * pageState.pageSize }));
-    }, [dispatch]);
+        dispatch(getLogger(userId))
+      }, [dispatch]);
 
     return (
         <>
-            <Bar3 headLine={"this is your personal data"} />
+            <Bar4 headLine={"welcome admin"} />
             <Box sx={{ width: '100%', display: 'flex' }}>
                 <Card sx={{ minWidth: 275, width: '30%', mt: 5, ml: 3 }}>
                     <CardContent sx={{ padding: 2 }}>
@@ -192,7 +195,7 @@ const Admin = () => {
             </Box >
             <Divider />
             <Box sx={{
-                height: 550, width: '100%', right: 2, mt: 7
+                height: 550, width: '90%', right: 2, mt: 7
             }}>
                 <DataGrid
                     rows={logs}

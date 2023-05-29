@@ -7,12 +7,12 @@ import { useAppDispatch, useAppSelector } from '../../redux/store';
 import { LoginForm } from './LoginPanel/LoginForm';
 import AlertDialog from '../../components/Dialog/AlertDialog';
 import { clearAuthError } from '../../reducers/authSlice';
-import './LoginPanel/Yeti.css';
 
 const LoginPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
     const error = useAppSelector((state) => state.auth.error);
+    const isAdmin =useAppSelector((state) => state.auth.isAdmin); 
 
     return (!isLoggedIn ?
         <>
@@ -44,6 +44,9 @@ const LoginPage: React.FC = () => {
             </Box>
             {!!error ? <AlertDialog open={!!error} onClose={() => { dispatch(clearAuthError()); }} text={error} sevirity={'error'} /> : null}
         </> :
+        isAdmin ?
+        <Navigate to="/dashboard/admin" />:
+             
         <Navigate to="/dashboard" />
     )
 

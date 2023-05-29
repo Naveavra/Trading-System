@@ -7,6 +7,7 @@ import { ShopRoutes } from "./Shop/router";
 import AddEditStore from "../../components/Forms/AddEditStore";
 import Cart from "../../components/Cart/Cart";
 import { PersonalRoutes } from "./Personal/router";
+import { AdminRoutes } from "./Admin/router";
 
 
 export const dashboardRoutes = [
@@ -15,6 +16,7 @@ export const dashboardRoutes = [
         <Route path="/dashboard/cart" element={<Cart />} />
         <Route path="/dashboard/store/new" element={<AddEditStore mode={"add"} />} />
         {/*todo : add routes here*/}
+        {AdminRoutes}
         {PersonalRoutes}
         {ShopRoutes}
     </Route>

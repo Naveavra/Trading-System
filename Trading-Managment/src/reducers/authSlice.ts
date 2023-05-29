@@ -195,6 +195,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.error = null;
         });
         builder.addCase(login.fulfilled, (state, { payload }: PayloadAction<{ rememberMe: boolean, responseBody: TokenResponseBody }>) => {
+            debugger;
             state.isLoginLoading = false;
             state.token = payload.responseBody.token;
             state.userId = payload.responseBody.userId;

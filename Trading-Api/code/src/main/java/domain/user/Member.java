@@ -81,7 +81,7 @@ public class Member implements User{
     }
 
     public String getName(){
-        return name;
+        return email;
     }
 
     public void setNewEmail(String  newEmail){
