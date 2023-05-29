@@ -16,4 +16,5 @@ public interface User {
     public ShoppingCart getShoppingCart() throws Exception;
     public void purchaseMade(int orderId, double totalPrice);
     public void emptyCart();
+    public String getName();
 }

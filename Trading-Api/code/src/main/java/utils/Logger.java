@@ -4,17 +4,11 @@ import java.util.*;
 
 
 public class Logger {
-    public enum logStatus{ //maybe should be moved to a designated class
-        Success,
-        Fail,
-    }
     private static Logger instance;
-    private List<String> eventMap;
-    private List<String> failMap;
+    private List<Event> eventMap;
     
     private Logger() {
         eventMap = new LinkedList<>();
-        failMap = new LinkedList<>();
     }
     
     public static synchronized Logger getInstance() {
@@ -23,22 +17,12 @@ public class Logger {
         }
         return instance;
     }
-    
-    /**
-     * This function logs all activity in the system.
-     * @param type Enum logStatus => Success, Fail, Error
-     * @param message String
-     */
-    public void log(logStatus type,String message) {
-        if(type == logStatus.Success)
-            eventMap.add(message);
-        else
-            failMap.add(message);
+
+    public void log(Event.LogStatus status, String content, String time, String userName) {
+        Event event = new Event(status, content, time, userName);
+        eventMap.add(event);
     }
-    public List<String> getEventMap(){
+    public List<Event> getEventMap(){
         return eventMap;
-    }
-    public List<String> getFailMap(){
-        return failMap;
     }
 }

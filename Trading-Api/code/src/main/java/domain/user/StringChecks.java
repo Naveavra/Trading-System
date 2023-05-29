@@ -79,6 +79,11 @@ public class StringChecks {
         return curDay;
     }
 
+    public static String curDayString(){
+        int[] curDay = curDay();
+        return curDay[0] + "/" + curDay[1] + "/" + curDay[2];
+    }
+
     public static int calculateAge(String birthday) {
         String[] splitBDay = birthday.split("/");
         int[] bDay = {Integer.parseInt(splitBDay[0]), Integer.parseInt(splitBDay[1]), Integer.parseInt(splitBDay[2])};

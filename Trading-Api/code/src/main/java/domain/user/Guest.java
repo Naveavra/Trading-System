@@ -42,6 +42,12 @@ public class Guest implements User{
     public void emptyCart() {
         cart.emptyCart();
     }
+
+    @Override
+    public String getName() {
+        return "guest" + id;
+    }
+
     public void purchaseMade(int orderId, double totalPrice){
         emptyCart();
     }

@@ -394,5 +394,14 @@ public class Server {
             toSparkRes(res, api.checkReviews(userId, token, storeId));
             return res.body();
         });
+
+        //logger
+        post("api/admin/logger/:userId", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.watchEventLog(adminId, token));
+            return res.body();
+        });
     }
 }
