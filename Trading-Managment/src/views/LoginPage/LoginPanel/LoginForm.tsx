@@ -1,5 +1,5 @@
 
-import { TextField, Typography, Grid, FormControlLabel, Checkbox, CardContent } from '@mui/material';
+import { TextField, Grid, FormControlLabel, Checkbox } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 
@@ -9,13 +9,9 @@ import { guestEnter, login } from '../../../reducers/authSlice';
 import { useAppStorage } from '../../../hooks/useAppStorage';
 import { localStorage } from '../../../config';
 import { useNavigate } from 'react-router-dom';
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 
-interface LoginFormProps {
 
-};
-
-export const LoginForm = ({ }: LoginFormProps) => {
+export const LoginForm = () => {
     const [defaultChecked, setDefaultChecked] = useAppStorage(localStorage.settings.login_page.remember_me);
     const dispatch = useAppDispatch();
     const isLoginLoading = useAppSelector((state: RootState) => state.auth.isLoginLoading);

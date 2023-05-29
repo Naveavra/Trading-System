@@ -23,7 +23,7 @@ const orders = () => {
         return {
             id: order.orderId,
             userId: order.userId,
-            num_products: order.productsInStores?.reduce((acc, curr) => acc + curr.quantity, 0),
+            num_products: order.products?.reduce((acc, curr) => acc + curr.quantity, 0),
             price: order.totalPrice,
         }
     });

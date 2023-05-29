@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 //import { FullBackgroundImage } from '../../components/Images/FullBackgroundImage';
-
 import { Box, CardContent, Grid, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
 import { LoginForm } from './LoginPanel/LoginForm';
-import ErrorAlert from '../../components/Alerts/error';
 import AlertDialog from '../../components/Dialog/AlertDialog';
 import { clearAuthError } from '../../reducers/authSlice';
+import './LoginPanel/Yeti.css';
 
 const LoginPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -40,6 +39,7 @@ const LoginPage: React.FC = () => {
             }}>
                 <CardContent sx={{ width: 400 }}>
                     <LoginForm />
+
                 </CardContent>
             </Box>
             {!!error ? <AlertDialog open={!!error} onClose={() => { dispatch(clearAuthError()); }} text={error} sevirity={'error'} /> : null}

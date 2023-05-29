@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
-import { Card, CardContent, Typography, CardActions, Divider, Box, Grid, TextField } from "@mui/material";
+import { Card, CardContent, Typography, CardActions, Divider, Box, Grid, TextField, Button } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import { Outlet, useNavigate } from "react-router-dom";
@@ -8,9 +8,12 @@ import { LoadingButton } from "@mui/lab";
 import { useForm } from "react-hook-form";
 import { sendMsgFormValues } from "../../../types/formsTypes";
 import { sendMessage } from "../../../reducers/authSlice";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Dehaze } from "@mui/icons-material";
+import { DataGrid, GridActionsCellItem, GridColDef, GridRowId, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from "@mui/x-data-grid";
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
-const Personal = () => {
+const Admin = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const form = useForm<sendMsgFormValues>();
@@ -23,7 +26,8 @@ const Personal = () => {
     const isLoading = useAppSelector((state) => state.auth.isLoading);
     const [emailError, setEmailError] = useState("");
 
-    const orders = useAppSelector((state) => state.auth.purchaseHistory);
+    const logs = useAppSelector((state) => state.admin.logRecords);
+
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
         dispatch(sendMessage(form.getValues()));
@@ -38,8 +42,66 @@ const Personal = () => {
             setEmailError("");
             form.clearErrors("userName");
         }
-        // return emailRegex.test(email);
     }
+    const handleEditClick = (id: GridRowId) => () => {
+        //navigate(`/dashboard/customers/edit/${id}`);
+    };
+
+    const handleDeleteClick = (id: GridRowId) => () => {
+        //     dispatch(deleteCustomer(id as number));
+        //     dispatch(getCustomers({ synagogue_id: synagogue_id, limit: pageState.pageSize, offset: (pageState.page - 1) * pageState.pageSize }));
+    };
+    const handleShowInfo = (id: GridRowId) => () => {
+        // dispatch(setWhatchedCustomer(id as number));
+        // navigate(`/dashboard/customers/${id}`);
+    };
+
+    //log table
+    const columns: GridColDef[] = useMemo(() => {
+        return [
+            { field: 'id', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },
+
+            { field: 'userName', headerName: 'user name', width: 130, editable: true, align: 'center', headerAlign: 'center' },
+
+            { field: 'time', headerName: 'time', width: 130, editable: true, align: 'center', headerAlign: 'center' },
+            { field: 'content', headerName: 'content', width: 350, editable: true, align: 'center', headerAlign: 'center' },
+            {
+                field: 'actions',
+                type: 'actions',
+                headerName: 'Actions',
+                width: 130,
+                cellClassName: 'actions',
+                getActions: ({ id }) => {
+                    return [
+                        <GridActionsCellItem
+                            icon={<DeleteIcon />}
+                            label="Delete"
+                            onClick={handleDeleteClick(id)}
+                            color="inherit"
+                        />,
+                        <GridActionsCellItem
+                            icon={<EditIcon />}
+                            label="Edit"
+                            onClick={handleEditClick(id)}
+                            color="inherit"
+                        />,
+                        <GridActionsCellItem
+                            icon={<Dehaze />}
+                            label="data"
+                            onClick={handleShowInfo(id)}
+                            color="inherit"
+                        />,
+                    ];
+                },
+            },
+        ];
+    }, [handleEditClick, handleDeleteClick, handleShowInfo]);
+
+
+    useEffect(() => {
+        // dispatch(getCustomers({ synagogue_id: synagogue_id, limit: pageState.pageSize, offset: (pageState.page - 1) * pageState.pageSize }));
+    }, [dispatch]);
+
     return (
         <>
             <Bar3 headLine={"this is your personal data"} />
@@ -127,30 +189,44 @@ const Personal = () => {
                         </LoadingButton>
                     </Grid>
                 </Grid >
-
             </Box >
             <Divider />
-            <Typography sx={{ fontSize: 25, mt: 3, ml: '40%' }} gutterBottom>
-                your purchase history
-            </Typography>
-            {
-                orders.map((order, index) => {
-                    return (
-                        <Card sx={{ minWidth: 275, width: '30%', mt: 5, ml: 3 }} key={index} onClick={() => navigate(`order/${order.orderId}`)}>
-                            <CardContent>
-                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                    price:  {order.totalPrice}
-                                </Typography>
-                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                    quntity:  {order.products.length}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    )
-                })
-            }
+            <Box sx={{
+                height: 550, width: '100%', right: 2, mt: 7
+            }}>
+                <DataGrid
+                    rows={logs}
+                    columns={columns}
+
+                    pagination
+
+                    paginationMode="server"
+
+
+                    components={{
+                        Toolbar: EditToolbar,
+                    }}
+                    sx={{
+                        position: 'relative', ml: 20, mb: 3, border: 1, width: '75%', height: '100%', fontSize: 'large'
+                    }}
+                />
+            </Box>
             <Outlet />
         </>
     );
 };
-export default Personal;
+function EditToolbar() {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    return (
+        <div>
+            <GridToolbarContainer >
+                <GridToolbarDensitySelector sx={{ fontSize: 'medium', mr: 2 }} />
+                <GridToolbarFilterButton sx={{ fontSize: 'medium', mr: 2 }} />
+                <GridToolbarExport sx={{ fontSize: 'medium', mr: 2 }} />
+            </GridToolbarContainer>
+        </div>
+    );
+}
+
+export default Admin;

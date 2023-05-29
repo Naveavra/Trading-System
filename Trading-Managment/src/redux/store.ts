@@ -10,6 +10,7 @@ import storageSession from 'reduxjs-toolkit-persist/lib/storage/session'
 import orderReducer from '../reducers/orderSlice';
 import { getPersistConfig } from 'redux-deep-persist';
 import discountReducer from '../reducers/discountSlice';
+import adminReducer from '../reducers/adminSlice';
 
 
 const authPersistConfig = {
@@ -37,6 +38,7 @@ export const store = configureStore({
         cart: cartReducer,
         order: orderReducer,
         discount: discountReducer,
+        admin: adminReducer,
 
     },
     middleware(getDefaultMiddleware) {

@@ -128,7 +128,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                         >
                             <DialogTitle>Profile</DialogTitle>
                             <DialogContent dividers>
-                                <Box display="flex" alignItems="center">
+                                <Box display="flex" alignItems="center" onClick={() => { navigate('/dashboard/personal') }}>
                                     <Avatar />
                                     <Box ml={3}>
                                         <Typography>{userName}</Typography>

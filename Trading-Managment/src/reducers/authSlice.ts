@@ -4,7 +4,7 @@ import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData, getCli
 import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
-import { RegisterPostData, getUserData, getUserNotifications, messageParams } from "../types/requestTypes/authTypes";
+import { RegisterPostData, editProfileParams, getUserData, getUserNotifications, messageParams } from "../types/requestTypes/authTypes";
 import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
 import { MyNotification } from "../types/systemTypes/Notification";
@@ -158,6 +158,17 @@ export const sendMessage = createAsyncThunk<
     `${reducrName}/sendMessage`,
     async (credential, thunkApi) => {
         return authApi.sendMessage(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+export const editProfile = createAsyncThunk<
+    string,
+    editProfileParams,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/editProfile`,
+    async (credential, thunkApi) => {
+        return authApi.editProfile(credential)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
@@ -323,7 +334,19 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during send message";
         });
-
+        //edit profile
+        builder.addCase(editProfile.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(editProfile.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(editProfile.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during edit profile";
+        });
     }
 });
 // Action creators are generated for each case reducer function

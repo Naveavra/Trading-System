@@ -17,7 +17,13 @@ export interface getUserData {
 };
 export interface messageParams {
     userId: number;
-    token: string;
     message: string;
     userName: string;
+}
+export interface editProfileParams {
+    userId: number;
+    name: string;
+    email: string;
+    age: number;
+    birthday: string;
 }
