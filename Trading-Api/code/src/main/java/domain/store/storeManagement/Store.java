@@ -21,7 +21,6 @@ import utils.messageRelated.MessageState;
 import utils.Pair;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
-import utils.stateRelated.Role;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,6 +44,7 @@ public class Store extends Information{
     private PurchasePolicy purchasePolicy;
     private ArrayList<Discount> discounts;
     private DiscountFactory discountFactory;
+
     Gson gson ;
     public Store(int id, String description, Member creator){
         Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
@@ -201,9 +201,9 @@ public class Store extends Information{
     }
 
 
-    public boolean appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
+    public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
         Pair<Member, UserState> node = new Pair<>(newUser, role);
-        return appHistory.addNode(userinchargeid, node);
+        appHistory.addNode(userinchargeid, node);
     }
 
     public int addReview(int orderId, Message review) throws Exception {

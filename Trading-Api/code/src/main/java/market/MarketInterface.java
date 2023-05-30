@@ -35,12 +35,8 @@ public interface MarketInterface {
     Response<LoginInformation> getMember(int userId, String token);
     public Response displayNotifications(int userId, String token);
     public Response logout(int userId);
-    public Response changePassword(int userId, String token, String oldPass, String newPass);
-
-    public Response changeName(int userId, String token, String newUserName);
-    public Response changeEmail(int userId, String token, String newEmail);
+    public Response changeMemberAttributes(int userId, String token, String newEmail, String oldPass, String newPass);
     public Response openStore(int userId, String token, String storeName, String des, String img);
-    public Response getMemberInformation(int userId, String token);
 
     Response<PurchaseHistory> getUserPurchaseHistory(int userId, String token, int buyerId);
 

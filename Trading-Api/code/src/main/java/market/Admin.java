@@ -1,35 +1,31 @@
 package market;
 
+import domain.user.Subscriber;
 import service.MarketController;
 import service.UserController;
 import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
-public class Admin {
+public class Admin extends Subscriber {
 
     private int adminId;
 
     private String emailAdmin;
     private transient String passwordAdmin;
-    private transient BlockingQueue<Notification> notifications;
     private boolean isActive;
 
     private MarketController marketController;
     private UserController userController;
     public Admin(int adminId, String email, String password){
+        super();
         this.adminId = adminId;
         emailAdmin = email;
         passwordAdmin = password;
         isActive = false;
-        notifications = new LinkedBlockingQueue<>();
 
     }
 
@@ -65,9 +61,6 @@ public class Admin {
         return Objects.equals(passwordAdmin, pass);
     }
 
-
-
-
     public void addControllers(UserController userController, MarketController marketController) {
         this.marketController = marketController;
         this.userController = userController;
@@ -77,23 +70,5 @@ public class Admin {
         List<Integer> storeIds = userController.cancelMembership(userToRemove);
         for(int storeId : storeIds)
             closeStorePermanently(storeId, userToRemove);
-    }
-
-    public synchronized void addNotification(Notification notification){
-        notifications.offer(notification);
-    }
-
-    public List<Notification> displayNotifications(){
-        List<Notification> display = new LinkedList<>();
-        for (Notification notification : notifications)
-            display.add(notification);
-        notifications.clear();
-        return display;
-    }
-
-    public Notification getNotification() throws InterruptedException {
-        synchronized (notifications) {
-            return notifications.take();
-        }
     }
 }

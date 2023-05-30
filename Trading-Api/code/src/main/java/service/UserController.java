@@ -224,29 +224,14 @@ public class UserController {
     }
 
 
-    public synchronized Info getUserPrivateInformation(int userId) throws Exception {
+
+    public synchronized void changeMemberAttributes(int userId, String newEmail, String oldPass, String newPass, String newHashedPass) throws Exception {
         Member m = getActiveMember(userId);
-        return m.getPrivateInformation();
-
-    }
-
-    public synchronized void changeUserEmail(int userId, String newEmail) throws Exception {
-        Member m = getActiveMember(userId);
-        m.setNewEmail(newEmail);
-        emailToId.put(newEmail, m.getId());
-    }
-
-
-    public synchronized void changeUserName(int userId, String newName) throws Exception {
-        Member m = getActiveMember(userId);
-        m.setNewName(newName);
-    }
-
-
-    public synchronized void changeUserPassword(int userId, String oldPass, String newPass, String newHashedPass) throws Exception {
-        Member m = getActiveMember(userId);
-        checks.checkPassword(newPass);
-        m.setNewPassword(oldPass, newHashedPass);
+        if (!newPass.equals("null"))
+            checks.checkPassword(newPass);
+        m.setMemberAttributes(newEmail, oldPass, newHashedPass);
+        if (!newEmail.equals("null"))
+            emailToId.put(newEmail, m.getId());
     }
 
     //starting the functions connecting to the store
@@ -382,7 +367,7 @@ public class UserController {
 
     public synchronized String getUserEmail(int userId) throws Exception {
         Member m = getMember(userId);
-        return m.getEmail();
+        return m.getName();
     }
 
 
@@ -413,7 +398,7 @@ public class UserController {
                 creatorStoreIds.add(storeId);
         }
         memberList.remove(userToRemove);
-        emailToId.remove(m.getEmail());
+        emailToId.remove(m.getName());
         return creatorStoreIds;
     }
 

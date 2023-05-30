@@ -16,7 +16,6 @@ import java.util.*;
 
 class APITest {
     private HashMap<Integer, HashMap<Integer, Integer>> cart;
-    private HashMap<Logger.logStatus, List<String>> logs;
     private LoginInformation li;
     API api;
     int userId;

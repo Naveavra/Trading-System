@@ -11,7 +11,6 @@ import java.util.List;
 public class Info extends Information{
 
     private int id;
-    private String name;
     private String email;
     private String birthday;
     private int age;
@@ -19,9 +18,8 @@ public class Info extends Information{
     private List<Action> managerActions;
     private PurchaseHistory purchaseHistory;
 
-    public Info(int id, String name, String email, String birthday, int age){
+    public Info(int id, String email, String birthday, int age){
         this.id = id;
-        this.name = name;
         this.email = email;
         this.birthday = birthday;
         this.age = age;
@@ -44,9 +42,6 @@ public class Info extends Information{
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
 
     public String getEmail() {
         return email;
@@ -63,7 +58,6 @@ public class Info extends Information{
     {
         JSONObject json = new JSONObject();
         json.put("userId", getId());
-        json.put("userName", getName());
         json.put("email", getEmail());
         json.put("birthday", getBirthday());
         json.put("age", getAge());

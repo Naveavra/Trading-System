@@ -10,45 +10,37 @@ import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.NotificationOpcode;
 import utils.messageRelated.MessageState;
-import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
 
 
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
 
 
-public class Member implements User{
+public class Member extends Subscriber implements User{
 
     private transient Guest g;
     private int id;
-    private String name;
+    private String email;
     private String birthday;
     int age;
-    private String email;
     private transient String password;
 
     private List<UserState> roles; //connection between registered to the shops
-    private transient BlockingQueue<Notification> notifications;
     private UserHistory userHistory;
     private boolean isConnected;
     public Member(int id, String email, String password, String birthday){
         this.id = id;
-        String[] emailParts = email.split("@");
-        this.name = emailParts[0];
         this.email = email;
         this.password = password;
         this.birthday = birthday;
         age = StringChecks.calculateAge(birthday);
         roles = new ArrayList<>();
-        userHistory = new UserHistory(this.id, this.email, this.name, this.password);
+        userHistory = new UserHistory(this.id, this.email, this.password);
         g = new Guest(id);
-        notifications = new LinkedBlockingQueue<>();
     }
     public boolean getIsConnected(){
         return isConnected;
@@ -75,28 +67,24 @@ public class Member implements User{
         roles.add(userState);
     }
 
-
-    public String getEmail(){
-        return email;
-    }
-
     public String getName(){
         return email;
     }
 
-    public void setNewEmail(String  newEmail){
-        email = newEmail;
-        userHistory.addEmail(email);
+
+    public void setMemberAttributes(String email, String oldPassword, String newPassword) throws Exception{
+        if(!email.equals("null"))
+            setNewEmail(email);
+        if(!newPassword.equals("null"))
+            setNewPassword(oldPassword, newPassword);
     }
-    public void setNewName(String  newName){
-        name = newName;
-        userHistory.addName(name);
+    private void setNewEmail(String  newEmail){
+        email = newEmail;
     }
 
-    public void setNewPassword(String oldPassword, String newPassword) throws Exception {
+    private void setNewPassword(String oldPassword, String newPassword) throws Exception {
         if(password.equals(oldPassword)){
             password = newPassword;
-            userHistory.addPassword(password);
         }
         else
             throw new Exception("wrong password entered, can't change to a new password");
@@ -141,8 +129,7 @@ public class Member implements User{
     }
 
     public void openStore(Store store) {
-        UserState creator = new StoreCreator(id, name, store);
-
+        UserState creator = new StoreCreator(id, email, store);
         roles.add(creator);
     }
 
@@ -176,24 +163,6 @@ public class Member implements User{
 
     public Message sendQuestion(int messageId, int storeId, String question) {
         return new Message(messageId, NotificationOpcode.QUESTION, question, this, -1, storeId, MessageState.question);
-    }
-
-    public synchronized void addNotification(Notification notification){
-            notifications.offer(notification);
-    }
-
-    public List<Notification> displayNotifications(){
-        List<Notification> display = new LinkedList<>();
-        for (Notification notification : notifications)
-            display.add(notification);
-        notifications.clear();
-        return display;
-    }
-
-    public Notification getNotification() throws InterruptedException {
-        synchronized (notifications) {
-            return notifications.take();
-        }
     }
 
     private UserState getActiveRole(int storeId) throws Exception {
@@ -235,11 +204,6 @@ public class Member implements User{
 
     public PurchaseHistory getUserPurchaseHistory(){
         return userHistory.getUserPurchaseHistory();
-    }
-
-    public Info getPrivateInformation() {
-        Info info = new Info(id, name, email, birthday, age);
-        return userHistory.getInformation(info);
     }
 
     public void appointToManager(Member appointed, int storeId) throws Exception {
@@ -301,7 +265,7 @@ public class Member implements User{
     }
 
     public Info getInformation(int storeId){
-        Info info = new Info(id, name, email, birthday, age);
+        Info info = new Info(id, email, birthday, age);
         try {
             UserState state = getRole(storeId);
             info.addRole(state.getRole());
