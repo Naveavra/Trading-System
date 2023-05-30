@@ -191,11 +191,6 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> changeName(int userId, String token, String newUserName){
-        Response<String> res = market.changeName(userId, token, newUserName);
-        return fromResToPair(res);
-    }
-
     public Pair<Boolean, JSONObject> changeEmail(int userId, String token, String newEmail){
         Response<String> res = market.changeEmail(userId, token, newEmail);
         return fromResToPair(res);
@@ -205,12 +200,6 @@ public class API {
         Response<Integer> res = market.openStore(userId, token, name, storeDescription, img);
         return fromResToPair(res);
     }
-
-    public Pair<Boolean, JSONObject> getMemberInformation(int userId, String token){
-        Response<Info> res = market.getMemberInformation(userId, token);
-        return fromResToPairInfo(res);
-    }
-
 
     public Pair<Boolean, JSONObject> writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading){
         Response<String> res = market.writeReviewToStore(userId, token, orderId, storeId, content, grading);

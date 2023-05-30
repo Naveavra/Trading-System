@@ -27,10 +27,9 @@ public class Member implements User{
 
     private transient Guest g;
     private int id;
-    private String name;
+    private String email;
     private String birthday;
     int age;
-    private String email;
     private transient String password;
 
     private List<UserState> roles; //connection between registered to the shops
@@ -39,14 +38,12 @@ public class Member implements User{
     private boolean isConnected;
     public Member(int id, String email, String password, String birthday){
         this.id = id;
-        String[] emailParts = email.split("@");
-        this.name = emailParts[0];
         this.email = email;
         this.password = password;
         this.birthday = birthday;
         age = StringChecks.calculateAge(birthday);
         roles = new ArrayList<>();
-        userHistory = new UserHistory(this.id, this.email, this.name, this.password);
+        userHistory = new UserHistory(this.id, this.email, this.password);
         g = new Guest(id);
         notifications = new LinkedBlockingQueue<>();
     }
@@ -75,28 +72,17 @@ public class Member implements User{
         roles.add(userState);
     }
 
-
-    public String getEmail(){
-        return email;
-    }
-
     public String getName(){
         return email;
     }
 
     public void setNewEmail(String  newEmail){
         email = newEmail;
-        userHistory.addEmail(email);
-    }
-    public void setNewName(String  newName){
-        name = newName;
-        userHistory.addName(name);
     }
 
     public void setNewPassword(String oldPassword, String newPassword) throws Exception {
         if(password.equals(oldPassword)){
             password = newPassword;
-            userHistory.addPassword(password);
         }
         else
             throw new Exception("wrong password entered, can't change to a new password");
@@ -141,8 +127,7 @@ public class Member implements User{
     }
 
     public void openStore(Store store) {
-        UserState creator = new StoreCreator(id, name, store);
-
+        UserState creator = new StoreCreator(id, email, store);
         roles.add(creator);
     }
 
@@ -237,11 +222,6 @@ public class Member implements User{
         return userHistory.getUserPurchaseHistory();
     }
 
-    public Info getPrivateInformation() {
-        Info info = new Info(id, name, email, birthday, age);
-        return userHistory.getInformation(info);
-    }
-
     public void appointToManager(Member appointed, int storeId) throws Exception {
         UserState state = getActiveRole(storeId);
         state.appointManager(appointed);
@@ -301,7 +281,7 @@ public class Member implements User{
     }
 
     public Info getInformation(int storeId){
-        Info info = new Info(id, name, email, birthday, age);
+        Info info = new Info(id, email, birthday, age);
         try {
             UserState state = getRole(storeId);
             info.addRole(state.getRole());

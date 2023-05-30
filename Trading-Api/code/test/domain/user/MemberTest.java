@@ -270,22 +270,6 @@ class MemberTest {
 
 
     @Test
-    void getPrivateInformation() {
-        try {
-            m.login("ziv1234");
-            Info res = m.getPrivateInformation();
-            assertEquals(22,res.getAge());
-            assertEquals("22/04/2002",res.getBirthday());
-            assertEquals("ziv@gmail.com",res.getEmail());
-            assertEquals("ziv",res.getName());
-
-        }catch (Exception e){
-        System.out.println(e.getMessage());
-        assertTrue(false);
-        }
-    }
-
-    @Test
     void appointToManager() {
         try{
             m.login("ziv1234");

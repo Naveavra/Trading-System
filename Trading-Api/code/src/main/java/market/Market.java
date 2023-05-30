@@ -305,22 +305,6 @@ public class Market implements MarketInterface {
         }
     }
 
-
-    @Override
-    public Response<String> changeName(int userId, String token, String newUserName) {
-        try {
-            userAuth.checkUser(userId, token);
-            userController.changeUserName(userId, newUserName);
-            return logAndRes(Event.LogStatus.Success, "user changed name successfully",
-                    StringChecks.curDayString(), userController.getUserName(userId),
-                    " you changed details successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Event.LogStatus.Fail, "user cant change name because " + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(userId),
-                    null, "change name failed", e.getMessage());
-        }
-    }
-
     @Override
     public Response<String> changeEmail(int userId, String token, String newEmail) {
         try {
@@ -368,21 +352,6 @@ public class Market implements MarketInterface {
             return logAndRes(Event.LogStatus.Fail, "user cant open store  because " + e.getMessage(),
                     StringChecks.curDayString(), userController.getUserName(userId),
                     null, "open store failed", e.getMessage());
-        }
-    }
-
-    @Override
-    public Response<Info> getMemberInformation(int userId, String token) {
-        try {
-            userAuth.checkUser(userId, token);
-            Info user = userController.getUserPrivateInformation(userId);
-            return logAndRes(Event.LogStatus.Success, "user info received successfully",
-                    StringChecks.curDayString(), userController.getUserName(userId),
-                    user, null, null);
-        } catch (Exception e) {
-            return logAndRes(Event.LogStatus.Fail, "user info cant be received because: " + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(userId),
-                    null, "get user failed", e.getMessage());
         }
     }
 
@@ -934,7 +903,7 @@ public class Market implements MarketInterface {
         }
         catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "the user: " + adminId + "  cannot close store because: " + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), "admin"+adminId,
                     null, "close permanent not successfully", e.getMessage());
         }
     }
@@ -983,11 +952,11 @@ public class Market implements MarketInterface {
             Admin a = getActiveAdmin(adminId);
             a.setIsActive(false);
             return logAndRes(Event.LogStatus.Success, "admin logged out successfully",
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), a.getEmailAdmin(),
                     "u logged out", null, null);
         }catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "cant log out admin because" + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), "admin"+adminId,
                     null, "log out admin failed", e.getMessage());
         }
     }
@@ -1001,15 +970,15 @@ public class Market implements MarketInterface {
     public Response<String> removeAdmin(int adminId, String token) {
         try{
             userAuth.checkUser(adminId, token);
-            getActiveAdmin(adminId);
+            Admin a = getActiveAdmin(adminId);
             checkRemoveAdmin();
             admins.remove(adminId);
             return logAndRes(Event.LogStatus.Success, "admin removed himself successfully",
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), a.getEmailAdmin(),
                     "u removed u self successfully", null, null);
         }catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "cant remove admin because: " + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), "admin"+adminId,
                     null, "remove admin failed", e.getMessage());
         }
     }
@@ -1018,16 +987,16 @@ public class Market implements MarketInterface {
     public Response<HashMap<Integer,Admin>> getAdmins(int adminId, String token) {
         try {
             userAuth.checkUser(adminId, token);
-            getActiveAdmin(adminId);
+            Admin a = getActiveAdmin(adminId);
             HashMap<Integer, Admin> list = new HashMap<>();
             for (int key : admins.keySet())
                 list.put(key, admins.get(key));
             return logAndRes(Event.LogStatus.Success, "admin get all admins successfully",
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), a.getEmailAdmin(),
                     list, null, null);
         }catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "cant get admins because: " + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), "admin"+adminId,
                     null, "get admins failed", e.getMessage());
         }
     }
@@ -1040,14 +1009,14 @@ public class Market implements MarketInterface {
     public Response<List<? extends Information>> getUsersPurchaseHistory(int adminId, String token) {
         try {
             userAuth.checkUser(adminId, token);
-            getActiveAdmin(adminId);
+            Admin a = getActiveAdmin(adminId);
             List<PurchaseHistory> users = userController.getUsersInformation();
             return logAndRes(Event.LogStatus.Success, "admin get users successfully",
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), a.getEmailAdmin(),
                     users, null, null);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user failed getting all users because :" + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), "admin"+adminId,
                     null, "get users", e.getMessage());
         }
     }
@@ -1065,14 +1034,14 @@ public class Market implements MarketInterface {
     public Response<String> answerComplaint(int adminId, String token, int complaintId, String ans) {
         try {
             userAuth.checkUser(adminId, token);
-            getActiveAdmin(adminId);
+            Admin a = getActiveAdmin(adminId);
             sendFeedback(complaintId, ans);
             return logAndRes(Event.LogStatus.Success, "admin answer complaint successfully",
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), a.getEmailAdmin(),
                     "admin answer complaint", null, null);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user failed answer complaints because:" + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), "admin"+adminId,
                     null, "answer complaint failed", e.getMessage());
         }
     }
@@ -1084,11 +1053,11 @@ public class Market implements MarketInterface {
             Admin admin = getActiveAdmin(adminId);
             admin.cancelMembership(userToRemove);
             return logAndRes(Event.LogStatus.Success, "admin cancel Membership successfully",
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), admin.getEmailAdmin(),
                     "admin cancel Membership complaint", null, null);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user failed cancel Membership because:" + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), "admin"+adminId,
                     null, "cancel Membership failed", e.getMessage());
         }
     }
@@ -1097,13 +1066,13 @@ public class Market implements MarketInterface {
         public Response<List<? extends Information>> watchEventLog(int adminId, String token){
         try{
             userAuth.checkUser(adminId, token);
-            getActiveAdmin(adminId);
+            Admin a = getActiveAdmin(adminId);
             return logAndRes(Event.LogStatus.Success, "admin get log successfully",
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), a.getEmailAdmin(),
                     logger.getEventMap(), null, null);
         }catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "cant watch log because: " + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), "admin" + adminId,
                     null, "watch log failed", e.getMessage());
         }
     }
@@ -1112,14 +1081,14 @@ public class Market implements MarketInterface {
     public Response<MarketInfo> watchMarketStatus(int adminId, String token) {
         try {
             userAuth.checkUser(adminId, token);
-            getActiveAdmin(adminId);
+            Admin a = getActiveAdmin(adminId);
             marketInfo.calculateAverages();
             return logAndRes(Event.LogStatus.Success, "admin get market status successfully",
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), a.getEmailAdmin(),
                     marketInfo, null, null);
         }catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "cant watch market status because: " + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(adminId),
+                    StringChecks.curDayString(), "admin"+adminId,
                     null, "watch market status failed", e.getMessage());
         }
     }

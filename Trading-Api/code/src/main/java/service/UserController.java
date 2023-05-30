@@ -224,22 +224,10 @@ public class UserController {
     }
 
 
-    public synchronized Info getUserPrivateInformation(int userId) throws Exception {
-        Member m = getActiveMember(userId);
-        return m.getPrivateInformation();
-
-    }
-
     public synchronized void changeUserEmail(int userId, String newEmail) throws Exception {
         Member m = getActiveMember(userId);
         m.setNewEmail(newEmail);
         emailToId.put(newEmail, m.getId());
-    }
-
-
-    public synchronized void changeUserName(int userId, String newName) throws Exception {
-        Member m = getActiveMember(userId);
-        m.setNewName(newName);
     }
 
 
@@ -382,7 +370,7 @@ public class UserController {
 
     public synchronized String getUserEmail(int userId) throws Exception {
         Member m = getMember(userId);
-        return m.getEmail();
+        return m.getName();
     }
 
 
@@ -413,7 +401,7 @@ public class UserController {
                 creatorStoreIds.add(storeId);
         }
         memberList.remove(userToRemove);
-        emailToId.remove(m.getEmail());
+        emailToId.remove(m.getName());
         return creatorStoreIds;
     }
 
