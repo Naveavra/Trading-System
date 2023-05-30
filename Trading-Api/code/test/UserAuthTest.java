@@ -30,21 +30,10 @@ class UserAuthTest {
     }
 
     @Test
-    void hashPassword(){
-        String hash = userAuth.hashPassword("elibew@gmail.com", "123Aaa", true);
-        String hash2 = userAuth.hashPassword("eli2@gmail.com", "123Aaa", true);
+    void hashPassword() {
+        String hash = userAuth.hashPassword("elibew@gmail.com", "123Aaa");
+        String hash2 = userAuth.hashPassword("eli2@gmail.com", "123Aaa");
         System.out.println(hash);
         System.out.println(hash2);
-        try {
-            userAuth.checkPassword("elibew@gmail.com", "123Aaa");
-        }catch (Exception e){
-            assert false;
-        }
-        try {
-            userAuth.checkPassword("eli@gmail.com", "123Aaa");
-            assert false;
-        }catch (Exception e){
-        }
-        assert true;
     }
 }

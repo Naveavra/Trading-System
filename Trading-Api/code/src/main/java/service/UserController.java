@@ -224,17 +224,14 @@ public class UserController {
     }
 
 
-    public synchronized void changeUserEmail(int userId, String newEmail) throws Exception {
-        Member m = getActiveMember(userId);
-        m.setNewEmail(newEmail);
-        emailToId.put(newEmail, m.getId());
-    }
 
-
-    public synchronized void changeUserPassword(int userId, String oldPass, String newPass, String newHashedPass) throws Exception {
+    public synchronized void changeMemberAttributes(int userId, String newEmail, String oldPass, String newPass, String newHashedPass) throws Exception {
         Member m = getActiveMember(userId);
-        checks.checkPassword(newPass);
-        m.setNewPassword(oldPass, newHashedPass);
+        if (!newPass.equals("null"))
+            checks.checkPassword(newPass);
+        m.setMemberAttributes(newEmail, oldPass, newHashedPass);
+        if (!newEmail.equals("null"))
+            emailToId.put(newEmail, m.getId());
     }
 
     //starting the functions connecting to the store

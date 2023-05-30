@@ -10,20 +10,17 @@ import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.NotificationOpcode;
 import utils.messageRelated.MessageState;
-import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
 
 
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
 
 
-public class Member implements User{
+public class Member extends Subscriber implements User{
 
     private transient Guest g;
     private int id;
@@ -33,7 +30,6 @@ public class Member implements User{
     private transient String password;
 
     private List<UserState> roles; //connection between registered to the shops
-    private transient BlockingQueue<Notification> notifications;
     private UserHistory userHistory;
     private boolean isConnected;
     public Member(int id, String email, String password, String birthday){
@@ -45,7 +41,6 @@ public class Member implements User{
         roles = new ArrayList<>();
         userHistory = new UserHistory(this.id, this.email, this.password);
         g = new Guest(id);
-        notifications = new LinkedBlockingQueue<>();
     }
     public boolean getIsConnected(){
         return isConnected;
@@ -76,11 +71,18 @@ public class Member implements User{
         return email;
     }
 
-    public void setNewEmail(String  newEmail){
+
+    public void setMemberAttributes(String email, String oldPassword, String newPassword) throws Exception{
+        if(!email.equals("null"))
+            setNewEmail(email);
+        if(!newPassword.equals("null"))
+            setNewPassword(oldPassword, newPassword);
+    }
+    private void setNewEmail(String  newEmail){
         email = newEmail;
     }
 
-    public void setNewPassword(String oldPassword, String newPassword) throws Exception {
+    private void setNewPassword(String oldPassword, String newPassword) throws Exception {
         if(password.equals(oldPassword)){
             password = newPassword;
         }
@@ -161,24 +163,6 @@ public class Member implements User{
 
     public Message sendQuestion(int messageId, int storeId, String question) {
         return new Message(messageId, NotificationOpcode.QUESTION, question, this, -1, storeId, MessageState.question);
-    }
-
-    public synchronized void addNotification(Notification notification){
-            notifications.offer(notification);
-    }
-
-    public List<Notification> displayNotifications(){
-        List<Notification> display = new LinkedList<>();
-        for (Notification notification : notifications)
-            display.add(notification);
-        notifications.clear();
-        return display;
-    }
-
-    public Notification getNotification() throws InterruptedException {
-        synchronized (notifications) {
-            return notifications.take();
-        }
     }
 
     private UserState getActiveRole(int storeId) throws Exception {

@@ -19,11 +19,9 @@ public class UserAuth implements SecurityAdapter{
 
     private static final char[] buf = new char[SECURE_TOKEN_LENGTH];
     private ConcurrentHashMap<Integer, String> tokens;
-    private ConcurrentHashMap<String, String> hashPass;
 
     public UserAuth(){
         tokens = new ConcurrentHashMap<>();
-        hashPass = new ConcurrentHashMap<>();
     }
     @Override
     public void checkUser(int userId, String token) throws Exception{
@@ -46,18 +44,9 @@ public class UserAuth implements SecurityAdapter{
         return token;
     }
 
-    @Override
-    public void checkPassword(String username, String password) throws Exception{
-        String check = hashPassword(username, password, false);
-        if(!hashPass.containsKey(username))
-            throw new Exception("the email given does not belong to any member in the system");
-        if(hashPass.get(username).equals(check))
-            return;
-        throw new Exception("the password given for the username does not match the one reserved for him");
-    }
 
     @Override
-    public String hashPassword(String username, String password, boolean add){
+    public String hashPassword(String username, String password){
         byte[] salt = username.getBytes();
         MessageDigest md;
         try {
@@ -67,8 +56,6 @@ public class UserAuth implements SecurityAdapter{
         }
         md.update(salt);
         byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
-        if(add)
-            hashPass.put(username, new String(hashedPassword));
         return new String(hashedPassword);
     }
 }

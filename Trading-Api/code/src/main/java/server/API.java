@@ -7,16 +7,13 @@ import org.json.JSONObject;
 import utils.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import utils.infoRelated.*;
 import utils.Response;
-import utils.messageRelated.Message;
 import utils.infoRelated.Receipt;
 import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 import utils.stateRelated.Action;
-
 
 public class API {
     public Market market;
@@ -122,16 +119,6 @@ public class API {
         return fromResToPair(res);
     }
 
-//    public List<JSONObject> getBaskets(HashMap<Integer, HashMap<Integer, Integer>> basketsMaps)
-//    {
-//        List<JSONObject> baskets = new ArrayList();
-//        for (Map.Entry<Integer, HashMap<Integer, Integer>> basketEntry : basketsMaps.entrySet()) {
-//            JSONObject basketJson = getBasket(basketEntry);
-//            baskets.add(basketJson);
-//        }
-//        return baskets;
-//    }
-
     public Pair<Boolean, JSONObject> getCart(int id){
         Response<List<? extends Information>> res = market.getCart(id);
         return fromResToPairList(res);
@@ -177,25 +164,10 @@ public class API {
         Response<String> res = market.logout(userId);
         return fromResToPair(res);
     }
-
-    //TODO: check that works in getClient and login
-    public Pair<Boolean, JSONObject> displayNotifications(int userId, String token){
-        Response<List<String>> res = market.displayNotifications(userId, token);
+    public Pair<Boolean, JSONObject> changeMemberAttributes(int userId, String token, String newEmail, String oldPass, String newPass) {
+        Response<String> res = market.changeMemberAttributes(userId, token, newEmail, oldPass, newPass);
         return fromResToPair(res);
     }
-
-
-    //TODO: add to front a way to change user info
-    public Pair<Boolean, JSONObject> changePassword(int userId, String token, String oldPass, String newPass){
-        Response<String> res = market.changePassword(userId, token, oldPass, newPass);
-        return fromResToPair(res);
-    }
-
-    public Pair<Boolean, JSONObject> changeEmail(int userId, String token, String newEmail){
-        Response<String> res = market.changeEmail(userId, token, newEmail);
-        return fromResToPair(res);
-    }
-
     public Pair<Boolean, JSONObject> openStore(int userId, String token, String name, String storeDescription, String img){
         Response<Integer> res = market.openStore(userId, token, name, storeDescription, img);
         return fromResToPair(res);
@@ -214,16 +186,6 @@ public class API {
     public Pair<Boolean, JSONObject> checkReviews(int userId, String token, int storeId){
         Response<HashMap<Integer, ? extends Information>> res = market.checkReviews(userId, token, storeId);
         return fromResToPairHashMap(res, "reviewId", "review");
-    }
-
-    public Pair<Boolean, JSONObject> getProductInformation(int storeId, int productId){
-        Response<ProductInfo> res = market.getProductInformation(storeId, productId);
-        return fromResToPair(res);
-    }
-
-    public Pair<Boolean, JSONObject> getStoreInformation(int storeId){
-        Response<StoreInfo> res = market.getStoreInformation(storeId);
-        return fromResToPair(res);
     }
 
     public Pair<Boolean, JSONObject> getStoreProducts(int storeId){
@@ -362,11 +324,6 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> adminLogin(String email, String password)
-    {
-        Response<LoginInformation> res = market.adminLogin(email, password);
-        return fromResToPair(res);
-    }
 
     public Pair<Boolean, JSONObject> adminLogout(int adminId)
     {
@@ -401,8 +358,8 @@ public class API {
     //TODO: fix
     public Pair<Boolean, JSONObject> watchEventLog(int adminId, String token)
     {
-        Response<List<? extends Information>> res1 = market.watchEventLog(adminId, token);
-        return fromResToPairList(res1);
+        Response<List<? extends Information>> res = market.watchEventLog(adminId, token);
+        return fromResToPairList(res);
     }
 
     public Pair<Boolean, JSONObject> viewQuestions(int userId, String token, int storeId)

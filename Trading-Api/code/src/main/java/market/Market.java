@@ -95,7 +95,7 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> register(String email, String pass, String birthday) {
         try {
-            String hashedPassword = userAuth.hashPassword(email, pass, true);
+            String hashedPassword = userAuth.hashPassword(email, pass);
             int id = ids.getAndIncrement();
             userController.register(id, email, pass, hashedPassword, birthday);
             marketInfo.addRegisteredCount();
@@ -112,9 +112,8 @@ public class Market implements MarketInterface {
     @Override
     public Response<LoginInformation> login(String email, String pass) {
         try {
-            userAuth.checkPassword(email, pass);
             if (!checkIsAdmin(email)){
-                String hashedPass = userAuth.hashPassword(email, pass, false);
+                String hashedPass = userAuth.hashPassword(email, pass);
                 int memberId = userController.login(email, hashedPass);
                 marketInfo.addUserCount();
                 String token = userAuth.generateToken(memberId);
@@ -305,37 +304,21 @@ public class Market implements MarketInterface {
         }
     }
 
-    @Override
-    public Response<String> changeEmail(int userId, String token, String newEmail) {
-        try {
-            userAuth.checkUser(userId, token);
-            userController.changeUserEmail(userId, newEmail);
-            return logAndRes(Event.LogStatus.Success, "user changed email successfully",
-                    StringChecks.curDayString(), userController.getUserName(userId),
-                    " you changed details successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Event.LogStatus.Fail, "user cant change email because " + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(userId),
-                    null, "change email failed", e.getMessage());
-        }
-    }
 
     @Override
-    public Response<String> changePassword(int userId, String token, String oldPass, String newPass) {
+    public Response changeMemberAttributes(int userId, String token, String newEmail, String oldPass, String newPass){
         try {
             userAuth.checkUser(userId, token);
-            String email = userController.getUserEmail(userId);
-            userAuth.checkPassword(email, oldPass);
-            String oldHashedPass = userAuth.hashPassword(email, oldPass, false);
-            String newHashedPass = userAuth.hashPassword(email, newPass, true);
-            userController.changeUserPassword(userId, oldHashedPass, newPass, newHashedPass);
-            return logAndRes(Event.LogStatus.Success, "user changed password successfully",
+            String oldHashedPass = userAuth.hashPassword(userController.getUserName(userId), oldPass);
+            String newHashedPass = userAuth.hashPassword(userController.getUserName(userId), newPass);
+            userController.changeMemberAttributes(userId, newEmail, oldHashedPass, newPass, newHashedPass);
+            return logAndRes(Event.LogStatus.Success, "user changed attributes successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     " you changed details successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Event.LogStatus.Fail, "user cant change password because " + e.getMessage(),
+        }catch (Exception e){
+            return logAndRes(Event.LogStatus.Fail, "user cant change attributes because " + e.getMessage(),
                     StringChecks.curDayString(), userController.getUserName(userId),
-                    null, "change password failed", e.getMessage());
+                    null, "change attributes failed", e.getMessage());
         }
     }
 
@@ -520,6 +503,10 @@ public class Market implements MarketInterface {
             userAuth.checkUser(userId, token);
             Message m = userController.writeComplaintToMarket(orderId, storeId, msg, userId);
             complaints.put(m.getMessageId(), m);
+            String notify = "a complaint has been submitted";
+            Notification notification = new Notification(NotificationOpcode.COMPLAINT, notify);
+            for(Admin a : admins.values())
+                a.addNotification(notification);
             return logAndRes(Event.LogStatus.Success, "user send complaint successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user send complaint successfully", null, null);
@@ -914,7 +901,7 @@ public class Market implements MarketInterface {
             userAuth.checkUser(userId, token);
             if (userId != 0)
                 getActiveAdmin(userId);
-            String hashedPass = userAuth.hashPassword(email, pass, true);
+            String hashedPass = userAuth.hashPassword(email, pass);
             Admin a = new Admin(ids.getAndIncrement(), email, hashedPass);
             a.addControllers(userController, marketController);
             admins.put(a.getAdminId(), a);
@@ -930,7 +917,7 @@ public class Market implements MarketInterface {
     @Override
     public Response<LoginInformation> adminLogin(String email, String pass) {
         try {
-            String hashedPass = userAuth.hashPassword(email, pass, false);
+            String hashedPass = userAuth.hashPassword(email, pass);
             Admin a = getInActiveAdmin(email, hashedPass);
             a.setIsActive(true);
             String token = userAuth.generateToken(a.getAdminId());
