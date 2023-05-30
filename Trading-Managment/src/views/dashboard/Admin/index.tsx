@@ -29,7 +29,11 @@ const Admin = () => {
     const [emailError, setEmailError] = useState("");
 
     const logs = useAppSelector((state) => state.admin.logRecords) ?? [{userName: "", id: 0, content: "", status: ""}];
-    const max = logs?.sort((a,b) => {if(a.content.length > b.content.length) {return a.content.length} else {return b.content.length}})[0]?.content?.length;
+    //works but does not look good
+    const arrayForSort = [...logs]
+    const max = arrayForSort.length > 0 ?
+     arrayForSort.sort((a,b) => {if(a.content.length > b.content.length) {return a.content.length} else {return b.content.length}})[0].content.length:
+     330;
 
     const handleOnSubmit = () => {
         form.setValue('userId', userId);

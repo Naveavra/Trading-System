@@ -450,6 +450,7 @@ public class API {
         int pid2 = res2.getValue();
         market.addProductToCart(id1, sid1, pid1, 3);
         market.addProductToCart(id1, sid2, pid2, 5);
+        market.addProductToCart(id2, sid1, pid1, 1);
         Response<Receipt> res3 = market.makePurchase(id1, "9999999");
         market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), sid2, "bad store", 2);
         res3 = market.makePurchase(id2, "111111");

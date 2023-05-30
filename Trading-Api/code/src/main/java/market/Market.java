@@ -522,7 +522,7 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.appointManager(userId, managerToAppoint, storeId);
-            return logAndRes(Event.LogStatus.Success, "user appoint " + managerToAppoint + "to Manager in: " + storeId + " successfully" ,
+            return logAndRes(Event.LogStatus.Success, "user appoint " + managerToAppoint + " to Manager in: " + storeId + " successfully" ,
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user appointManager successfully", null, null);
         } catch (Exception e) {
@@ -1053,14 +1053,10 @@ public class Market implements MarketInterface {
         public Response<List<? extends Information>> watchEventLog(int adminId, String token){
         try{
             userAuth.checkUser(adminId, token);
-            Admin a = getActiveAdmin(adminId);
-            return logAndRes(Event.LogStatus.Success, "admin get log successfully",
-                    StringChecks.curDayString(), a.getEmailAdmin(),
-                    logger.getEventMap(), null, null);
+            getActiveAdmin(adminId);
+            return new Response<>(logger.getEventMap(), null, null);
         }catch (Exception e){
-            return logAndRes(Event.LogStatus.Fail, "cant watch log because: " + e.getMessage(),
-                    StringChecks.curDayString(), "admin" + adminId,
-                    null, "watch log failed", e.getMessage());
+            return new Response<>(null, "watch log failed", e.getMessage());
         }
     }
 
