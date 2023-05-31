@@ -368,11 +368,7 @@ public class API {
         return fromResToPairHashMap(res, "messageId", "question");
     }
 
-    public Pair<Boolean, JSONObject> getUsersPurchaseHistory(int buyerId, String token)
-    {
-        Response<List<? extends Information>> res = market.getUsersPurchaseHistory(buyerId, token);
-        return fromResToPairList(res);
-    }
+
 
     public Pair<Boolean, JSONObject> getStores()
     {

@@ -4,7 +4,7 @@ import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData, getCli
 import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
-import { RegisterPostData, editProfileParams, getUserData, getUserNotifications, messageParams } from "../types/requestTypes/authTypes";
+import { RegisterPostData, changePasswordParams, complaintParams, editProfileParams, getUserData, getUserNotifications, messageParams } from "../types/requestTypes/authTypes";
 import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
 import { MyNotification } from "../types/systemTypes/Notification";
@@ -161,6 +161,17 @@ export const sendMessage = createAsyncThunk<
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
+export const sendComplaint = createAsyncThunk<
+    string,
+    complaintParams,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/sendComplaint`,
+    async (credential, thunkApi) => {
+        return authApi.sendComplaint(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
 export const editProfile = createAsyncThunk<
     string,
     editProfileParams,
@@ -169,6 +180,17 @@ export const editProfile = createAsyncThunk<
     `${reducrName}/editProfile`,
     async (credential, thunkApi) => {
         return authApi.editProfile(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+export const changePassword = createAsyncThunk<
+    string,
+    changePasswordParams,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/changePassword`,
+    async (credential, thunkApi) => {
+        return authApi.changePassword(credential)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
@@ -335,6 +357,21 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during send message";
         });
+
+        //send complaint
+        builder.addCase(sendComplaint.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(sendComplaint.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(sendComplaint.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during send complaint";
+        });
+
         //edit profile
         builder.addCase(editProfile.pending, (state) => {
             state.isLoading = true;
@@ -347,6 +384,19 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         builder.addCase(editProfile.rejected, (state, { payload }) => {
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during edit profile";
+        });
+        //change password
+        builder.addCase(changePassword.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(changePassword.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(changePassword.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during change password";
         });
     }
 });

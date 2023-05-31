@@ -364,10 +364,10 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<PurchaseInfo> getBuyerPurchasesHistory(int user, int buyer) {
-        Response<List<? extends Information>> res = market.getUsersPurchaseHistory(user, token);
+        Response<List<PurchaseHistory>> res = market.getUsersPurchaseHistory(user, token);
         if(!res.errorOccurred())
         {
-            return toBuyerPurchaseHistoryList((List<PurchaseHistory>) res.getValue());
+            return toBuyerPurchaseHistoryList(res.getValue());
         }
         return null;
     }

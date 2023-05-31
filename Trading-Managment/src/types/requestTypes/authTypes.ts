@@ -20,10 +20,18 @@ export interface messageParams {
     message: string;
     userName: string;
 }
+export interface complaintParams {
+    userId: number;
+    orderId: number;
+    complaint: string;
+}
 export interface editProfileParams {
     userId: number;
-    name: string;
     email: string;
-    age: number;
     birthday: string;
+}
+export interface changePasswordParams {
+    userId: number;
+    oldPassword: string;
+    newPassword: string;
 }

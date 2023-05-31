@@ -61,8 +61,7 @@ public class Info extends Information{
         json.put("email", getEmail());
         json.put("birthday", getBirthday());
         json.put("age", getAge());
-        json.put("purchaseHistory", purchaseHistory.toJson());
-        json.put("role", role);
+        json.put("purchaseHistory", infosToJson(purchaseHistory.getReceipts()));        json.put("role", role);
         json.put("managerPermissions", fromActionToString(getManagerActions()));
         return json;
     }

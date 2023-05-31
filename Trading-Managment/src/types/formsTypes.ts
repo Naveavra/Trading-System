@@ -40,3 +40,13 @@ export type editProfileFormValues = {
     age: number;
     birthday: string;
 }
+export type changePasswordFormValues = {
+    userId: number;
+    oldPassword: string;
+    newPassword: string;
+}
+export type sentComplaintFormValues = {
+    userId: number;
+    orderId: number;
+    complaint: string;
+};

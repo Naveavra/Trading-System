@@ -70,8 +70,7 @@ public class LoginInformation extends Information{
         json.put("isAdmin", getIsAdmin());
         json.put("notifications", infosToJson(getNotifications()));
         if(!isAdmin) {
-            json.put("purchaseHistory", purchaseHistory.toJson());
-            json.put("age", age);
+            json.put("purchaseHistory", infosToJson(purchaseHistory.getReceipts()));            json.put("age", age);
             json.put("birthday", birthday);
             json.put("storeNames", toJsonHM(getStoreNames(), "storeId", "storeName"));
             json.put("storeRoles", getStoreRole(getStoreRoles(), "storeId", "storeRole"));

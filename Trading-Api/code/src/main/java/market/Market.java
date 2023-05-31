@@ -993,8 +993,7 @@ public class Market implements MarketInterface {
      * return json of all the relevant information about the users: email, id, name
      */
     @Override
-    public Response<List<? extends Information>> getUsersPurchaseHistory(int adminId, String token) {
-        try {
+    public Response<List<PurchaseHistory>> getUsersPurchaseHistory(int adminId, String token){        try {
             userAuth.checkUser(adminId, token);
             Admin a = getActiveAdmin(adminId);
             List<PurchaseHistory> users = userController.getUsersInformation();
