@@ -18,13 +18,12 @@ public class Message extends Information {
     private boolean gotFeedback;
     private boolean seen;
 
-    public Message(int messageId, NotificationOpcode opcode, String content, Member reviewer, int orderId, int storeId, MessageState ms){
+    public Message(int messageId, NotificationOpcode opcode, String content, Member reviewer, int orderId, MessageState ms){
         this.messageId = messageId;
         this.content = content;
         this.rating = -1;
         this.reviewer = reviewer;
         this.orderId = orderId;
-        this.storeId = storeId;
         this.opcode  = opcode;
         this.state = ms;
         productId = -1;
@@ -36,6 +35,7 @@ public class Message extends Information {
     public void addRating(int rating){
         this.rating = rating;
     }
+    public void addStore(int storeId){this.storeId = storeId;}
     public int getRating() {
         return rating;
     }

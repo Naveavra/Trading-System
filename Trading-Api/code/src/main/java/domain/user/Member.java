@@ -72,14 +72,23 @@ public class Member extends Subscriber implements User{
     }
 
 
-    public void setMemberAttributes(String email, String oldPassword, String newPassword) throws Exception{
+    public void setMemberAttributes(String email, String newBirthday){
         if(!email.equals("null"))
             setNewEmail(email);
-        if(!newPassword.equals("null"))
-            setNewPassword(oldPassword, newPassword);
+        if(!newBirthday.equals("null"))
+            setNewBirthday(newBirthday);
     }
-    private void setNewEmail(String  newEmail){
+
+    public void setMemberPassword(String oldPass, String newPass)throws Exception {
+        setNewPassword(oldPass, newPass);
+
+    }
+    private void setNewEmail(String newEmail){
         email = newEmail;
+    }
+
+    private void setNewBirthday(String newBirthday){
+        this.birthday = newBirthday;
     }
 
     private void setNewPassword(String oldPassword, String newPassword) throws Exception {
@@ -135,7 +144,8 @@ public class Member extends Subscriber implements User{
 
     public Message writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
         if (userHistory.checkOrderContainsStore(orderId, storeId)) {
-            Message message = new Message(messageId, NotificationOpcode.STORE_REVIEW, content, this, orderId, storeId, MessageState.reviewStore);
+            Message message = new Message(messageId, NotificationOpcode.STORE_REVIEW, content, this, orderId, MessageState.reviewStore);
+            message.addStore(storeId);
             message.addRating(grading);
             return message;
         }
@@ -145,7 +155,8 @@ public class Member extends Subscriber implements User{
 
     public Message writeReview(int messageId, int storeId, int productId, int orderId, String content, int grading) throws Exception{
         if(userHistory.checkOrderContainsProduct(orderId, storeId, productId)){
-            Message m = new Message(messageId, PRODUCT_REVIEW, content, this, orderId, storeId, MessageState.reviewProduct);
+            Message m = new Message(messageId, PRODUCT_REVIEW, content, this, orderId, MessageState.reviewProduct);
+            m.addStore(storeId);
             m.addRating(grading);
             m.addProductToReview(productId);
             return m;
@@ -154,15 +165,17 @@ public class Member extends Subscriber implements User{
             throw new Exception("the product isn't part of the order so you can't write a review about him");
     }
 
-    public Message writeComplaint(int messageId, int orderId, int storeId, String comment) throws Exception {
-        if(userHistory.checkOrderContainsStore(orderId, storeId))
-            return new Message(messageId, NotificationOpcode.COMPLAINT, comment, this, orderId, storeId, MessageState.complaint);
+    public Message writeComplaint(int messageId, int orderId, String comment) throws Exception {
+        if(userHistory.checkOrderOccurred(orderId))
+            return new Message(messageId, NotificationOpcode.COMPLAINT, comment, this, orderId, MessageState.complaint);
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
     }
 
     public Message sendQuestion(int messageId, int storeId, String question) {
-        return new Message(messageId, NotificationOpcode.QUESTION, question, this, -1, storeId, MessageState.question);
+        Message m = new Message(messageId, NotificationOpcode.QUESTION, question, this, -1, MessageState.question);
+        m.addStore(storeId);
+        return m;
     }
 
     private UserState getActiveRole(int storeId) throws Exception {

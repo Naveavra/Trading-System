@@ -10,7 +10,6 @@ import service.UserController;
 import service.payment.ProxyPayment;
 import utils.*;
 
-import java.time.LocalDateTime;
 import domain.store.storeManagement.Store;
 import service.MarketController;
 import utils.infoRelated.*;
@@ -309,12 +308,29 @@ public class Market implements MarketInterface {
 
 
     @Override
-    public Response<String> changeMemberAttributes(int userId, String token, String newEmail, String oldPass, String newPass){
+    public Response<String> changeMemberAttributes(int userId, String token, String newEmail, String newBirthday){
+        try {
+            userAuth.checkUser(userId, token);
+//            String oldHashedPass = userAuth.hashPassword(userController.getUserName(userId), oldPass);
+//            String newHashedPass = userAuth.hashPassword(userController.getUserName(userId), newPass);
+            userController.changeMemberAttributes(userId, newEmail, newBirthday);
+            return logAndRes(Event.LogStatus.Success, "user changed attributes successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    " you changed details successfully", null, null);
+        }catch (Exception e){
+            return logAndRes(Event.LogStatus.Fail, "user cant change attributes because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    null, "change attributes failed", e.getMessage());
+        }
+    }
+
+    @Override
+    public Response<String> changeMemberPassword(int userId, String token, String oldPass, String newPass) {
         try {
             userAuth.checkUser(userId, token);
             String oldHashedPass = userAuth.hashPassword(userController.getUserName(userId), oldPass);
             String newHashedPass = userAuth.hashPassword(userController.getUserName(userId), newPass);
-            userController.changeMemberAttributes(userId, newEmail, oldHashedPass, newPass, newHashedPass);
+            userController.changeMemberPassword(userId, oldHashedPass, newPass, newHashedPass);
             return logAndRes(Event.LogStatus.Success, "user changed attributes successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     " you changed details successfully", null, null);
@@ -501,10 +517,10 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> sendComplaint(int userId, String token, int orderId, int storeId, String msg) {
+    public Response<String> sendComplaint(int userId, String token, int orderId, String msg) {
         try {
             userAuth.checkUser(userId, token);
-            Message m = userController.writeComplaintToMarket(orderId, storeId, msg, userId);
+            Message m = userController.writeComplaintToMarket(orderId, msg, userId);
             complaints.put(m.getMessageId(), m);
             String notify = "a complaint has been submitted";
             Notification notification = new Notification(NotificationOpcode.COMPLAINT, notify);
@@ -909,7 +925,7 @@ public class Market implements MarketInterface {
             a.addControllers(userController, marketController);
             admins.put(a.getAdminId(), a);
             return logAndRes(Event.LogStatus.Success, "admin added new admin successfully",
-                    StringChecks.curDayString(), userController.getUserName(userId),
+                    StringChecks.curDayString(), "admin"+userId,
                     "admin added new admin successfully", null, null);
         }catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "add admin failed, "+e.getMessage(),

@@ -127,6 +127,26 @@ public class Server {
             return res.body();
         });
 
+        post("api/auth/profile", (req, res)->{
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            String newEmail = request.get("email").toString();
+            String newBirthday = request.get("birthday").toString();
+            toSparkRes(res, api.changeMemberAttributes(userId, token, newEmail, newBirthday));
+            return res.body();
+        });
+
+        post("api/auth/password", (req, res)->{
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            String oldPass = request.get("oldsPassword").toString();
+            String newPass = request.get("newPassword").toString();
+            toSparkRes(res, api.changeMemberPassword(userId, token, oldPass, newPass));
+            return res.body();
+        });
+
         //stores
         get("api/stores/info", (req,res)->{
             toSparkRes(res, api.getStores());

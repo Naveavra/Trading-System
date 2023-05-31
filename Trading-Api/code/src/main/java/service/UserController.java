@@ -184,11 +184,11 @@ public class UserController {
     }
 
 
-    public synchronized Message writeComplaintToMarket(int orderId, int storeId, String comment,int userId)throws Exception{
+    public synchronized Message writeComplaintToMarket(int orderId, String comment,int userId)throws Exception{
         Member m = getActiveMember(userId);
         int tmp = messageIds;
         messageIds++;
-        return m.writeComplaint(tmp, orderId, storeId, comment);
+        return m.writeComplaint(tmp, orderId, comment);
     }
 
 
@@ -225,13 +225,25 @@ public class UserController {
 
 
 
-    public synchronized void changeMemberAttributes(int userId, String newEmail, String oldPass, String newPass, String newHashedPass) throws Exception {
+    public synchronized void changeMemberAttributes(int userId, String newEmail, String newBirthday) throws Exception {
         Member m = getActiveMember(userId);
-        if (!newPass.equals("null"))
-            checks.checkPassword(newPass);
-        m.setMemberAttributes(newEmail, oldPass, newHashedPass);
-        if (!newEmail.equals("null"))
+//        if (!oldPass.equals("null"))
+//            checks.checkPassword(newPass);
+        if (!newEmail.equals("null")) {
+            checks.checkEmail(newEmail);
             emailToId.put(newEmail, m.getId());
+        }
+        if(!newBirthday.equals("null"))
+            checks.checkBirthday(newBirthday);
+        m.setMemberAttributes(newEmail, newBirthday);
+    }
+
+    public void changeMemberPassword(int userId, String oldPass, String newPass, String newHashedPass) throws Exception{
+        Member m = getActiveMember(userId);
+        if (!oldPass.equals("null")) {
+            checks.checkPassword(newPass);
+            m.setMemberPassword(oldPass, newHashedPass);
+        }
     }
 
     //starting the functions connecting to the store

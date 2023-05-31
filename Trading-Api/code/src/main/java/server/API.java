@@ -164,8 +164,13 @@ public class API {
         Response<String> res = market.logout(userId);
         return fromResToPair(res);
     }
-    public Pair<Boolean, JSONObject> changeMemberAttributes(int userId, String token, String newEmail, String oldPass, String newPass) {
-        Response<String> res = market.changeMemberAttributes(userId, token, newEmail, oldPass, newPass);
+    public Pair<Boolean, JSONObject> changeMemberAttributes(int userId, String token, String newEmail, String newBirthday) {
+        Response<String> res = market.changeMemberAttributes(userId, token, newEmail, newBirthday);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> changeMemberPassword(int userId, String token, String oldPass, String newPass) {
+        Response<String> res = market.changeMemberPassword(userId, token, oldPass, newPass);
         return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> openStore(int userId, String token, String name, String storeDescription, String img){
@@ -198,8 +203,8 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> sendComplaint(int userId, String token, int orderId, int storeId, String msg){
-        Response<String> res = market.sendComplaint(userId, token, orderId, storeId, msg);
+    public Pair<Boolean, JSONObject> sendComplaint(int userId, String token, int orderId, String msg){
+        Response<String> res = market.sendComplaint(userId, token, orderId, msg);
         return fromResToPair(res);
     }
 

@@ -35,7 +35,10 @@ public interface MarketInterface {
     Response<LoginInformation> getMember(int userId, String token);
     public Response displayNotifications(int userId, String token);
     public Response logout(int userId);
-    public Response changeMemberAttributes(int userId, String token, String newEmail, String oldPass, String newPass);
+    public Response changeMemberAttributes(int userId, String token, String newEmail, String newBirthday);
+
+    Response<String> changeMemberPassword(int userId, String token, String newEmail, String newBirthday);
+
     public Response openStore(int userId, String token, String storeName, String des, String img);
 
     Response<PurchaseHistory> getUserPurchaseHistory(int userId, String token, int buyerId);
@@ -52,7 +55,7 @@ public interface MarketInterface {
     public Response getStoreProducts(int storeId);
 
     public Response sendQuestion(int userId, String token, int storeId, String msg);
-    public Response sendComplaint(int userId, String token, int orderId, int storeId, String msg);
+    public Response sendComplaint(int userId, String token, int orderId, String msg);
 
     // manager methods
     public Response appointManager(int userId, String token, String managerToAppoint, int storeId);
