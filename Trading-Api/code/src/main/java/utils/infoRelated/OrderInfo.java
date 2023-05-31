@@ -1,5 +1,6 @@
 package utils.infoRelated;
 
+import domain.user.Basket;
 import domain.user.ShoppingCart;
 import org.json.JSONObject;
 
@@ -35,6 +36,10 @@ public class OrderInfo extends Information{
 
     public int getOrderId() {
         return orderId;
+    }
+
+    public Basket getBasket(int storeId){
+        return productsInStores.getBasket(storeId);
     }
 
     @Override

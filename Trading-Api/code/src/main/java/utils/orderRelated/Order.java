@@ -3,6 +3,7 @@ package utils.orderRelated;
 
 import domain.store.product.Product;
 import domain.user.ShoppingCart;
+import domain.user.User;
 import utils.infoRelated.ProductInfo;
 
 import java.util.HashMap;
@@ -11,13 +12,13 @@ import java.util.List;
 public class Order {
     private int orderId;
     private Status status;
-    private int userId;
+    private User user;
     private ShoppingCart productsInStores;    //<storeID,<productID, quantity>>
     private HashMap<Integer,HashMap<Integer,Integer>> prices; //storeId,<prodId, price>
     private double totalPrice = 0;
-    public Order(int id, int user_id, ShoppingCart products){
+    public Order(int id, User user, ShoppingCart products){
         orderId = id;
-        userId = user_id;
+        this.user = user;
         status = Status.pending;
         productsInStores = products;
         prices = new HashMap<>();
@@ -37,8 +38,8 @@ public class Order {
     public synchronized void setStatus(Status stat){
         this.status = stat;
     }
-    public synchronized int getUserId() {
-        return userId;
+    public synchronized User getUser() {
+        return user;
     }
     public synchronized List<ProductInfo> getProductsInStores() {
         return productsInStores.getContent();
