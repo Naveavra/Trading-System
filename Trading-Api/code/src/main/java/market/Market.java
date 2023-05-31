@@ -95,13 +95,16 @@ public class Market implements MarketInterface {
     @Override
     public Response<String> register(String email, String pass, String birthday) {
         try {
-            String hashedPassword = userAuth.hashPassword(email, pass);
-            int id = ids.getAndIncrement();
-            userController.register(id, email, pass, hashedPassword, birthday);
-            marketInfo.addRegisteredCount();
-            return logAndRes(Event.LogStatus.Success, "successfully registered",
-                    StringChecks.curDayString(), email,
-                    "registered successfully", null, null);
+            if(!checkIsAdmin(email)) {
+                String hashedPassword = userAuth.hashPassword(email, pass);
+                int id = ids.getAndIncrement();
+                userController.register(id, email, pass, hashedPassword, birthday);
+                marketInfo.addRegisteredCount();
+                return logAndRes(Event.LogStatus.Success, "successfully registered",
+                        StringChecks.curDayString(), email,
+                        "registered successfully", null, null);
+            }
+            throw new Exception("the email already belongs to admin");
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant register because " + e.getMessage(),
                     StringChecks.curDayString(), email,
@@ -306,7 +309,7 @@ public class Market implements MarketInterface {
 
 
     @Override
-    public Response changeMemberAttributes(int userId, String token, String newEmail, String oldPass, String newPass){
+    public Response<String> changeMemberAttributes(int userId, String token, String newEmail, String oldPass, String newPass){
         try {
             userAuth.checkUser(userId, token);
             String oldHashedPass = userAuth.hashPassword(userController.getUserName(userId), oldPass);
@@ -993,7 +996,7 @@ public class Market implements MarketInterface {
      * return json of all the relevant information about the users: email, id, name
      */
     @Override
-    public Response<List<? extends Information>> getUsersPurchaseHistory(int adminId, String token) {
+    public Response<List<PurchaseHistory>> getUsersPurchaseHistory(int adminId, String token) {
         try {
             userAuth.checkUser(adminId, token);
             Admin a = getActiveAdmin(adminId);
