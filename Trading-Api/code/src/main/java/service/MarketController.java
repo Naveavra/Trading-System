@@ -2,22 +2,23 @@ package service;
 
 
 import domain.store.storeManagement.AppHistory;
+import domain.user.Member;
+import domain.user.ShoppingCart;
 import utils.Pair;
-import utils.ProductInfo;
-import utils.StoreInfo;
+import utils.infoRelated.ProductInfo;
+import utils.infoRelated.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
 import domain.store.storeManagement.StoreController;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
 import utils.messageRelated.Message;
-import utils.orderRelated.OrderInfo;
+import utils.infoRelated.OrderInfo;
 import utils.orderRelated.Status;
-import utils.userInfoRelated.Receipt;
+import utils.infoRelated.Receipt;
 
 public class MarketController {
 
@@ -33,9 +34,13 @@ public class MarketController {
         gson = new Gson();
     }
 
-    public Pair<Receipt, Set<Integer>> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, int userId) throws Exception
+
+    public int calculatePrice(ShoppingCart cart) throws Exception{
+        return storectrl.calculatePrice(cart);
+    }
+    public Pair<Receipt, Set<Integer>> purchaseProducts(ShoppingCart shoppingCart, int userId, int totalPrice) throws Exception
     {
-        Order order = orderctrl.createNewOrder(userId,shoppingCart, storectrl :: calculatePrice,storectrl :: setPrices);
+        Order order = orderctrl.createNewOrder(userId,shoppingCart, totalPrice,storectrl :: setPrices);
         order.setStatus(Status.pending);
         Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
         order.setStatus(Status.submitted);
@@ -44,19 +49,15 @@ public class MarketController {
         return ans;
     }
 
-    /**
-     * @param userID creator id
-     * @param description store description
-     */
-    public Store openStore(int userID, String description) throws Exception
+    public Store openStore(Member user, String description) throws Exception
     {
-        Store store = storectrl.openStore(description, userID);
+        Store store = storectrl.openStore(description, user);
        return store;
     }
 
-    public Store openStore(int userID, String name, String description, String img) throws Exception
+    public Store openStore(Member user, String name, String description, String img) throws Exception
     {
-        Store store = storectrl.openStore(name, description, img, userID);
+        Store store = storectrl.openStore(name, description, img, user);
         return store;
     }
 
@@ -107,7 +108,7 @@ public class MarketController {
         }
     }
 
-    public StoreInfo getStoreInformation(int storeId){
+    public StoreInfo getStoreInformation(int storeId) throws Exception{
         return storectrl.getStoreInformation(storeId);
     }
     public Store getStore(int storeId) throws Exception {
@@ -139,36 +140,9 @@ public class MarketController {
     public int addQuestion(Message m) throws Exception {
         return storectrl.addQuestion(m);
     }
-    public void setStoreDescription(int storeId,String des) throws Exception{
-        Store store = storectrl.getStore(storeId);
-        if (store != null )
-        {
-             store.setStoreDescription(des);
-        }
-        else {
-            throw new Exception("store does not exist");
-        }
-    }
-    public void setStoreImg(int storeId, String img) throws Exception{
-        Store store = storectrl.getStore(storeId);
-        if (store != null )
-        {
-            store.changeImg(img);
-        }
-        else {
-            throw new Exception("store does not exist");
-        }
-    }
 
-    public void setStoreName(int storeId, String name) throws Exception{
-        Store store = storectrl.getStore(storeId);
-        if (store != null )
-        {
-            store.changeName(name);
-        }
-        else {
-            throw new Exception("store does not exist");
-        }
+    public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
+        storectrl.setStoreAttributes(storeId, name, description, img);
     }
 
     public void setStorePurchasePolicy(int storeId,String policy) throws Exception{
@@ -283,4 +257,7 @@ public class MarketController {
     }
 
 
+    public void checkProductInStore(int storeId, int productId) throws Exception{
+        storectrl.checkProductInStore(storeId, productId);
+    }
 }

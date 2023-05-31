@@ -28,3 +28,15 @@ export type storeFormValues = {
     desc: string,
     img: string, //description
 }
+export type sendMsgFormValues = {
+    userId: number;
+    message: string;
+    userName: string;
+}
+export type editProfileFormValues = {
+    userId: number;
+    name: string;
+    email: string;
+    age: number;
+    birthday: string;
+}

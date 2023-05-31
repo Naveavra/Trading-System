@@ -17,7 +17,7 @@ public class DiscountItemPredicate extends DiscountPredicate{
     @Override
     public boolean checkPredicate(Order order) {
         boolean answer = false;
-        int quantity = order.getProductsInStores().get(storeId).get(prodId);
+        int quantity = order.getShoppingCart().getBasket(storeId).getProduct(prodId).getQuantity();
         if(quantity!=0){
             switch (type){
                 case MinNumOfItem ->answer = handleMin(quantity);

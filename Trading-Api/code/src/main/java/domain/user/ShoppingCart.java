@@ -1,84 +1,93 @@
 package domain.user;
 
-import com.google.gson.Gson;
-import domain.user.Basket;
+import domain.store.product.Product;
+import org.eclipse.jetty.util.ajax.JSON;
+import org.json.JSONObject;
+import utils.infoRelated.Information;
+import utils.infoRelated.ProductInfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
-public class ShoppingCart {
-    private HashMap<Integer, Basket> baskets; // saves the connection between a shop and its basket;
+public class ShoppingCart{
+    private List<Basket> baskets; // saves the connection between a shop and its basket;
 
     public ShoppingCart (){
-        baskets = new HashMap<>();
+        baskets = new ArrayList<>();
     }
 
-    public void addProductToCart(int storeId, int productId, int quantity) throws Exception {
+    public ShoppingCart(ShoppingCart cart){
+        baskets = new ArrayList<>();
+        for(Basket b: cart.baskets)
+            baskets.add(new Basket(b));
+    }
+    public Basket getBasket(int storeId){
+        for(Basket b : baskets)
+            if(b.getStoreId() == storeId)
+                return b;
+        return null;
+    }
+    public void addProductToCart(int storeId, ProductInfo product, int quantity) throws Exception {
         if (quantity < 1) {
             throw new Exception("quantity must be bigger then 0");
         }
-        if(!baskets.containsKey(storeId))
-            baskets.put(storeId, new Basket());
-        baskets.get(storeId).addProductToCart(productId, quantity);
+        Basket b = getBasket(storeId);
+        if(b == null) {
+            b = new Basket(storeId);
+            baskets.add(b);
+        }
+        b.addProductToCart(product, quantity);
     }
 
     public void removeProductFromCart(int storeId, int productId) throws Exception {
-        Basket basket = baskets.get(storeId);
+        Basket basket = getBasket(storeId);
         if(basket != null) {
             boolean check = basket.removeProductFromCart(productId);
             if(!check)
-                baskets.remove(storeId);
+                baskets.remove(getBasket(storeId));
         }
         else
             throw new Exception("the product isn't in the cart");
     }
 
-    public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
-        if(baskets.containsKey(storeId)) {
-            boolean check = baskets.get(storeId).changeQuantityInCart(productId, change);
+    public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
+        Basket b = getBasket(storeId);
+        if(b != null) {
+            boolean check = b.changeQuantityInCart(product, change);
             if(!check)
                 baskets.remove(storeId);
         }
         else
-            addProductToCart(storeId, productId, change);
-
-
+            addProductToCart(storeId, product, change);
     }
 
-    public void addQuantityInCart(int storeId, int productId, int change) throws Exception {
-        if (baskets.containsKey(storeId)) {
-            boolean check = baskets.get(storeId).addQuantityInCart(productId, change);
-            if (!check)
-                baskets.remove(storeId);
-        }
-        else{
-            baskets.put(storeId, new Basket());
-            boolean check = baskets.get(storeId).addQuantityInCart(productId, change);
-            if (!check)
-                baskets.remove(storeId);
-        }
+    public boolean hasStore(int storeId){
+        return getBasket(storeId) != null;
     }
 
-    public void removeQuantityInCart(int storeId, int productId, int change) throws Exception {
-        if (baskets.containsKey(storeId)) {
-            boolean check = baskets.get(storeId).removeQuantityInCart(productId, change);
-            if (!check)
-                baskets.remove(storeId);
-        }
-        else
-            throw new Exception("the product is not in the cart");
+    public boolean hasProduct(int storeId, int productId) {
+        Basket b = getBasket(storeId);
+        if(b != null)
+            return b.hasProduct(productId);
+        return false;
     }
-    public HashMap<Integer, HashMap<Integer, Integer>> getContent() {
-        HashMap<Integer, HashMap<Integer, Integer>> cartContent = new HashMap<>();
-        for(int storeId : baskets.keySet()) {
-            HashMap<Integer, Integer> basketContent = baskets.get(storeId).getContent();
-            cartContent.put(storeId, basketContent);
-        }
-        return cartContent;
 
+    public List<ProductInfo> getContent()
+    {
+        List<ProductInfo> ans = new ArrayList();
+        for (Basket b : baskets) {
+            List<ProductInfo> basketJson = b.getContent();
+            ans.addAll(basketJson);
+        }
+        return ans;
     }
+
+    public List<Basket> getBaskets(){return baskets;}
 
     public void emptyCart() {
-        baskets = new HashMap<>();
+        for(Basket b : baskets)
+            b.clear();
+        baskets.clear();
     }
 }

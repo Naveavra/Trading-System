@@ -1,12 +1,16 @@
 package domain.user;
 
-import java.util.HashMap;
+import domain.store.product.Product;
+import org.json.JSONObject;
+import utils.Pair;
+import utils.infoRelated.ProductInfo;
 
-public class Guest {
+import java.util.HashMap;
+import java.util.List;
+
+public class Guest implements User{
     private int id;
     private ShoppingCart cart;
-
-
 
 
     public Guest(int id){
@@ -18,8 +22,8 @@ public class Guest {
         return id;
     }
 
-    public void addProductToCart(int storeId, int productId, int quantity) throws Exception{
-            cart.addProductToCart(storeId, productId, quantity);
+    public void addProductToCart(int storeId, ProductInfo product, int quantity) throws Exception{
+            cart.addProductToCart(storeId, product, quantity);
     }
 
 
@@ -27,21 +31,28 @@ public class Guest {
         cart.removeProductFromCart(storeId, productId);
     }
 
-    public void changeQuantityInCart(int storeId, int productId, int change) throws Exception{
-        cart.changeQuantityInCart(storeId, productId, change);
-    }
-    public void addQuantityInCart(int storeId, int productId, int change) throws Exception{
-        cart.addQuantityInCart(storeId, productId, change);
-    }
-    public void removeQuantityInCart(int storeId, int productId, int change) throws Exception{
-        cart.removeQuantityInCart(storeId, productId, change);
+    public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
+        cart.changeQuantityInCart(storeId, product, change);
     }
 
-    public HashMap<Integer, HashMap<Integer, Integer>> getCartContent() {
+    public List<ProductInfo> getCartContent() {
         return cart.getContent();
     }
 
     public void emptyCart() {
         cart.emptyCart();
+    }
+
+    @Override
+    public String getName() {
+        return "guest" + id;
+    }
+
+    public void purchaseMade(int orderId, double totalPrice){
+        emptyCart();
+    }
+
+    public ShoppingCart getShoppingCart() {
+        return cart;
     }
 }

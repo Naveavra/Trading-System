@@ -1,13 +1,16 @@
 package domain.store.storeManagement;
 
-import utils.ProductInfo;
+import domain.user.Basket;
+import domain.user.Member;
+import domain.user.ShoppingCart;
+import utils.infoRelated.ProductInfo;
 import utils.Filter.ProductFilter;
-import utils.StoreInfo;
+import utils.infoRelated.StoreInfo;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
-import utils.orderRelated.OrderInfo;
-import utils.userInfoRelated.Receipt;
+import utils.infoRelated.OrderInfo;
+import utils.infoRelated.Receipt;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -80,14 +83,14 @@ public class StoreController {
         throw new Exception("store does not exist or is not open");
     }
 
-    public Store openStore(String desc, int userID) {
-        Store store = new Store(storescounter.getAndIncrement(), desc, userID);
+    public Store openStore(String desc, Member user) {
+        Store store = new Store(storescounter.getAndIncrement(), desc, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
 
-    public Store openStore(String name, String desc, String img, int userID) {
-        Store store = new Store(storescounter.getAndIncrement(), name, desc, img, userID);
+    public Store openStore(String name, String desc, String img, Member user) {
+        Store store = new Store(storescounter.getAndIncrement(), name, desc, img, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
@@ -111,24 +114,22 @@ public class StoreController {
         throw new Exception("the storeId given does not belong to any active store");
     }
 
-    public int calculatePrice(HashMap<Integer,HashMap<Integer,Integer>> basket) throws Exception{
+    public int calculatePrice(ShoppingCart cart) throws Exception{
         int total = 0;
-        for(Integer id : basket.keySet()){
-            total += getStore(id).calculatePrice(basket.get(id));
+        for(Basket basket : cart.getBaskets()){
+            total += getStore(basket.getStoreId()).calculatePrice(basket);
         }
         return total;
     }
     public void setPrices(Order or) throws Exception {
-        HashMap<Integer,HashMap<Integer,Integer>> shoppingCart = or.getProductsInStores();
+        List<ProductInfo> shoppingCart = or.getProductsInStores();
         HashMap<Integer,HashMap<Integer,Integer>> prices = or.getPrices();
-        for(Integer storeId: shoppingCart.keySet()){
-            prices.put(storeId,new HashMap<>());
-            for(Integer prodId : shoppingCart.get(storeId).keySet()){
-                int quantity = shoppingCart.get(storeId).get(prodId);
-                Store s = getStore(storeId);
-                Product p = s.getInventory().getProduct(prodId);
-                prices.get(storeId).put(prodId,p.getPrice() * quantity);
-            }
+        for(ProductInfo product : shoppingCart){
+            prices.put(product.getStoreId(),new HashMap<>());
+            int quantity = product.quantity;
+            Store s = getStore(product.getStoreId());
+            Product p = s.getInventory().getProduct(product.getId());
+            prices.get(product.getStoreId()).put(product.getId(),p.getPrice() * quantity);
         }
     }
 //    /**
@@ -140,8 +141,8 @@ public class StoreController {
 //    public int createOrder(HashMap<Integer, HashMap<Integer, Integer>> shoppingcart) {
 //        int totalprice = 0;
 //        for (Integer storeid : shoppingcart.keySet()) {
-//            Store store = storeList.get(storeid);
-//            try {
+//            Store store = getStore(storeId
+;//            try {
 //                totalprice += store.createOrder(shoppingcart.get(storeid));
 //            } catch (Exception e) {
 //                return -1;
@@ -155,16 +156,16 @@ public class StoreController {
      * @param shoppingCart the client shopping cart
      * @return if successful returns the store owners ids else null
      */
-    public synchronized Set<Integer> purchaseProducts(HashMap<Integer, HashMap<Integer, Integer>> shoppingCart, Order order) throws Exception {
+    public synchronized Set<Integer> purchaseProducts(ShoppingCart shoppingCart, Order order) throws Exception {
         Set<Integer> storeOwnersIDS = new HashSet<>();
         //should apply discounts here
-        for (Integer storeId : shoppingCart.keySet()) {
-            Store store = storeList.get(storeId);
+        for (Basket b : shoppingCart.getBaskets()) {
+            Store store = storeList.get(b.getStoreId());
             store.handleDiscount(order);
-            if (!(store.makeOrder(shoppingCart.get(storeId)))) {
+            if (!(store.makeOrder(b))) {
                 return null;
             }
-            storeOwnersIDS.add(store.getCreatorId());
+            storeOwnersIDS.add(store.getCreator());
             store.addOrder(order);
         }
         return storeOwnersIDS;
@@ -184,13 +185,15 @@ public class StoreController {
         return true;
     }
 
-    public Store getStore(int storeId) {
-        return storeList.get(storeId);
+    public Store getStore(int storeId) throws Exception{
+        if(storeList.containsKey(storeId))
+            return storeList.get(storeId);
+        throw new Exception("the storeId given does not belong to any store in the system");
     }
 
 
-    public Store createNewStore(int creatorid, String description) {
-        Store store = new Store(storescounter.get(), description, creatorid);
+    public Store createNewStore(Member creator, String description) {
+        Store store = new Store(storescounter.get(), description, creator);
         int storeid = storescounter.getAndIncrement();
         storeList.put(storeid, store);
         return store;
@@ -215,7 +218,7 @@ public class StoreController {
 //    }
 
     public String getProductName(int storeId, int productId) throws Exception {
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive()) {
             return store.getProductName(productId);
         } else {
@@ -224,7 +227,7 @@ public class StoreController {
     }
 
     public ArrayList<String> checkMessages(int storeID) throws Exception {
-        Store store = storeList.get(storeID);
+        Store store = getStore(storeID);
         if (store != null && store.isActive()) {
             return store.checkMessages();
         } else {
@@ -234,7 +237,7 @@ public class StoreController {
 
 
     public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive())
         {
             return store.getQuestions();
@@ -245,7 +248,7 @@ public class StoreController {
     }
 
     public void answerQuestion(int storeId, int questionId, String answer) throws Exception{
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive())
         {
             store.answerQuestion(questionId, answer);
@@ -253,7 +256,7 @@ public class StoreController {
     }
 
     public List<OrderInfo> getStoreOrderHistory(int storeId) throws Exception {
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive())
         {
             return store.getOrdersHistory();
@@ -262,7 +265,7 @@ public class StoreController {
     }
 
     public AppHistory getAppointments(int storeId) throws Exception{
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive())
         {
             return store.getAppHistory();
@@ -272,7 +275,7 @@ public class StoreController {
 
 
     public Set<Integer> closeStorePermanently(int storeId) throws Exception {
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if(store != null){
             storeList.remove(storeId);
             return store.getUsersInStore();
@@ -303,7 +306,7 @@ public class StoreController {
     }
 
     public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
-        Store store = storeList.get(storeId);
+        Store store = getStore(storeId);
         if (store != null && store.isActive())
         {
             return store.getStoreReviews();
@@ -334,7 +337,7 @@ public class StoreController {
             throw new Exception("the id given does not match any store");
     }
 
-    public StoreInfo getStoreInformation(int storeId){
+    public StoreInfo getStoreInformation(int storeId) throws Exception{
         Store store = getStore(storeId);
         return store.getStoreInformation();
 
@@ -345,11 +348,13 @@ public class StoreController {
     }
 
     public void purchaseMade(Receipt receipt) throws Exception {
-        HashMap<Integer, HashMap<Integer, Integer>> cart = receipt.getProducts();
-        for(int storeId : cart.keySet()){
+        List<Basket> cart = receipt.getContent();
+        for(Basket b : cart){
+            int storeId = b.getStoreId();
             Store store = getStore(storeId);
-            for(int productId : cart.get(storeId).keySet()){
-                store.setProductQuantity(productId, store.getQuantityOfProduct(productId) - cart.get(storeId).get(productId));
+            for(ProductInfo product: b.getContent()){
+                int productId = product.id;
+                store.setProductQuantity(productId, store.getQuantityOfProduct(productId) - product.quantity);
             }
         }
     }
@@ -361,5 +366,15 @@ public class StoreController {
                 products.addAll(s.getProducts());
         }
         return products;
+    }
+
+    public void checkProductInStore(int storeId, int productId) throws Exception{
+        Store s = getStore(storeId);
+        s.checkProductInStore(productId);
+    }
+
+    public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
+        Store s = getStore(storeId);
+        s.setStoreAttributes(name, description, img);
     }
 }

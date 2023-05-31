@@ -10,8 +10,6 @@ import loginRoutes from '../src/views/LoginPage/router';
 
 import ErrorPage from './views/dashboard/Error';
 import Tests from './views/tests';
-import { SuperiorShopRoutes } from './views/dashboard/Shop/Superior/router';
-import { VisitorShopRoutes } from './views/dashboard/Shop/Visitor/router';
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -22,6 +20,7 @@ export const router = createBrowserRouter(
 
             {dashboardRoutes}
             {loginRoutes}
+
             {/* {SuperiorShopRoutes}
             {VisitorShopRoutes} */}
 

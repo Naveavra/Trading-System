@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 //import { FullBackgroundImage } from '../../components/Images/FullBackgroundImage';
-
 import { Box, CardContent, Grid, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
 import { LoginForm } from './LoginPanel/LoginForm';
-import ErrorAlert from '../../components/Alerts/error';
 import AlertDialog from '../../components/Dialog/AlertDialog';
 import { clearAuthError } from '../../reducers/authSlice';
 
@@ -14,6 +12,7 @@ const LoginPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
     const error = useAppSelector((state) => state.auth.error);
+    const isAdmin =useAppSelector((state) => state.auth.isAdmin); 
 
     return (!isLoggedIn ?
         <>
@@ -23,7 +22,7 @@ const LoginPage: React.FC = () => {
             >
                 <Grid item xs={12}>
                     <Typography variant="h2" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                        {'WELCOME TO THE TRAIDING SYSTEM'}
+                        {'WELCOME TO THE TRADING SYSTEM'}
                     </Typography>
                 </Grid>
             </Grid >
@@ -40,10 +39,14 @@ const LoginPage: React.FC = () => {
             }}>
                 <CardContent sx={{ width: 400 }}>
                     <LoginForm />
+
                 </CardContent>
             </Box>
             {!!error ? <AlertDialog open={!!error} onClose={() => { dispatch(clearAuthError()); }} text={error} sevirity={'error'} /> : null}
         </> :
+        isAdmin ?
+        <Navigate to="/dashboard/admin" />:
+             
         <Navigate to="/dashboard" />
     )
 

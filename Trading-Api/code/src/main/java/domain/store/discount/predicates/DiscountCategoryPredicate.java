@@ -1,6 +1,8 @@
 package domain.store.discount.predicates;
 
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
+import domain.user.Basket;
+import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
 
 import java.util.ArrayList;
@@ -22,9 +24,9 @@ public class DiscountCategoryPredicate extends DiscountPredicate {
     public boolean checkPredicate(Order order) {
         boolean answer = false;
         int count = 0;
-        HashMap<Integer,Integer> productsInStore = order.getProductsInStores().get(storeId);
-        for(Integer prodId : productsInStore.keySet()){
-            ArrayList<String> categories = getCategories.getProductCategories(prodId);
+        Basket productsInStore = order.getShoppingCart().getBasket(storeId);
+        for(ProductInfo product : productsInStore.getContent()){
+            ArrayList<String> categories = getCategories.getProductCategories(product.getId());
             if(categories.contains(category))
                 count++;
         }

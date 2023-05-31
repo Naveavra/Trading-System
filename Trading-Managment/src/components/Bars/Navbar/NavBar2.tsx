@@ -1,4 +1,12 @@
 import * as React from 'react';
+import { StoreRole } from '../../../types/systemTypes/StoreRole';
+import { useEffect, useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+
+import { getStore, patchStore } from '../../../reducers/storesSlice';
+import { useAppSelector, useAppDispatch } from '../../../redux/store';
+import { logout, guestEnter, getNotifications, clearNotifications } from '../../../reducers/authSlice';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -6,20 +14,19 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox } from '@mui/material';
-import { logout, guestEnter, getClientData, clearNotifications } from '../../../reducers/authSlice';
-import { getStore } from '../../../reducers/storesSlice';
-import { useAppSelector, useAppDispatch } from '../../../redux/store';
-import './NavBar2.css';
+import Switch from '@mui/material/Switch';
+import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox, Icon } from '@mui/material';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SideDrawer from '../../SideDrawer';
-import { StoreRole } from '../../../types/systemTypes/StoreRole';
-import { useEffect, useState } from 'react';
+
+import './NavBar2.css';
+
+
 
 interface Props {
     headLine: string;
@@ -32,16 +39,15 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const [openDrawer, setOpenDrawer] = useState(false);
     const [profileDialogOpen, setProfileDialogOpen] = useState(false);
     const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
-    const notification = useAppSelector((state) => state.auth.notifications);
+
+    const notifications = useAppSelector((state) => state.auth.notifications);
     const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector((state) => state.auth.userName);
     const token = useAppSelector((state) => state.auth.token) ?? "";
-    const notifications = useAppSelector((state) => state.auth.notifications);
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
 
     const cart = useAppSelector((state) => state.cart.responseData);
-    const numProductsIncart = cart?.baskets?.reduce((acc, item) => acc + item.products.productsList.length, 0) ?? 0;
-
+    const numProductsIncart = cart?.reduce((acc, item) => acc + item.quantity, 0) ?? 0;
     const stores_roles: StoreRole[] = useAppSelector((state) => state.auth.storeRoles);
     const stores_names = useAppSelector((state) => state.auth.storeNames);
     const store_images = useAppSelector((state) => state.auth.storeImgs);
@@ -53,9 +59,8 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
             storeImg: store_images[index].storeImg,
         }
     }) : [];
-
+    const store = useAppSelector((state) => state.store.storeState.watchedStore);
     const storeInfo = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
-    const managerInStore = useAppSelector((state) => state.auth.storeRoles)?.filter((store) => store.storeId == storeInfo.id).length > 0;
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const handleLogout = () => {
@@ -64,7 +69,8 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     };
     const handleChooseStore = (storeNumber: number) => () => {
         dispatch(getStore({ userId: userId, storeId: storeNumber }));
-        navigate('shops/superior');
+        navigate('/dashboard/store/superior');
+        setStoreOpen(false);
     }
     const handleDrawerClose = () => {
         setOpenDrawer(false);
@@ -78,44 +84,57 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const handleConfirm = (event: React.ChangeEvent<HTMLInputElement>, idx: number): void => {
         console.log(`confirm message ${idx}`);
     }
-    useEffect(() => {
-        dispatch(getClientData({ userId: userId, token: token }));
+    const handleChangeOpen = () => {
+        dispatch(patchStore({ isActive: !store.isActive, storeId: store.storeId, userId: userId, img: "", desc: "", name: "" }));
+        dispatch(getStore({ userId: userId, storeId: store.storeId }));
+    }
+    // useEffect(() => {
+    //     if (token != '') {
+    //         dispatch(getNotifications({ userId: userId, token: token }));
+    //     }
 
-    }, [dispatch])
+    // }, [dispatch, store])
 
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
-                        {managerInStore &&
-                            <IconButton
-                                size="large"
-                                edge="start"
-                                color="inherit"
-                                aria-label="menu"
-                                className="icon"
-                                onClick={handleDrawerOpen}
-                                sx={{ mr: 2, ...(openDrawer && { display: 'none' }) }}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                        }
+
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            className="icon"
+                            onClick={handleDrawerOpen}
+                            sx={{ mr: 2, ...(openDrawer && { display: 'none' }) }}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+
 
                         <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
-                            {headLine}
+                            {headLine} {store.storeName}
                         </Typography>
+                        <Typography variant="h6" component="div" sx={{ width: 50, flexGrow: 2 }}>
+                            {store.isActive ? "store is active" : "store is not active"}
+                        </Typography>
+                        <IconButton className="icon" color="inherit" onClick={() => navigate(`/dashboard`)}>
+                            <HomeIcon />
+                        </IconButton>
 
                         {isLoggedIn &&
                             <>
 
+                                <Switch {...label} defaultChecked color="warning" value={store.isActive} onClick={handleChangeOpen} />
                                 <IconButton className="icon" color="inherit" onClick={handleLogout}>
                                     <LogoutIcon />
                                 </IconButton>
                                 <IconButton className="icon" color="inherit" onClick={() => setStoreOpen(true)}>
                                     <StorefrontIcon />
                                 </IconButton>
-                                <IconButton className="icon" sx={{ mt: 0.5 }} color="inherit" onClick={() => { console.log("notifications") }}>
+                                <IconButton className="icon" sx={{ mt: 0.5 }} color="inherit" onClick={handleNotification}>
                                     <div className="numberIcon">
                                         <NotificationsOutlinedIcon />
                                         <span>{notifications.length}</span>
@@ -128,7 +147,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                         }}>
                             <PersonOutlineOutlinedIcon />
                         </IconButton>
-                        <IconButton className="icon" sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate(`/dashboard/${userId}/cart`)}>
+                        <IconButton className="icon" sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate(`/dashboard/cart`)}>
                             <div className="numberIcon">
                                 <ShoppingCartOutlinedIcon />
                                 {/* {need to sum up products quantity in every basket} */}
@@ -245,11 +264,11 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
             >
                 <DialogTitle>your notifications</DialogTitle>
                 <>
-                    {notification.map((not, index) => {
+                    {notifications?.map((not, index) => {
                         return (
                             <DialogContent dividers key={index}>
                                 <Box ml={3} display={'flex'} key={index}>
-                                    <Typography sx={{ ml: 2, mr: 3 }}>{not}</Typography>
+                                    <Typography sx={{ ml: 2, mr: 3 }}>{not.content}</Typography>
                                     <Checkbox {...label} defaultChecked onChange={(e) => { handleConfirm(e, index) }} />
                                 </Box>
                             </DialogContent>
@@ -271,6 +290,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
             <Box sx={{ display: 'flex', flexGrow: 1 }}>
                 <SideDrawer drawerWidth={DRAWER_WIDTH} onDrawerClose={handleDrawerClose} open={openDrawer} />
             </Box>
+            <Outlet />
         </>
     );
 }

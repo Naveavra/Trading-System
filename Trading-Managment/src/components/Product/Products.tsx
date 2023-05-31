@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { useAppSelector } from "../../redux/store"
 import { Product } from "../../types/systemTypes/Product";
-import ProductCard from "../ProductCard/Card";
+import ProductCard from "../ProductInStore/Card";
 
 interface props {
     text: string;

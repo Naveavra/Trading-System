@@ -1,14 +1,13 @@
-import { Basket } from '../systemTypes/Basket'
 
 export interface GetCartParams {
     userId: number;
 }
 
-export interface PostBasketParams {
-    userId: number;
-    storeId: number;
-    basket: Basket;
-}
+// export interface PostBasketParams {
+//     userId: number;
+//     storeId: number;
+//     basket: Basket;
+// }
 
 export interface DeleteCartParams {
     userId: number;

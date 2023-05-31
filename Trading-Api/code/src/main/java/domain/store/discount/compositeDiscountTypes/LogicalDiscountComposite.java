@@ -4,6 +4,8 @@ import domain.store.discount.Discount;
 import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.discount.predicates.DiscountPredicate;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
+import domain.user.Basket;
+import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
 
 import java.util.HashMap;
@@ -19,7 +21,7 @@ public class LogicalDiscountComposite extends AbstractDiscountComposite{
     public enum logical {And,Or,Xor};
     public enum xorDecidingRules {MaxDiscountValue,MinDiscountValue}
     @Override
-    public double handleDiscount(HashMap<Integer, Integer> basket, Order order) throws Exception {
+    public double handleDiscount(Basket basket, Order order) throws Exception {
         double discountValue = 0;
         switch (type){
             case Or -> {
@@ -48,7 +50,7 @@ public class LogicalDiscountComposite extends AbstractDiscountComposite{
     }
 
 
-    private double handleMinDiscountValue(HashMap<Integer, Integer> basket, Order order) throws Exception {
+    private double handleMinDiscountValue(Basket basket, Order order) throws Exception {
         double ans =Integer.MAX_VALUE;
         for(Discount dis: getDiscounts()){
             double disVal = dis.handleDiscount(basket,order);
@@ -59,7 +61,7 @@ public class LogicalDiscountComposite extends AbstractDiscountComposite{
         return ans<Integer.MAX_VALUE ? ans : 0;
     }
 
-    private double handleMaxDiscountValue(HashMap<Integer,Integer> basket,Order order) throws Exception {
+    private double handleMaxDiscountValue(Basket basket,Order order) throws Exception {
         double ans =0;
         for(Discount dis: getDiscounts()){
             double disVal = dis.handleDiscount(basket,order);

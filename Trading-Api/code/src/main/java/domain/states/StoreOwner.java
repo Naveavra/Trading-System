@@ -1,5 +1,6 @@
 package domain.states;
 
+import domain.store.storeManagement.Store;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
@@ -8,9 +9,9 @@ import java.util.List;
 
 public class StoreOwner extends UserState {
 
-    public  StoreOwner(){
+    public  StoreOwner(int userId, String name, Store store){
+        super(userId, name, store);
         role = Role.Owner;
-        permission = new Permission();
         List<Action> actions = new LinkedList<>();
 
         actions.add(Action.appointManager);

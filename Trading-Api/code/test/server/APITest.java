@@ -1,61 +1,64 @@
 package server;
 
-import domain.states.Permission;
 import domain.states.StoreCreator;
-import domain.store.storeManagement.StoreController;
+import jdk.jfr.Category;
+import market.Market;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import spark.http.matching.Halt;
 import utils.Logger;
-import utils.LoginInformation;
+import utils.infoRelated.LoginInformation;
+import utils.infoRelated.Receipt;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class APITest {
     private HashMap<Integer, HashMap<Integer, Integer>> cart;
-    private HashMap<Logger.logStatus, List<String>> logs;
     private LoginInformation li;
-    private API api;
+    API api;
+    int userId;
+    String token;
+    int storeId;
+
+    List<String> categories;
+    int productId;
+    int productId2;
+
     @BeforeEach
     void setUp() {
         api = new API();
-        cart = new HashMap<>();
-        logs = new HashMap<>();
-        List<String> noti = new ArrayList<>();
-        HashMap<Integer, Role> sr = new HashMap<>();
-        HashMap<Integer, String> sn = new HashMap<>();
-        HashMap<Integer, String> si = new HashMap<>();
-        HashMap<Integer, List<Action>> sa = new HashMap<>();
-        noti.add("Hello");
-        noti.add("World");
-        sr.put(0, Role.Creator);
-        sn.put(0, "Role.Creator");
-        si.put(0, "Role.Creator");
-        StoreCreator sc = new StoreCreator();
-        sa.put(0, sc.getActions());
-        li = new LoginInformation("5513", 1, "55", true, noti, false, sr, sn, si, sa);
-        logs.put(Logger.logStatus.Success, new ArrayList<>());
-        cart.put(1, new HashMap<>());
-        logs.get(Logger.logStatus.Success).add("CREATE cart");
-        cart.get(1).put(1, 1);
-        logs.get(Logger.logStatus.Success).add("ADD cart (1, 1)");
-        cart.put(5, new HashMap<>());
-        cart.get(5).put(5, 5);
-    }
-
-    @AfterEach
-    void tearDown() {
+        Market m = api.market;
+        //api.mockData();
+        m.register("eli@gmail.com", "123Aaa", "24/02/2002");
+        userId = m.login("eli@gmail.com", "123Aaa").getValue().getUserId();
+        token = m.addTokenForTests();
+        storeId = m.openStore(userId, token, "eli store", "good store", "img").getValue();
+        categories = new ArrayList<>();
+        categories.add("food");
+        categories.add("hang out");
+        productId = m.addProduct(userId, token, storeId, categories, "burger", "from McDonald", 5, 2, "img").getValue();
+        productId2 = m.addProduct(userId, token, storeId, categories, "burger2", "from McDonald", 5, 2, "img").getValue();
+        m.addProductToCart(userId, storeId, productId, 1);
+        m.addProductToCart(userId, storeId, productId2, 1);
+        m.register("chai@gmail.com", "456Bbb", "01/01/2000");
+        m.appointManager(userId, token, "chai@gmail.com", storeId);
     }
 
     @Test
-    void getBaskets() {
-        System.out.println(api.getBaskets(cart));
+    void getCart(){
+        System.out.println(api.getCart(userId).getSecond().get("value"));
     }
+
+    @Test
+    void getStore(){
+        System.out.println(api.getStore(userId, token, storeId).getSecond().get("value"));
+    }
+//    @Test
+//    void getBaskets() {
+//        System.out.println(api.getBaskets(cart));
+//    }
 
     @Test
     void logTest() {
@@ -67,11 +70,4 @@ class APITest {
 //        System.out.println(api.loginToJson(li).toString());
     }
 
-
-    @Test
-    void fromActionToString(){
-        StoreCreator sc = new StoreCreator();
-        List<String> s = api.fromActionToString(sc.getActions());
-        System.out.println(s);
-    }
 }

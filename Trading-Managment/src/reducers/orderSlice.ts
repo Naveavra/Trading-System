@@ -3,7 +3,7 @@ import { ApiError, ApiListData } from "../types/apiTypes";
 import { OrderInfo } from "../types/systemTypes/OrderInfo";
 import { getOrderParams, postOrderParams } from "../types/requestTypes/orderTypes";
 import { orderApi } from "../api/orderApi";
-import {EmptyOrder} from  "../types/systemTypes/OrderInfo";
+import { EmptyOrder } from "../types/systemTypes/OrderInfo";
 const reducerName = 'orders';
 
 interface OrderState {
@@ -26,7 +26,7 @@ const initialState: OrderState = {
         watchedOrder: undefined,
     },
     isLoading: false,
-    responseData: { data: { results: [] } },
+    responseData: [],
     error: null,
 }
 
@@ -42,7 +42,7 @@ export const postOrder = createAsyncThunk<
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
-    export const getOrders = createAsyncThunk<
+export const getOrders = createAsyncThunk<
     ApiListData<OrderInfo>,
     getOrderParams,
     { rejectValue: ApiError }
@@ -58,18 +58,18 @@ const { reducer: orderReducer, actions: orderActions } = createSlice({
     name: reducerName,
     initialState,
     reducers: {
-    clearOrdersError: (state) => {
-        state.error = null;
-    },
-    clearOrderError: (state) => {
-        state.error = null;
-    },
-    setWatchedOrderInfo: (state, action) => {
-        state.orderState.watchedOrder = state.responseData?.data.results.find((order) => order.orderId === action.payload) ?? EmptyOrder;
-    },
+        clearOrdersError: (state) => {
+            state.error = null;
+        },
+        clearOrderError: (state) => {
+            state.error = null;
+        },
+        setWatchedOrderInfo: (state, action) => {
+            state.orderState.watchedOrder = state.responseData?.find((order) => order.orderId === action.payload) ?? EmptyOrder;
+        },
     },
     extraReducers: (builder) => {
-    //getproducts
+        //getproducts
         builder.addCase(getOrders.pending, (state) => {
             state.isLoading = true;
             state.error = null;
@@ -77,14 +77,13 @@ const { reducer: orderReducer, actions: orderActions } = createSlice({
         builder.addCase(getOrders.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
             state.responseData = payload;
-            console.log(payload);
             state.error = null;
         });
         builder.addCase(getOrders.rejected, (state, { payload }) => {
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during getProducts";
         });
-    //PostProduct
+        //PostProduct
         builder.addCase(postOrder.pending, (state) => {
             state.orderState.isLoading = true;
             state.orderState.error = null;
@@ -96,9 +95,9 @@ const { reducer: orderReducer, actions: orderActions } = createSlice({
         builder.addCase(postOrder.rejected, (state, { payload }) => {
             state.orderState.error = payload?.message.data ?? "error during patchProducts";
             state.orderState.isLoading = false;
-        }); 
+        });
     }
 });
 
-export const {clearOrderError, clearOrdersError, setWatchedOrderInfo} = orderActions;
+export const { clearOrderError, clearOrdersError, setWatchedOrderInfo } = orderActions;
 export default orderReducer;

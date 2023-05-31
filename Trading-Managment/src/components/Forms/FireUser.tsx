@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { fireUserFormValues } from "../../types/formsTypes";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { LoadingButton } from "@mui/lab";
 import { Dialog, Box, Grid, Typography, SelectChangeEvent } from "@mui/material";
-import error from "../Alerts/error";
 import AlertDialog from "../Dialog/AlertDialog";
 import SelectAutoWidth from "../Selectors/AutoWidth";
 import { StoreRoleEnum } from "../../types/systemTypes/StoreRole";
@@ -16,57 +15,51 @@ interface props {
 }
 
 const FireUser: React.FC<props> = ({ role }) => {
-    const dispatch = useAppDispatch();
-    const [open, setOpen] = useState(true);
-    const [userToFireId, setUserToFireId] = useState(-1);
-    const user_name = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles)?.filter((role) => role.storeRole === StoreRoleEnum.MANAGER)?.map((role) => role.userName)[0];
-    const form = useForm<fireUserFormValues>();
     const navigate = useNavigate();
-    const params = useParams();
-    const userId = params.id ?? '-1';
+    const dispatch = useAppDispatch();
+    const [userToFireId, setUserToFireId] = useState(-1);
+    const form = useForm<fireUserFormValues>();
+
+
+    const token = useAppSelector((state) => state.auth.token);
+    const userId = useAppSelector((state) => state.auth.userId)
     const isLoading = useAppSelector((state) => state.store.storeState.isLoading);
     const error = useAppSelector((state) => state.store.storeState.error);
 
     //maybe by id
-    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
-    const token = useAppSelector((state) => state.auth.token);
 
-    const managers = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles)?.filter((role) => role.storeRole === StoreRoleEnum.MANAGER);
+    const store = useAppSelector((state) => state.store.storeState.watchedStore);
+    const storeId = store.storeId;
+
+    const managers = store.roles?.filter((role) => role.storeRole === StoreRoleEnum.MANAGER);
     const managers_names = managers?.map((role) => role.userName);
 
-    const owners = useAppSelector((state) => state.store.storeState.watchedStore.storeRoles)?.filter((role) => role.storeRole === StoreRoleEnum.OWNER);
+    const owners = store.roles?.filter((role) => role.storeRole === StoreRoleEnum.OWNER);
     const owners_names = owners?.map((role) => role.userName);
+    const user_name = managers.filter((manager) => manager.userId === userToFireId)[0]?.userName;
 
 
     //maybe take it from params
-    const handleOnClose = () => {
-        setOpen(false);
-        navigate(-1);
-        dispatch(getStore({ userId: Number(userId), storeId: storeId }));
-
-    }
+    const handleOnClose = useCallback(() => {
+        navigate('/dashboard/store/superior');
+        dispatch(getStore({ userId: userId, storeId: storeId }));
+    }, []);
     const handleOnSubmit = () => {
         let response;
+        form.setValue("storeId", storeId);
+        form.setValue("userId", userId);
+        form.setValue("userToFire", userToFireId);
         switch (role) {
             case 'owner':
                 response = dispatch(fireOwner(form.getValues()));
-                response.then((res: { meta: { requestStatus: string; }; }) => {
-                    if (res.meta.requestStatus === 'fulfilled') {
-                        handleOnClose();
-                    }
-                });
                 break;
             case 'manager':
                 response = dispatch(fireManager(form.getValues()));
-                response.then((res: { meta: { requestStatus: string; }; }) => {
-                    if (res.meta.requestStatus === 'fulfilled') {
-                        handleOnClose();
-                    }
-                });
                 break;
             default:
                 break;
         }
+        handleOnClose();
     }
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -86,7 +79,7 @@ const FireUser: React.FC<props> = ({ role }) => {
 
     return (
         <>
-            <Dialog onClose={handleOnClose} open={open}>
+            <Dialog onClose={handleOnClose} open={true}>
                 <Box
                     sx={{
                         marginTop: 4,

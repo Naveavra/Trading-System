@@ -12,11 +12,11 @@ export const storeApi =
         apiErrorHandlerWrapper(noAuthApiClient.get('api/stores/info')),
 
     getStore: (params: GetStoresParams): Promise<ApiResponse<Store>> =>
-        apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}`, params)),
+        apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/getStore`, params)),
     getProducts: (params: GetStoreProducts): Promise<ApiResponseListData<Product>> =>
         apiErrorHandlerWrapper(noAuthApiClient.get(`api/stores/${params.storeId}/products`, { params: params })),
 
-    postStore: (params: PostStoreParams): Promise<ApiResponse<string>> =>
+    postStore: (params: PostStoreParams): Promise<ApiResponse<number>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/stores', params)),
 
     patchStore: (params: PatchStoreParams): Promise<ApiResponse<string>> =>
@@ -34,11 +34,13 @@ export const storeApi =
         apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/appointments/managers`, params)),
 
     fireManager: (params: fireUserParams): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().delete(`api/stores/${params.storeId}/appointments/managers`, { params: params })),
+        apiErrorHandlerWrapper(getApiClient().patch(`api/stores/${params.storeId}/appointments/managers`, params)),
 
     fireOwner: (params: fireUserParams): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().delete(`api/stores/${params.storeId}/appointments/owners`, { params: params })),
+        apiErrorHandlerWrapper(getApiClient().patch(`api/stores/${params.storeId}/appointments/owners`, params)),
 
     patchPermissions: (params: patchPermissionsParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().patch(`api/stores/${params.storeId}/permissions`, params)),
+
+
 }   

@@ -42,14 +42,13 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, ope
     const navigate = useNavigate();
     const store = useAppSelector((state) => state.store.storeState.watchedStore);
     const permissions = useAppSelector((state: RootState) => state.auth.permissions);
-    console.log("permissions", permissions);
-    console.log(store.storeId);
     const actions = permissions.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
-    console.log("actions", actions);
+    //rearange actions by alphbetic order and nums of words in action
+
     for (const a of actions) {
         itemsMap[a] = {
             text: a,
-            onclick: () => { navigate(`/dashboard/shops/superior/${a.replace(/\s/g, "")}`) }
+            onclick: () => { navigate(`/dashboard/store/superior/${a.replace(/\s/g, "")}`) }
         }
     }
     const actinosList: item[] = actions.map((action) => {

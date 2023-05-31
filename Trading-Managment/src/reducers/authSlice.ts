@@ -1,20 +1,23 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ApiError } from "../types/apiTypes";
-import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData, getClientResponseData } from "../types/responseTypes/authTypes";
+import { ApiError, ApiListData, ApiResponseListData } from "../types/apiTypes";
+import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData, getClientResponseData, getClientNotifications } from "../types/responseTypes/authTypes";
 import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
-import { RegisterPostData } from "../types/requestTypes/authTypes";
+import { RegisterPostData, editProfileParams, getUserData, getUserNotifications, messageParams } from "../types/requestTypes/authTypes";
 import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
-import { getUserData } from "../types/requestTypes/authTypes";
+import { MyNotification } from "../types/systemTypes/Notification";
+import { Order } from "../types/systemTypes/Order";
 
 interface AuthState {
     token: string;
     userId: number;
     userName: string;
     isAdmin: boolean;
-    notifications: string[]; // todo : change to notification type {id , message[] ,}
+    birthday: string;
+    age: number;
+    notifications: MyNotification[];
     message: string | null;
     hasQestions: boolean;
     storeRoles: StoreRole[];
@@ -22,15 +25,20 @@ interface AuthState {
     storeImgs: StoreImg[];
     permissions: Permission[];
     error: string | null;
+    isLoading: boolean;
     isLoginLoading: boolean;
     isRegisterLoading: boolean;
     isLogoutLoading: boolean;
+    opcode: number;
+    purchaseHistory: Order[];
 }
 const reducrName = 'auth';
 const initialState: AuthState = {
     token: window.localStorage.getItem(localStorage.auth.token.name) || '',
     userId: parseInt(window.localStorage.getItem(localStorage.auth.userId.name) || '0'),
     userName: window.localStorage.getItem(localStorage.auth.userName.name) || '',
+    age: parseInt(window.localStorage.getItem(localStorage.auth.age.name) || '0'),
+    birthday: window.localStorage.getItem(localStorage.auth.birthday.name) || '',
     //todo : add get function to all of the this
     // isAdmin: window.localStorage.getItem(localStorage.auth.isAdmin.name) === 'true' ? true : false,
     // hasQestions: window.localStorage.getItem(localStorage.auth.hasQestions.name) === 'true' ? true : false,
@@ -46,9 +54,12 @@ const initialState: AuthState = {
     permissions: [],
     message: null,
     error: null,
+    isLoading: false,
     isLoginLoading: false,
     isRegisterLoading: false,
     isLogoutLoading: false,
+    opcode: 0,
+    purchaseHistory: [],
 };
 
 export const login = createAsyncThunk<
@@ -87,7 +98,7 @@ export const logout = createAsyncThunk<
 >(
     `${reducrName}/logout`,
     async (userId, thunkApi) => {
-        return authApi.logout(userId)
+        return await authApi.logout(userId)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
@@ -116,7 +127,18 @@ export const ping = createAsyncThunk<
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
-//get client data
+
+export const getNotifications = createAsyncThunk<
+    MyNotification,
+    getUserNotifications,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/getNotifications`,
+    async (credential, thunkApi) => {
+        return authApi.getNotifications(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as MyNotification))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
 export const getClientData = createAsyncThunk<
     getClientResponseData,
     getUserData,
@@ -128,6 +150,29 @@ export const getClientData = createAsyncThunk<
             .then((res) => thunkApi.fulfillWithValue(res as getClientResponseData))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
+export const sendMessage = createAsyncThunk<
+    string,
+    messageParams,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/sendMessage`,
+    async (credential, thunkApi) => {
+        return authApi.sendMessage(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+export const editProfile = createAsyncThunk<
+    string,
+    editProfileParams,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/editProfile`,
+    async (credential, thunkApi) => {
+        return authApi.editProfile(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+
 const { reducer: authReducer, actions: authActions } = createSlice({
     name: reducrName,
     initialState,
@@ -150,17 +195,21 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.error = null;
         });
         builder.addCase(login.fulfilled, (state, { payload }: PayloadAction<{ rememberMe: boolean, responseBody: TokenResponseBody }>) => {
+            debugger;
             state.isLoginLoading = false;
             state.token = payload.responseBody.token;
             state.userId = payload.responseBody.userId;
             state.userName = payload.responseBody.userName;
             state.isAdmin = payload.responseBody.isAdmin;
+            state.age = payload.responseBody.age;
+            state.birthday = payload.responseBody.birthday;
             state.hasQestions = payload.responseBody.hasQestions;
             state.storeRoles = payload.responseBody.storeRoles;
             state.storeNames = payload.responseBody.storeNames;
             state.storeImgs = payload.responseBody.storeImgs;
             state.notifications = payload.responseBody.notifications;
             state.permissions = payload.responseBody.permissions;
+            state.purchaseHistory = payload.responseBody.purchaseHistory;
             if (payload.rememberMe) {
                 window.localStorage.setItem(localStorage.auth.token.name, payload.responseBody.token);
                 window.localStorage.setItem(localStorage.auth.userId.name, payload.responseBody.userId.toString());
@@ -220,40 +269,85 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         //guest enter
         builder.addCase(guestEnter.pending, (state) => {
-            state.isLoginLoading = true;
+            state.isLoading = true;
             state.error = null;
         });
         builder.addCase(guestEnter.fulfilled, (state, { payload }) => {
-            state.isLoginLoading = false;
+            state.isLoading = false;
             state.token = "";
             state.userId = payload;
             state.userName = "guest";
         });
         builder.addCase(guestEnter.rejected, (state, { payload }) => {
-            state.isLoginLoading = false;
+            state.isLoading = false;
             state.error = payload?.message.data ?? "error during guest enter";
+        });
+        // get notifications
+        builder.addCase(getNotifications.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(getNotifications.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            debugger;
+            const arr: MyNotification[] = [payload];
+            //state.opcode = arr[0].opcode;
+            state.notifications = state.notifications.concat(arr);
+
+        });
+        builder.addCase(getNotifications.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            // state.opcode = -1;
         });
         // get client data
         builder.addCase(getClientData.pending, (state) => {
-            state.isLoginLoading = true;
+            state.isLoading = true;
             state.error = null;
         });
         builder.addCase(getClientData.fulfilled, (state, { payload }) => {
-            state.isLoginLoading = false;
+            state.isLoading = false;
             state.userName = payload.userName;
             state.isAdmin = payload.isAdmin;
             state.hasQestions = payload.hasQestions;
             state.storeRoles = payload.storeRoles;
             state.storeNames = payload.storeNames;
             state.storeImgs = payload.storeImgs;
-            state.notifications = payload.notifications;
+            state.notifications = state.notifications.concat(payload.notifications);
             state.permissions = payload.permissions;
+            state.age = payload.age;
+            state.birthday = payload.birthday;
+            state.purchaseHistory = payload.purchaseHistory;
         });
         builder.addCase(getClientData.rejected, (state, { payload }) => {
-            state.isLoginLoading = false;
+            state.isLoading = false;
             state.error = payload?.message.data ?? "error during get client data";
         });
-
+        //send message
+        builder.addCase(sendMessage.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(sendMessage.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(sendMessage.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during send message";
+        });
+        //edit profile
+        builder.addCase(editProfile.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(editProfile.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(editProfile.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during edit profile";
+        });
     }
 });
 // Action creators are generated for each case reducer function

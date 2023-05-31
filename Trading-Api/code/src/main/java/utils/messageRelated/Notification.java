@@ -1,11 +1,16 @@
 package utils.messageRelated;
 
 
-public class Notification<T>{
+import org.json.JSONObject;
+import utils.infoRelated.Information;
+
+public class Notification<T> extends Information {
     private T notification;
+    private NotificationOpcode opcode;
 
 
-    public Notification(T notification){
+    public Notification(NotificationOpcode opcode, T notification){
+        this.opcode =  opcode;
         this.notification =  notification;
     }
 
@@ -18,5 +23,11 @@ public class Notification<T>{
     }
 
 
-
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("opcode", opcode.ordinal());
+        json.put("content", notification);
+        return json;
+    }
 }

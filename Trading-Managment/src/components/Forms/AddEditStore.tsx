@@ -1,15 +1,18 @@
 import { LoadingButton } from "@mui/lab";
 import { Dialog, Box, Grid, Typography, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { clearProductError } from "../../reducers/productsSlice";
+import { clearProductError, getProducts } from "../../reducers/productsSlice";
 import { storeFormValues } from "../../types/formsTypes";
 import error from "../Alerts/error";
 import AlertDialog from "../Dialog/AlertDialog";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
-import { postStore, patchStore, getStore } from "../../reducers/storesSlice";
+import { postStore, patchStore, getStore, getStoresInfo } from "../../reducers/storesSlice";
 import { Action } from "../../types/systemTypes/Action";
+import axios from "axios";
+import { getClientData, getNotifications } from "../../reducers/authSlice";
+import { getCart } from "../../reducers/cartSlice";
 
 interface storeProps {
     mode: 'add' | 'edit';
@@ -19,49 +22,68 @@ const AddEditStore: React.FC<storeProps> = ({ mode }) => {
     const navigate = useNavigate();
     const [open, setOpen] = useState(true);
     const form = useForm<storeFormValues>();
+
+    const token = useAppSelector((state: RootState) => state.auth.token);
     const required = (() => { return mode === 'add' ? true : false })();
     const userId = useAppSelector((state: RootState) => state.auth.userId);
     const isLoading = useAppSelector((state: RootState) => state.store.isLoading);
     const error = useAppSelector((state: RootState) => state.store.error);
     const store = useAppSelector((state: RootState) => state.store.storeState.watchedStore);
-    const store_id = store ? store.storeId : -1;
+    const store_id = store.storeId;
     const permissions = useAppSelector((state: RootState) => state.auth.permissions).filter((perm) => perm.storeId === store_id);
     const Actions = permissions.length > 0 ? permissions[0].actions : [];
     const canClose = Actions.includes(Action.closeStore);
-    const handleOnSubmit = () => {
+
+    const handleOnSubmit = async () => {
         form.setValue('userId', userId);
         let response;
         switch (mode) {
             case 'add':
                 response = dispatch(postStore(form.getValues()));
-                response.then((res: { meta: { requestStatus: string; }; }) => {
-                    if (res.meta.requestStatus === 'fulfilled') {
-                        handleOnClose();
-                    }
-                });
                 break;
             case 'edit':
                 form.setValue('storeId', store_id);
                 response = dispatch(patchStore(form.getValues()));
-                response.then((res: { meta: { requestStatus: string; }; }) => {
-                    if (res.meta.requestStatus === 'fulfilled') {
-                        handleOnClose();
-                    }
-                });
                 break;
             default:
                 break;
         }
-
+        handleOnClose();
     }
-    const handleOnClose = () => {
-        setOpen(false);
-        navigate(-1);
+    const handleOnClose = useCallback(() => {
+        navigate('/dashboard');
+        dispatch(getClientData({ userId: userId }));
         dispatch(getStore({ userId: userId, storeId: store_id }));
+    }, []);
+
+
+    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
+    // Send a ping to the server
+    const sendPing = () => {
+        if (userId != 0) {
+            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
+                .then(response => {
+                    // Do something with the response if necessary
+                })
+                .catch(error => {
+                    // Handle the error if necessary
+                });
+            // dispatch(ping(userId));
+        }
     }
+    useEffect(() => {
+        // Call the sendPing function every 2 seconds
+        const pingInterval = setInterval(sendPing, PING_INTERVAL);
+        // Stop the ping interval when the user leaves the app
+        return () => {
+            clearInterval(pingInterval)
+        };
+
+    }, [])
+
     return (
         <>
-            <Dialog onClose={handleOnClose} open={open}>
+            <Dialog onClose={handleOnClose} open={true}>
                 <Box
                     sx={{
                         marginTop: 4,

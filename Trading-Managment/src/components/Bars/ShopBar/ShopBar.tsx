@@ -7,7 +7,7 @@ import { setWhatchedStoreInfo } from '../../../reducers/storesSlice';
 
 const ShopsBar: React.FC = () => {
     const store_response = useAppSelector((state) => state.store.storeInfoResponseData);
-    const stores_names = store_response?.data?.results ?? [];
+    const stores_names = store_response ?? [];
     const navigate = useNavigate();
     return (
         <>

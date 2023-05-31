@@ -1,7 +1,10 @@
+import { Action } from "./Action";
+
+
 export enum StoreRoleEnum {
-    CREATOR,
-    OWNER,
-    MANAGER,
+    CREATOR = "Creator",
+    OWNER = "Owner",
+    MANAGER = "Manager",
 };
 
 export interface StoreRole {
@@ -17,4 +20,10 @@ export interface StoreName {
 export interface StoreImg {
     storeImg: string;
     storeId: number;
+}
+export interface RoleInStore {
+    userId: number;
+    userName: string;
+    storeRole: StoreRoleEnum;
+    actions: Action[];
 }

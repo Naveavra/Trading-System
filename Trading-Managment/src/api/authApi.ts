@@ -1,8 +1,9 @@
 import { getApiClient, noAuthApiClient } from './apiClient';
 import { apiErrorHandlerWrapper } from './util';
-import { EnterGuestResponseData, RegisterResponseData, TokenResponseBody, getClientResponseData } from '../types/responseTypes/authTypes';
-import { LoginPostData, RegisterPostData, getUserData } from '../types/requestTypes/authTypes';
-import { ApiResponse } from '../types/apiTypes';
+import { EnterGuestResponseData, RegisterResponseData, TokenResponseBody, getClientNotifications, getClientResponseData } from '../types/responseTypes/authTypes';
+import { LoginPostData, RegisterPostData, editProfileParams, getUserData, getUserNotifications, messageParams } from '../types/requestTypes/authTypes';
+import { ApiResponse, ApiResponseListData } from '../types/apiTypes';
+import { MyNotification } from '../types/systemTypes/Notification';
 
 
 
@@ -14,11 +15,20 @@ export const authApi = {
     register: (credentials: RegisterPostData): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/register', credentials)),
     logout: (credentials: number): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().get('api/auth/logout', {params:credentials})),
+        apiErrorHandlerWrapper(getApiClient().post('api/auth/logout', { userId: credentials })),
     guestEnter: (): Promise<ApiResponse<number>> =>
         apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/guest/enter')),
     ping: (credential: number): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/ping', credential)),
+        apiErrorHandlerWrapper(noAuthApiClient.post('api/auth/ping', { userId: credential })),
+    getNotifications: (credentials: getUserNotifications): Promise<ApiResponse<MyNotification>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/auth/notifications`, { userId: credentials.userId, token: credentials.token })),
     getClient: (credentials: getUserData): Promise<ApiResponse<getClientResponseData>> =>
-        apiErrorHandlerWrapper(getApiClient().post('api/auth/getClient', credentials)),
+        apiErrorHandlerWrapper(getApiClient().post('api/auth/getClient', { userId: credentials.userId })),
+
+    sendMessage: (credentials: messageParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post('api/auth/notifications/msg', credentials)),
+
+    editProfile: (credentials: editProfileParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post('api/auth/profile', credentials)),
+
 }

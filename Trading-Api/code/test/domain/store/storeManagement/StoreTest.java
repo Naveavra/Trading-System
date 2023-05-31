@@ -1,16 +1,20 @@
 package domain.store.storeManagement;
+import domain.states.StoreManager;
+import domain.user.Basket;
 import domain.user.Member;
+import domain.user.ShoppingCart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
+import utils.messageRelated.NotificationOpcode;
 import utils.messageRelated.MessageState;
 import utils.orderRelated.Order;
-import utils.stateRelated.Role;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,25 +26,28 @@ class StoreTest {
     Member member;
 
     Order orderA, orderB;
-
+    ProductInfo p, p2;
+    Member creator = new Member(0, "eli@gmail.com", "123Aaa", "24/02/2002");
+    Member worker = new Member(1, "eli1@gmail.com", "123Aaa", "24/02/2002");
+    Member worker2 = new Member(2, "eli2@gmail.com", "123Aaa", "24/02/2002");
 
     @BeforeEach
     void setUp() throws Exception {
-        store = new Store(1, "candy shop", 0);
+        store = new Store(1, "candy shop", creator);
         store.addNewProduct("gum", "gumigun", new AtomicInteger(0), 10, 3);
         store.getInventory().getProduct(0).replaceQuantity(10);
         store.addNewProduct("coke", "diet", new AtomicInteger(1), 10, 3);
         store.getInventory().getProduct(1).replaceQuantity(10);
-        store.appointUser(0, 1, Role.Manager);
-        store.appointUser(1, 2, Role.Manager);
+        store.appointUser(0, worker, new StoreManager(worker.getId(), worker.getName(), null));
+        store.appointUser(1, worker2, new StoreManager(worker2.getId(), worker2.getName(), null));
         member = new Member(2, "lala@gmail.com", "aA12345", "31/08/2022");
-        HashMap<Integer, Integer> map = new HashMap<>();
-        map.put(0, 5);
-        map.put(1, 10);
-        HashMap<Integer, HashMap<Integer, Integer>> map2 = new HashMap<>();
-        map2.put(1, map);
-        orderA = new Order(0, 2, map2);
-        orderB = new Order(1,2,map2);
+        ShoppingCart cart = new ShoppingCart();
+        p = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(0), 10);
+        p2 = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(1), 10);
+        cart.addProductToCart(1, p, 5);
+        cart.addProductToCart(1, p2, 10);
+        orderA = new Order(0, 2, cart);
+        orderB = new Order(1,2,cart);
         store.addOrder(orderA);
         store.addOrder(orderB);
 //        store.appointUser(0, 2, Role.Manager);
@@ -49,8 +56,8 @@ class StoreTest {
     }
     @Test
     void getStoreRating() throws Exception {
-        Message review = new Message(0, "great store", member, 0, 0, MessageState.reviewStore);
-        Message reviewB = new Message(1, "shitty store", member, 1, 0, MessageState.reviewStore);
+        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, 0, MessageState.reviewStore);
+        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, 0, MessageState.reviewStore);
         review.addRating(5);
         reviewB.addRating(1);
         store.addReview(0, review);
@@ -62,7 +69,7 @@ class StoreTest {
     @Test
     void invalidAddReview() throws Exception {
         Exception exception = assertThrows(Exception.class, () -> {
-            Message review = new Message(0, "great store", member, 3, 0, MessageState.reviewStore);
+            Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 3, 0, MessageState.reviewStore);
             review.addRating(5);
             store.addReview(3, review);
         });
@@ -108,9 +115,9 @@ class StoreTest {
 
     @Test
     void createOrderSuccess() throws Exception {
-        HashMap<Integer, Integer> basket = new HashMap<>();
-        basket.put(0, 5);
-        basket.put(1, 5);
+        Basket basket = new Basket(store.getStoreId());
+        basket.addProductToCart(p, 5);
+        basket.addProductToCart(p2, 5);
         int expectedPrice = 100;
 //        int actualPrice = store.createOrder(basket);
 //        assertEquals(expectedPrice, actualPrice);
@@ -121,29 +128,31 @@ class StoreTest {
 
     @Test
     void createOrderFailNotEnoughUnits() throws Exception {
-        HashMap<Integer, Integer> basket = new HashMap<>();
-        basket.put(0, 5);
-        basket.put(1, 11);
+        Basket basket = new Basket(store.getStoreId());
+        basket.addProductToCart(p, 5);
+        basket.addProductToCart(p2, 11);
         assertFalse(store.makeOrder(basket), "store quantity is 10, user wanted 11");
     }
 
     @Test
     void createOrderFailNotEnoughUnitsAfterPurchasing() throws Exception {
-        HashMap<Integer, Integer> basket = new HashMap<>();
-        basket.put(0, 5);
-        basket.put(1, 9);
+        Basket basket = new Basket(store.getStoreId());
+        basket.addProductToCart(p, 5);
+        basket.addProductToCart(p2, 9);
         //store.createOrder(basket);
         store.makeOrder(basket);
-        HashMap<Integer, Integer> basket2 = new HashMap<>();
-        basket2.put(1, 3);
+        Basket basket2 = new Basket(store.getStoreId());
+        basket2.addProductToCart(p2, 2);
         assertFalse(store.makeOrder(basket2), "store quantity is 1, user wanted 3");
     }
 
     @Test
     void createOrderFailProductNotExist() throws Exception {
-        HashMap<Integer, Integer> basket = new HashMap<>();
-        basket.put(0, 5);
-        basket.put(2, 11);
+        Basket basket = new Basket(store.getStoreId());
+        basket.addProductToCart(p, 5);
+        ProductInfo p3 =  new ProductInfo(store.getStoreId(), store.getInventory().getProduct(1), 11);
+        p3.id = 2;
+        basket.addProductToCart(p3, 11);
         Exception exception = assertThrows(Exception.class, () -> {
             store.makeOrder(basket);
         });
@@ -154,8 +163,8 @@ class StoreTest {
 
     @Test
     void getMessages() throws Exception {
-        Message review = new Message(0, "great store", member, 0, 0, MessageState.reviewStore);
-        Message reviewB = new Message(1, "shitty store", member, 1, 0, MessageState.reviewStore);
+        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, 0, MessageState.reviewStore);
+        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, 0, MessageState.reviewStore);
         review.addRating(5);
         reviewB.addRating(1);
         store.addReview(0, review);
@@ -167,13 +176,6 @@ class StoreTest {
         assertEquals(expectedMessages, actualMessages);
         assertEquals(0, store.checkMessages().size(), "the messages already been seen");
     }
-
-
-
-
-
-
-
 
 
 }

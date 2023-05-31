@@ -1,16 +1,14 @@
 import { ApiResponse, ApiResponseListData } from "../types/apiTypes";
-import { DeleteCartParams, GetCartParams, PatchCartParams, PostBasketParams, buyCartParams } from "../types/requestTypes/cartTypes";
-import { Cart } from "../types/systemTypes/Cart";
+import { DeleteCartParams, GetCartParams, PatchCartParams, buyCartParams } from "../types/requestTypes/cartTypes";
+import { Product } from "../types/systemTypes/Product";
 import { noAuthApiClient } from "./apiClient";
 import { apiErrorHandlerWrapper } from "./util";
 
 
 export const cartApi =
 {
-    getCart: (params: GetCartParams): Promise<ApiResponse<Cart>> =>
-        apiErrorHandlerWrapper(noAuthApiClient.get(`api/cart/${params.userId}`, {
-            params: params
-        })),
+    getCart: (params: GetCartParams): Promise<ApiResponseListData<Product>> =>
+        apiErrorHandlerWrapper(noAuthApiClient.post(`api/cart/${params.userId}`, params)),
 
     patchCart: (params: PatchCartParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.patch(`api/cart/${params.userId}`, params)),
@@ -19,8 +17,7 @@ export const cartApi =
         apiErrorHandlerWrapper(noAuthApiClient.delete(`api/cart/${params.userId}`, {
             params: params
         })),
-    // postBaket: (params: PostBasketParams): Promise<ApiResponse<string>> =>
-    //     apiErrorHandlerWrapper(noAuthApiClient.post(`api/cart/${params.storeId}`, params)),
+
     addToCart: (params: PatchCartParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.patch(`api/cart/add/${params.userId}`, params)),
 

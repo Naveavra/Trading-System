@@ -22,5 +22,4 @@ export const productsApi =
         apiErrorHandlerWrapper(getApiClient().delete('api/products', {
             params: params
         }))
-
 }   

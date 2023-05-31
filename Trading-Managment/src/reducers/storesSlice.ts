@@ -40,14 +40,14 @@ const initialState: StoreState = {
 };
 
 export const postStore = createAsyncThunk<
-    string,
+    number,
     PostStoreParams,
     { rejectValue: ApiError }
 >(
     `${reducerName}/post`,
     async (formData, thunkApi) => {
         return storeApi.postStore(formData)
-            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .then((res) => thunkApi.fulfillWithValue(res as number))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
@@ -58,6 +58,7 @@ export const patchStore = createAsyncThunk<
 >(
     `${reducerName}/patch`,
     async (formData, thunkApi) => {
+        debugger;
         const data = removeEmptyValues(formData);
         return storeApi.patchStore(data)
             .then((res) => thunkApi.fulfillWithValue(res as string))
@@ -173,6 +174,9 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         setWhatchedStoreInfo: (state, action) => {
             state.storeState.wahtchedStoreInfo = state.storeInfoResponseData.find((storeInfo) => storeInfo.id === action.payload) ?? emptyStoreInfo;
         },
+        clearStoresResponse: (state, action) => {
+            state.storeState.responseData = null;
+        }
     },
     extraReducers: (builder) => {
         //getstores
@@ -196,7 +200,7 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         builder.addCase(postStore.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
-            state.storeState.responseData = payload;
+            state.storeState.responseData = "store created successfully";
         });
         builder.addCase(postStore.rejected, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -235,7 +239,6 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         builder.addCase(getStore.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
-            console.log("store!!!!!", payload);
             state.storeState.watchedStore = payload;
         });
         //appointManager
@@ -308,5 +311,5 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
 
 
 // Action creators are generated for each case reducer function
-export const { clearStoresError, clearStoreError, setWhatchedStoreInfo } = storesActions;
+export const { clearStoresError, clearStoreError, setWhatchedStoreInfo, clearStoresResponse } = storesActions;
 export default storesReducer;

@@ -7,10 +7,13 @@ import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.discount.discountDataObjects.PredicateDataObject;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
 import domain.store.discount.discountFunctionalInterface.GetProductOperation;
+import domain.user.Basket;
+import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DiscountFactory {
@@ -54,8 +57,10 @@ public class DiscountFactory {
     }
     public synchronized Discount createDiscount(DiscountDataObject discountData){
         Discount concreteDiscount = new AbstractDiscount() {
+
+
             @Override
-            public double handleDiscount(HashMap<Integer, Integer> basket, Order order) {
+            public double handleDiscount(Basket basket, Order order) {
                 return 0;
             }
         };

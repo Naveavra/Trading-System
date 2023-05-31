@@ -1,11 +1,14 @@
 package domain.store.order;
 
+import utils.infoRelated.ProductInfo;
+import domain.user.ShoppingCart;
 import utils.orderRelated.CalculatePriceOp;
 import utils.orderRelated.Order;
 import utils.orderRelated.SetPricesOp;
 import utils.orderRelated.Status;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,11 +22,11 @@ public class OrderController {
         orderID = new AtomicInteger();
     }
     
-    public synchronized Order createNewOrder(int userID, HashMap<Integer,HashMap<Integer,Integer>> products, CalculatePriceOp calcPrice, SetPricesOp setPricesOp) throws Exception {
+    public synchronized Order createNewOrder(int userID, ShoppingCart products, int totalPrice, SetPricesOp setPricesOp) throws Exception {
         int id = orderID.getAndIncrement();
         Order or =  new Order(id,userID,products);
         orders.put(id, or);
-        or.setTotalPrice(calcPrice.calculatePrice(products));
+        or.setTotalPrice(totalPrice);
         setPricesOp.setPrices(or); //sets the initial price values
         return or;
     }
@@ -36,19 +39,13 @@ public class OrderController {
     }
 
     //only a specific user will be the cause of calling this function, so no need to synchronize
-    public void replaceProductsInOrder(int order_ID,int store_ID,HashMap<Integer,Integer> products){
+    public void replaceProductsInOrder(int order_ID,int store_ID,List<ProductInfo> products) throws Exception{
         Order ord;
         if((ord = getOrder(order_ID)) != null){
             ord.replaceProductsInOrder(store_ID, products);
         }
     }
     //only a specific user will be the cause of calling this function, so no need to synchronize
-    public void addProductsToOrder(int order_ID,int store_ID,HashMap<Integer,Integer> products) throws Exception{
-        Order ord;
-        if((ord = getOrder(order_ID)) != null){
-            ord.addProductsToOrder(store_ID, products);
-        }
-    }
     
     /**
      * need to check whether the return value is null.

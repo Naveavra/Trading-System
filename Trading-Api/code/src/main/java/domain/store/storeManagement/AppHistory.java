@@ -1,19 +1,26 @@
 package domain.store.storeManagement;
 
+import domain.states.UserState;
+import domain.user.Member;
+import org.json.JSONObject;
 import utils.Pair;
+import utils.infoRelated.Info;
+import utils.infoRelated.Information;
 import utils.stateRelated.Role;
 
 import java.util.*;
 
 
-public class AppHistory {
+public class AppHistory{
+    private int storeId;
+
     public static class Node{
-        private Pair<Integer, Role> data; //userid and role
+        private Pair<Member, UserState> data; //userid and role
         private ArrayList<Node> children; //list of all the users this user appoint in this store
         private Set<Integer> dismissed;
 
         private Node father;
-        public Node(Pair<Integer, Role> appointment){
+        public Node(Pair<Member, UserState> appointment){
             //Assign data to the new node, set left and right children to null
             this.data = appointment;
             this.children = new ArrayList<Node>();
@@ -21,7 +28,7 @@ public class AppHistory {
         }
         private Node findNode(Integer userId)
         {
-            if (Objects.equals(data.getFirst(), userId))
+            if (Objects.equals(data.getFirst().getId(), userId))
             {
                 return this;   //meaning this user is already part of the store
             }
@@ -39,11 +46,11 @@ public class AppHistory {
         public void setFather(Node n){father=n;}
 
         //added for tests
-        public Pair<Integer, Role> getData(){
+        public Pair<Member, UserState> getData(){
             return data;
         }
 
-        private void addChild(Pair<Integer, Role> child)
+        private void addChild(Pair<Member, UserState> child)
         {
             Node childNode = new Node(child);
             childNode.setFather(this);
@@ -51,12 +58,12 @@ public class AppHistory {
         }
 
         //remove the node and all of his descendants
-        private Set<Integer>  deleteNode(Pair<Integer, Role> nodeData) {
-            Node node = findNode(nodeData.getFirst());
+        private Set<Integer>  deleteNode(Pair<Member, UserState> nodeData) {
+            Node node = findNode(nodeData.getFirst().getId());
             if (node == null) {
                 return null; // node not found
             }
-            dismissed.add(node.data.getFirst());
+            dismissed.add(node.data.getFirst().getId());
             for (Node child : node.children) {
                 dismissed.addAll(Objects.requireNonNull(deleteNode(child.data)));
             }
@@ -76,19 +83,20 @@ public class AppHistory {
 
     public Set<Integer> usersInStore;
 
-    public AppHistory(Pair<Integer, Role> creatorNode){
+    public AppHistory(int storeId, Pair<Member, UserState> creatorNode){
 
+        this.storeId = storeId;
         root = new Node(creatorNode);
         root.father = null;
         usersInStore = new HashSet<>();
-        usersInStore.add(creatorNode.getFirst());
+        usersInStore.add(creatorNode.getFirst().getId());
     }
-    public boolean addNode(Integer father, Pair<Integer, Role> child) throws Exception {
-        Node childNode = root.findNode(child.getFirst());
+    public boolean addNode(Integer father, Pair<Member, UserState> child) throws Exception {
+        Node childNode = root.findNode(child.getFirst().getId());
         Node fatherNode = root.findNode(father);
         if (fatherNode != null) {
             if (childNode != null) {
-                if (childNode.data.getSecond() == child.getSecond()) {
+                if (childNode.data.getSecond().getRole() == child.getSecond().getRole()) {
                     throw new Exception("user already have a role in the store");
                 }
                 if (childNode.isAncestor(fatherNode, childNode)) {
@@ -98,7 +106,7 @@ public class AppHistory {
                 return true;
             }
             fatherNode.addChild(child);
-            usersInStore.add(child.getFirst());
+            usersInStore.add(child.getFirst().getId());
             return true;
         }
         throw new Exception("User cant appoint other users in the store");
@@ -142,8 +150,8 @@ public class AppHistory {
         return root.findNode(userId);
     }
 
-    public void appointToNewRole(Integer fatherid, Pair<Integer, Role> child) throws Exception {
-        Node childNode = root.findNode(child.getFirst());
+    public void appointToNewRole(Integer fatherid, Pair<Member, UserState> child) throws Exception {
+        Node childNode = root.findNode(child.getFirst().getId());
         if (childNode == null) {
             throw new Exception("child node not found");
         }
@@ -154,42 +162,54 @@ public class AppHistory {
         if (childNode == root) {
             throw new Exception("Cannot move the root node");
         }
-        if (isChild(child.getFirst(), fatherid)) {
+        if (isChild(child.getFirst().getId(), fatherid)) {
             throw new Exception("Cannot move a node to its own child");
         }
         childNode.data.setSecond(child.getSecond());
         childNode.father = fatherNode;
         Set<Integer> dismissedes = new HashSet<>(Objects.requireNonNull(root.deleteNode(childNode.data)));
         fatherNode.addChild(childNode.data);
-        dismissedes.remove(child.getFirst());
+        dismissedes.remove(child.getFirst().getId());
         usersInStore.removeAll(dismissedes);
     }
 
-    public HashMap<Integer, List<Integer>> getAppHistory(){
-        HashMap<Integer, List<Integer>> ans = new HashMap<>();
+    public List<Pair<Info, List<Info>>> getAppHistory(){
+        List<Pair<Info, List<Info>>> ans = new ArrayList<>();
         getChildren(root, ans);
         return ans;
     }
 
-    public void getChildren(Node n, HashMap<Integer, List<Integer>> add){
-        List<Integer> ans = new LinkedList<>();
+    public void getChildren(Node n, List<Pair<Info, List<Info>>> add){
+        List<Info> ans = new LinkedList<>();
         for(Node child: n.children) {
             getChildren(child, add);
-            ans.add(child.data.getFirst());
+            ans.add(child.data.getFirst().getInformation(storeId));
         }
-        add.put(n.data.getFirst(), ans);
+        add.add(new Pair<>(n.data.getFirst().getInformation(storeId), ans));
     }
 
-    public HashMap<Integer, Role> getRoles(){
-        HashMap<Integer, Role> ans = new HashMap<>();
+    public List<UserState> getRoles(){
+        List<UserState> ans = new ArrayList<>();
         getChildrenRoles(root, ans);
         return ans;
     }
 
-    public void getChildrenRoles(Node n, HashMap<Integer, Role> add){
+    public void getChildrenRoles(Node n, List<UserState> add){
         for(Node child: n.children) {
             getChildrenRoles(child, add);
         }
-        add.put(n.data.getFirst(), n.data.getSecond());
+        add.add(n.data.getSecond());
+    }
+
+    public List<JSONObject> toJson(){
+        List<JSONObject> ans = new ArrayList<>();
+        List<Pair<Info, List<Info>>> history = getAppHistory();
+        for(Pair<Info, List<Info>> branch : history) {
+            JSONObject jsonBranch = new JSONObject();
+            jsonBranch.put("memane", branch.getFirst().toJson());
+            jsonBranch.put("memoonim", Information.infosToJson(branch.getSecond()));
+            ans.add(jsonBranch);
+        }
+        return ans;
     }
 }

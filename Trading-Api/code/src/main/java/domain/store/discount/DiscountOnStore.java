@@ -1,5 +1,6 @@
 package domain.store.discount;
 
+import domain.user.Basket;
 import utils.orderRelated.Order;
 
 import java.util.HashMap;
@@ -10,7 +11,7 @@ public class DiscountOnStore extends AbstractDiscount {
     }
 
     @Override
-    public double handleDiscount(HashMap<Integer, Integer> basket, Order order) {
+    public double handleDiscount(Basket basket, Order order) {
         if(predicate!=null && !predicate.checkPredicate(order)){
             return 0;
         }

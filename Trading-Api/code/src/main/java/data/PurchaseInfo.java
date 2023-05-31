@@ -1,12 +1,14 @@
 package data;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PurchaseInfo {
-    HashMap<Integer, HashMap<Integer, Integer>> purchases;
+    List<ProductInfo> purchases;
 
-    public PurchaseInfo(HashMap<Integer, HashMap<Integer, Integer>> purchases) {
-        this.purchases = purchases;
+    public PurchaseInfo(List<utils.infoRelated.ProductInfo> purchases) {
+        this.purchases = new ArrayList<>();
+        for(utils.infoRelated.ProductInfo product : purchases)
+            this.purchases.add(new ProductInfo(product));
     }
 }

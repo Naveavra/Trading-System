@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Card from "../ProductCard/Card";
+import Card from "../ProductInStore/Card";
 import "./Product.css";
 
 import { Product } from "../../types/systemTypes/Product";
@@ -11,6 +11,7 @@ import { LoadingButton } from "@mui/lab";
 import AlertDialog from "../Dialog/AlertDialog";
 import ReadOnlyRating from "../Ratings/readRating";
 import { useNavigate } from "react-router-dom";
+import { addToCart } from "../../reducers/cartSlice";
 
 const ProductDisplay: React.FC = () => {
     const error = useAppSelector((state) => state.product.error);
@@ -29,20 +30,20 @@ const ProductDisplay: React.FC = () => {
         }
     }
     const selectedProduct: Product = {
-        id: 0,
+        productId: 0,
         storeId: 0,
-        category: ['nike', 'shoes', 'sport'],
+        categories: ['nike', 'shoes', 'sport'],
         name: "Air force",
         description: "great shoes",
         price: 100,
         quantity: 0,
         img: "https://images.pexels.com/photos/12628400/pexels-photo-12628400.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        rating: [{ value: 5, content: 'great product' }, { value: 3, content: 'not so good' }, { value: 2, content: 'bad' }],
-        reviewNumber: 10,
+        revies: [{ value: 5, content: 'great product' }, { value: 3, content: 'not so good' }, { value: 2, content: 'bad' }],
+        rating: 10,
     };//useAppSelector((dtate) => state.products.selectedProduct); 
-    const avrage = selectedProduct.rating.reduce((acc, curr) => acc + curr.value, 0) / selectedProduct.rating.length;
+    const avrage = selectedProduct.revies.reduce((acc, curr) => acc + curr.value, 0) / selectedProduct.rating;
     const handleOnAddToBasket = () => {
-        dispatch(addProductToCart({ userId: userId, StoreId: selectedProduct.storeId, productId: selectedProduct.id, amount: quantity }));
+        dispatch(addToCart({ userId: userId, storeId: selectedProduct.storeId, productId: selectedProduct.productId, quantity: quantity }));
         navigate(-1);
     }
 
@@ -64,7 +65,7 @@ const ProductDisplay: React.FC = () => {
                         {selectedProduct.description}
                     </Typography>
                     <Grid sx={{ paddingTop: '10px', display: 'flex' }}>
-                        {selectedProduct.category.map((category: string) => {
+                        {selectedProduct.categories.map((category: string) => {
                             return (
                                 <Chip label={category} sx={{ marginRight: '2px', marginLeft: '5px' }} />
                             )
@@ -73,7 +74,7 @@ const ProductDisplay: React.FC = () => {
                     <Grid sx={{ paddingTop: '10px', display: 'inline-block' }}>
                         <ReadOnlyRating rating={avrage} style={{ paddingTop: '10px' }} />
                         <Typography variant="h6" component="h6" className="description" fontFamily={"Gill Sans"} color={"black"}>
-                            {selectedProduct.reviewNumber} reviews
+                            {selectedProduct.rating} reviews
                         </Typography>
                     </Grid>
                     <Divider />
@@ -124,7 +125,7 @@ const ProductDisplay: React.FC = () => {
                     <Typography variant="h5" component="h5" className="name" fontSize={50} fontFamily={"Gill Sans"} sx={{ marginTop: '10px', marginRight: 20 }} color={"black"} fontWeight={'bold'} textAlign={'center'} alignContent={'center'}>
                         {'Top Customer Reviews'}
                     </Typography>
-                    {selectedProduct.rating.map((review: { value: number, content: string }) => {
+                    {selectedProduct.revies.map((review: { value: number, content: string }) => {
                         return (
                             <Box sx={{ display: 'flex', marginLeft: 20, paddingTop: '10px' }} >
                                 <Box width={'40%'}>

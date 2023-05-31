@@ -11,3 +11,6 @@ export const getApiClient = () => (axios.create({
         Authorization: store.getState().auth.token ?? ''
     }
 }));
+export const ExternalClient = () => (axios.create({
+    baseURL: 'https://php-server-try.000webhostapp.com/',
+}));

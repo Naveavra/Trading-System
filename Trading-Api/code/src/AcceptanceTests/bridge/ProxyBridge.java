@@ -54,9 +54,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int createStore(int user, String description) {
+    public int createStore(int user, String name, String description, String img) {
         if (real != null)
-            return real.createStore(user, description);
+            return real.createStore(user, name, description, img);
         return -1;
     }
 
@@ -145,9 +145,10 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int addProduct(int userId, int storeId, List<String> categories, String name, String description, int price, int quantity) {
+    public int addProduct(int userId, int storeId, List<String> categories, String name, String description, int price,
+                          int quantity, String img) {
         if (real != null)
-            return real.addProduct(userId, storeId, categories, name, description, price, quantity);
+            return real.addProduct(userId, storeId, categories, name, description, price, quantity, img);
         return -1;
     }
 
@@ -187,14 +188,14 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int appointmentOwnerInStore(int user, int store, int owner) {
+    public int appointmentOwnerInStore(int user, int store, String owner) {
         if (real != null)
             return real.appointmentOwnerInStore(user, store, owner);
         return -1;
     }
 
     @Override
-    public int appointmentMangerInStore(int user, int store, int manger) {
+    public int appointmentMangerInStore(int user, int store, String manger) {
         if (real != null)
             return real.appointmentMangerInStore(user, store, manger);
         return -1;

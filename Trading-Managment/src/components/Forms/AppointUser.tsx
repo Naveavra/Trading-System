@@ -4,9 +4,9 @@ import AlertDialog from "../Dialog/AlertDialog";
 import { useForm } from "react-hook-form";
 import { appointUserFormValues } from "../../types/formsTypes";
 import { useNavigate } from "react-router-dom";
-import { appointManager, appointOwner, clearStoreError } from "../../reducers/storesSlice";
+import { appointManager, appointOwner, clearStoreError, getStore } from "../../reducers/storesSlice";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 interface props {
     role: 'manager' | 'owner';
@@ -15,15 +15,20 @@ const AppointUser: React.FC<props> = ({ role }) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [open, setOpen] = useState(true);
+
+    const userId = useAppSelector((state: RootState) => state.auth.userId);
+    const storeId = useAppSelector((state: RootState) => state.store.storeState.watchedStore.storeId);
     const form = useForm<appointUserFormValues>();
     const isLoading = useAppSelector((state: RootState) => state.store.isLoading);
     const error = useAppSelector((state: RootState) => state.store.error);
     const [emailError, setEmailError] = useState("");
-    const handleOnClose = () => {
-        setOpen(false);
-        navigate(-1);
-        // dispatchEvent(getStoreData({}))
-    }
+
+
+    const handleOnClose = useCallback(() => {
+        navigate('/dashboard/store/superior');
+        dispatch(getStore({ userId: userId, storeId: storeId }));
+        // navigate(-1);
+    }, []);
     const validateEmail = (email: string): void => {
         const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (!emailRegex.test(email)) {
@@ -38,26 +43,23 @@ const AppointUser: React.FC<props> = ({ role }) => {
     }
     const handleOnSubmit = () => {
         let response;
+        form.setValue("storeId", storeId);
+        form.setValue("userId", userId);
         switch (role) {
             case 'manager':
                 response = dispatch(appointManager(form.getValues()));
-                response.then((res: { meta: { requestStatus: string; }; }) => {
-                    if (res.meta.requestStatus === 'fulfilled') {
-                        handleOnClose();
-                    }
-                });
+                break;
             case 'owner':
                 response = dispatch(appointOwner(form.getValues()));
-                response.then((res: { meta: { requestStatus: string; }; }) => {
-                    if (res.meta.requestStatus === 'fulfilled') {
-                        handleOnClose();
-                    }
-                });
+                break;
+            default:
+                break;
         }
+        handleOnClose();
     }
     return (
         <>
-            <Dialog onClose={handleOnClose} open={open}>
+            <Dialog onClose={handleOnClose} open={true}>
                 <Box
                     sx={{
                         marginTop: 4,

@@ -1,6 +1,8 @@
 package domain.store.storeManagement;
 
 import com.google.gson.Gson;
+import domain.states.StoreCreator;
+import domain.states.UserState;
 import domain.store.discount.Discount;
 import domain.store.discount.DiscountFactory;
 import domain.store.discount.discountDataObjects.CompositeDataObject;
@@ -8,29 +10,28 @@ import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
 import domain.store.purchase.PurchasePolicy;
 
+import domain.user.Basket;
+import domain.user.Member;
+import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
-import utils.ProductInfo;
-import utils.StoreInfo;
+import utils.infoRelated.*;
 import utils.messageRelated.Message;
 import utils.messageRelated.MessageState;
 import utils.Pair;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
-import utils.orderRelated.OrderInfo;
-import utils.stateRelated.Role;
 
-import java.awt.desktop.AppHiddenEvent;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class Store {
+public class Store extends Information{
     private final int storeid;
     private String storeName;
     private boolean isActive;
-    private final transient int creatorId;
+    private transient Member creator;
     private String storeDescription;
     private final AppHistory appHistory; //first one is always the store creator //n
     private final Inventory inventory; //<productID,<product, quantity>>
@@ -43,13 +44,14 @@ public class Store {
     private PurchasePolicy purchasePolicy;
     private ArrayList<Discount> discounts;
     private DiscountFactory discountFactory;
+
     Gson gson ;
-    public Store(int id, String description, int creatorId){
-        Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
-        appHistory = new AppHistory(creatorNode);
+    public Store(int id, String description, Member creator){
+        Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
         this.storeid = id;
+        appHistory = new AppHistory(storeid, creatorNode);
         this.storeDescription = description;
-        this.creatorId = creatorId;
+        this.creator = creator;
         this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
@@ -62,12 +64,12 @@ public class Store {
         discounts = new ArrayList<>();
     }
 
-    public Store(int storeid, String storeName, String description, String imgUrl, int creatorId){
-        Pair<Integer, Role > creatorNode = new Pair<>(creatorId, Role.Creator);
-        appHistory = new AppHistory(creatorNode);
+    public Store(int storeid, String storeName, String description, String imgUrl, Member creator){
+        Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
         this.storeid = storeid;
+        appHistory = new AppHistory(storeid, creatorNode);
         this.storeDescription = description;
-        this.creatorId = creatorId;
+        this.creator = creator;
         this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
@@ -109,7 +111,7 @@ public class Store {
     public int addQuestion(Message m)
     {
         questions.put(m.getMessageId(), m);
-        return creatorId;
+        return creator.getId();
     }
 
     public void answerQuestion(int messageID, String answer) throws Exception {
@@ -141,7 +143,7 @@ public class Store {
         {
             inventory.addProductReview(m);
             //productReviews.put(m.getMessageId(), m);
-            return creatorId;
+            return creator.getId();
         }
         else
         {
@@ -154,8 +156,8 @@ public class Store {
         return storeid;
     }
 
-    public int getCreatorId() {
-        return creatorId;
+    public int getCreator() {
+        return creator.getId();
     }
 
     public HashMap<Integer, Message> getStoreReviews() {
@@ -176,7 +178,7 @@ public class Store {
         List<OrderInfo> orderInfos = new LinkedList<>();
         for(int orderId : storeOrders.keySet()){
             Order order = storeOrders.get(orderId);
-            OrderInfo orderInfo = new OrderInfo(orderId, order.getUserId(), order.getProductsInStores(), order.getTotalPrice());
+            OrderInfo orderInfo = new OrderInfo(orderId, order.getUserId(), order.getShoppingCart(), order.getTotalPrice());
             orderInfos.add(orderInfo);
         }
         return orderInfos;
@@ -198,23 +200,17 @@ public class Store {
         this.storeDescription = storeDescription;
     }
 
-    /**
-     *
-     * @param userinchargeid the user who wants to appoint another user
-     * @param newuserid the new user whom still doesn't have any role on the store
-     * @param role the new user role
-     * @return true if successfully else throws exception
-     */
-    public boolean appointUser(int userinchargeid, int newuserid, Role role) throws Exception {
-        Pair<Integer, Role> node = new Pair<>(newuserid, role);
-        return appHistory.addNode(userinchargeid, node);
+
+    public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
+        Pair<Member, UserState> node = new Pair<>(newUser, role);
+        appHistory.addNode(userinchargeid, node);
     }
 
     public int addReview(int orderId, Message review) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
             storeReviews.put(review.getMessageId(), review);
-            return creatorId;
+            return creator.getId();
         }
         throw new Exception("order doesnt exist");
     }
@@ -310,7 +306,7 @@ public class Store {
      * @throws Exception if the user isn't the store creator
      */
     public Set<Integer> closeStoreTemporary(int userID) throws Exception {
-        if (creatorId == userID){
+        if (creator.getId() == userID){
             isActive = false;
             return appHistory.getUsers();
         }
@@ -318,7 +314,7 @@ public class Store {
     }
 
     public Set<Integer> reopenStore(int userID) throws Exception{
-        if (creatorId == userID){
+        if (creator.getId() == userID){
             isActive = true;
             return appHistory.getUsers();
         }
@@ -357,15 +353,15 @@ public class Store {
      * purchasing confirmed so this function adjust the quantity in the store inventory
      * @return true if success else false
      */
-    public boolean makeOrder(HashMap<Integer, Integer> basket) throws Exception{
-        for (Integer productId : basket.keySet())
+    public boolean makeOrder(Basket basket) throws Exception{
+        for (ProductInfo product : basket.getContent())
         {
-            Product p = inventory.getProduct(productId);
-            if (!(p != null && basket.get(productId) <= p.getQuantity()))
+            Product p = inventory.getProduct(product.id);
+            if (!(p != null && product.quantity <= p.getQuantity()))
             {
                 return false;
             }
-            inventory.getProduct(productId).setQuantity(basket.get(productId) * (-1));
+            inventory.getProduct(product.id).setQuantity(product.quantity * (-1));
         }
         return true;
     }
@@ -402,21 +398,21 @@ public class Store {
         if (inventory.getProduct(productId) != null)
         {
             Product p = inventory.getProduct(productId);
-            return inventory.getProductInfo(productId);
+            return inventory.getProductInfo(storeid, productId);
         }
         throw new Exception("cant get product information");
     }
 
     //TODO HANDLE DISCOUNTS FROM HERE MAYBE?
-    public synchronized int calculatePrice(HashMap<Integer, Integer> basket) throws Exception {
+    public synchronized int calculatePrice(Basket basket) throws Exception {
         int purchaseingprice = 0;
-        for (Integer productid : basket.keySet())
+        for (ProductInfo product : basket.getContent())
         {
-            Product p = inventory.getProduct(productid);
-            if (p != null && basket.get(productid) <= p.getQuantity())
+            Product p = inventory.getProduct(product.id);
+            if (p != null && product.quantity <= p.getQuantity())
             {
 //                int discount = discountPolicy.handleDiscounts(basket,inventory.getPrices());
-                purchaseingprice += p.price * basket.get(productid);
+                purchaseingprice += p.price * product.quantity;
 //                p.setQuantity(p.getQuantity()-basket.get(productid));
             }
             else throw new Exception("product isn't available");
@@ -486,27 +482,62 @@ public class Store {
     }
 
     public StoreInfo getStoreInformation() {
-        StoreInfo info = new StoreInfo(storeid, storeName, storeDescription, isActive, creatorId, getStoreRating(), imgUrl);
+        StoreInfo info = new StoreInfo(storeid, storeName, storeDescription, isActive, creator.getId(), getStoreRating(), imgUrl);
         return info;
     }
 
     public double handleDiscount(Order order) throws Exception {
         double totalAmountToBeSubtracted = 0;
         for(Discount dis: discounts){
-            totalAmountToBeSubtracted += dis.handleDiscount(order.getProductsInStores().get(storeid),order);
+            totalAmountToBeSubtracted += dis.handleDiscount(order.getShoppingCart().getBasket(storeid),order);
         }
         order.setTotalPrice(order.getTotalPrice() - totalAmountToBeSubtracted);
         return order.getTotalPrice();
     }
 
-    public HashMap<Integer, List<Integer>> getApp(){
+    public List<Pair<Info, List<Info>>> getApp() throws Exception{
         return appHistory.getAppHistory();
     }
-    public HashMap<Integer, Role> getRoles(){
+
+    public List<JSONObject> getAppJson(){
+        return appHistory.toJson();
+    }
+    public List<UserState> getRoles(){
         return appHistory.getRoles();
     }
     public AppHistory getAppHistory(){
         return appHistory;
+    }
+
+    public void checkProductInStore(int productId) throws Exception{
+        inventory.getProduct(productId);
+    }
+
+    @Override
+    public JSONObject toJson(){
+        JSONObject json = new JSONObject();
+        json.put("storeId", getStoreId());
+        json.put("storeName", getName());
+        json.put("description", getStoreDescription());
+        json.put("isActive", isActive());
+        json.put("creatorId", getCreator());
+        json.put("appHistory", getAppJson());
+        json.put("inventory", infosToJson(getProducts()));
+        json.put("storeOrders", infosToJson(getOrdersHistory()));
+        json.put("reviews", hashMapToJson(getStoreReviews(), "messageId", "review"));
+        json.put("questions", hashMapToJson(getStoreQuestions(), "messageId", "question"));
+        json.put("img", getImgUrl());
+        json.put("roles", infosToJson(getRoles()));
+        return json;
+    }
+
+    public void setStoreAttributes(String name, String description, String img) {
+        if(!description.equals("null"))
+            setStoreDescription(description);
+        if(!name.equals("null"))
+            changeName(name);
+        if(!img.equals("null"))
+            changeImg(img);
     }
 
 //    public void setStoreDiscountPolicy(String policy) throws Exception {
