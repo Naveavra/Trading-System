@@ -4,6 +4,7 @@ package service;
 import domain.store.storeManagement.AppHistory;
 import domain.user.Member;
 import domain.user.ShoppingCart;
+import domain.user.User;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.StoreInfo;
@@ -38,13 +39,13 @@ public class MarketController {
     public int calculatePrice(ShoppingCart cart) throws Exception{
         return storectrl.calculatePrice(cart);
     }
-    public Pair<Receipt, Set<Integer>> purchaseProducts(ShoppingCart shoppingCart, int userId, int totalPrice) throws Exception
+    public Pair<Receipt, Set<Integer>> purchaseProducts(ShoppingCart shoppingCart, User user, int totalPrice) throws Exception
     {
-        Order order = orderctrl.createNewOrder(userId,shoppingCart, totalPrice,storectrl :: setPrices);
+        Order order = orderctrl.createNewOrder(user,shoppingCart, totalPrice,storectrl :: setPrices);
         order.setStatus(Status.pending);
         Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
         order.setStatus(Status.submitted);
-        Receipt receipt = new Receipt(userId, order.getOrderId(), shoppingCart, order.getTotalPrice());
+        Receipt receipt = new Receipt(user.getId(), order.getOrderId(), shoppingCart, order.getTotalPrice());
         Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);
         return ans;
     }

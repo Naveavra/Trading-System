@@ -1,5 +1,6 @@
 package domain.store.order;
 
+import domain.user.User;
 import utils.infoRelated.ProductInfo;
 import domain.user.ShoppingCart;
 import utils.orderRelated.CalculatePriceOp;
@@ -22,9 +23,9 @@ public class OrderController {
         orderID = new AtomicInteger();
     }
     
-    public synchronized Order createNewOrder(int userID, ShoppingCart products, int totalPrice, SetPricesOp setPricesOp) throws Exception {
+    public synchronized Order createNewOrder(User user, ShoppingCart products, int totalPrice, SetPricesOp setPricesOp) throws Exception {
         int id = orderID.getAndIncrement();
-        Order or =  new Order(id,userID,products);
+        Order or =  new Order(id,user,products);
         orders.put(id, or);
         or.setTotalPrice(totalPrice);
         setPricesOp.setPrices(or); //sets the initial price values

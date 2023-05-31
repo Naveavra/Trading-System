@@ -178,7 +178,7 @@ public class Store extends Information{
         List<OrderInfo> orderInfos = new LinkedList<>();
         for(int orderId : storeOrders.keySet()){
             Order order = storeOrders.get(orderId);
-            OrderInfo orderInfo = new OrderInfo(orderId, order.getUserId(), order.getShoppingCart(), order.getTotalPrice());
+            OrderInfo orderInfo = new OrderInfo(orderId, order.getUser().getId(), order.getShoppingCart(), order.getTotalPrice());
             orderInfos.add(orderInfo);
         }
         return orderInfos;
