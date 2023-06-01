@@ -46,8 +46,8 @@ class StoreTest {
         p2 = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(1), 10);
         cart.addProductToCart(1, p, 5);
         cart.addProductToCart(1, p2, 10);
-        orderA = new Order(0, 2, cart);
-        orderB = new Order(1,2,cart);
+        orderA = new Order(0, worker2, cart);
+        orderB = new Order(1,worker2,cart);
         store.addOrder(orderA);
         store.addOrder(orderB);
 //        store.appointUser(0, 2, Role.Manager);

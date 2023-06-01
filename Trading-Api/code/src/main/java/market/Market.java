@@ -287,7 +287,7 @@ public class Market implements MarketInterface {
             int totalPrice = marketController.calculatePrice(cart);
             proxyPayment.makePurchase(accountNumber, totalPrice);
             proxySupplier.checkSupply(cart);
-            Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userId, totalPrice);
+            Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
             Receipt receipt = ans.getFirst();
             Set<Integer> creatorIds = ans.getSecond();
             userController.purchaseMade(userId, receipt.getOrderId(), receipt.getTotalPrice());

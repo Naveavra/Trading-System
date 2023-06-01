@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import domain.store.product.Product;
 import domain.user.Basket;
+import domain.user.Guest;
 import domain.user.ShoppingCart;
 import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
@@ -17,7 +18,7 @@ import org.junit.jupiter.api.*;
 
 
 public class OrderTest {
-    private Order order = new Order(0,0,new ShoppingCart());
+    private Order order = new Order(0,new Guest(0),new ShoppingCart());
     private Product apple;
     private ProductInfo p;
     private Product banana;
