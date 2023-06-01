@@ -8,7 +8,6 @@ import domain.store.discount.DiscountFactory;
 import domain.store.discount.discountDataObjects.CompositeDataObject;
 import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
-import domain.store.purchase.PurchasePolicy;
 
 import domain.user.Basket;
 import domain.user.Member;
@@ -41,7 +40,7 @@ public class Store extends Information{
 
     private String imgUrl;
 //    private DiscountPolicy discountPolicy;
-    private PurchasePolicy purchasePolicy;
+    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
     private ArrayList<Discount> discounts;
     private DiscountFactory discountFactory;
 
@@ -56,7 +55,7 @@ public class Store extends Information{
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
-        this.purchasePolicy = new PurchasePolicy();
+        this.purchasePolicy = new domain.store.purchase.PurchasePolicy2Delete();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
         gson = new Gson();
@@ -74,7 +73,7 @@ public class Store extends Information{
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
-        this.purchasePolicy = new PurchasePolicy();
+        this.purchasePolicy = new domain.store.purchase.PurchasePolicy2Delete();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
         gson = new Gson();

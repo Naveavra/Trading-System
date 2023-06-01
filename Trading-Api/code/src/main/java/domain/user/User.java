@@ -17,4 +17,5 @@ public interface User {
     public void purchaseMade(int orderId, double totalPrice);
     public void emptyCart();
     public String getName();
+    public int getAge();
 }

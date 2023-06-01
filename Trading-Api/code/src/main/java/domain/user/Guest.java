@@ -1,4 +1,4 @@
-package domain.user;
+package main.java.domain.user;
 
 import domain.store.product.Product;
 import org.json.JSONObject;
@@ -17,7 +17,9 @@ public class Guest implements User{
         this.id = id;
         cart = new ShoppingCart();
     }
-
+    public int getAge(){
+        return -1;
+    }
     public int getId(){
         return id;
     }

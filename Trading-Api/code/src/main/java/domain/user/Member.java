@@ -1,4 +1,4 @@
-package domain.user;
+package main.java.domain.user;
 
 import domain.states.StoreCreator;
 import domain.states.UserState;
@@ -41,6 +41,9 @@ public class Member extends Subscriber implements User{
         roles = new ArrayList<>();
         userHistory = new UserHistory(this.id, this.email, this.password);
         g = new Guest(id);
+    }
+    public int getAge(){
+        return age;
     }
     public boolean getIsConnected(){
         return isConnected;
