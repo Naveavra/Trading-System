@@ -1,14 +1,12 @@
 package utils.infoRelated;
 
-import data.PurchaseInfo;
-import domain.user.history.PurchaseHistory;
+import domain.user.PurchaseHistory;
 import org.json.JSONObject;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
 import java.util.*;
-import java.util.jar.JarEntry;
 
 public class LoginInformation extends Information{
     private String token;

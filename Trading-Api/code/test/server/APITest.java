@@ -1,6 +1,9 @@
 package server;
 
+import database.HibernateUtil;
 import domain.states.StoreCreator;
+import domain.user.Member;
+import domain.user.StringChecks;
 import jdk.jfr.Category;
 import market.Market;
 import org.junit.jupiter.api.AfterEach;
@@ -62,7 +65,7 @@ class APITest {
 
     @Test
     void logTest() {
-//        System.out.println(api.logsToString(logs));
+        //System.out.println(api.logsToString(logs));
     }
 
     @Test

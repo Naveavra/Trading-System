@@ -16,16 +16,17 @@ class AdminTest {
 
     @BeforeEach
     void setUp() {
-        market = new Market("eli@gmail.com", "123Aaa");
-        adminId = market.adminLogin("eli@gmail.com", "123Aaa").getValue().getUserId();
+        Admin a = new Admin(1, "eli@gmail.com", "123Aaa");
+        market = new Market(a);
+        adminId = market.login("eli@gmail.com", "123Aaa").getValue().getUserId();
         token = market.addTokenForTests();
     }
 
     @Test
     void addAdmin() {
-        int size = market.getAdminsize();
+        int size = market.getAdminSize();
         market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
-        assertEquals(size+1, market.getAdminsize());
+        assertEquals(size+1, market.getAdminSize());
     }
 
     @Test
@@ -33,25 +34,24 @@ class AdminTest {
         Response<HashMap<Integer, Admin>> res = market.getAdmins(adminId, token);
         assertFalse(res.errorOccurred());
         assertEquals(1, res.getValue().size());
-        assertTrue(res.getValue().get(adminId).getEmailAdmin().equals("eli@gmail.com"));
+        assertEquals("eli@gmail.com", res.getValue().get(adminId).getName());
 
     }
 
     @Test
     void adminLoginAndGetAdmins(){
         market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
-        int adminId2 = market.adminLogin("ziv@gmail.com", "456Bbb").getValue().getUserId();
+        int adminId2 = market.login("ziv@gmail.com", "456Bbb").getValue().getUserId();
         Response<HashMap<Integer, Admin>> res = market.getAdmins(adminId2, token);
         assertFalse(res.errorOccurred());
         assertEquals(2, res.getValue().size());
-
     }
     @Test
     void removeAdmin() {
         market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
-        int adminId2 = market.adminLogin("ziv@gmail.com", "456Bbb").getValue().getUserId();
+        int adminId2 = market.login("ziv@gmail.com", "456Bbb").getValue().getUserId();
         market.removeAdmin(-2, token);
-        assertEquals(adminId2, market.getAdminsize());
+        assertEquals(adminId2, market.getAdminSize());
     }
 
     @Test

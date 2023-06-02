@@ -1,10 +1,10 @@
 package domain.user;
 
+import database.daos.MemberDao;
+import database.dtos.MemberDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
-import domain.user.history.PurchaseHistory;
-import domain.user.history.UserHistory;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
@@ -23,34 +23,18 @@ import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
 public class Member extends Subscriber implements User{
 
     private transient Guest g;
-    private int id;
-    private String email;
     private String birthday;
-    int age;
-    private transient String password;
+    private MemberDto memberDto;
 
     private List<UserState> roles; //connection between registered to the shops
-    private UserHistory userHistory;
-    private boolean isConnected;
+    private PurchaseHistory purchaseHistory;
     public Member(int id, String email, String password, String birthday){
-        this.id = id;
-        this.email = email;
-        this.password = password;
+        super(id, email, password);
         this.birthday = birthday;
-        age = StringChecks.calculateAge(birthday);
         roles = new ArrayList<>();
-        userHistory = new UserHistory(this.id, this.email, this.password);
+        purchaseHistory = new PurchaseHistory(this.id);
         g = new Guest(id);
-    }
-    public boolean getIsConnected(){
-        return isConnected;
-    }
-    public void connect(){
-        isConnected = true;
-    }
-
-    public void disconnect(){
-        isConnected = false;
+        memberDto = new MemberDto(id, email, password, birthday);
     }
 
     public void changeRoleInStore(UserState userState, Store store) throws Exception{
@@ -66,11 +50,7 @@ public class Member extends Subscriber implements User{
             throw new Exception("the member already has this role in this store");
         roles.add(userState);
     }
-
-    public String getName(){
-        return email;
-    }
-
+    public String getBirthday(){return birthday;}
 
     public void setMemberAttributes(String email, String newBirthday){
         if(!email.equals("null"))
@@ -78,38 +58,23 @@ public class Member extends Subscriber implements User{
         if(!newBirthday.equals("null"))
             setNewBirthday(newBirthday);
     }
-
-    public void setMemberPassword(String oldPass, String newPass)throws Exception {
-        setNewPassword(oldPass, newPass);
-
-    }
     private void setNewEmail(String newEmail){
         email = newEmail;
+        memberDto.setEmail(newEmail);
     }
 
     private void setNewBirthday(String newBirthday){
         this.birthday = newBirthday;
+        memberDto.setBirthday(newBirthday);
     }
 
-    private void setNewPassword(String oldPassword, String newPassword) throws Exception {
+    public void setMemberPassword(String oldPassword, String newPassword) throws Exception {
         if(password.equals(oldPassword)){
             password = newPassword;
+            memberDto.setPassword(newPassword);
         }
         else
             throw new Exception("wrong password entered, can't change to a new password");
-    }
-
-    public int getId(){
-        return id;
-    }
-
-
-    public void login(String password) throws Exception{
-        if (this.password.equals(password)) {
-            connect();
-            return;
-        }
-        throw new Exception("wrong password");
     }
 
 
@@ -133,7 +98,7 @@ public class Member extends Subscriber implements User{
     }
 
     public void purchaseMade(int orderId, double totalPrice){
-        userHistory.addPurchaseMade(orderId, totalPrice, g.getShoppingCart());
+        purchaseHistory.addPurchaseMade(orderId, totalPrice, g.getShoppingCart());
         g.emptyCart();
     }
 
@@ -143,7 +108,7 @@ public class Member extends Subscriber implements User{
     }
 
     public Message writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
-        if (userHistory.checkOrderContainsStore(orderId, storeId)) {
+        if (purchaseHistory.checkOrderContainsStore(orderId, storeId)) {
             Message message = new Message(messageId, NotificationOpcode.STORE_REVIEW, content, this, orderId, MessageState.reviewStore);
             message.addStore(storeId);
             message.addRating(grading);
@@ -154,7 +119,7 @@ public class Member extends Subscriber implements User{
     }
 
     public Message writeReview(int messageId, int storeId, int productId, int orderId, String content, int grading) throws Exception{
-        if(userHistory.checkOrderContainsProduct(orderId, storeId, productId)){
+        if(purchaseHistory.checkOrderContainsProduct(orderId, storeId, productId)){
             Message m = new Message(messageId, PRODUCT_REVIEW, content, this, orderId, MessageState.reviewProduct);
             m.addStore(storeId);
             m.addRating(grading);
@@ -166,7 +131,7 @@ public class Member extends Subscriber implements User{
     }
 
     public Message writeComplaint(int messageId, int orderId, String comment) throws Exception {
-        if(userHistory.checkOrderOccurred(orderId))
+        if(purchaseHistory.checkOrderOccurred(orderId))
             return new Message(messageId, NotificationOpcode.COMPLAINT, comment, this, orderId, MessageState.complaint);
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
@@ -209,6 +174,7 @@ public class Member extends Subscriber implements User{
         throw new Exception("the member does not have a role in this store");
     }
 
+    @Override
     public void checkPermission(Action action, int storeId) throws Exception{
         UserState role = getActiveRole(storeId);
         if (!role.checkPermission(action))
@@ -216,7 +182,7 @@ public class Member extends Subscriber implements User{
     }
 
     public PurchaseHistory getUserPurchaseHistory(){
-        return userHistory.getUserPurchaseHistory();
+        return purchaseHistory;
     }
 
     public void appointToManager(Member appointed, int storeId) throws Exception {
@@ -278,7 +244,7 @@ public class Member extends Subscriber implements User{
     }
 
     public Info getInformation(int storeId){
-        Info info = new Info(id, email, birthday, age);
+        Info info = new Info(id, email, birthday, StringChecks.calculateAge(birthday));
         try {
             UserState state = getRole(storeId);
             info.addRole(state.getRole());
@@ -335,8 +301,16 @@ public class Member extends Subscriber implements User{
     }
 
 
+    @Override
     public LoginInformation getLoginInformation(String token) {
         return new LoginInformation(token, id, email, false, displayNotifications(),getRoles(),
-                getStoreNames(), getStoreImgs(), getPermissions(), getUserPurchaseHistory(), age, birthday);
+                getStoreNames(), getStoreImgs(), getPermissions(), getUserPurchaseHistory(), StringChecks.calculateAge(birthday), birthday);
     }
+
+
+    //database
+    public MemberDto getDto() {
+        return memberDto;
+    }
+
 }

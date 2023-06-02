@@ -1,7 +1,7 @@
 package market;
 
 import domain.store.storeManagement.Store;
-import domain.user.history.PurchaseHistory;
+import domain.user.PurchaseHistory;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
 import utils.messageRelated.NotificationOpcode;
@@ -99,8 +99,6 @@ public interface MarketInterface {
     public Response getProducts();
 
     // admin methods
-    public Response adminLogin(String email, String pass);
-    public Response adminLogout(int adminId);
     public Response getAdmins(int adminId, String token);
     public Response addAdmin(int userId, String token, String email , String pass);
     public Response removeAdmin(int adminId, String token);

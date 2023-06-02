@@ -302,20 +302,6 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int adminLogin(String email, String password) {
-        if (real != null)
-            return real.adminLogin(email, password);
-        return -1;
-    }
-
-    @Override
-    public int adminLogout(int admin) {
-        if (real != null)
-            return real.adminLogout(admin);
-        return -1;
-    }
-
-    @Override
     public int enterSystem() {
         if (real != null)
             return real.enterSystem();

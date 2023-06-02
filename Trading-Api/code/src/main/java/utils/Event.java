@@ -6,7 +6,7 @@ import utils.infoRelated.Information;
 public class Event extends Information {
 
 
-    public static enum LogStatus{ //maybe should be moved to a designated class
+    public enum LogStatus{ //maybe should be moved to a designated class
         Success,
         Fail,
     }

@@ -6,7 +6,6 @@ import domain.states.StoreOwner;
 import domain.states.UserState;
 import domain.store.product.Product;
 import domain.store.storeManagement.Store;
-import domain.user.history.PurchaseHistory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.Pair;
@@ -16,7 +15,6 @@ import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
-import utils.infoRelated.Info;
 
 import java.util.LinkedList;
 import java.util.List;

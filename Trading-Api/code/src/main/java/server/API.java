@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import domain.store.storeManagement.Store;
+import market.Admin;
 import market.Market;
 import org.json.JSONObject;
 import utils.*;
@@ -20,7 +21,8 @@ public class API {
     private HashMap<String, Integer> actionStrings;
     private Gson gson;
     public API(){
-        market = new Market("elibenshimol6@gmail.com", "123Aaa");
+        Admin a = new Admin(1, "elibenshimol6@gmail.com", "123Aaa");
+        market = new Market(a);
         gson = new Gson();
         actionStrings = new HashMap<>();
         getActionStrings();
@@ -329,12 +331,6 @@ public class API {
         return fromResToPair(res);
     }
 
-
-    public Pair<Boolean, JSONObject> adminLogout(int adminId)
-    {
-        Response<String> res = market.adminLogout(adminId);
-        return fromResToPair(res);
-    }
 
     public Pair<Boolean, JSONObject> addAdmin(int adminId, String token, String email , String pass)
     {

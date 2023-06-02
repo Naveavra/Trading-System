@@ -39,19 +39,6 @@ public class Server {
 
 
     public static void main(String[] args) {
-//        messageQueue.put(0,new ArrayBlockingQueue<>(20));
-//        messageQueue.put(1,new ArrayBlockingQueue<>(20));
-//        api.register("eli@gmail.com", "aA12345", "22/02/2002");
-//        try{
-//            Connection con= DriverManager.getConnection(
-//                    "jdbc:mysql://localhost:3306/sadnaDB","root","sadna11B");
-//            System.out.println("here");
-//            Statement stmt=con.createStatement();
-//            ResultSet rs=stmt.executeQuery("select * from emp");
-//            while(rs.next())
-//                System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
-//            con.close();
-//        }catch(Exception e){ System.out.println(e);}
         init();
         api.mockData();
         connectedThread = new ConnectedThread(connected);

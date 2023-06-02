@@ -1,4 +1,4 @@
-package domain.user.history;
+package domain.user;
 
 import domain.user.ShoppingCart;
 import org.json.JSONObject;
@@ -22,7 +22,7 @@ public class PurchaseHistory{
         purchaseHistory = new HashMap<>();
     }
 
-    public void addPurchaseMade(int userId, int orderId, double totalPrice, ShoppingCart purchase){
+    public void addPurchaseMade(int orderId, double totalPrice, ShoppingCart purchase){
         ShoppingCart add = new ShoppingCart(purchase);
         Receipt receipt = new Receipt(userId, orderId, add, totalPrice);
         purchaseHistory.put(orderId, receipt);

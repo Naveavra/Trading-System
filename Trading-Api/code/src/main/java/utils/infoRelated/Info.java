@@ -1,6 +1,6 @@
 package utils.infoRelated;
 
-import domain.user.history.PurchaseHistory;
+import domain.user.PurchaseHistory;
 import org.json.JSONObject;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;

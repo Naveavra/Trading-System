@@ -1,5 +1,6 @@
 package service;
 
+import database.dtos.MemberDto;
 import domain.store.storeManagement.Store;
 import domain.user.StringChecks;
 import org.junit.jupiter.api.Test;
@@ -30,13 +31,30 @@ class UserControllerTest {
     void checkPassword() {
     }
 
+    @Test
+    void checkDatabase(){
+        UserController us = new UserController();
+        try {
+            us.register("eli@gmail.com", "123Aaa", "aaabbbbbaa", "24/02/2002");
+            us.register("eli2@gmail.com", "123Aaa", "aaaaaccca", "24/02/2002");
+            us.updateMemberState(2);
+            us.saveMemberState(3);
+
+            MemberDto m = us.getMemberDto(1);
+            System.out.println(m.getEmail());
+            assert true;
+        }catch (Exception e){
+            assert false;
+        }
+    }
+
 
     @Test
     void fireManager(){
         UserController us = new UserController();
         try {
-            us.register(1, "eli@gmail.com", "123Aaa", "aaaaaa", "24/02/2002");
-            us.register(2, "eli2@gmail.com", "123Aaa", "aaaaaa", "24/02/2002");
+            us.register("eli@gmail.com", "123Aaa", "aaaaaa", "24/02/2002");
+            us.register( "eli2@gmail.com", "123Aaa", "aaaaaa", "24/02/2002");
             us.login("eli@gmail.com", "aaaaaa");
             us.openStore(1, new Store(0, "nike", "good store", "img", us.getMember(1)));
             us.appointManager(1, "eli2@gmail.com", 0);

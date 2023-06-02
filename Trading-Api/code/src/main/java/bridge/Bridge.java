@@ -278,7 +278,7 @@ public interface Bridge {
      *
      * @param user user id
      * @param store store id
-     * @param manger id of the user who we want to appoint as a manager in store.
+     * @param manager id of the user who we want to appoint as a manager in store.
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
@@ -421,24 +421,6 @@ public interface Bridge {
      */
     List<ProductInfo> getProductInStore(int storeId);
 
-    /**
-     * Admin - admin login to the system
-     *
-     * @param email admin email
-     * @param password admin password
-     * @return If succeed returns admin id. Otherwise,
-     *         return 0.
-     */
-    int adminLogin(String email, String password);
-
-    /**
-     * Admin - admin login to the system
-     *
-     * @param admin admin id
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
-     */
-    int adminLogout(int admin);
 
     /**
      * Guest - enter system
