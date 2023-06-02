@@ -5,6 +5,8 @@ import database.dtos.MemberDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;

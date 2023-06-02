@@ -5,6 +5,8 @@ import domain.store.storeManagement.Store;
 import domain.user.StringChecks;
 import market.Admin;
 import org.junit.jupiter.api.Test;
+import utils.messageRelated.Notification;
+import utils.messageRelated.NotificationOpcode;
 
 import java.time.LocalTime;
 
@@ -38,6 +40,8 @@ class UserControllerTest {
         try {
             us.register("eli@gmail.com", "123Aaa", "aaabbbbbaa", "24/02/2002");
             us.register("eli2@gmail.com", "123Aaa", "aaaaaccca", "24/02/2002");
+            int id = us.login("eli@gmail.com", "aaabbbbbaa");
+            us.addNotification(id, new Notification(NotificationOpcode.CHAT_MESSAGE, "test"));
             Admin a = new Admin(1, "elibs@gmail.com", "123Aaa");
             us.addAdmin(a, "aaaaaa");
             us.updateAdminState(1);
