@@ -21,10 +21,10 @@ public class MemberDto {
     public MemberDto() {
 
     }
-    public MemberDto(int id, String email, String password, String birthday){
+    public MemberDto(int id, String email, String password){
         this.id = id;
         this.email = email;
-        this.birthday = birthday;
+        this.birthday = "no input";
         this.password = password;
     }
 

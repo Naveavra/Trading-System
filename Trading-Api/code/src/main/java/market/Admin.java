@@ -52,7 +52,7 @@ public class Admin extends Subscriber {
     }
 
     //database
-    public AdminDto getDto() {
+    public AdminDto getAdminDto() {
         return adminDto;
     }
 

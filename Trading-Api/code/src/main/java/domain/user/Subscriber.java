@@ -1,5 +1,6 @@
 package domain.user;
 
+import database.dtos.MemberDto;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -15,6 +16,7 @@ public abstract class Subscriber {
     protected String email;
     protected String password;
     protected boolean isConnected;
+    protected MemberDto memberDto;
 
     public Subscriber(int id, String email, String password){
         this.id = id;
@@ -22,6 +24,7 @@ public abstract class Subscriber {
         this.password = password;
         notifications = new LinkedBlockingQueue<>();
         isConnected = false;
+        memberDto = new MemberDto(id, email, password);
     }
 
     public int getId(){
@@ -73,5 +76,10 @@ public abstract class Subscriber {
 
     public abstract LoginInformation getLoginInformation(String token);
     public abstract void checkPermission(Action action, int storeId)  throws Exception;
+
+    //database
+    public MemberDto getDto() {
+        return memberDto;
+    }
 
 }

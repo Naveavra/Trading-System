@@ -3,6 +3,7 @@ package service;
 import database.dtos.MemberDto;
 import domain.store.storeManagement.Store;
 import domain.user.StringChecks;
+import market.Admin;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
@@ -37,6 +38,9 @@ class UserControllerTest {
         try {
             us.register("eli@gmail.com", "123Aaa", "aaabbbbbaa", "24/02/2002");
             us.register("eli2@gmail.com", "123Aaa", "aaaaaccca", "24/02/2002");
+            Admin a = new Admin(1, "elibs@gmail.com", "123Aaa");
+            us.addAdmin(a, "aaaaaa");
+            us.updateAdminState(1);
             us.updateMemberState(2);
             us.saveMemberState(3);
 

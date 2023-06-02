@@ -24,7 +24,6 @@ public class Member extends Subscriber implements User{
 
     private transient Guest g;
     private String birthday;
-    private MemberDto memberDto;
 
     private List<UserState> roles; //connection between registered to the shops
     private PurchaseHistory purchaseHistory;
@@ -34,7 +33,7 @@ public class Member extends Subscriber implements User{
         roles = new ArrayList<>();
         purchaseHistory = new PurchaseHistory(this.id);
         g = new Guest(id);
-        memberDto = new MemberDto(id, email, password, birthday);
+        memberDto.setBirthday(birthday);
     }
 
     public void changeRoleInStore(UserState userState, Store store) throws Exception{
@@ -306,11 +305,4 @@ public class Member extends Subscriber implements User{
         return new LoginInformation(token, id, email, false, displayNotifications(),getRoles(),
                 getStoreNames(), getStoreImgs(), getPermissions(), getUserPurchaseHistory(), StringChecks.calculateAge(birthday), birthday);
     }
-
-
-    //database
-    public MemberDto getDto() {
-        return memberDto;
-    }
-
 }

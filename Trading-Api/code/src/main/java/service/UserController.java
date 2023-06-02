@@ -1,6 +1,8 @@
 package service;
 
+import database.daos.AdminDao;
 import database.daos.MemberDao;
+import database.dtos.AdminDto;
 import database.dtos.MemberDto;
 import domain.store.storeManagement.Store;
 import domain.user.*;
@@ -34,6 +36,7 @@ public class UserController {
     private int messageIds;
     private ConcurrentHashMap<Integer, Message> complaints; //complaintId,message
     private MemberDao memberDao;
+    private AdminDao adminDao;
 
     public UserController(){
         ids = new AtomicInteger(2);
@@ -44,6 +47,7 @@ public class UserController {
         messageIds = 0;
         complaints = new ConcurrentHashMap<>();
         memberDao = new MemberDao();
+        adminDao = new AdminDao();
     }
 
 
@@ -480,6 +484,11 @@ public class UserController {
     }
 
     //admin functions
+    public Admin getAdmin(int adminId) throws Exception {
+        if(admins.containsKey(adminId))
+                return admins.get(adminId);
+        throw new Exception("the id given does not belong to any admin");
+    }
     public Admin getActiveAdmin(int adminId) throws Exception {
         if(admins.containsKey(adminId)) {
             if (admins.get(adminId).getIsConnected())
@@ -566,6 +575,8 @@ public class UserController {
     }
 
     //database
+
+    //users
     public void saveMemberState(int userId) throws Exception{
         Member m = getMember(userId);
         memberDao.saveMember(m.getDto());
@@ -578,5 +589,17 @@ public class UserController {
     public MemberDto getMemberDto(int id){
         MemberDto m = memberDao.getMemberById(id);
         return m;
+    }
+
+    //admins
+    public void saveAdminState(int userId) throws Exception{
+        Admin a = getAdmin(userId);
+        adminDao.saveAdmin(a.getAdminDto());
+        memberDao.saveMember(a.getDto());
+    }
+    public void updateAdminState(int userId) throws Exception{
+        Admin a = getAdmin(userId);
+        adminDao.updateAdmin(a.getAdminDto());
+        memberDao.updateMember(a.getDto());
     }
 }

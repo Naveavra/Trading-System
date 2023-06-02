@@ -1,6 +1,8 @@
 package database;
 
+import database.daos.AdminDao;
 import database.daos.MemberDao;
+import database.dtos.AdminDto;
 import database.dtos.MemberDto;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -31,6 +33,7 @@ public class HibernateUtil {
                 configuration.setProperties(settings);
                 //TODO: add all tables needed to here
                 configuration.addAnnotatedClass(MemberDto.class);
+                configuration.addAnnotatedClass(AdminDto.class);
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties()).build();
