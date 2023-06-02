@@ -1,4 +1,4 @@
-package main.java.domain.store.purchase;
+package domain.store.purchase;
 import utils.orderRelated.Order;
 
 public interface PurchasePolicy {

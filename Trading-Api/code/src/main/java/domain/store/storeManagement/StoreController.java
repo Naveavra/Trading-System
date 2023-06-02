@@ -125,7 +125,9 @@ public class StoreController {
         List<ProductInfo> shoppingCart = or.getProductsInStores();
         HashMap<Integer,HashMap<Integer,Integer>> prices = or.getPrices();
         for(ProductInfo product : shoppingCart){
-            prices.put(product.getStoreId(),new HashMap<>());
+            if(!prices.containsKey(product.getStoreId())){
+                prices.put(product.getStoreId(),new HashMap<>());
+            }
             int quantity = product.quantity;
             Store s = getStore(product.getStoreId());
             Product p = s.getInventory().getProduct(product.getId());

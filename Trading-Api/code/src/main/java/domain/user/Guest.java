@@ -1,4 +1,4 @@
-package main.java.domain.user;
+package domain.user;
 
 import domain.store.product.Product;
 import org.json.JSONObject;

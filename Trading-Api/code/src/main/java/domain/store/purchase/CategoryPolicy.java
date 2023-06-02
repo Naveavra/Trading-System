@@ -1,4 +1,4 @@
-package main.java.domain.store.purchase;
+package domain.store.purchase;
 
 import utils.orderRelated.Order;
 import utils.infoRelated.ProductInfo;
@@ -17,7 +17,7 @@ public class CategoryPolicy implements PurchasePolicy{
     @Override
     public boolean validate(Order order) throws Exception {
         int count=0;
-        for (ProductInfo pI : order.getShoppingCart().getBasket(storeID)){
+        for (ProductInfo pI : order.getShoppingCart().getBasket(storeID).getContent()){
             if(pI.getCategories().contains(category)){
                 count += pI.getQuantity(); //counts how much items that belongs to "category" appears in the order
             }

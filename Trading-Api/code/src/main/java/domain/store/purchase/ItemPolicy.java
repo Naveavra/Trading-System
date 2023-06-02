@@ -1,10 +1,10 @@
-package main.java.domain.store.purchase;
+package domain.store.purchase;
 
 import utils.orderRelated.Order;
 import utils.infoRelated.ProductInfo;
 
 
-import static main.java.domain.store.purchase.PurchasePolicy.limiters.*;
+import static domain.store.purchase.PurchasePolicy.limiters.*;
 
 /**
  * a policy for an item, means that the cart needs to have less/more than a required amount.
@@ -22,7 +22,7 @@ public class ItemPolicy implements PurchasePolicy{
     }
     @Override
     public boolean validate(Order order) throws Exception {
-        for(ProductInfo productInfo : order.getShoppingCart().getBasket(storeID)){
+        for(ProductInfo productInfo : order.getShoppingCart().getBasket(storeID).getContent()){
             if(productInfo.id == productId){
                 return switch (limiter){
                     case Max ->  handleMax(productInfo);

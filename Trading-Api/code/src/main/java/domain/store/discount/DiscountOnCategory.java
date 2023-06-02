@@ -25,7 +25,7 @@ public class DiscountOnCategory extends AbstractDiscount {
             if(p.belongsToCategory(discountedCategory)){
                 int storeId = getStoreId();
                 int oldPrice = prices.get(storeId).get(product.getId());
-                newPrice += (oldPrice - (oldPrice * 100/getPercentage()));
+                newPrice += (oldPrice - (oldPrice * getPercentage()/100));
 //                prices.get(storeId).put(prodId,newPrice);
 
             }

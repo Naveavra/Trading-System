@@ -1,4 +1,4 @@
-package main.java.domain.store.purchase;
+package domain.store.purchase;
 
 import utils.orderRelated.Order;
 import utils.infoRelated.ProductInfo;
@@ -29,7 +29,7 @@ public class DateTimePolicy implements PurchasePolicy{
     @Override
     public boolean validate(Order order) throws Exception {
         boolean contains = false;
-        for(ProductInfo pI : order.getShoppingCart().getBasket(storeID)){
+        for(ProductInfo pI : order.getShoppingCart().getBasket(storeID).getContent()){
             if(pI.getCategories().contains(category)){
                 contains = true;
                 break;

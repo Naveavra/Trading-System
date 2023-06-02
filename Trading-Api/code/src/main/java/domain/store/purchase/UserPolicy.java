@@ -1,4 +1,4 @@
-package main.java.domain.store.purchase;
+package domain.store.purchase;
 
 import utils.orderRelated.Order;
 import utils.infoRelated.ProductInfo;
@@ -30,7 +30,7 @@ public class UserPolicy implements PurchasePolicy{
         if(age == -1){
             throw new Exception("A Guest cannot purchase age limiter products.");
         }
-        for(ProductInfo pI : order.getShoppingCart().getBasket(storeID)){
+        for(ProductInfo pI : order.getShoppingCart().getBasket(storeID).getContent()){
             if(pI.id == productID || pI.getCategories().contains(category)){
                 return switch (limiter){
                     case Max -> age <= ageLimit;

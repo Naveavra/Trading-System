@@ -13,6 +13,12 @@ public class CompositeDataObject {
         this.xorDecidingRule = xorDecidingRule;
         this.discounts = discounts;
         this.composites = composites;
+        if(discounts == null){
+            this.discounts = new ArrayList<>();
+        }
+        if(composites == null){
+            this.composites = new ArrayList<>();
+        }
     }
 
     public double percentage;

@@ -1,4 +1,4 @@
-package main.java.domain.user;
+package domain.user;
 
 import domain.states.StoreCreator;
 import domain.states.UserState;

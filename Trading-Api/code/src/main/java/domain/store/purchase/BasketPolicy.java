@@ -1,4 +1,4 @@
-package main.java.domain.store.purchase;
+package domain.store.purchase;
 import utils.orderRelated.Order;
 import utils.infoRelated.ProductInfo;
 
@@ -14,7 +14,7 @@ public class BasketPolicy implements PurchasePolicy{
 
     @Override
     public boolean validate(Order order) throws Exception {
-        for(ProductInfo pI : order.getShoppingCart().getBasket(storeID)){
+        for(ProductInfo pI : order.getShoppingCart().getBasket(storeID).getContent()){
             if(pI.id == productID && pI.quantity == amount){
                 return true;
             }
