@@ -1,28 +1,33 @@
 package database.dtos;
-import database.HibernateUtil;
-import domain.user.Member;
+import domain.user.PurchaseHistory;
+import domain.user.ShoppingCart;
 import jakarta.persistence.*;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import utils.infoRelated.ProductInfo;
+import utils.infoRelated.Receipt;
 import utils.messageRelated.Notification;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 @Entity
 @Table(name = "users")
 public class MemberDto {
 
     @Id
-    int id;
-    String email;
-    String birthday;
-    String password;
+    private int id;
+    private String email;
+    private String birthday;
+    private String password;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
-    protected List<NotificationDto> notifications;
+    private List<NotificationDto> notifications;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId")
+    private List<CartDto> cartProducts;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId")
+    private List<UserHistoryDto> purchases;
 
 
     public MemberDto() {
@@ -75,5 +80,34 @@ public class MemberDto {
         for(Notification n : notifications)
             notificationDtos.add(new NotificationDto(this, n.getNotification().toString(), n.getOpcode().toString()));
         this.notifications = notificationDtos;
+    }
+
+    public List<CartDto> getCartProducts() {
+        return cartProducts;
+    }
+
+    public void setCartProducts(ShoppingCart cart) {
+        List<CartDto> cartDtos = new ArrayList<>();
+        for(ProductInfo p : cart.getContent())
+            cartDtos.add(new CartDto(this, p.getStoreId(), p.getId(), p.getQuantity()));
+        this.cartProducts = cartDtos;
+    }
+
+    public List<UserHistoryDto> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(PurchaseHistory p) {
+        List<UserHistoryDto> userHistoryDtos = new ArrayList<>();
+        for(Receipt r : p.getReceipts()){
+            UserHistoryDto userHistoryDto = new UserHistoryDto(this, r.getOrderId(), r.getTotalPrice());
+            List<ReceiptDto> receiptDtos = new ArrayList<>();
+            for(ProductInfo product : r.getCart().getContent()){
+                receiptDtos.add(new ReceiptDto(userHistoryDto, product.getStoreId(), product.getId(), product.getQuantity()));
+            }
+            userHistoryDto.setReceiptDtos(receiptDtos);
+            userHistoryDtos.add(userHistoryDto);
+        }
+        this.purchases = userHistoryDtos;
     }
 }

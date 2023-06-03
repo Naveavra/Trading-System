@@ -3,8 +3,11 @@ package database.daos;
 
 import database.HibernateUtil;
 import database.dtos.MemberDto;
+import database.dtos.NotificationDto;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import java.util.List;
 
 public class MemberDao {
 
@@ -25,7 +28,7 @@ public class MemberDao {
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             transaction = session.beginTransaction();
             m = session.get(MemberDto.class, id);
-            //transaction.commit();
+            transaction.commit();
         }catch (Exception e){
             if(transaction != null)
                 transaction.rollback();

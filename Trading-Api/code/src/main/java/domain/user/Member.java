@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
+import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 import utils.messageRelated.MessageState;
 import utils.stateRelated.Action;
@@ -306,5 +307,14 @@ public class Member extends Subscriber implements User{
     public LoginInformation getLoginInformation(String token) {
         return new LoginInformation(token, id, email, false, displayNotifications(),getRoles(),
                 getStoreNames(), getStoreImgs(), getPermissions(), getUserPurchaseHistory(), StringChecks.calculateAge(birthday), birthday);
+    }
+
+    @Override
+    public MemberDto getDto() {
+        List<Notification> nlist = new ArrayList<>(notifications);
+        memberDto.setNotifications(nlist);
+        memberDto.setCartProducts(g.getShoppingCart());
+        memberDto.setPurchases(purchaseHistory);
+        return memberDto;
     }
 }

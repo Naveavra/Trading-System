@@ -2,9 +2,7 @@ package database;
 
 import database.daos.AdminDao;
 import database.daos.MemberDao;
-import database.dtos.AdminDto;
-import database.dtos.MemberDto;
-import database.dtos.NotificationDto;
+import database.dtos.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.internal.StandardServiceRegistryImpl;
@@ -36,6 +34,9 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(MemberDto.class);
                 configuration.addAnnotatedClass(AdminDto.class);
                 configuration.addAnnotatedClass(NotificationDto.class);
+                configuration.addAnnotatedClass(CartDto.class);
+                configuration.addAnnotatedClass(UserHistoryDto.class);
+                configuration.addAnnotatedClass(ReceiptDto.class);
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties()).build();
