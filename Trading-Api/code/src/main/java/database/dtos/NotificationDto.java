@@ -12,7 +12,7 @@ public class NotificationDto{
     private int id;
 
     @ManyToOne
-    @JoinColumn(name="userId", nullable=false)
+    @JoinColumn(name = "userId", foreignKey = @ForeignKey(name = "userId"), referencedColumnName = "id")
     private MemberDto memberDto;
     private String content;
     private String opcode;

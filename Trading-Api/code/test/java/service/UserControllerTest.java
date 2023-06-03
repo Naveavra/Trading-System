@@ -2,6 +2,8 @@ package service;
 
 import database.dtos.MemberDto;
 import database.dtos.NotificationDto;
+import database.dtos.ReceiptDto;
+import database.dtos.UserHistoryDto;
 import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
@@ -12,8 +14,7 @@ import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,8 +69,15 @@ class UserControllerTest {
 
             MemberDto m = us.getMemberDto(2);
             System.out.println(m.getEmail());
-//            for(NotificationDto n : m.getNotifications())
-//                System.out.println(n.getContent());
+            List<NotificationDto> nlist = us.getSubscriberNotificationsDto(2);
+            for(NotificationDto n : nlist)
+                System.out.println(n.getId() + " " + n.getContent());
+            List<UserHistoryDto> hlist = us.getMemberUserHistoryDto(2);
+            for(UserHistoryDto history : hlist) {
+                System.out.println(history.getReceiptId() + " " + history.getTotalPrice());
+                for(ReceiptDto r : history.getReceiptDtos())
+                    System.out.println(r.getStoreId() + " " + r.getProductId() + " " + r.getQuantity());
+            }
             assert true;
         }catch (Exception e){
             assert false;

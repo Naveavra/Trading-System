@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 @Entity @Table(name = "carts")
 public class CartDto {
 
-    @ManyToOne
-    @Transient
     @Id
+    @ManyToOne
+    @JoinColumn(name = "userId", foreignKey = @ForeignKey, referencedColumnName = "id")
     private MemberDto memberDto;
     @Id
     private int storeId;

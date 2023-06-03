@@ -2,8 +2,7 @@ package service;
 
 import database.daos.AdminDao;
 import database.daos.MemberDao;
-import database.dtos.AdminDto;
-import database.dtos.MemberDto;
+import database.dtos.*;
 import domain.store.storeManagement.Store;
 import domain.user.*;
 
@@ -18,10 +17,7 @@ import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -591,6 +587,23 @@ public class UserController {
         return m;
     }
 
+    public List<CartDto> getMemberCartDto(int id){
+        List<CartDto> clist = memberDao.getMemberCart(id);
+        return clist;
+    }
+
+    public List<UserHistoryDto> getMemberUserHistoryDto(int id){
+        List<UserHistoryDto> ulist = memberDao.getMemberHistory(id);
+        return ulist;
+    }
+
+    public List<NotificationDto> getSubscriberNotificationsDto(int id){
+        List<NotificationDto> nlist = memberDao.getMemberNotifications(id);
+        return nlist;
+    }
+
+
+
     //admins
     public void saveAdminState(int userId) throws Exception{
         Admin a = getAdmin(userId);
@@ -601,5 +614,10 @@ public class UserController {
         Admin a = getAdmin(userId);
         adminDao.updateAdmin(a.getAdminDto());
         memberDao.updateMember(a.getDto());
+    }
+
+    public AdminDto getAdminDto(int id){
+        AdminDto a = adminDao.getAdminById(id);
+        return a;
     }
 }

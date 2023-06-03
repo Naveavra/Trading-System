@@ -17,4 +17,8 @@ public class AdminDao {
     public void updateAdmin(AdminDto a){
         DaoTemplate.update(a);
     }
+
+    public AdminDto getAdminById(int id){
+        return (AdminDto) DaoTemplate.getById(AdminDto.class, id);
+    }
 }
