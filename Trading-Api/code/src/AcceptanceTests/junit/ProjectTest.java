@@ -157,7 +157,7 @@ public abstract class ProjectTest{
         return bridge.createStore(creatorId, name, storeDesc, img);
     }
 
-    public int removeProduct(int user, int store, int productId) {
+    public boolean removeProduct(int user, int store, int productId) {
         return bridge.removeProduct(user, store, productId);
     }
 
@@ -200,7 +200,7 @@ public abstract class ProjectTest{
         return bridge.addStoreManagerPermissions(user, store, manager, permissionsIds);
     }
 
-    public int closeStore(int user, int store) {
+    public boolean closeStore(int user, int store) {
         return bridge.closeStore(user, store);
     }
 
@@ -271,6 +271,11 @@ public abstract class ProjectTest{
     public StoreInfo getStore(int storeId)
     {
         return bridge.getStore(storeId);
+    }
+
+    public StoreInfo getStoreInfo(int storeId)
+    {
+        return bridge.getStoreInfo(storeId);
     }
 
     public List<ProductInfo> getProductInStore(int storeId)

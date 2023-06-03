@@ -24,16 +24,16 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int initTradingSystem() {
+    public boolean initTradingSystem() {
         this.market = new Market("admin@gmail.com", "admin");
         token = market.addTokenForTests();
-        return 1;
+        return true;
     }
 
     @Override
-    public int shutDownTradingSystem() {
+    public boolean shutDownTradingSystem() {
         this.market = null;
-        return 1;
+        return true;
     }
 
 
@@ -193,12 +193,9 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int removeProduct(int user, int store, int product) {
+    public boolean removeProduct(int user, int store, int product) {
         Response<String> res = market.deleteProduct(user, token, store, product);
-        if (res != null && !res.errorOccurred()) {
-            return 1;
-        }
-        return -1;
+        return res != null && !res.errorOccurred();
     }
 
     @Override
@@ -260,12 +257,12 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int closeStore(int user, int store) {
+    public boolean closeStore(int user, int store) {
         try {
             String res = market.changeStoreActive(user, store, "false");
-            return 1;
+            return true;
         }catch (Exception e){
-            return -1;
+            return false;
         }
     }
 
@@ -551,6 +548,27 @@ public class BridgeImplement implements Bridge {
         if(!res.errorOccurred())
         {
             return res.getValue();
+        }
+        return null;
+    }
+
+    private StoreInfo getStoreFromList(int storeId, List<utils.infoRelated.StoreInfo> stores)
+    {
+        for (utils.infoRelated.StoreInfo store: stores)
+        {
+            if (store.getStoreId() == storeId)
+            {
+                return new StoreInfo(store);
+            }
+        }
+        return null;
+    }
+    @Override
+    public StoreInfo getStoreInfo(int storeId) {
+        Response<List<? extends Information>> res = market.getStoresInformation();
+        if(!res.errorOccurred())
+        {
+            return getStoreFromList(storeId, (List<utils.infoRelated.StoreInfo>) res.getValue());
         }
         return null;
     }

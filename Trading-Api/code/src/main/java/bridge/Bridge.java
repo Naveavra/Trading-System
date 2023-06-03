@@ -11,18 +11,18 @@ public interface Bridge {
     /**
      * System - Initialize trading System
      *
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int initTradingSystem();
+    boolean initTradingSystem();
 
     /**
      * System - Shut down trading System
      *
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int shutDownTradingSystem();
+    boolean shutDownTradingSystem();
 
     /**
      * System - add admin to system
@@ -210,10 +210,10 @@ public interface Bridge {
      * @param user user id
      * @param store store id
      * @param product product id.
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int removeProduct(int user, int store, int product);
+    boolean removeProduct(int user, int store, int product);
 
     /**
      * Inventory management - update product
@@ -289,10 +289,10 @@ public interface Bridge {
      *
      * @param user user id
      * @param store store id
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int closeStore(int user, int store);
+    boolean closeStore(int user, int store);
 
     /**
      * Reopen the store
@@ -510,5 +510,22 @@ public interface Bridge {
      */
     int changeQuantityInCart(int userId, int storeId, int productId, int change);
 
+
+    /**
+     * Get notifications of the user
+     *
+     * @param userId user id
+     * @return If succeed returns notification list. Otherwise,
+     *         return null.
+     */
     List<String> getNotifications(int userId);
+
+    /**
+     * Guest/ Member - get store information
+     *
+     * @param storeId store id
+     * @return If succeed return store. Otherwise,
+     *         return null.
+     */
+    StoreInfo getStoreInfo(int storeId);
 }

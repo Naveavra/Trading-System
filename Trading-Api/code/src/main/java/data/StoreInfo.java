@@ -14,6 +14,8 @@ public class StoreInfo {
     public StoreInfo(int creatorId, String name, String storeDescription, String img) {
         this.creatorId = creatorId;
         this.description = storeDescription;
+        this.name = name;
+        this.img = img;
     }
 
     public StoreInfo(utils.infoRelated.StoreInfo store) {
@@ -71,5 +73,16 @@ public class StoreInfo {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof StoreInfo))
+            return false;
+        StoreInfo other = (StoreInfo)obj;
+        return this.storeId == other.storeId && this.name.equals(other.name) &&
+                this.description.equals(other.description) && this.img.equals(other.img);
     }
 }
