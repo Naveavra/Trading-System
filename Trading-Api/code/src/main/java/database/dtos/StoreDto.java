@@ -1,6 +1,11 @@
 package database.dtos;
 
+import domain.store.product.Product;
+import domain.store.storeManagement.Store;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -17,6 +22,8 @@ public class StoreDto {
     @ManyToOne
     @JoinColumn(name = "creatorId", foreignKey = @ForeignKey(name = "creatorId"), referencedColumnName = "id")
     private MemberDto memberDto;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<InventoryDto> inventoryDtos;
 
     public StoreDto(){
 
@@ -50,4 +57,16 @@ public class StoreDto {
     public String getDescription(){return this.description;}
 
     public void setDescription(String desc){this.description = desc;}
+
+    public List<InventoryDto> getStoreProducts(){
+        return inventoryDtos;
+    }
+
+    public void SetInventory(List<Product> products) {
+        List<InventoryDto> inventoryDtos = new ArrayList<>();
+        for(Product product : products)
+            inventoryDtos.add(new InventoryDto(this, product.getCategories().toString(), product.getQuantity(), product.name,
+                    product.description,product.getPrice(), product.getImgUrl()));
+        this.inventoryDtos = inventoryDtos;
+    }
 }
