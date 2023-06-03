@@ -10,8 +10,9 @@ public class NotificationDto{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @ManyToOne
-    @Transient
+    @JoinColumn(name="userId", nullable=false)
     private MemberDto memberDto;
     private String content;
     private String opcode;

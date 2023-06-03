@@ -68,8 +68,8 @@ class UserControllerTest {
 
             MemberDto m = us.getMemberDto(2);
             System.out.println(m.getEmail());
-            for(NotificationDto n : m.getNotifications())
-                System.out.println(n.getContent());
+//            for(NotificationDto n : m.getNotifications())
+//                System.out.println(n.getContent());
             assert true;
         }catch (Exception e){
             assert false;
