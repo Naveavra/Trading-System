@@ -1,4 +1,5 @@
 package database.dtos;
+import domain.store.storeManagement.Store;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
 import jakarta.persistence.*;
@@ -24,6 +25,8 @@ public class MemberDto {
     private List<CartDto> cartProducts;
     @OneToMany(cascade = CascadeType.ALL, mappedBy="memberDto")
     private List<UserHistoryDto> purchases;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="memberDto")
+    private List<StoreDto> stores;
 
 
     public MemberDto() {
@@ -69,6 +72,15 @@ public class MemberDto {
 
     public List<NotificationDto> getNotifications() {
         return notifications;
+    }
+
+    public List<StoreDto> getStores(){return stores;}
+
+    public void setStores(List<Store> stores) {
+        List<StoreDto> storeDtos = new ArrayList<>();
+        for(Store n : stores)
+            storeDtos.add(new StoreDto(this, n.getStoreId(), n.getName(), n.getStoreDescription(), n.getImgUrl()));
+        this.stores = storeDtos;
     }
 
     public void setNotifications(List<Notification> notifications) {
