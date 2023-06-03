@@ -17,7 +17,9 @@ public class Guest implements User{
         this.id = id;
         cart = new ShoppingCart();
     }
-
+    public int getAge(){
+        return -1;
+    }
     public int getId(){
         return id;
     }

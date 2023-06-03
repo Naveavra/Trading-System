@@ -36,6 +36,15 @@ public class Member extends Subscriber implements User{
         roles = new ArrayList<>();
         purchaseHistory = new PurchaseHistory(this.id);
         g = new Guest(id);
+    public boolean getIsConnected(){
+        return isConnected;
+    }
+    public void connect(){
+        isConnected = true;
+    }
+
+    public void disconnect(){
+        isConnected = false;
         memberDto.setBirthday(birthday);
     }
 

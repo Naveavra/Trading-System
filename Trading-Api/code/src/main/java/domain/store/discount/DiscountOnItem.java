@@ -25,7 +25,7 @@ public class DiscountOnItem extends AbstractDiscount {
 ////            Product p = getProductOp.getProduct(discountedProdId);
             int storeId = getStoreId();
             double oldPrice = prices.get(storeId).get(discountedProdId);
-            newPrice = oldPrice - (oldPrice * 100/getPercentage());
+            newPrice = oldPrice - (oldPrice * getPercentage()/100);
 //            prices.get(storeId).put(discountedProdId,newPrice);
 ////            order.setTotalPrice(oldTotalPrice);
         }

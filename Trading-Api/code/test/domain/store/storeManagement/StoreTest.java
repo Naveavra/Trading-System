@@ -10,6 +10,7 @@ import utils.messageRelated.Message;
 import utils.messageRelated.NotificationOpcode;
 import utils.messageRelated.MessageState;
 import utils.orderRelated.Order;
+import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class StoreTest {
     Store store;
     Member member;
+
+    int orderA_Id=0, orderB_Id=1;
 
     Order orderA, orderB;
     ProductInfo p, p2;
@@ -50,8 +53,9 @@ class StoreTest {
         orderB = new Order(1,worker2,cart);
         store.addOrder(orderA);
         store.addOrder(orderB);
-//        store.appointUser(0, 2, Role.Manager);
-//        store.appointUser(2, 4, Role.Manager);
+        ShoppingCart mockCart = mock(ShoppingCart.class);
+        Basket mockBasket = mock(Basket.class);
+
 
     }
     @Test
@@ -62,9 +66,10 @@ class StoreTest {
         review.addStore(0);
         review.addRating(5);
         reviewB.addRating(1);
-        store.addReview(0, review);
-        store.addReview(1, reviewB);
+        store.addReview(orderA_Id, review);
+        store.addReview(orderB_Id, reviewB);
         double rating = store.getStoreRating();
+        int expctedRating = 3; //the rating supposed to be the average number of all ratings
         assertEquals(3, rating, "failed to get store rating");
     }
 
