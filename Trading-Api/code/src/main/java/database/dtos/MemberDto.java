@@ -20,12 +20,9 @@ public class MemberDto {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="memberDto")
     private List<NotificationDto> notifications;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="memberDto")
     private List<CartDto> cartProducts;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="memberDto")
     private List<UserHistoryDto> purchases;
 
 

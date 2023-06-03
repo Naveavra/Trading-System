@@ -6,9 +6,9 @@ import jakarta.persistence.*;
 @Table(name = "receipts")
 public class ReceiptDto {
 
-    @ManyToOne
-    @Transient
     @Id
+    @ManyToOne
+    @JoinColumn(name = "userhId", foreignKey = @ForeignKey, referencedColumnName = "userId")
     private UserHistoryDto userHistoryDto;
     @Id
     private int storeId;

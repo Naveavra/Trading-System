@@ -12,7 +12,6 @@ public class AdminDto {
     @Id
     int id;
 
-
     public AdminDto() {
 
     }

@@ -7,16 +7,16 @@ import java.util.List;
 @Entity
 @Table(name = "userHistory")
 public class UserHistoryDto {
-    @ManyToOne
-    @Transient
+
     @Id
+    @ManyToOne
+    @JoinColumn(name = "userId", foreignKey = @ForeignKey, referencedColumnName = "id")
     private MemberDto memberDto;
     @Id
     private int receiptId;
     private double totalPrice;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "receiptId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="userHistoryDto")
     private List<ReceiptDto> receiptDtos;
 
     public UserHistoryDto(){
