@@ -263,7 +263,7 @@ public class DiscountTest {
     }
     //"אם שווי
     //הסל גבוה מ 100₪- וגם הסל מכיל לפחות 3 חבילות פסטה, אז יש הנחה של 5%
-    //על מוצרי חלב."
+    //על מוצרי חלב.
     @Test
     public void predComposeTest() throws Exception {
         PredicateDataObject pred1 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinPrice,"100", null);
