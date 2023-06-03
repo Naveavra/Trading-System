@@ -1,10 +1,20 @@
 package service;
 
+import database.dtos.MemberDto;
+import database.dtos.NotificationDto;
+import domain.store.product.Product;
 import domain.store.storeManagement.Store;
+import domain.user.Member;
 import domain.user.StringChecks;
+import market.Admin;
 import org.junit.jupiter.api.Test;
+import utils.infoRelated.ProductInfo;
+import utils.messageRelated.Notification;
+import utils.messageRelated.NotificationOpcode;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,13 +40,49 @@ class UserControllerTest {
     void checkPassword() {
     }
 
+    @Test
+    void checkDatabase(){
+        UserController us = new UserController();
+        try {
+            us.register("eli@gmail.com", "123Aaa", "aaabbbbbaa", "24/02/2002");
+            us.register("eli2@gmail.com", "123Aaa", "aaaaaccca", "24/02/2002");
+            int id = us.login("eli@gmail.com", "aaabbbbbaa");
+            us.addNotification(id, new Notification(NotificationOpcode.CHAT_MESSAGE, "test"));
+            Admin a = new Admin(1, "elibs@gmail.com", "123Aaa");
+            us.addAdmin(a, "aaaaaa");
+            Member member = us.getMember(2);
+            Store s = new Store(0, "", member);
+            AtomicInteger aid = new AtomicInteger(1);
+            s.addNewProduct("apple", "pink apple", aid, 5, 3);
+            s.addNewProduct("banana", "yellow banana", aid, 6, 4);
+            Product apple = s.getInventory().getProduct(1);
+            ProductInfo p =  new ProductInfo(0, apple, 10);
+            Product banana = s.getInventory().getProduct(2);
+            ProductInfo p2 =  new ProductInfo(0, banana, 10);
+            us.addProductToCart(2, 0, p, 4);
+            us.addProductToCart(2, 0, p2, 5);
+            us.purchaseMade(2, 0, 30);
+            us.updateAdminState(1);
+            us.updateMemberState(2);
+            us.saveMemberState(3);
+
+            MemberDto m = us.getMemberDto(2);
+            System.out.println(m.getEmail());
+            for(NotificationDto n : m.getNotifications())
+                System.out.println(n.getContent());
+            assert true;
+        }catch (Exception e){
+            assert false;
+        }
+    }
+
 
     @Test
     void fireManager(){
         UserController us = new UserController();
         try {
-            us.register(1, "eli@gmail.com", "123Aaa", "aaaaaa", "24/02/2002");
-            us.register(2, "eli2@gmail.com", "123Aaa", "aaaaaa", "24/02/2002");
+            us.register("eli@gmail.com", "123Aaa", "aaaaaa", "24/02/2002");
+            us.register( "eli2@gmail.com", "123Aaa", "aaaaaa", "24/02/2002");
             us.login("eli@gmail.com", "aaaaaa");
             us.openStore(1, new Store(0, "nike", "good store", "img", us.getMember(1)));
             us.appointManager(1, "eli2@gmail.com", 0);

@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import domain.store.storeManagement.Store;
+import market.Admin;
 import market.Market;
 import org.json.JSONObject;
 import utils.*;
@@ -20,7 +21,8 @@ public class API {
     private HashMap<String, Integer> actionStrings;
     private Gson gson;
     public API(){
-        market = new Market("elibenshimol6@gmail.com", "123Aaa");
+        Admin a = new Admin(1, "elibenshimol6@gmail.com", "123Aaa");
+        market = new Market(a);
         gson = new Gson();
         actionStrings = new HashMap<>();
         getActionStrings();
@@ -164,8 +166,13 @@ public class API {
         Response<String> res = market.logout(userId);
         return fromResToPair(res);
     }
-    public Pair<Boolean, JSONObject> changeMemberAttributes(int userId, String token, String newEmail, String oldPass, String newPass) {
-        Response<String> res = market.changeMemberAttributes(userId, token, newEmail, oldPass, newPass);
+    public Pair<Boolean, JSONObject> changeMemberAttributes(int userId, String token, String newEmail, String newBirthday) {
+        Response<String> res = market.changeMemberAttributes(userId, token, newEmail, newBirthday);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> changeMemberPassword(int userId, String token, String oldPass, String newPass) {
+        Response<String> res = market.changeMemberPassword(userId, token, oldPass, newPass);
         return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> openStore(int userId, String token, String name, String storeDescription, String img){
@@ -198,8 +205,8 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> sendComplaint(int userId, String token, int orderId, int storeId, String msg){
-        Response<String> res = market.sendComplaint(userId, token, orderId, storeId, msg);
+    public Pair<Boolean, JSONObject> sendComplaint(int userId, String token, int orderId, String msg){
+        Response<String> res = market.sendComplaint(userId, token, orderId, msg);
         return fromResToPair(res);
     }
 
@@ -325,12 +332,6 @@ public class API {
     }
 
 
-    public Pair<Boolean, JSONObject> adminLogout(int adminId)
-    {
-        Response<String> res = market.adminLogout(adminId);
-        return fromResToPair(res);
-    }
-
     public Pair<Boolean, JSONObject> addAdmin(int adminId, String token, String email , String pass)
     {
         Response<String> res = market.addAdmin(adminId, token, email, pass);
@@ -366,12 +367,6 @@ public class API {
     {
         Response<HashMap<Integer, ? extends Information>> res = market.viewQuestions(userId, token, storeId);
         return fromResToPairHashMap(res, "messageId", "question");
-    }
-
-    public Pair<Boolean, JSONObject> getUsersPurchaseHistory(int buyerId, String token)
-    {
-        Response<List<? extends Information>> res = market.getUsersPurchaseHistory(buyerId, token);
-        return fromResToPairList(res);
     }
 
     public Pair<Boolean, JSONObject> getStores()

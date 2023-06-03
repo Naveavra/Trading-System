@@ -14,12 +14,7 @@ public class AdminInfo {
     }
 
     public AdminInfo(Admin admin) {
-        this.adminId = admin.getAdminId();
-    }
-
-    public AdminInfo(String email, String password) {
-        this.email = email;
-        this.password = password;
+        this.adminId = admin.getId();
     }
 
     public int getAdminId() {

@@ -22,15 +22,7 @@ public class ConnectedThread  extends Thread{
                     System.out.println(key + " becomes false");
                 } else {
                     connected.remove(key);
-                    if(key%2==0){
-                        api.exitGuest(key);
-                    }
-                    else if (key % 2 == 1){
-                        //TODO: logout
-                        api.logout(key);
-                    }
-                    else
-                        api.adminLogout(key);
+                    api.logout(key);
                     System.out.println(key + " removed !!!!!");
                 }
             }

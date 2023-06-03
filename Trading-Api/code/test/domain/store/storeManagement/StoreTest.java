@@ -60,8 +60,10 @@ class StoreTest {
     }
     @Test
     void getStoreRating() throws Exception {
-        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, 0, MessageState.reviewStore);
-        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, 0, MessageState.reviewStore);
+        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, MessageState.reviewStore);
+        review.addStore(0);
+        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, MessageState.reviewStore);
+        review.addStore(0);
         review.addRating(5);
         reviewB.addRating(1);
         store.addReview(orderA_Id, review);
@@ -74,7 +76,8 @@ class StoreTest {
     @Test
     void invalidAddReview() throws Exception {
         Exception exception = assertThrows(Exception.class, () -> {
-            Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 3, 0, MessageState.reviewStore);
+            Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 3, MessageState.reviewStore);
+            review.addStore(0);
             review.addRating(5);
             store.addReview(3, review);
         });
@@ -168,8 +171,10 @@ class StoreTest {
 
     @Test
     void getMessages() throws Exception {
-        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, 0, MessageState.reviewStore);
-        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, 0, MessageState.reviewStore);
+        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, MessageState.reviewStore);
+        review.addStore(0);
+        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, MessageState.reviewStore);
+        review.addStore(0);
         review.addRating(5);
         reviewB.addRating(1);
         store.addReview(0, review);

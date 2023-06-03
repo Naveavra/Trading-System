@@ -1,14 +1,12 @@
 package utils.infoRelated;
 
-import data.PurchaseInfo;
-import domain.user.history.PurchaseHistory;
+import domain.user.PurchaseHistory;
 import org.json.JSONObject;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
 import java.util.*;
-import java.util.jar.JarEntry;
 
 public class LoginInformation extends Information{
     private String token;
@@ -70,7 +68,7 @@ public class LoginInformation extends Information{
         json.put("isAdmin", getIsAdmin());
         json.put("notifications", infosToJson(getNotifications()));
         if(!isAdmin) {
-            json.put("purchaseHistory", purchaseHistory.toJson());
+            json.put("purchaseHistory", infosToJson(purchaseHistory.getReceipts()));
             json.put("age", age);
             json.put("birthday", birthday);
             json.put("storeNames", toJsonHM(getStoreNames(), "storeId", "storeName"));

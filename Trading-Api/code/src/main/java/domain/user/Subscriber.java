@@ -1,20 +1,63 @@
 package domain.user;
 
+import database.dtos.MemberDto;
+import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
+import utils.stateRelated.Action;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class Subscriber {
-    protected transient BlockingQueue<Notification> notifications;
+public abstract class Subscriber {
 
-    public Subscriber(){
+    protected int id;
+    protected String email;
+    protected String birthday;
+    protected String password;
+    protected boolean isConnected;
+    protected MemberDto memberDto;
+    protected BlockingQueue<Notification> notifications;
+    public Subscriber(int id, String email, String password){
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.birthday = "no input";
         notifications = new LinkedBlockingQueue<>();
+        isConnected = false;
+        memberDto = new MemberDto(id, email, password, birthday);
     }
 
+    public int getId(){
+        return id;
+    }
+    public String getName(){
+        return email;
+    }
+    public String getPassword(){return password;}
+
+    public void connect(){
+        isConnected = true;
+    }
+
+    public void disconnect(){
+        isConnected = false;
+    }
+    public boolean getIsConnected(){
+        return isConnected;
+    }
+
+    public void login(String password) throws Exception{
+        if(isConnected)
+            throw new Exception("the member is already connected");
+        if (this.password.equals(password)) {
+            connect();
+            return;
+        }
+        throw new Exception("wrong password");
+    }
 
     public synchronized void addNotification(Notification notification){
         notifications.offer(notification);
@@ -33,4 +76,15 @@ public class Subscriber {
             return notifications.take();
         }
     }
+
+    public abstract LoginInformation getLoginInformation(String token);
+    public abstract void checkPermission(Action action, int storeId)  throws Exception;
+
+    //database
+    public MemberDto getDto() {
+        List<Notification> nlist = new ArrayList<>(notifications);
+        memberDto.setNotifications(nlist);
+        return memberDto;
+    }
+
 }

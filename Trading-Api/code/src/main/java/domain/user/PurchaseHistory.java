@@ -1,4 +1,4 @@
-package domain.user.history;
+package domain.user;
 
 import domain.user.ShoppingCart;
 import org.json.JSONObject;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PurchaseHistory extends Information{
+public class PurchaseHistory{
 
     private int userId;
     private HashMap<Integer, Receipt> purchaseHistory;
@@ -22,22 +22,15 @@ public class PurchaseHistory extends Information{
         purchaseHistory = new HashMap<>();
     }
 
-    public void addPurchaseMade(int userId, int orderId, double totalPrice, ShoppingCart purchase){
+    public void addPurchaseMade(int orderId, double totalPrice, ShoppingCart purchase){
         ShoppingCart add = new ShoppingCart(purchase);
         Receipt receipt = new Receipt(userId, orderId, add, totalPrice);
         purchaseHistory.put(orderId, receipt);
     }
 
-    @Override
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("userId", userId);
-        List<JSONObject> jsonList = new ArrayList<>();
-        for(Receipt r : purchaseHistory.values())
-            jsonList.add(r.toJson());
-        json.put("receipts",jsonList);
-        return json;
-
+    public List<Receipt> getReceipts(){
+        List<Receipt> receipts = new ArrayList<>(purchaseHistory.values());
+        return receipts;
     }
 
     public boolean checkOrderOccurred(int orderId) {
