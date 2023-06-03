@@ -99,15 +99,19 @@ public class MarketController {
         return id;
     }
     public ProductInfo getProductInformation(int storeId, int productId) throws Exception {
-        Store store = storectrl.getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            return store.getProductInformation(productId);
-        }
-        else {
-            throw new Exception("cant get product information");
-        }
+        Store store = storectrl.getActiveStore(storeId);
+        return store.getProductInformation(productId);
+//        Store store = storectrl.getStore(storeId);
+//        if (store != null && store.isActive())
+//        {
+//            return store.getProductInformation(productId);
+//        }
+//        else {
+//            throw new Exception("cant get product information");
+//        }
     }
+
+
 
     public StoreInfo getStoreInformation(int storeId) throws Exception{
         return storectrl.getStoreInformation(storeId);
@@ -127,16 +131,16 @@ public class MarketController {
     }
 
 
-    public String getStoreDescription(int storeId) throws Exception{
-        Store store = storectrl.getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            return store.getStoreDescription();
-        }
-        else {
-            throw new Exception("can not show store information");
-        }
-    }
+//    public String getStoreDescription(int storeId) throws Exception{
+//        Store store = storectrl.getStore(storeId);
+//        if (store != null && store.isActive())
+//        {
+//            return store.getStoreDescription();
+//        }
+//        else {
+//            throw new Exception("can not show store information");
+//        }
+//    }
 
     public int addQuestion(Message m) throws Exception {
         return storectrl.addQuestion(m);
@@ -147,14 +151,16 @@ public class MarketController {
     }
 
     public void setStorePurchasePolicy(int storeId,String policy) throws Exception{
-        Store store = storectrl.getStore(storeId);
-        if (store != null )
-        {
-            store.setStorePolicy(policy);
-        }
-        else {
-            throw new Exception("store does not exist");
-        }
+        Store store = storectrl.getActiveStore(storeId);
+        store.setStorePolicy(policy);
+//        Store store = storectrl.getStore(storeId);
+//        if (store != null )
+//        {
+//            store.setStorePolicy(policy);
+//        }
+//        else {
+//            throw new Exception("store does not exist");
+//        }
     }
 
 
