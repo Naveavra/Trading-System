@@ -30,12 +30,13 @@ public class Member extends Subscriber implements User{
 
     private List<UserState> roles; //connection between registered to the shops
     private PurchaseHistory purchaseHistory;
-    public Member(int id, String email, String password, String birthday){
+    public Member(int id, String email, String password, String birthday) {
         super(id, email, password);
         this.birthday = birthday;
         roles = new ArrayList<>();
         purchaseHistory = new PurchaseHistory(this.id);
         g = new Guest(id);
+    }
     public boolean getIsConnected(){
         return isConnected;
     }
@@ -94,6 +95,11 @@ public class Member extends Subscriber implements User{
     }
     public void emptyCart(){
         g.emptyCart();
+    }
+
+    @Override
+    public int getAge() {
+        return StringChecks.calculateAge(birthday);
     }
 
     public void removeProductFromCart(int storeId, int productId) throws Exception{

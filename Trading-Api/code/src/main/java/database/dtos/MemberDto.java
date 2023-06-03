@@ -18,8 +18,7 @@ public class MemberDto {
     private String birthday;
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="memberDto")
     private List<NotificationDto> notifications;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
