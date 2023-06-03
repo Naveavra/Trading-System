@@ -3,8 +3,7 @@ package bridge;
 import data.*;
 import data.ProductInfo;
 import data.StoreInfo;
-import domain.user.history.PurchaseHistory;
-import domain.user.ShoppingCart;
+import domain.user.PurchaseHistory;
 import market.Admin;
 import market.Market;
 
@@ -19,13 +18,14 @@ public class BridgeImplement implements Bridge {
     private String token;
 
     public BridgeImplement() {
-        mainAdmin = new Admin(-1, "admin@gmail.com", "admin");
-        //market = new Market(mainAdmin);
+        mainAdmin = new Admin(1, "admin@gmail.com", "admin");
+        market = new Market(mainAdmin);
     }
 
     @Override
     public int initTradingSystem() {
-        this.market = new Market("admin@gmail.com", "admin");
+        mainAdmin = new Admin(1, "admin@gmail.com", "admin");
+        this.market = new Market(mainAdmin);
         token = market.addTokenForTests();
         return 1;
     }
@@ -364,10 +364,10 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public List<PurchaseInfo> getBuyerPurchasesHistory(int user, int buyer) {
-        Response<List<? extends Information>> res = market.getUsersPurchaseHistory(user, token);
+        Response<List<PurchaseHistory>> res = market.getUsersPurchaseHistory(user, token);
         if(!res.errorOccurred())
         {
-            return toBuyerPurchaseHistoryList((List<PurchaseHistory>) res.getValue());
+            return toBuyerPurchaseHistoryList(res.getValue());
         }
         return null;
     }
@@ -455,25 +455,6 @@ public class BridgeImplement implements Bridge {
         return null;
     }
 
-    @Override
-    public int adminLogin(String email, String password) {
-        Response<LoginInformation> res = market.adminLogin(email, password);
-        if(!res.errorOccurred())
-        {
-            return res.getValue().getUserId();
-        }
-        return 0;
-    }
-
-    @Override
-    public int adminLogout(int admin) {
-        Response<String> res = market.adminLogout(admin);
-        if(!res.errorOccurred())
-        {
-            return 1;
-        }
-        return -1;
-    }
 
     @Override
     public int enterSystem() {

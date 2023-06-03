@@ -69,14 +69,28 @@ public class StringChecks {
     }
 
     public static int[] curDay(){
+        //date
         String currentDate = String.valueOf(java.time.LocalDate.now());
         String[] splitCurrentDay = currentDate.split("-");
-        int[] curDay = {Integer.parseInt(splitCurrentDay[0]), Integer.parseInt(splitCurrentDay[1]),
-                Integer.parseInt(splitCurrentDay[2])};
-        int tmp = curDay[0];
-        curDay[0] = curDay[2];
-        curDay[2] = tmp;
-        return curDay;
+        int[] curDay = {Integer.parseInt(splitCurrentDay[2]), Integer.parseInt(splitCurrentDay[1]),
+                Integer.parseInt(splitCurrentDay[0])};
+
+        //time
+        String currentTime = String.valueOf(java.time.LocalTime.now());
+        String[] splitCurrentTime = currentTime.split(":");
+        splitCurrentTime[2] = splitCurrentTime[2].split("\\.")[0];
+        int[] curTime = {Integer.parseInt(splitCurrentTime[0]), Integer.parseInt(splitCurrentTime[1]),
+                Integer.parseInt(splitCurrentTime[2])};
+
+        //combine
+        int[] ans = new int[6];
+        ans[0] = curDay[0];
+        ans[1] = curDay[1];
+        ans[2] = curDay[2];
+        ans[3] = curTime[0];
+        ans[4] = curTime[1];
+        ans[5] = curTime[2];
+        return ans;
     }
 
     public static String curDayString(){

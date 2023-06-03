@@ -23,15 +23,13 @@ import utils.infoRelated.Receipt;
 
 public class MarketController {
 
-    StoreController storectrl;
-    OrderController orderctrl;
-    UserController userCtrl;
-    Gson gson;
+    private StoreController storectrl;
+    private OrderController orderctrl;
+    private Gson gson;
     public MarketController()
     {
         storectrl = new StoreController();
         orderctrl = new OrderController();
-        userCtrl = new UserController();
         gson = new Gson();
     }
 

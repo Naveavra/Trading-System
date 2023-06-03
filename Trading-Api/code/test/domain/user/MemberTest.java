@@ -6,7 +6,6 @@ import domain.states.StoreOwner;
 import domain.states.UserState;
 import domain.store.product.Product;
 import domain.store.storeManagement.Store;
-import domain.user.history.PurchaseHistory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.Pair;
@@ -16,7 +15,6 @@ import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
-import utils.infoRelated.Info;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -173,7 +171,7 @@ class MemberTest {
             m.login("ziv1234");
             m.addProductToCart(0, p, 100);
             m.purchaseMade(0, 100);
-            Message message = m.writeComplaint(0,0,0,"u sacks!!");
+            Message message = m.writeComplaint(0,0,"u sacks!!");
             assertTrue(message.getOrderId()==0);
             assertEquals("u sacks!!",message.getContent());
         } catch (Exception e) {
@@ -187,7 +185,7 @@ class MemberTest {
             m.login("ziv1234" );
             m.addProductToCart(0,p,100);
             m.purchaseMade(0,100);
-            Message message =  m.writeComplaint(0,0,1,"u sacks!!");
+            Message message =  m.writeComplaint(0,0,"u sacks!!");
         }catch (Exception e) {
             assertEquals("can't write a review because the store wasn't part of the order",e.getMessage());
         }
