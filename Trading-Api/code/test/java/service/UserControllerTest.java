@@ -53,6 +53,9 @@ class UserControllerTest {
             us.addAdmin(a, "aaaaaa");
             Member member = us.getMember(2);
             Store s = new Store(0, "", member);
+            Store store = new Store(1, "nike", "good store","",member);
+            us.openStore(2,s);
+            us.openStore(2,store);
             AtomicInteger aid = new AtomicInteger(1);
             s.addNewProduct("apple", "pink apple", aid, 5, 3);
             s.addNewProduct("banana", "yellow banana", aid, 6, 4);

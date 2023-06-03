@@ -297,6 +297,16 @@ public class Member extends Subscriber implements User{
         return ans;
     }
 
+    public List<Store> getStores(){
+        List<Store> ans = new ArrayList<>();
+        for(UserState state : roles){
+            if (state.getRole() == Role.Creator){
+                ans.add(state.getStore());
+            }
+        }
+        return ans;
+    }
+
     public HashMap<Integer, String> getStoreImgs(){
         HashMap<Integer, String> ans = new HashMap<>();
         for(UserState state : roles)
@@ -330,6 +340,7 @@ public class Member extends Subscriber implements User{
         memberDto.setNotifications(nlist);
         memberDto.setCartProducts(g.getShoppingCart());
         memberDto.setPurchases(purchaseHistory);
+        memberDto.setStores(getStores());
         return memberDto;
     }
 }
