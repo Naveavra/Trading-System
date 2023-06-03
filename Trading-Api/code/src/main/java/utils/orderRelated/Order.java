@@ -26,6 +26,9 @@ public class Order {
     public synchronized double getTotalPrice(){
         return totalPrice;
     }
+    public synchronized double getTotalBasketPrice(int storeID){
+        return productsInStores.getBasket(storeID).getTotalPrice();
+    }
     public synchronized void setTotalPrice(double price){
         totalPrice = price;
     }

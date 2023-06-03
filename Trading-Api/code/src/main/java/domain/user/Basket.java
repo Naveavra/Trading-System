@@ -31,6 +31,13 @@ public class Basket{
     public void addProductToCart(ProductInfo product, int quantity) throws Exception{
         if(quantity < 1)
             throw new Exception("the quantity given is negative");
+        for(ProductInfo pI: productList){
+            if(pI.id == product.id && pI.storeId == product.storeId){
+                pI.quantity += product.quantity;
+                return;
+            }
+
+        }
         product.quantity = quantity;
         productList.add(product);
     }
@@ -79,5 +86,13 @@ public class Basket{
         ProductInfo p = getProduct(productId);
         return p!= null;
 
+    }
+
+    public double getTotalPrice() {
+        double total = 0;
+        for (ProductInfo pI: productList){
+            total += pI.price * pI.quantity;
+        }
+        return total;
     }
 }
