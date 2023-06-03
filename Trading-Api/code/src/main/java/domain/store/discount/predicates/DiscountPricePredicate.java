@@ -13,7 +13,7 @@ public class DiscountPricePredicate extends DiscountPredicate {
 
     @Override
     public boolean checkPredicate(Order order) {
-        double basketPrice = order.getTotalPrice();
+        double basketPrice = order.getTotalBasketPrice(storeId);
         boolean answer = false;
         switch (type){
             case MaxPrice -> answer = handleMax(basketPrice);

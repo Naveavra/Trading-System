@@ -123,13 +123,13 @@ public class Store extends Information{
         throw new Exception("cant answer question");
     }
 
-    public synchronized void AddDiscount(DiscountDataObject discountData){
+    public synchronized void addDiscount(DiscountDataObject discountData){
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
             discounts.add(dis);
         }
     }
-    public synchronized void AddDiscount(CompositeDataObject discountData) throws Exception {
+    public synchronized void addDiscount(CompositeDataObject discountData) throws Exception {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
             discounts.add(dis);
