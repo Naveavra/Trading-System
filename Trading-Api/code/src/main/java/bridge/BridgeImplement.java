@@ -333,7 +333,7 @@ public class BridgeImplement implements Bridge {
         Response<Info> res = market.checkWorkerStatus(user, token, manager, store); //TODO : market.seeStoreHistory(user, store);
         if(res != null && !res.errorOccurred())
         {
-            return new PermissionInfo(res.getValue().getManagerActions());
+            return new PermissionInfo(res.getValue().getActions());
         }
         return null;
     }

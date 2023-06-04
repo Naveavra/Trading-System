@@ -1,12 +1,9 @@
 package domain.user;
 
-import database.daos.MemberDao;
 import database.dtos.MemberDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
@@ -36,6 +33,7 @@ public class Member extends Subscriber implements User{
         roles = new ArrayList<>();
         purchaseHistory = new PurchaseHistory(this.id);
         g = new Guest(id);
+        memberDto.setBirthday(birthday);
     }
     public boolean getIsConnected(){
         return isConnected;
@@ -46,7 +44,6 @@ public class Member extends Subscriber implements User{
 
     public void disconnect(){
         isConnected = false;
-        memberDto.setBirthday(birthday);
     }
 
     public void changeRoleInStore(UserState userState, Store store) throws Exception{
@@ -265,8 +262,7 @@ public class Member extends Subscriber implements User{
         try {
             UserState state = getRole(storeId);
             info.addRole(state.getRole());
-            if (state.getRole() == Role.Manager)
-                info.addManagerActions(state.getActions());
+            info.addActions(state.getActions());
         }catch (Exception e){
         }
         return info;

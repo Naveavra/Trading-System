@@ -78,8 +78,12 @@ public class MemberDto {
 
     public void setStores(List<Store> stores) {
         List<StoreDto> storeDtos = new ArrayList<>();
-        for(Store n : stores)
-            storeDtos.add(new StoreDto(this, n.getStoreId(), n.getName(), n.getStoreDescription(), n.getImgUrl()));
+        for(Store s : stores) {
+            StoreDto storeDto = new StoreDto(this, s.getStoreId(), s.getName(), s.getStoreDescription(), s.getImgUrl());
+            storeDtos.add(storeDto);
+            storeDto.setRoles(s.getAppHistory());
+            storeDto.setInventory(s.getProducts());
+        }
         this.stores = storeDtos;
     }
 

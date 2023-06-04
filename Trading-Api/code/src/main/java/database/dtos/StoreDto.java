@@ -2,7 +2,16 @@ package database.dtos;
 
 import domain.store.product.Product;
 import domain.store.storeManagement.Store;
+import domain.store.storeManagement.AppHistory;
 import jakarta.persistence.*;
+import utils.Pair;
+import utils.infoRelated.Info;
+import utils.infoRelated.ProductInfo;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +33,12 @@ public class StoreDto {
     private MemberDto memberDto;
     @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
     private List<InventoryDto> inventoryDtos;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<RoleDto> roles;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<AppointmentDto> appointments;
 
     public StoreDto(){
 
@@ -62,11 +77,43 @@ public class StoreDto {
         return inventoryDtos;
     }
 
-    public void SetInventory(List<Product> products) {
+    public void setInventory(List<ProductInfo> products) {
         List<InventoryDto> inventoryDtos = new ArrayList<>();
-        for(Product product : products)
-            inventoryDtos.add(new InventoryDto(this, product.getCategories().toString(), product.getQuantity(), product.name,
-                    product.description,product.getPrice(), product.getImgUrl()));
+        for (ProductInfo product : products)
+            inventoryDtos.add(new InventoryDto(this, product.getId(), product.getCategories().toString(), product.getQuantity(), product.name,
+                    product.description, product.getPrice(), product.getImg()));
         this.inventoryDtos = inventoryDtos;
+    }
+    public List<RoleDto> getRoles() {
+        return roles;
+    }
+
+    public List<AppointmentDto> getAppointments() {
+        return appointments;
+    }
+    public void setRoles(AppHistory appHistory) {
+        List<RoleDto> roleDtos = new ArrayList<>();
+        Set<Integer> checkDup = new HashSet<>();
+        List<AppointmentDto> appointmentDtos = new ArrayList<>();
+        for(Pair<Info, List<Info>> p : appHistory.getAppHistory()){
+            if(!checkDup.contains(p.getFirst().getId())) {
+                RoleDto roleDto = new RoleDto(this, p.getFirst().getId(), p.getFirst().getRole().toString(), p.getFirst().getEmail());
+                roleDtos.add(roleDto);
+                roleDto.setPermissions(p.getFirst().getActions());
+                checkDup.add(p.getFirst().getId());
+            }
+            for(Info info : p.getSecond()) {
+                if(!checkDup.contains(info.getId())) {
+                    RoleDto roleDto = new RoleDto(this, info.getId(), info.getRole().toString(), info.getEmail());
+                    roleDtos.add(roleDto);
+                    roleDto.setPermissions(info.getActions());
+                    checkDup.add(info.getId());
+                }
+                appointmentDtos.add(new AppointmentDto(this, p.getFirst().getId(), info.getId()));
+            }
+        }
+        roles = roleDtos;
+        appointments = appointmentDtos;
+
     }
 }
