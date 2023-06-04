@@ -513,6 +513,8 @@ public class UserController {
         admin.closeStorePermanently(storeId, -1);
     }
     public synchronized Admin addAdmin(int userId, String email, String hashPass ,String pass)throws Exception {
+        if(isEmailTaken(email))
+            throw new Exception("the email is already taken");
         if (userId != 0)
             getActiveAdmin(userId);
         if(!checks.checkEmail(email))
@@ -562,9 +564,10 @@ public class UserController {
         sendFeedback(complaintId, ans);
     }
 
-    public void cancelMembership(int adminId, int userToRemove) throws Exception{
+    public void cancelMembership(int adminId, String userToRemove) throws Exception{
         Admin admin = getActiveAdmin(adminId);
-        admin.cancelMembership(userToRemove);
+        Member m = getMember(userToRemove);
+        admin.cancelMembership(m.getId());
     }
 
     public int getAdminSize() {
