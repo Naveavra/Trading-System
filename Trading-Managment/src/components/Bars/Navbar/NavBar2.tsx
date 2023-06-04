@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { StoreRole } from '../../../types/systemTypes/StoreRole';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { getStore, patchStore } from '../../../reducers/storesSlice';
-import { useAppSelector, useAppDispatch } from '../../../redux/store';
-import { logout, guestEnter, getNotifications, clearNotifications } from '../../../reducers/authSlice';
+import { useAppSelector, useAppDispatch, RootState } from '../../../redux/store';
+import { logout, clearNotifications } from '../../../reducers/authSlice';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -15,7 +15,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Switch from '@mui/material/Switch';
-import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox, Icon } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox } from '@mui/material';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -23,6 +23,9 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SideDrawer from '../../SideDrawer';
+import MessageIcon from '@mui/icons-material/Message';
+import RateReviewIcon from '@mui/icons-material/RateReview';
+
 
 import './NavBar2.css';
 
@@ -43,7 +46,6 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const notifications = useAppSelector((state) => state.auth.notifications);
     const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector((state) => state.auth.userName);
-    const token = useAppSelector((state) => state.auth.token) ?? "";
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
 
     const cart = useAppSelector((state) => state.cart.responseData);
@@ -51,6 +53,11 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const stores_roles: StoreRole[] = useAppSelector((state) => state.auth.storeRoles);
     const stores_names = useAppSelector((state) => state.auth.storeNames);
     const store_images = useAppSelector((state) => state.auth.storeImgs);
+
+    const store = useAppSelector((state) => state.store.storeState.watchedStore);
+    const permissions = useAppSelector((state: RootState) => state.auth.permissions);
+    const actions = permissions?.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
+
     const stores = stores_roles ? stores_roles.map((role, index) => {
         return {
             storeId: role.storeId,
@@ -59,8 +66,6 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
             storeImg: store_images[index].storeImg,
         }
     }) : [];
-    const store = useAppSelector((state) => state.store.storeState.watchedStore);
-    const storeInfo = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const handleLogout = () => {
@@ -154,6 +159,12 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                                 <span>{numProductsIncart}</span>
                             </div>
                         </IconButton>
+                        <IconButton sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate('/dashboard/sendMsg')}>
+                            <MessageIcon />
+                        </IconButton>
+                        <IconButton sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate('/dashboard/sendComplaint')}>
+                            <RateReviewIcon />
+                        </IconButton>
                     </Toolbar>
                 </AppBar>
             </Box >
@@ -167,7 +178,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                     <>
                         <DialogTitle>Profile</DialogTitle>
                         <DialogContent dividers>
-                            <Box display="flex" alignItems="center">
+                            <Box display="flex" alignItems="center" onClick={() => { navigate('/dashboard/personal') }}>
                                 <Avatar />
                                 <Box ml={3}>
                                     <Typography>{userName}</Typography>
@@ -288,7 +299,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                 </DialogActions>
             </Dialog>
             <Box sx={{ display: 'flex', flexGrow: 1 }}>
-                <SideDrawer drawerWidth={DRAWER_WIDTH} onDrawerClose={handleDrawerClose} open={openDrawer} />
+                <SideDrawer drawerWidth={DRAWER_WIDTH} onDrawerClose={handleDrawerClose} open={openDrawer} actions={actions} route={"dashboard/store/superior"} />
             </Box>
             <Outlet />
         </>

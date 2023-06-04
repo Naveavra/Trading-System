@@ -40,3 +40,48 @@ export type editProfileFormValues = {
     age: number;
     birthday: string;
 }
+export type changePasswordFormValues = {
+    userId: number;
+    oldPassword: string;
+    newPassword: string;
+}
+export type sentComplaintFormValues = {
+    userId: number;
+    orderId: number;
+    complaint: string;
+};
+export type addAdminFormValues = {
+    userId: number;
+    email: string;
+    password: string;
+};
+export type answerComplaintFormValues = {
+    adminId: number;
+    complaintId: number;
+    answer: string;
+};
+export type paymentFormValues = {
+    userId: number;
+    cardNumber: string;
+    month: string;
+    year: string;
+    holder: string;
+    ccv: string;
+    id: number;
+    payment_service: string;
+    //-----
+    name: string;
+    address: string;
+    city: string;
+    country: string;
+    zip: string;
+    supply_service: string;
+};
+export type supplyFormValues = {
+    name: string;
+    address: string;
+    city: string;
+    country: string;
+    zip: string;
+    supply_service: string;
+};

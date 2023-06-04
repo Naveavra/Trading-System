@@ -430,6 +430,7 @@ public class Server {
             toSparkRes(res, api.addAdmin(adminId, token, name, password));
             return res.body();
         });
+
         post("api/admin/complaints/:adminId", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int adminId = Integer.parseInt(request.get("adminId").toString());

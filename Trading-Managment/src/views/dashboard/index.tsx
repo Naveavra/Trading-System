@@ -90,7 +90,7 @@ const DashboardPage: React.FC = () => {
         return () => {
             clearInterval(pingInterval)
         };
-    }, [userId])
+    }, [userId, dispatch])
     const handleSet = (text: string) => {
         setText(text);
     }

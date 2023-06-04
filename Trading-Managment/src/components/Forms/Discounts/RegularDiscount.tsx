@@ -2,7 +2,7 @@ import { Dialog, Box, Grid, Typography, Button, TextField } from "@mui/material"
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../../redux/store";
-import { addRegularDiscount, setCategoryToRegularDiscount, setDiscountTypeToRegularDiscount, setpercentageToRegularDiscount, setProductIdToRegularDiscount } from "../../../reducers/discountSlice";
+import { addRegularDiscount, setCategoryToRegularDiscount, setDiscountTypeToRegularDiscount, setpercentageToRegularDiscount, setProductIdToRegularDiscount, setSourceToRegularDiscount } from "../../../reducers/discountSlice";
 
 const regularDiscount = () => {
     const dispatch = useAppDispatch();
@@ -18,12 +18,16 @@ const regularDiscount = () => {
     const prodId = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.prodId);
     const discountedCategory = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.discountedCategory);
     const predicates = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.predicates);
-
+    const [sorce, setSorce] = useState('');
 
     const handleOnClose = useCallback(() => {
         navigate(-1);
         //dispatch(getStore({ userId: userId, storeId: storeId }));
     }, []);
+    const handleSetSource = (input: string) => {
+        //dispatch(setSourceToRegularDiscount(input));
+        setSorce(input);
+    }
     const handleSetpercentage = (input: string) => {
         const percentage = parseFloat(input);
         if (percentage > 1 || percentage < 0) {
@@ -90,6 +94,7 @@ const regularDiscount = () => {
                     display: 'flex',
                 }}
             >
+
                 <Grid item xs={12}>
                     <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
                         enter percentage

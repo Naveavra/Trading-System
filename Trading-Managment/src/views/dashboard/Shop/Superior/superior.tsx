@@ -30,10 +30,10 @@ const Superior: React.FC = () => {
     const privateName = userName.split('@')[0];
     const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
     const inventory = useAppSelector((state) => state.store.storeState.watchedStore.inventory);
-    const permmisions = useAppSelector((state: RootState) => state.auth.permissions).filter((perm) => perm.storeId === storeId);
+    const permmisions = useAppSelector((state: RootState) => state.auth.permissions)?.filter((perm) => perm.storeId === storeId);
     const Actions = permmisions[0]?.actions ?? [];
-    const canRemove = Actions.includes(Action.removeProduct);
-    const canEdit = Actions.includes(Action.updateProduct);
+    const canRemove = Actions?.includes(Action.removeProduct);
+    const canEdit = Actions?.includes(Action.updateProduct);
 
     const storeError = useAppSelector((state) => state.store.storeState.error);
     const storeMessage = useAppSelector((state) => state.store.storeState.responseData);

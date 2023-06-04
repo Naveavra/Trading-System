@@ -33,22 +33,24 @@ interface SideDrawerProps {
     onDrawerClose: () => void;
     drawerWidth: number;
     open: boolean;
+    actions: Action[];
+    route: string;
 };
 
 const itemsMap: Record<string, item> = {};
 
-const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, open }) => {
+const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, open, actions, route }) => {
     const theme = useTheme();
     const navigate = useNavigate();
-    const store = useAppSelector((state) => state.store.storeState.watchedStore);
-    const permissions = useAppSelector((state: RootState) => state.auth.permissions);
-    const actions = permissions.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
+    // const store = useAppSelector((state) => state.store.storeState.watchedStore);
+    // const permissions = useAppSelector((state: RootState) => state.auth.permissions);
+    // const actions = permissions?.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
     //rearange actions by alphbetic order and nums of words in action
 
     for (const a of actions) {
         itemsMap[a] = {
             text: a,
-            onclick: () => { navigate(`/dashboard/store/superior/${a.replace(/\s/g, "")}`) }
+            onclick: () => { navigate(`/${route}/${a.replace(/\s/g, "")}`) }
         }
     }
     const actinosList: item[] = actions.map((action) => {

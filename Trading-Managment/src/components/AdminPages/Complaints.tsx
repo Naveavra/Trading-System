@@ -1,29 +1,32 @@
-import { Typography, Box } from "@mui/material";
-import { GridRowId, GridColDef, GridActionsCellItem, DataGrid, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarExport } from "@mui/x-data-grid";
 import axios from "axios";
-import React, { useEffect } from "react";
-import { getProducts } from "../../reducers/productsSlice";
-import { getStoresInfo } from "../../reducers/storesSlice";
-import { useAppSelector, useAppDispatch } from "../../redux/store";
-import EditIcon from '@mui/icons-material/Edit';
+import React, { useMemo } from "react";
+import { useEffect } from "react";
+
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { getComplaints } from "../../reducers/adminSlice";
+import { GridRowId, GridColDef, GridActionsCellItem, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton, DataGrid } from "@mui/x-data-grid";
+import Bar4 from "../Bars/Navbar/NavBar4"
+
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Dehaze from '@mui/icons-material/Dehaze';
-import Bar2 from "../Bars/Navbar/NavBar2";
+import { Typography, Box, Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-
-const orders = () => {
-    const dispatch = useAppDispatch();
+const Complaints = () => {
+    const dispath = useAppDispatch();
+    const navigate = useNavigate();
     const userId = useAppSelector((state) => state.auth.userId);
-    const userName = useAppSelector(state => state.auth.userName);
-    const privateName = userName.split('@')[0];
-    const orders = useAppSelector((state) => state.store.storeState.watchedStore.storeOrders).map((order) => {
+    const complaints = useAppSelector((state) => state.admin.complaints).map((complaint) => {
         return {
-            id: order.orderId,
-            userId: order.userId,
-            num_products: order.products?.reduce((acc, curr) => acc + curr.quantity, 0),
-            price: order.totalPrice,
+            id: complaint.messageId,
+            userId: complaint.userId,
+            orderId: complaint.orderId,
+            content: complaint.content,
+            gotFeedback: complaint.gotFeedback,
+            seen: complaint.seen,
         }
     });
+
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
     const sendPing = () => {
@@ -47,28 +50,48 @@ const orders = () => {
         //todo implement 
     };
     const handleShowInfo = (id: GridRowId) => () => {
-        //todo implement 
+        navigate(`/${id}`);
     };
 
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
+        dispath(getComplaints(userId));
 
-        dispatch(getStoresInfo());
-        dispatch(getProducts());
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
         };
-    }, []);
-    const columns: GridColDef[] = React.useMemo(() => {
+
+    }, [dispath, userId]);
+    const columns: GridColDef[] = useMemo(() => {
         return [
-            { field: 'id', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'messageId', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },
 
-            { field: 'userId', headerName: 'userId', width: 150, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'userID', headerName: 'userId', width: 150, editable: false, align: 'center', headerAlign: 'center' },
 
-            { field: 'num_products', headerName: 'number of products in order', width: 250, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'orderId', headerName: 'order id', width: 90, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'content', headerName: 'content', width: 250, editable: false, align: 'center', headerAlign: 'center' },
+            {
+                field: 'gotFeedback', headerName: 'got feedback', width: 150, editable: false, align: 'center', headerAlign: 'center',
+                renderCell({ row }) {
+                    return (
+                        <div>
+                            {row.gotFeedback ? <Alert severity="success" sx={{ width: '40%' }}></Alert> : <Alert severity="error" sx={{ width: '40%' }}></Alert>}
+                        </div>
+                    )
+                }
+            },
+            {
+                field: 'seen', headerName: 'seen', width: 150, editable: false, align: 'center', headerAlign: 'center',
+                renderCell({ row }) {
+                    return (
+                        <div>
+                            {row.seen ? <Alert severity="error" sx={{ width: '40%' }}></Alert> : <Alert severity="success" sx={{ width: '40%' }}></Alert>}
+                        </div>
+                    )
+                }
+            },
 
-            { field: 'price', headerName: 'price', width: 150, editable: false, align: 'center', headerAlign: 'center' },
             {
                 field: 'actions',
                 type: 'actions',
@@ -84,12 +107,6 @@ const orders = () => {
                             color="inherit"
                         />,
                         <GridActionsCellItem
-                            icon={<EditIcon />}
-                            label="Edit"
-                            onClick={handleEditClick(id)}
-                            color="inherit"
-                        />,
-                        <GridActionsCellItem
                             icon={<Dehaze />}
                             label="data"
                             onClick={handleShowInfo(id)}
@@ -100,27 +117,20 @@ const orders = () => {
             },
         ];
     }, [handleEditClick, handleDeleteClick, handleShowInfo]);
+
     return (
         <>
-            <Bar2 headLine={`hello ${privateName} , wellcome to `} />
+            <Bar4 headLine={"welcome admin"} />
             <Typography variant="h4" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 84, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif', textDecoration: 'underline' }}>
-                orders
+                complaints
             </Typography >
             <Box sx={{
                 height: 550, width: '65%', mt: 7, mb: 2
             }}>
                 <DataGrid
-                    rows={orders}
+                    rows={complaints}
                     columns={columns}
                     pagination
-                    // page={pageState.page - 1}
-                    // pageSize={pageState.pageSize}
-                    // paginationMode="server"
-                    // onPageChange={(newPage) => {
-                    //     setPageState(old => ({ ...old, page: newPage + 1 }))
-                    // }}
-                    // onPageSizeChange={(newPageSize) => setPageState(old => ({ ...old, pageSize: newPageSize }))}
-
                     components={{
                         Toolbar: EditToolbar,
                     }}
@@ -130,10 +140,9 @@ const orders = () => {
                 />
             </Box>
         </>
-
     )
 }
-export default orders;
+export default Complaints;
 function EditToolbar() {
     const fontSize = 'large';//useAppSelector((state) => state.global.clientSettings.fontSize.size);
 
