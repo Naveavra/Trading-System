@@ -1193,4 +1193,15 @@ public class Market implements MarketInterface {
             return new Response<>(null, "save state failed", e.getMessage());
         }
     }
+
+    public Response<String> updateState() {
+        try {
+            for (Event e : logger.getEventMap())
+                loggerDao.updateLog(new LoggerDto(e.getStatus().toString(), e.getContent(), e.getTime(), e.getUserName()));
+            userController.updateState();
+            return new Response<>("update state succeeded", null, null);
+        }catch (Exception e){
+            return new Response<>(null, "update state failed", e.getMessage());
+        }
+    }
 }

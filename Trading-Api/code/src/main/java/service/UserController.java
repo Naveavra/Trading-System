@@ -628,4 +628,11 @@ public class UserController {
             saveAdminState(a.getId());
 
     }
+
+    public void updateState() throws Exception{
+        for(Member m : memberList.values())
+            updateMemberState(m.getId());
+        for(Admin a : admins.values())
+            updateAdminState(a.getId());
+    }
 }
