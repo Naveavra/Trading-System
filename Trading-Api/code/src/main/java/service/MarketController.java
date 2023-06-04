@@ -39,7 +39,7 @@ public class MarketController {
     }
     public Pair<Receipt, Set<Integer>> purchaseProducts(ShoppingCart shoppingCart, User user, int totalPrice) throws Exception
     {
-        Order order = orderctrl.createNewOrder(user,shoppingCart, totalPrice,storectrl :: setPrices);
+        Order order = orderctrl.createNewOrder(user,shoppingCart, totalPrice);
         order.setStatus(Status.pending);
         Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
         order.setStatus(Status.submitted);

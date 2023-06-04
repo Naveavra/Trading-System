@@ -38,6 +38,16 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(UserHistoryDto.class);
                 configuration.addAnnotatedClass(ReceiptDto.class);
                 configuration.addAnnotatedClass(StoreDto.class);
+                configuration.addAnnotatedClass(InventoryDto.class);
+
+                configuration.addAnnotatedClass(RoleDto.class);
+                configuration.addAnnotatedClass(PermissionDto.class);
+                configuration.addAnnotatedClass(AppointmentDto.class);
+                configuration.addAnnotatedClass(LoggerDto.class);
+
+                configuration.addAnnotatedClass(CategoryDto.class);
+                configuration.addAnnotatedClass(StoreReviewsDto.class);
+
 
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()

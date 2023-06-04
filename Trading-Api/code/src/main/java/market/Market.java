@@ -1,5 +1,8 @@
 package market;
 
+import database.daos.LoggerDao;
+import database.dtos.LoggerDto;
+import domain.states.Permission;
 import domain.store.storeManagement.AppHistory;
 import domain.user.StringChecks;
 import domain.user.PurchaseHistory;
@@ -39,7 +42,10 @@ public class Market implements MarketInterface {
 
     private MarketInfo marketInfo;
 
-    public Market(Admin a){
+
+    private LoggerDao loggerDao;
+
+    public Market(Admin a) {
 
         logger = Logger.getInstance();
         userController = new UserController();
@@ -55,10 +61,11 @@ public class Market implements MarketInterface {
 
         marketInfo = new MarketInfo();
 
-        actionIds = new HashMap<>();
-        setActionIds();
+        actionIds = Permission.getActionIds();
 
         addAdmin(a);
+
+        loggerDao = new LoggerDao();
     }
 
 
@@ -151,7 +158,7 @@ public class Market implements MarketInterface {
     }
 
 
-    private void addNotification(int userId,NotificationOpcode opcode, String notify) throws Exception{
+    public void addNotification(int userId,NotificationOpcode opcode, String notify) throws Exception{
         Notification<String> notification = new Notification<>(opcode, notify);
         userController.addNotification(userId, notification);
     }
@@ -1177,6 +1184,29 @@ public class Market implements MarketInterface {
         }catch (Exception e){
             System.out.println(e.getMessage());
             return new Response<>(null, "get member notifications failed", e.getMessage());
+        }
+    }
+
+    //database
+    public Response<String> saveState(){
+        try {
+            for (Event e : logger.getEventMap())
+                loggerDao.saveLog(new LoggerDto(e.getStatus().toString(), e.getContent(), e.getTime(), e.getUserName()));
+            userController.saveState();
+            return new Response<>("save state succeeded", null, null);
+        }catch (Exception e){
+            return new Response<>(null, "save state failed", e.getMessage());
+        }
+    }
+
+    public Response<String> updateState() {
+        try {
+            for (Event e : logger.getEventMap())
+                loggerDao.updateLog(new LoggerDto(e.getStatus().toString(), e.getContent(), e.getTime(), e.getUserName()));
+            userController.updateState();
+            return new Response<>("update state succeeded", null, null);
+        }catch (Exception e){
+            return new Response<>(null, "update state failed", e.getMessage());
         }
     }
 }

@@ -1,6 +1,21 @@
 package database.dtos;
 
+import domain.store.product.Product;
+import domain.store.storeManagement.Store;
+import domain.store.storeManagement.AppHistory;
 import jakarta.persistence.*;
+import utils.Pair;
+import utils.infoRelated.Info;
+import utils.infoRelated.ProductInfo;
+import utils.messageRelated.Message;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -17,6 +32,17 @@ public class StoreDto {
     @ManyToOne
     @JoinColumn(name = "creatorId", foreignKey = @ForeignKey(name = "creatorId"), referencedColumnName = "id")
     private MemberDto memberDto;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<InventoryDto> inventoryDtos;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<RoleDto> roles;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<AppointmentDto> appointments;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<StoreReviewsDto> storeReviews;
 
     public StoreDto(){
 
@@ -50,4 +76,64 @@ public class StoreDto {
     public String getDescription(){return this.description;}
 
     public void setDescription(String desc){this.description = desc;}
+
+    public List<InventoryDto> getStoreProducts(){
+        return inventoryDtos;
+    }
+
+    public void setInventory(List<ProductInfo> products) {
+        List<InventoryDto> inventoryDtos = new ArrayList<>();
+        for (ProductInfo product : products) {
+            InventoryDto inventoryDto = new InventoryDto(this, product.getId(), product.getQuantity(), product.name,
+                    product.description, product.getPrice(), product.getImg());
+            inventoryDto.setCategory(product.getCategories());
+            inventoryDtos.add(inventoryDto);
+        }
+
+        this.inventoryDtos = inventoryDtos;
+    }
+
+    public List<StoreReviewsDto> getStoreReviews(){
+        return storeReviews;
+    }
+
+    public void setStoreReviews(List<Message> reviews) {
+        List<StoreReviewsDto> ans = new ArrayList<>();
+        for (Message message : reviews)
+            ans.add(new StoreReviewsDto(this, message.getMessageId(), message.getReviewer().getId(), message.getContent(), message.getRating(),
+                    message.getOrderId(), message.getSeen()));
+        this.storeReviews = ans;
+    }
+    public List<RoleDto> getRoles() {
+        return roles;
+    }
+
+    public List<AppointmentDto> getAppointments() {
+        return appointments;
+    }
+    public void setRoles(AppHistory appHistory) {
+        List<RoleDto> roleDtos = new ArrayList<>();
+        Set<Integer> checkDup = new HashSet<>();
+        List<AppointmentDto> appointmentDtos = new ArrayList<>();
+        for(Pair<Info, List<Info>> p : appHistory.getAppHistory()){
+            if(!checkDup.contains(p.getFirst().getId())) {
+                RoleDto roleDto = new RoleDto(this, p.getFirst().getId(), p.getFirst().getRole().toString(), p.getFirst().getEmail());
+                roleDtos.add(roleDto);
+                roleDto.setPermissions(p.getFirst().getActions());
+                checkDup.add(p.getFirst().getId());
+            }
+            for(Info info : p.getSecond()) {
+                if(!checkDup.contains(info.getId())) {
+                    RoleDto roleDto = new RoleDto(this, info.getId(), info.getRole().toString(), info.getEmail());
+                    roleDtos.add(roleDto);
+                    roleDto.setPermissions(info.getActions());
+                    checkDup.add(info.getId());
+                }
+                appointmentDtos.add(new AppointmentDto(this, p.getFirst().getId(), info.getId()));
+            }
+        }
+        roles = roleDtos;
+        appointments = appointmentDtos;
+
+    }
 }

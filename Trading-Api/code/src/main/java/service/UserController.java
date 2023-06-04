@@ -620,4 +620,19 @@ public class UserController {
         AdminDto a = adminDao.getAdminById(id);
         return a;
     }
+
+    public void saveState() throws Exception{
+        for(Member m : memberList.values())
+            saveMemberState(m.getId());
+        for(Admin a : admins.values())
+            saveAdminState(a.getId());
+
+    }
+
+    public void updateState() throws Exception{
+        for(Member m : memberList.values())
+            updateMemberState(m.getId());
+        for(Admin a : admins.values())
+            updateAdminState(a.getId());
+    }
 }
