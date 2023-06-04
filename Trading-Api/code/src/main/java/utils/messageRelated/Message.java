@@ -8,12 +8,7 @@ public abstract class Message extends Information {
     protected int messageId;
     protected NotificationOpcode opcode;
     protected String content;
-    //private int rating;
     protected Member sender;
-    //private int orderId; //if it is a review then orderId > -1 else orderId == -1
-    //private int storeId;
-    //private int productId;
-    //private boolean gotFeedback;
     private boolean seen;
 
 

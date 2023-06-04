@@ -515,6 +515,9 @@ public class UserController {
     public synchronized Admin addAdmin(int userId, String email, String pass)throws Exception {
         if (userId != 0)
             getActiveAdmin(userId);
+        if(checks.checkEmail(email))
+            throw new Exception("the email given does not match the email pattern");
+        checks.checkPassword(pass);
         Admin a = new Admin(ids.getAndIncrement(), email, pass);
         admins.put(a.getId(), a);
         return a;
@@ -636,10 +639,6 @@ public class UserController {
 
     public List<Complaint> getComplaints(int userId) throws Exception{
         getActiveAdmin(userId);
-        List<Complaint> ans = new ArrayList<>();
-        for(Complaint m : complaints.values())
-            if(!m.isGotFeedback())
-                ans.add(m);
-        return ans;
+        return new ArrayList<>(complaints.values());
     }
 }

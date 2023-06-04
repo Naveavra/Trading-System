@@ -13,7 +13,7 @@ public class InventoryDto {
     private int productId;
     @Id
     @ManyToOne
-    @JoinColumn(name = "storeId", foreignKey = @ForeignKey(name = "storeId"), referencedColumnName = "storeId")
+    @JoinColumn(name = "storeId", foreignKey = @ForeignKey, referencedColumnName = "storeId")
     private StoreDto storeDto;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="inventoryDto")

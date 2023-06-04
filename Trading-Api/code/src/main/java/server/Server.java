@@ -419,5 +419,23 @@ public class Server {
             toSparkRes(res, api.watchEventLog(adminId, token));
             return res.body();
         });
+
+        //admins
+        post("api/admin/add", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
+            String token = req.headers("Authorization");
+            String name = request.get("adminEmail").toString();
+            String password = request.get("adminPassword").toString();
+            toSparkRes(res, api.addAdmin(adminId, token, name, password));
+            return res.body();
+        });
+        post("api/admin/complaints/:adminId", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.getComplaints(adminId, token));
+            return res.body();
+        });
     }
 }
