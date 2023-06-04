@@ -8,9 +8,9 @@ import domain.user.StringChecks;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
 import service.security.UserAuth;
-import service.supplier.ProxySupplier;
+import service.ExternalService.Supplier.ProxySupplier;
 import service.UserController;
-import service.payment.ProxyPayment;
+import service.ExternalService.Payment.ProxyPayment;
 import utils.*;
 
 import domain.store.storeManagement.Store;
@@ -42,6 +42,7 @@ public class Market implements MarketInterface {
 
     private MarketInfo marketInfo;
 
+
     private LoggerDao loggerDao;
 
     public Market(Admin a) {
@@ -50,9 +51,13 @@ public class Market implements MarketInterface {
         userController = new UserController();
         marketController = new MarketController();
 
-        proxyPayment = new ProxyPayment("Google Pay");
         userAuth = new UserAuth();
-        proxySupplier = new ProxySupplier("DHL");
+        try {
+            proxyPayment = new ProxyPayment();
+            proxySupplier = new ProxySupplier();
+        } catch (Exception e) {
+
+        }
 
         marketInfo = new MarketInfo();
 

@@ -150,7 +150,7 @@ public class GuestTest extends ProjectTest{
         assertTrue(ci.getCountOfProduct() > 0);
         //make purchase
         status  = makePurchase(buyer.getId(), "00000000000");
-        assertTrue(status > 0);
+        assertNotEquals(ERROR, status);
     }
 
 
@@ -179,7 +179,8 @@ public class GuestTest extends ProjectTest{
         //make purchase
         int status1 = makePurchase(buyer1.getId(), "00000000000");
         int status2 = makePurchase(buyer2.getId(), "33333333333");
-        assertNotEquals(status1, status2);
+        assertNotEquals(ERROR, status1);
+        assertEquals(ERROR, status2);
     }
 
     @Test
