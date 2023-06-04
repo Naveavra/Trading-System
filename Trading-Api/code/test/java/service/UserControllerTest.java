@@ -73,10 +73,12 @@ class UserControllerTest {
             int pid = market.addProduct(id, token, sid, categories, "apple", "pink apple", 10, 20, "iifii").getValue();
             categories.add("bad");
             int pid2 = market.addProduct(id, token, sid, categories, "banana", "yellow banana", 7, 15, "ffjfjffii").getValue();
+            market.updateProduct(id, token, sid,pid2, categories, "null", "green banana", -1, -1, "null");
             market.addProductToCart(id, sid, pid, 3);
             market.addProductToCart(id, sid, pid2, 5);
             market.makePurchase(id, "000000000");
-            market.saveState();
+//            market.saveState();
+            market.updateState();
 //            us.updateAdminState(1);
 //            us.updateMemberState(2);
 //            us.saveMemberState(3);
