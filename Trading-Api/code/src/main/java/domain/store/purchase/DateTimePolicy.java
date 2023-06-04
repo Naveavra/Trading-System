@@ -5,6 +5,8 @@ import utils.infoRelated.ProductInfo;
 import static domain.user.StringChecks.curDay;
 
 public class DateTimePolicy implements PurchasePolicy{
+    public int policyID;
+    public String content;
     public int storeID;
     public int[] dateLimit;
     public int[] timeLimit;
@@ -19,7 +21,8 @@ public class DateTimePolicy implements PurchasePolicy{
      * @param dateLimit should be int[] = [0,0,0] for null value
      * @param timeLimit should be int[] = [0,0,0] for null value
      */
-    public DateTimePolicy(int storeID,String category, limiters limiter,int[] dateLimit,int[]timeLimit){
+    public DateTimePolicy(int policyID,int storeID,String category, limiters limiter,int[] dateLimit,int[]timeLimit){
+        this.policyID = policyID;
         this.storeID = storeID;
         this.category = category;
         this.limiter = limiter;
@@ -67,5 +70,17 @@ public class DateTimePolicy implements PurchasePolicy{
         if(limit[0] == 0 && limit[1] == 0 && limit[2] == 0)
             return true;
         return false;
+    }
+
+    @Override
+    public String getContent(){
+        return this.content;
+    }
+    @Override
+    public int getId(){
+        return this.policyID;
+    }
+    public void setContent(String content){
+        this.content = content;
     }
 }

@@ -5,13 +5,16 @@ import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
 
 public class UserPolicy implements PurchasePolicy{
+    public int policyID;
+    public String content;
     public int storeID;
     public int ageLimit;
     public limiters limiter;
     public int productID;
     public String category;
-    public UserPolicy(int storeID,int ageLimit,int productID,limiters limiter){
+    public UserPolicy(int policyID,int storeID,int ageLimit,int productID,limiters limiter){
         this.storeID = storeID;
+        this.policyID = policyID;
         this.ageLimit = ageLimit;
         this.limiter = limiter;
         this.productID = productID;
@@ -39,5 +42,17 @@ public class UserPolicy implements PurchasePolicy{
             }
         }
         return false;
+    }
+
+    @Override
+    public String getContent(){
+        return this.content;
+    }
+    @Override
+    public int getId(){
+        return this.policyID;
+    }
+    public void setContent(String content){
+        this.content = content;
     }
 }

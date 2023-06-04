@@ -190,15 +190,15 @@ public class MarketController {
 //        }
 //    }
 
-    public void addPurchaseConstraint(int storeId, String constraint) throws Exception {
-        Store s;
-        if((s= storectrl.getStore(storeId) )!= null){
-            s.addPurchaseConstraint(constraint);
-        }
-        else{
-            throw new Exception("store doesn't exist, sorry bruh :(");
-        }
-    }
+//    public void addPurchaseConstraint(int storeId, String constraint) throws Exception {
+//        Store s;
+//        if((s= storectrl.getStore(storeId) )!= null){
+//            s.addPurchaseConstraint(constraint);
+//        }
+//        else{
+//            throw new Exception("store doesn't exist, sorry bruh :(");
+//        }
+//    }
 
     public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
         return storectrl.getQuestions(storeId);
