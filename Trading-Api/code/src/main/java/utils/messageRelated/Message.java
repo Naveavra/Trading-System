@@ -50,6 +50,7 @@ public abstract class Message extends Information {
         json.put("messageId", getMessageId());
         json.put("opcode", opcode.ordinal());
         json.put("content", getContent());
+        json.put("userId", sender.getId());
         json.put("seen", getSeen());
         return json;
     }

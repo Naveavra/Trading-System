@@ -15,10 +15,10 @@ import { useNavigate } from "react-router-dom";
 const Complaints = () => {
     const dispath = useAppDispatch();
     const navigate = useNavigate();
-    const userId = useAppSelector((state) => state.auth.userId);
+    const user = useAppSelector((state) => state.auth.userId);
     const complaints = useAppSelector((state) => state.admin.complaints).map((complaint) => {
         return {
-            id: complaint.messageId,
+            id: complaint.complaintId,
             userId: complaint.userId,
             orderId: complaint.orderId,
             content: complaint.content,
@@ -30,8 +30,8 @@ const Complaints = () => {
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
     const sendPing = () => {
-        if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
+        if (user != 0) {
+            axios.post('http://localhost:4567/api/auth/ping', { userId: user })
                 .then(() => {
                     // Do something with the response if necessary
                 })
@@ -50,24 +50,24 @@ const Complaints = () => {
         //todo implement 
     };
     const handleShowInfo = (id: GridRowId) => () => {
-        navigate(`/${id}`);
+        navigate(`${id}`);
     };
 
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        dispath(getComplaints(userId));
+        dispath(getComplaints(user));
 
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
         };
 
-    }, [dispath, userId]);
+    }, [dispath, user]);
     const columns: GridColDef[] = useMemo(() => {
         return [
-            { field: 'messageId', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'id', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },
 
-            { field: 'userID', headerName: 'userId', width: 150, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'userId', headerName: 'userId', width: 150, editable: false, align: 'center', headerAlign: 'center' },
 
             { field: 'orderId', headerName: 'order id', width: 90, editable: false, align: 'center', headerAlign: 'center' },
             { field: 'content', headerName: 'content', width: 250, editable: false, align: 'center', headerAlign: 'center' },
