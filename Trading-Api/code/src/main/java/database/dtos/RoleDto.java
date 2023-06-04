@@ -18,6 +18,7 @@ public class RoleDto {
 
     @Id
     private int userId;
+
     @Id
     private String role;
     private String userName;

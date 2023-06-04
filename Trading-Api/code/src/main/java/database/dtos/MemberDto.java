@@ -5,6 +5,7 @@ import domain.user.ShoppingCart;
 import jakarta.persistence.*;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.Receipt;
+import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,7 @@ public class MemberDto {
             storeDtos.add(storeDto);
             storeDto.setRoles(s.getAppHistory());
             storeDto.setInventory(s.getProducts());
+            storeDto.setStoreReviews(new ArrayList<>(s.getStoreReviews().values()));
         }
         this.stores = storeDtos;
     }
