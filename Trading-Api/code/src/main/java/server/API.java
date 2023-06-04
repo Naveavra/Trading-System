@@ -11,6 +11,7 @@ import java.util.*;
 import utils.infoRelated.*;
 import utils.Response;
 import utils.infoRelated.Receipt;
+import utils.messageRelated.Complaint;
 import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 import utils.stateRelated.Action;
@@ -183,14 +184,18 @@ public class API {
         Response<String> res = market.writeReviewToProduct(userId, token, orderId, storeId, productId, content, grading);
         return fromResToPair(res);
     }
-
-    public Pair<Boolean, JSONObject> checkReviews(int userId, String token, int storeId){
-        Response<HashMap<Integer, ? extends Information>> res = market.checkReviews(userId, token, storeId);
-        return fromResToPairHashMap(res, "reviewId", "review");
-    }
-
     public Pair<Boolean, JSONObject> getStoreProducts(int storeId){
         Response<List<? extends  Information>> res = market.getStoreProducts(storeId);
+        return fromResToPairList(res);
+    }
+
+    public Pair<Boolean, JSONObject> viewReviews(int userId, String token, int storeId){
+        Response<List<? extends Information>> res = market.checkReviews(userId, token, storeId);
+        return fromResToPairList(res);
+    }
+
+    public Pair<Boolean, JSONObject> viewQuestions(int userId, String token, int storeId){
+        Response<List<? extends Information>> res = market.viewQuestions(userId, token, storeId);
         return fromResToPairList(res);
     }
 
@@ -202,6 +207,11 @@ public class API {
     public Pair<Boolean, JSONObject> sendComplaint(int userId, String token, int orderId, String msg){
         Response<String> res = market.sendComplaint(userId, token, orderId, msg);
         return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> getComplaints(int userId, String token){
+        Response<List<? extends Information>> res = market.getComplaints(userId, token);
+        return fromResToPairList(res);
     }
 
 
@@ -355,12 +365,6 @@ public class API {
     {
         Response<List<? extends Information>> res = market.watchEventLog(adminId, token);
         return fromResToPairList(res);
-    }
-
-    public Pair<Boolean, JSONObject> viewQuestions(int userId, String token, int storeId)
-    {
-        Response<HashMap<Integer, ? extends Information>> res = market.viewQuestions(userId, token, storeId);
-        return fromResToPairHashMap(res, "messageId", "question");
     }
 
     public Pair<Boolean, JSONObject> getStores()

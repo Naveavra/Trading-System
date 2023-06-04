@@ -8,6 +8,9 @@ import domain.user.User;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.StoreInfo;
+import utils.messageRelated.ProductReview;
+import utils.messageRelated.Question;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
@@ -66,11 +69,11 @@ public class MarketController {
         return storectrl.checkMessages(storeID);
     }
 
-    public int addReviewToStore(Message m) throws Exception {
+    public int addReviewToStore(StoreReview m) throws Exception {
         return storectrl.writeReviewForStore(m);
     }
 
-    public int writeReviewForProduct(Message m) throws Exception{
+    public int writeReviewForProduct(ProductReview m) throws Exception{
         return storectrl.writeReviewForProduct(m);
 
     }
@@ -137,8 +140,8 @@ public class MarketController {
 //        }
 //    }
 
-    public int addQuestion(Message m) throws Exception {
-        return storectrl.addQuestion(m);
+    public int addQuestion(Question q) throws Exception {
+        return storectrl.addQuestion(q);
     }
 
     public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
@@ -200,7 +203,7 @@ public class MarketController {
 //        }
 //    }
 
-    public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
+    public List<Message> getQuestions(int storeId) throws Exception {
         return storectrl.getQuestions(storeId);
 
     }
@@ -231,7 +234,7 @@ public class MarketController {
         storectrl.updateProduct(storeId,productId,categories,name,description,price,quantity, img);
     }
 
-    public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
+    public List<StoreReview> viewReviews(int storeId) throws Exception {
         return storectrl.viewReviews(storeId);
     }
 

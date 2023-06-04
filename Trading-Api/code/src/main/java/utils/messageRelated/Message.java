@@ -4,107 +4,40 @@ import domain.user.Member;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
 
-public class Message extends Information {
-    private transient int messageId;
-    private NotificationOpcode opcode;
-    private String content;
-    private String ownerEmail;
-    private int rating;
-    private transient Member reviewer;
-    private MessageState state;
-    private int orderId; //if it is a review then orderId > -1 else orderId == -1
-    private int storeId;
-    private int productId;
-    private boolean gotFeedback;
+public abstract class Message extends Information {
+    protected int messageId;
+    protected NotificationOpcode opcode;
+    protected String content;
+    //private int rating;
+    protected Member sender;
+    //private int orderId; //if it is a review then orderId > -1 else orderId == -1
+    //private int storeId;
+    //private int productId;
+    //private boolean gotFeedback;
     private boolean seen;
 
-    public Message(int messageId, NotificationOpcode opcode, String content, Member reviewer, int orderId, MessageState ms){
+
+    public Message(){
+    }
+    public Message(int messageId, NotificationOpcode opcode, String content, Member reviewer){
         this.messageId = messageId;
         this.content = content;
-        this.rating = -1;
-        this.reviewer = reviewer;
-        this.orderId = orderId;
+        this.sender = reviewer;
         this.opcode  = opcode;
-        this.state = ms;
-        productId = -1;
-        ownerEmail = null;
-        gotFeedback = false;
         seen = false;
     }
 
-    public void addRating(int rating){
-        this.rating = rating;
-    }
-    public void addStore(int storeId){this.storeId = storeId;}
-    public int getRating() {
-        return rating;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public int getStoreId() {
-        return storeId;
-    }
-
-    public int getProductId(){return productId;}
-    public MessageState getMessageState() {
-        return state;
-    }
-
-    public Member getReviewer() {
-        return reviewer;
+    public Member getSender() {
+        return sender;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void addOrderId(int orderId){
-        this.orderId = orderId;
-    }
-
-    public void sendFeedback(String feedback) throws Exception{
-        if(state != MessageState.reviewProduct && state != MessageState.reviewStore ){
-            if(!gotFeedback) {
-                Notification<String> notification = new Notification<>(NotificationOpcode.REVIEW_FEEDBACK, feedback);
-                reviewer.addNotification(notification);
-                sendEmail();
-                gotFeedback = true;
-            }
-        }
-        else
-            throw new Exception("the message already got an answer");
-    }
-
-    public MessageState getState(){
-        return state;
-    }
-
-    //TODO:needs to check how to email the reviewer and the owner(using owner email)
-    private void sendEmail(){
-        if(ownerEmail != null){
-
-        }
-    }
-    public void addOwnerEmail(String email){
-        ownerEmail = email;
-    }
-
-
     public Integer getMessageId() {
         return messageId;
     }
-
-    public void addProductToReview(int productId) throws Exception{
-        if(state == MessageState.reviewProduct)
-            this.productId = productId;
-        else
-            throw new Exception("the message isn't a review for a product");
-    }
-
-    public boolean gotFeedback(){return gotFeedback;}
 
     public void markAsRead(){
         seen = true;
@@ -115,18 +48,28 @@ public class Message extends Information {
     }
 
     @Override
-    public JSONObject toJson(){
+    public abstract JSONObject toJson();
+
+    protected JSONObject toJsonHelp(){
         JSONObject json = new JSONObject();
         json.put("messageId", getMessageId());
         json.put("opcode", opcode.ordinal());
         json.put("content", getContent());
-        json.put("rating", getRating());
-        json.put("state", getMessageState());
-        json.put("orderId", getOrderId());
-        json.put("storeId", getStoreId());
-        json.put("productId", getProductId());
-        json.put("gotFeedback", gotFeedback());
         json.put("seen", getSeen());
         return json;
     }
+//    {
+//        JSONObject json = new JSONObject();
+//        json.put("messageId", getMessageId());
+//        json.put("opcode", opcode.ordinal());
+//        json.put("content", getContent());
+//        json.put("rating", getRating());
+//        json.put("state", getMessageState());
+//        json.put("orderId", getOrderId());
+//        json.put("storeId", getStoreId());
+//        json.put("productId", getProductId());
+//        json.put("gotFeedback", gotFeedback());
+//        json.put("seen", getSeen());
+//        return json;
+//    }
 }

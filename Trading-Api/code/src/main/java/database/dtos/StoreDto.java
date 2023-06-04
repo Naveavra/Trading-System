@@ -1,5 +1,6 @@
 package database.dtos;
 
+
 import domain.store.discount.Discount;
 import domain.store.product.Product;
 import domain.store.purchase.PurchasePolicy;
@@ -10,14 +11,12 @@ import utils.Pair;
 import utils.infoRelated.Info;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
+import utils.messageRelated.StoreReview;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Entity
@@ -104,6 +103,7 @@ public class StoreDto {
         return storeReviews;
     }
 
+
     public void setStoreConstraints(List<PurchasePolicy> constraints) {
         List<ConstraintDto> ans = new ArrayList<>();
         for (PurchasePolicy policy : constraints)
@@ -114,10 +114,10 @@ public class StoreDto {
         return constraints;
     }
 
-    public void setStoreReviews(List<Message> reviews) {
+    public void setStoreReviews(List<StoreReview> reviews) {
         List<StoreReviewsDto> ans = new ArrayList<>();
-        for (Message message : reviews)
-            ans.add(new StoreReviewsDto(this, message.getMessageId(), message.getReviewer().getId(), message.getContent(), message.getRating(),
+        for (StoreReview message : reviews)
+            ans.add(new StoreReviewsDto(this, message.getMessageId(), message.getSender().getId(), message.getContent(), message.getRating(),
                     message.getOrderId(), message.getSeen()));
         this.storeReviews = ans;
     }

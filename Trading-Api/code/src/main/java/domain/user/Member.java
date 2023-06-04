@@ -6,10 +6,7 @@ import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
-import utils.messageRelated.Message;
-import utils.messageRelated.Notification;
-import utils.messageRelated.NotificationOpcode;
-import utils.messageRelated.MessageState;
+import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
@@ -121,40 +118,31 @@ public class Member extends Subscriber implements User{
         roles.add(creator);
     }
 
-    public Message writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
+    public StoreReview writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
         if (purchaseHistory.checkOrderContainsStore(orderId, storeId)) {
-            Message message = new Message(messageId, NotificationOpcode.STORE_REVIEW, content, this, orderId, MessageState.reviewStore);
-            message.addStore(storeId);
-            message.addRating(grading);
-            return message;
+            return new StoreReview(messageId, NotificationOpcode.STORE_REVIEW, content, this, orderId, storeId, grading);
         }
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
     }
 
-    public Message writeReview(int messageId, int storeId, int productId, int orderId, String content, int grading) throws Exception{
+    public ProductReview writeReview(int messageId, int storeId, int productId, int orderId, String content, int grading) throws Exception{
         if(purchaseHistory.checkOrderContainsProduct(orderId, storeId, productId)){
-            Message m = new Message(messageId, PRODUCT_REVIEW, content, this, orderId, MessageState.reviewProduct);
-            m.addStore(storeId);
-            m.addRating(grading);
-            m.addProductToReview(productId);
-            return m;
+            return new ProductReview(messageId, PRODUCT_REVIEW, content, this, orderId, storeId, productId, grading);
         }
         else
             throw new Exception("the product isn't part of the order so you can't write a review about him");
     }
 
-    public Message writeComplaint(int messageId, int orderId, String comment) throws Exception {
+    public Complaint writeComplaint(int messageId, int orderId, String comment) throws Exception {
         if(purchaseHistory.checkOrderOccurred(orderId))
-            return new Message(messageId, NotificationOpcode.COMPLAINT, comment, this, orderId, MessageState.complaint);
+            return new Complaint(messageId, NotificationOpcode.COMPLAINT, comment, this, orderId);
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
     }
 
-    public Message sendQuestion(int messageId, int storeId, String question) {
-        Message m = new Message(messageId, NotificationOpcode.QUESTION, question, this, -1, MessageState.question);
-        m.addStore(storeId);
-        return m;
+    public Question sendQuestion(int messageId, int storeId, String question) {
+        return new Question(messageId, NotificationOpcode.QUESTION, question, this, storeId);
     }
 
     private UserState getActiveRole(int storeId) throws Exception {

@@ -2,6 +2,7 @@ package market;
 
 import domain.store.storeManagement.Store;
 import domain.user.PurchaseHistory;
+import utils.infoRelated.Information;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
 import utils.messageRelated.NotificationOpcode;
@@ -120,4 +121,5 @@ public interface MarketInterface {
     public Response addSupplierService(int adminId, String token, String supplierService);
     public Response removeSupplierService(int adminId, String token, String supplierService);
 
+    Response<List<? extends Information>> getComplaints(int userId, String token);
 }
