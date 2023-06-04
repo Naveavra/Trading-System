@@ -53,8 +53,8 @@ class StoreTest {
         orderB = new Order(1,worker2,cart);
         store.addOrder(orderA);
         store.addOrder(orderB);
-        ShoppingCart mockCart = mock(ShoppingCart.class);
-        Basket mockBasket = mock(Basket.class);
+//        ShoppingCart mockCart = mock(ShoppingCart.class);
+//        Basket mockBasket = mock(Basket.class);
 
 
     }

@@ -1,13 +1,8 @@
 package domain.user;
 
-import domain.store.product.Product;
-import org.eclipse.jetty.util.ajax.JSON;
-import org.json.JSONObject;
-import utils.infoRelated.Information;
 import utils.infoRelated.ProductInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ShoppingCart{

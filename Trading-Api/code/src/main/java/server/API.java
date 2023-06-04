@@ -1,6 +1,5 @@
 package server;
 
-import com.google.gson.Gson;
 import domain.store.storeManagement.Store;
 import market.Admin;
 import market.Market;
@@ -19,11 +18,9 @@ import utils.stateRelated.Action;
 public class API {
     public Market market;
     private HashMap<String, Integer> actionStrings;
-    private Gson gson;
     public API(){
         Admin a = new Admin(1, "elibenshimol6@gmail.com", "123Aaa");
         market = new Market(a);
-        gson = new Gson();
         actionStrings = new HashMap<>();
         getActionStrings();
 
@@ -37,10 +34,7 @@ public class API {
             return new Pair<>(false, json);
         }
         else {
-            if(res.getValue().getClass() != String.class && res.getValue().getClass() != Integer.class)
-                json.put("value", gson.toJson(res.getValue()));
-            else
-                json.put("value", res.getValue());
+            json.put("value", res.getValue());
             return new Pair<>(true, json);
         }
     }

@@ -10,7 +10,7 @@ public class StoreReviewsDto {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "storeId", foreignKey = @ForeignKey(name = "storeId"), referencedColumnName = "storeId")
+    @JoinColumn(name = "storeId", foreignKey = @ForeignKey, referencedColumnName = "storeId")
     private StoreDto storeDto;
     private int reviewerId;
     private String content;

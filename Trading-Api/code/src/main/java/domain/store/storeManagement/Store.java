@@ -1,6 +1,5 @@
 package domain.store.storeManagement;
 
-import com.google.gson.Gson;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.discount.Discount;
@@ -44,7 +43,6 @@ public class Store extends Information{
     private ArrayList<Discount> discounts;
     private DiscountFactory discountFactory;
 
-    Gson gson ;
     public Store(int id, String description, Member creator){
         Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
         this.storeid = id;
@@ -58,7 +56,6 @@ public class Store extends Information{
         this.purchasePolicy = new domain.store.purchase.PurchasePolicy2Delete();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
-        gson = new Gson();
         discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
     }
@@ -76,7 +73,6 @@ public class Store extends Information{
         this.purchasePolicy = new domain.store.purchase.PurchasePolicy2Delete();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
-        gson = new Gson();
         discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
         this.storeName = storeName;

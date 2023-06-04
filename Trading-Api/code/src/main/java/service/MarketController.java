@@ -15,7 +15,6 @@ import domain.store.storeManagement.StoreController;
 
 import java.util.*;
 
-import com.google.gson.Gson;
 import utils.messageRelated.Message;
 import utils.infoRelated.OrderInfo;
 import utils.orderRelated.Status;
@@ -25,12 +24,10 @@ public class MarketController {
 
     private StoreController storectrl;
     private OrderController orderctrl;
-    private Gson gson;
     public MarketController()
     {
         storectrl = new StoreController();
         orderctrl = new OrderController();
-        gson = new Gson();
     }
 
 
@@ -204,7 +201,6 @@ public class MarketController {
     }
 
     public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
-        Gson gson = new Gson();
         return storectrl.getQuestions(storeId);
 
     }
@@ -219,7 +215,6 @@ public class MarketController {
     }
 
     public AppHistory getAppointments(int storeId) throws Exception {
-        Gson gson = new Gson();
         return storectrl.getAppointments(storeId);
     }
 
