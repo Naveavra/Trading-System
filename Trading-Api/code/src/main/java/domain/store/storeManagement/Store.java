@@ -15,8 +15,10 @@ import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.*;
 import utils.messageRelated.Message;
-import utils.messageRelated.MessageState;
 import utils.Pair;
+import utils.messageRelated.ProductReview;
+import utils.messageRelated.Question;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 
@@ -34,8 +36,8 @@ public class Store extends Information{
     private final AppHistory appHistory; //first one is always the store creator //n
     private final Inventory inventory; //<productID,<product, quantity>>
     private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
-    private final ConcurrentHashMap<Integer, Message> storeReviews; //<messageid, message>
-    private final ConcurrentHashMap<Integer, Message> questions;
+    private final ConcurrentHashMap<Integer, StoreReview> storeReviews; //<messageid, message>
+    private final ConcurrentHashMap<Integer, Question> questions;
 
     private String imgUrl;
 //    private DiscountPolicy discountPolicy;
@@ -94,7 +96,7 @@ public class Store extends Information{
 
     public double getStoreRating(){
         double sum = 0.0;
-        for(Message msg: storeReviews.values()){
+        for(StoreReview msg: storeReviews.values()){
             sum+= msg.getRating();
         }
         if(storeReviews.size() == 0)
@@ -103,20 +105,18 @@ public class Store extends Information{
             return sum / storeReviews.size();
     }
 
-    public int addQuestion(Message m)
+    public int addQuestion(Question q)
     {
-        questions.put(m.getMessageId(), m);
+        questions.put(q.getMessageId(), q);
         return creator.getId();
     }
 
     public void answerQuestion(int messageID, String answer) throws Exception {
-        Message msg = questions.get(messageID);
-        if (msg != null && msg.getState() == MessageState.question && !msg.getSeen())
-        {
+        Question msg = questions.get(messageID);
+        if(msg != null)
             msg.sendFeedback(answer);
-            return;
-        }
-        throw new Exception("cant answer question");
+        else
+            throw new Exception("the id given does not belong to any question that was sent to store");
     }
 
     public synchronized void addDiscount(DiscountDataObject discountData){
@@ -132,18 +132,15 @@ public class Store extends Information{
         }
     }
 
-    public int addProductReview(Message m) throws Exception
+    public int addProductReview(ProductReview m) throws Exception
     {
         if (storeOrders.containsKey(m.getOrderId()))
         {
             inventory.addProductReview(m);
-            //productReviews.put(m.getMessageId(), m);
             return creator.getId();
         }
         else
-        {
             throw new Exception("cant add review for this product");
-        }
     }
 
     public int getStoreId()
@@ -155,18 +152,9 @@ public class Store extends Information{
         return creator.getId();
     }
 
-    public HashMap<Integer, Message> getStoreReviews() {
-        HashMap<Integer, Message> ans = new HashMap<>();
-        for(int messageId : storeReviews.keySet())
-            ans.put(messageId, storeReviews.get(messageId));
-        for(int messageId : inventory.getProductReviews().keySet())
-            ans.put(messageId,  inventory.getProductReviews().get(messageId));
-        return ans;
-    }
-    public HashMap<Integer, Message> getStoreQuestions() {
-        HashMap<Integer, Message> ans = new HashMap<>();
-        for(int messageId : questions.keySet())
-            ans.put(messageId, questions.get(messageId));
+    public List<StoreReview> getStoreReviews() {
+        List<StoreReview> ans = new ArrayList<>(storeReviews.values());
+        ans.addAll(inventory.getProductReviews().values());
         return ans;
     }
     public List<OrderInfo> getOrdersHistory() {
@@ -201,7 +189,7 @@ public class Store extends Information{
         appHistory.addNode(userinchargeid, node);
     }
 
-    public int addReview(int orderId, Message review) throws Exception {
+    public int addReview(int orderId, StoreReview review) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
             storeReviews.put(review.getMessageId(), review);
@@ -434,13 +422,16 @@ public class Store extends Information{
         }
     }
 
-    public HashMap<Integer, Message> getQuestions() { //<messageids, message>
-        HashMap<Integer, Message> questionsToAnswer = new HashMap<>();
+    public List<Message> getAllQuestions(){
+        return new ArrayList<>(questions.values());
+    }
+    public List<Message> getQuestions() {
+        List<Message> questionsToAnswer = new ArrayList<>();
         for (Message message : this.questions.values())
         {
             if (!message.getSeen())
             {
-                questionsToAnswer.put(message.getMessageId(), message);
+                questionsToAnswer.add(message);
             }
         }
         return questionsToAnswer;
@@ -519,8 +510,8 @@ public class Store extends Information{
         json.put("appHistory", getAppJson());
         json.put("inventory", infosToJson(getProducts()));
         json.put("storeOrders", infosToJson(getOrdersHistory()));
-        json.put("reviews", hashMapToJson(getStoreReviews(), "messageId", "review"));
-        json.put("questions", hashMapToJson(getStoreQuestions(), "messageId", "question"));
+        json.put("reviews", infosToJson(getStoreReviews()));
+        json.put("questions", infosToJson(getQuestions()));
         json.put("img", getImgUrl());
         json.put("roles", infosToJson(getRoles()));
         return json;

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+
 import static spark.Spark.*;
 
 public class Server {
@@ -407,7 +407,7 @@ public class Server {
             int userId = Integer.parseInt((request.get("userId").toString()));
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
-            toSparkRes(res, api.checkReviews(userId, token, storeId));
+            toSparkRes(res, api.viewReviews(userId, token, storeId));
             return res.body();
         });
 

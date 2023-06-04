@@ -8,9 +8,8 @@ import org.junit.jupiter.api.Test;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.NotificationOpcode;
-import utils.messageRelated.MessageState;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
-import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,12 +59,8 @@ class StoreTest {
     }
     @Test
     void getStoreRating() throws Exception {
-        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, MessageState.reviewStore);
-        review.addStore(0);
-        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, MessageState.reviewStore);
-        review.addStore(0);
-        review.addRating(5);
-        reviewB.addRating(1);
+        StoreReview review = new StoreReview(0, NotificationOpcode.STORE_REVIEW, "great store", member, orderA_Id, store.getStoreId(), 5);
+        StoreReview reviewB = new StoreReview(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, orderB_Id, store.getStoreId(), 1);
         store.addReview(orderA_Id, review);
         store.addReview(orderB_Id, reviewB);
         double rating = store.getStoreRating();
@@ -74,11 +69,9 @@ class StoreTest {
     }
 
     @Test
-    void invalidAddReview() throws Exception {
+    void invalidAddReview() {
         Exception exception = assertThrows(Exception.class, () -> {
-            Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 3, MessageState.reviewStore);
-            review.addStore(0);
-            review.addRating(5);
+            StoreReview review = new StoreReview(0, NotificationOpcode.STORE_REVIEW, "great store", member, 3,store.getStoreId(), 5);
             store.addReview(3, review);
         });
         String expectedMessage = "order doesnt exist";
@@ -171,12 +164,8 @@ class StoreTest {
 
     @Test
     void getMessages() throws Exception {
-        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, MessageState.reviewStore);
-        review.addStore(0);
-        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, MessageState.reviewStore);
-        review.addStore(0);
-        review.addRating(5);
-        reviewB.addRating(1);
+        StoreReview review = new StoreReview(0, NotificationOpcode.STORE_REVIEW, "great store", member, orderA_Id, store.getStoreId(), 5);
+        StoreReview reviewB = new StoreReview(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, orderB_Id, store.getStoreId(), 1);
         store.addReview(0, review);
         store.addReview(1, reviewB);
         ArrayList<String> actualMessages = store.checkMessages();
