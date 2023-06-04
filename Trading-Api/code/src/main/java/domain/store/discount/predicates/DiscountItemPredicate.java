@@ -30,11 +30,11 @@ public class DiscountItemPredicate extends DiscountPredicate{
 
     @Override
     public boolean handleMax(double quantity) {
-        return this.quantity<=quantity;
+        return this.quantity>=quantity;
     }
 
     @Override
     public boolean handleMin(double quantity) {
-        return this.quantity>=quantity;
+        return this.quantity<=quantity;
     }
 }

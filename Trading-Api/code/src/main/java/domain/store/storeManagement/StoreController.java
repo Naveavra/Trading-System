@@ -6,6 +6,9 @@ import domain.user.ShoppingCart;
 import utils.infoRelated.ProductInfo;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.StoreInfo;
+import utils.messageRelated.ProductReview;
+import utils.messageRelated.Question;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
@@ -73,14 +76,16 @@ public class StoreController {
         return null;
     }
 
-    public int addQuestion(Message m) throws Exception
+    public int addQuestion(Question q) throws Exception
     {
-        Store store = storeList.get(m.getStoreId());
-        if (store != null && store.isActive())
-        {
-            return store.addQuestion(m);
-        }
-        throw new Exception("store does not exist or is not open");
+        Store store = getActiveStore(q.getStoreId());
+        return store.addQuestion(q);
+    }
+    public Store getActiveStore(int storeID) throws Exception
+    {
+        Store store = getStore(storeID);
+        if (store.isActive()){return store;}
+        throw new Exception("Store is not active at the moment");
     }
 
     public Store openStore(String desc, Member user) {
@@ -98,20 +103,14 @@ public class StoreController {
     /**
      * @return the store creator id if the store or order doesn't exist return -1
      */
-    public int writeReviewForStore(Message message) throws Exception {
-        Store store = storeList.get(message.getStoreId());
-        if (store != null && store.isActive()) {
-            return store.addReview(message.getOrderId(), message);
-        }
-        throw new Exception("the storeId given does not belong to any active store");
+    public int writeReviewForStore(StoreReview message) throws Exception {
+        Store store = getActiveStore(message.getStoreId());
+        return store.addReview(message.getOrderId(), message);
     }
 
-    public int writeReviewForProduct(Message message) throws Exception {
-        Store store = storeList.get(message.getStoreId());
-        if (store != null && store.isActive()) {
-            return store.addProductReview(message);
-        }
-        throw new Exception("the storeId given does not belong to any active store");
+    public int writeReviewForProduct(ProductReview message) throws Exception {
+        Store store = getActiveStore(message.getStoreId());
+        return store.addProductReview(message);
     }
 
     public int calculatePrice(ShoppingCart cart) throws Exception{
@@ -125,7 +124,9 @@ public class StoreController {
         List<ProductInfo> shoppingCart = or.getProductsInStores();
         HashMap<Integer,HashMap<Integer,Integer>> prices = or.getPrices();
         for(ProductInfo product : shoppingCart){
-            prices.put(product.getStoreId(),new HashMap<>());
+            if(!prices.containsKey(product.getStoreId())){
+                prices.put(product.getStoreId(),new HashMap<>());
+            }
             int quantity = product.quantity;
             Store s = getStore(product.getStoreId());
             Product p = s.getInventory().getProduct(product.getId());
@@ -227,50 +228,41 @@ public class StoreController {
     }
 
     public ArrayList<String> checkMessages(int storeID) throws Exception {
-        Store store = getStore(storeID);
-        if (store != null && store.isActive()) {
-            return store.checkMessages();
-        } else {
-            throw new Exception("store doesnt Exist or Open");
-        }
+        Store store = getActiveStore(storeID);
+        return store.checkMessages();
+//        Store store = getStore(storeID);
+//        if (store != null && store.isActive()) {
+//            return store.checkMessages();
+//        } else {
+//            throw new Exception("store doesnt Exist or Open");
+//        }
     }
 
 
-    public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
-        Store store = getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            return store.getQuestions();
-        }
-        else {
-            throw new Exception("store doesnt Exist or Open");
-        }
+    public List<Message> getQuestions(int storeId) throws Exception {
+        Store store = getActiveStore(storeId);
+        return store.getQuestions();
     }
 
     public void answerQuestion(int storeId, int questionId, String answer) throws Exception{
-        Store store = getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            store.answerQuestion(questionId, answer);
-        }
+        Store store = getActiveStore(storeId);
+        store.answerQuestion(questionId, answer);
     }
 
     public List<OrderInfo> getStoreOrderHistory(int storeId) throws Exception {
-        Store store = getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            return store.getOrdersHistory();
-        }
-        throw new Exception("store doesnt Exist or Open");
+        Store store = getActiveStore(storeId);
+        return store.getOrdersHistory();
+//        Store store = getStore(storeId);
+//        if (store != null && store.isActive())
+//        {
+//            return store.getOrdersHistory();
+//        }
+//        throw new Exception("store doesnt Exist or Open");
     }
 
     public AppHistory getAppointments(int storeId) throws Exception{
-        Store store = getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            return store.getAppHistory();
-        }
-        throw new Exception("store doesnt Exist or Open");
+        Store store = getActiveStore(storeId);
+        return store.getAppHistory();
     }
 
 
@@ -305,15 +297,9 @@ public class StoreController {
         }
     }
 
-    public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
-        Store store = getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            return store.getStoreReviews();
-        }
-        else {
-            throw new Exception("store doesnt Exist or Open");
-        }
+    public List<StoreReview> viewReviews(int storeId) throws Exception {
+        Store store = getActiveStore(storeId);
+        return store.getStoreReviews();
     }
 
     public ArrayList<String> showFilterOptions() {

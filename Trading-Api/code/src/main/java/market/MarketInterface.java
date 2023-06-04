@@ -1,7 +1,8 @@
 package market;
 
 import domain.store.storeManagement.Store;
-import domain.user.history.PurchaseHistory;
+import domain.user.PurchaseHistory;
+import utils.infoRelated.Information;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
 import utils.messageRelated.NotificationOpcode;
@@ -35,7 +36,10 @@ public interface MarketInterface {
     Response<LoginInformation> getMember(int userId, String token);
     public Response displayNotifications(int userId, String token);
     public Response logout(int userId);
-    public Response changeMemberAttributes(int userId, String token, String newEmail, String oldPass, String newPass);
+    public Response changeMemberAttributes(int userId, String token, String newEmail, String newBirthday);
+
+    Response<String> changeMemberPassword(int userId, String token, String newEmail, String newBirthday);
+
     public Response openStore(int userId, String token, String storeName, String des, String img);
 
     Response<PurchaseHistory> getUserPurchaseHistory(int userId, String token, int buyerId);
@@ -52,7 +56,7 @@ public interface MarketInterface {
     public Response getStoreProducts(int storeId);
 
     public Response sendQuestion(int userId, String token, int storeId, String msg);
-    public Response sendComplaint(int userId, String token, int orderId, int storeId, String msg);
+    public Response sendComplaint(int userId, String token, int orderId, String msg);
 
     // manager methods
     public Response appointManager(int userId, String token, String managerToAppoint, int storeId);
@@ -96,8 +100,6 @@ public interface MarketInterface {
     public Response getProducts();
 
     // admin methods
-    public Response adminLogin(String email, String pass);
-    public Response adminLogout(int adminId);
     public Response getAdmins(int adminId, String token);
     public Response addAdmin(int userId, String token, String email , String pass);
     public Response removeAdmin(int adminId, String token);
@@ -119,4 +121,5 @@ public interface MarketInterface {
     public Response addSupplierService(int adminId, String token, String supplierService);
     public Response removeSupplierService(int adminId, String token, String supplierService);
 
+    Response<List<? extends Information>> getComplaints(int userId, String token);
 }

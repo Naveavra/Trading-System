@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
 import utils.messageRelated.NotificationOpcode;
-import utils.messageRelated.MessageState;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class StoreTest {
     Store store;
     Member member;
+
+    int orderA_Id=0, orderB_Id=1;
 
     Order orderA, orderB;
     ProductInfo p, p2;
@@ -50,27 +52,26 @@ class StoreTest {
         orderB = new Order(1,worker2,cart);
         store.addOrder(orderA);
         store.addOrder(orderB);
-//        store.appointUser(0, 2, Role.Manager);
-//        store.appointUser(2, 4, Role.Manager);
+//        ShoppingCart mockCart = mock(ShoppingCart.class);
+//        Basket mockBasket = mock(Basket.class);
+
 
     }
     @Test
     void getStoreRating() throws Exception {
-        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, 0, MessageState.reviewStore);
-        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, 0, MessageState.reviewStore);
-        review.addRating(5);
-        reviewB.addRating(1);
-        store.addReview(0, review);
-        store.addReview(1, reviewB);
+        StoreReview review = new StoreReview(0, NotificationOpcode.STORE_REVIEW, "great store", member, orderA_Id, store.getStoreId(), 5);
+        StoreReview reviewB = new StoreReview(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, orderB_Id, store.getStoreId(), 1);
+        store.addReview(orderA_Id, review);
+        store.addReview(orderB_Id, reviewB);
         double rating = store.getStoreRating();
+        int expctedRating = 3; //the rating supposed to be the average number of all ratings
         assertEquals(3, rating, "failed to get store rating");
     }
 
     @Test
-    void invalidAddReview() throws Exception {
+    void invalidAddReview() {
         Exception exception = assertThrows(Exception.class, () -> {
-            Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 3, 0, MessageState.reviewStore);
-            review.addRating(5);
+            StoreReview review = new StoreReview(0, NotificationOpcode.STORE_REVIEW, "great store", member, 3,store.getStoreId(), 5);
             store.addReview(3, review);
         });
         String expectedMessage = "order doesnt exist";
@@ -163,10 +164,8 @@ class StoreTest {
 
     @Test
     void getMessages() throws Exception {
-        Message review = new Message(0, NotificationOpcode.STORE_REVIEW, "great store", member, 0, 0, MessageState.reviewStore);
-        Message reviewB = new Message(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, 1, 0, MessageState.reviewStore);
-        review.addRating(5);
-        reviewB.addRating(1);
+        StoreReview review = new StoreReview(0, NotificationOpcode.STORE_REVIEW, "great store", member, orderA_Id, store.getStoreId(), 5);
+        StoreReview reviewB = new StoreReview(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, orderB_Id, store.getStoreId(), 1);
         store.addReview(0, review);
         store.addReview(1, reviewB);
         ArrayList<String> actualMessages = store.checkMessages();

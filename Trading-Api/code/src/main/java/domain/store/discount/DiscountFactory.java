@@ -44,7 +44,7 @@ public class DiscountFactory {
                 }
             }
         }
-        if(discountData.discounts.size()+discountData.composites.size() < 2){
+        if(!validSize(discountData.discounts,discountData.composites)){
             throw new Exception("Not enough information about the discounts you're trying to compose");
         }
         for(DiscountDataObject dis : discountData.discounts){
@@ -54,6 +54,16 @@ public class DiscountFactory {
             concreteDiscount.addDiscount(createDiscount(comp));
         }
         return concreteDiscount;
+    }
+
+    public boolean validSize(ArrayList<DiscountDataObject> discounts, ArrayList<CompositeDataObject> composites) {
+        if(discounts!=null && composites!=null && discounts.size()+composites.size() >= 2)
+            return true;
+        if(discounts!=null && discounts.size() >= 2)
+            return true;
+        if(composites!=null && composites.size() >= 2)
+            return true;
+        return false;
     }
     public synchronized Discount createDiscount(DiscountDataObject discountData){
         Discount concreteDiscount = new AbstractDiscount() {
@@ -80,7 +90,7 @@ public class DiscountFactory {
         }
         concreteDiscount.setOperations(getProdOp,getCategoryOp);
 
-        return discountData.predicates.isEmpty()? concreteDiscount : addPredicates(concreteDiscount,discountData);
+        return discountData.predicates == null || discountData.predicates.isEmpty()? concreteDiscount : addPredicates(concreteDiscount,discountData);
     }
 
     private Discount addPredicates(Discount concreteDiscount, DiscountDataObject discountData) {

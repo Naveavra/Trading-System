@@ -1,47 +1,31 @@
 package market;
 
+import database.dtos.AdminDto;
 import domain.user.Subscriber;
 import service.MarketController;
 import service.UserController;
+import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
+import utils.stateRelated.Action;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 public class Admin extends Subscriber {
 
-    private int adminId;
-
-    private String emailAdmin;
-    private transient String passwordAdmin;
-    private boolean isActive;
-
     private MarketController marketController;
     private UserController userController;
+
+    private AdminDto adminDto;
     public Admin(int adminId, String email, String password){
-        super();
-        this.adminId = adminId;
-        emailAdmin = email;
-        passwordAdmin = password;
-        isActive = false;
-
+        super(adminId, email, password);
+        adminDto = new AdminDto(adminId);
     }
 
-    public boolean getIsActive(){
-        return isActive;
-    }
-
-    public void setIsActive(boolean isActive){
-        this.isActive = isActive;
-    }
-    public int getAdminId(){
-        return adminId;
-    }
-
-    public String getEmailAdmin(){
-        return emailAdmin;
+    public void addControllers(UserController userController, MarketController marketController){
+        this.userController = userController;
+        this.marketController = marketController;
     }
     public void closeStorePermanently(int storeId, int creatId) throws Exception {
         Set<Integer> userIds = marketController.closeStorePermanently(storeId);
@@ -55,20 +39,30 @@ public class Admin extends Subscriber {
         }
     }
     public boolean checkEmail(String email){
-        return email.equals(emailAdmin);
+        return email.equals(this.email);
     }
     public boolean checkPassword(String pass){
-        return Objects.equals(passwordAdmin, pass);
-    }
-
-    public void addControllers(UserController userController, MarketController marketController) {
-        this.marketController = marketController;
-        this.userController = userController;
+        return pass.equals(this.password);
     }
 
     public void cancelMembership(int userToRemove) throws Exception{
         List<Integer> storeIds = userController.cancelMembership(userToRemove);
         for(int storeId : storeIds)
             closeStorePermanently(storeId, userToRemove);
+    }
+
+    //database
+    public AdminDto getAdminDto() {
+        return adminDto;
+    }
+
+    @Override
+    public LoginInformation getLoginInformation(String token) {
+        return new LoginInformation(token, getId(), getName(), true, displayNotifications(),
+                null, null, null, null, null, -1, null);
+    }
+
+    @Override
+    public void checkPermission(Action action, int storeId) throws Exception {
     }
 }

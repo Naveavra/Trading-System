@@ -91,7 +91,7 @@ public class AdminTest extends ProjectTest {
 
 
     @Test
-    public void testTryRemoveAllAdminsAndLogut() {
+    public void testTryRemoveAllAdminsAndLogout() {
         int adminId = this.mainAdmin.getAdminId();
         int status = 0;
         for(Map.Entry<String, AdminInfo> admin: admins_dict.entrySet())

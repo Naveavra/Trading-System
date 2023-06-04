@@ -8,6 +8,9 @@ import utils.orderRelated.Order;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * amount from category required in basket
+ */
 public class DiscountCategoryPredicate extends DiscountPredicate {
     public PredicateTypes type;
     private String category;
@@ -40,11 +43,11 @@ public class DiscountCategoryPredicate extends DiscountPredicate {
 
     @Override
     public boolean handleMax(double quantity) {
-        return this.quantity <= quantity;
+        return this.quantity >= quantity;
     }
 
     @Override
     public boolean handleMin(double quantity) {
-        return this.quantity >= quantity;
+        return this.quantity <= quantity;
     }
 }

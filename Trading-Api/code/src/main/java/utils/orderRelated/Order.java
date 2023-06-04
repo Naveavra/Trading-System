@@ -1,7 +1,6 @@
 package utils.orderRelated;
 
 
-import domain.store.product.Product;
 import domain.user.ShoppingCart;
 import domain.user.User;
 import utils.infoRelated.ProductInfo;
@@ -21,10 +20,12 @@ public class Order {
         this.user = user;
         status = Status.pending;
         productsInStores = products;
-        prices = new HashMap<>();
     }
     public synchronized double getTotalPrice(){
         return totalPrice;
+    }
+    public synchronized double getTotalBasketPrice(int storeID){
+        return productsInStores.getBasket(storeID).getTotalPrice();
     }
     public synchronized void setTotalPrice(double price){
         totalPrice = price;
@@ -77,6 +78,15 @@ public class Order {
 
 
     public HashMap<Integer, HashMap<Integer,Integer>> getPrices() {
+        if(prices == null){
+            prices = new HashMap<>();
+            for(ProductInfo pI: getShoppingCart().getContent()){
+                if(!prices.containsKey(pI.getStoreId())){
+                    prices.put(pI.getStoreId(),new HashMap<>());
+                }
+                prices.get(pI.getStoreId()).put(pI.id,pI.price*pI.quantity);
+            }
+        }
         return prices;
     }
 }

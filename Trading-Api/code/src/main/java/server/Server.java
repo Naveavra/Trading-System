@@ -1,13 +1,8 @@
 package server;
 
-import com.google.gson.Gson;
 import org.json.JSONObject;
 import utils.Pair;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+
 import static spark.Spark.*;
 
 public class Server {
@@ -39,19 +34,6 @@ public class Server {
 
 
     public static void main(String[] args) {
-//        messageQueue.put(0,new ArrayBlockingQueue<>(20));
-//        messageQueue.put(1,new ArrayBlockingQueue<>(20));
-//        api.register("eli@gmail.com", "aA12345", "22/02/2002");
-//        try{
-//            Connection con= DriverManager.getConnection(
-//                    "jdbc:mysql://localhost:3306/sadnaDB","root","sadna11B");
-//            System.out.println("here");
-//            Statement stmt=con.createStatement();
-//            ResultSet rs=stmt.executeQuery("select * from emp");
-//            while(rs.next())
-//                System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
-//            con.close();
-//        }catch(Exception e){ System.out.println(e);}
         init();
         api.mockData();
         connectedThread = new ConnectedThread(connected);
@@ -124,6 +106,26 @@ public class Server {
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             toSparkRes(res, api.getClient(userId, token));
+            return res.body();
+        });
+
+        post("api/auth/profile", (req, res)->{
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            String newEmail = request.get("email").toString();
+            String newBirthday = request.get("birthday").toString();
+            toSparkRes(res, api.changeMemberAttributes(userId, token, newEmail, newBirthday));
+            return res.body();
+        });
+
+        post("api/auth/password", (req, res)->{
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            String oldPass = request.get("oldsPassword").toString();
+            String newPass = request.get("newPassword").toString();
+            toSparkRes(res, api.changeMemberPassword(userId, token, oldPass, newPass));
             return res.body();
         });
 
@@ -405,7 +407,7 @@ public class Server {
             int userId = Integer.parseInt((request.get("userId").toString()));
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
-            toSparkRes(res, api.checkReviews(userId, token, storeId));
+            toSparkRes(res, api.viewReviews(userId, token, storeId));
             return res.body();
         });
 
@@ -415,6 +417,25 @@ public class Server {
             int adminId = Integer.parseInt(request.get("adminId").toString());
             String token = req.headers("Authorization");
             toSparkRes(res, api.watchEventLog(adminId, token));
+            return res.body();
+        });
+
+        //admins
+        post("api/admin/add", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
+            String token = req.headers("Authorization");
+            String name = request.get("adminEmail").toString();
+            String password = request.get("adminPassword").toString();
+            toSparkRes(res, api.addAdmin(adminId, token, name, password));
+            return res.body();
+        });
+
+        post("api/admin/complaints/:adminId", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.getComplaints(adminId, token));
             return res.body();
         });
     }

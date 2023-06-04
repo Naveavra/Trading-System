@@ -20,10 +20,10 @@ public abstract class ProjectTest{
 
 
     // Store, admin, appointment
-    AdminInfo mainAdmin = new AdminInfo(-1,"admin@gmail.com", "admin");
+    AdminInfo mainAdmin = new AdminInfo(1,"admin@gmail.com", "admin");
     public static final int USER_EMAIL = 0, USER_USER = 1, USER_PASS = 2, USER_BIRTHDAY = 3;
-    public static final int ADMIN_USER = 0, ADMIN_PASS = 1;
-    protected final String[][] admins = {{"admin1@gmail.com", "admin1A"}};
+    public static final int ADMIN_ID = 0, ADMIN_USER = 1, ADMIN_PASS = 2;
+    protected final String[][] admins = {{"2","admin1@gmail.com", "admin1A"}};
     protected final String[][] users = {{"hello@gmail.com", "hello", "hello1A", "01/01/2002"}, {"user@gmail.com", "user1A", "1234567891Ad", "01/01/2002"},
             {"user1@gmail.com", "user1", "abc123456dE", "01/01/2002"}};
 
@@ -57,8 +57,8 @@ public abstract class ProjectTest{
     private void setUpAdmins() {
         mainAdmin.setAdminId(adminLogin(mainAdmin.getEmail(), mainAdmin.getPassword()));
         for (String[] adminInfo : admins) {
-            AdminInfo ai = new AdminInfo(adminInfo[ADMIN_USER], adminInfo[ADMIN_PASS]);
             this.bridge.addAdmin(mainAdmin.getAdminId(), adminInfo[ADMIN_USER], adminInfo[ADMIN_PASS]);
+            AdminInfo ai = new AdminInfo(Integer.parseInt(adminInfo[ADMIN_ID]), adminInfo[ADMIN_USER], adminInfo[ADMIN_PASS]);
             admins_dict.put(ai.getEmail(), ai);
         }
         admins_dict.put(mainAdmin.getEmail(), mainAdmin);
@@ -237,10 +237,10 @@ public abstract class ProjectTest{
     }
 
     public int adminLogin(String email, String password) {
-        return bridge.adminLogin(email, password);
+        return bridge.login(email, password);
     }
     public int adminLogout(int admin) {
-        return bridge.adminLogout(admin);
+        return bridge.logout(admin);
     }
 
     public int logout(int user) {

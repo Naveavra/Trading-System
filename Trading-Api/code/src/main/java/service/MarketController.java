@@ -8,6 +8,9 @@ import domain.user.User;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.StoreInfo;
+import utils.messageRelated.ProductReview;
+import utils.messageRelated.Question;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
@@ -15,7 +18,6 @@ import domain.store.storeManagement.StoreController;
 
 import java.util.*;
 
-import com.google.gson.Gson;
 import utils.messageRelated.Message;
 import utils.infoRelated.OrderInfo;
 import utils.orderRelated.Status;
@@ -23,16 +25,12 @@ import utils.infoRelated.Receipt;
 
 public class MarketController {
 
-    StoreController storectrl;
-    OrderController orderctrl;
-    UserController userCtrl;
-    Gson gson;
+    private StoreController storectrl;
+    private OrderController orderctrl;
     public MarketController()
     {
         storectrl = new StoreController();
         orderctrl = new OrderController();
-        userCtrl = new UserController();
-        gson = new Gson();
     }
 
 
@@ -41,7 +39,7 @@ public class MarketController {
     }
     public Pair<Receipt, Set<Integer>> purchaseProducts(ShoppingCart shoppingCart, User user, int totalPrice) throws Exception
     {
-        Order order = orderctrl.createNewOrder(user,shoppingCart, totalPrice,storectrl :: setPrices);
+        Order order = orderctrl.createNewOrder(user,shoppingCart, totalPrice);
         order.setStatus(Status.pending);
         Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
         order.setStatus(Status.submitted);
@@ -71,11 +69,11 @@ public class MarketController {
         return storectrl.checkMessages(storeID);
     }
 
-    public int addReviewToStore(Message m) throws Exception {
+    public int addReviewToStore(StoreReview m) throws Exception {
         return storectrl.writeReviewForStore(m);
     }
 
-    public int writeReviewForProduct(Message m) throws Exception{
+    public int writeReviewForProduct(ProductReview m) throws Exception{
         return storectrl.writeReviewForProduct(m);
 
     }
@@ -99,15 +97,19 @@ public class MarketController {
         return id;
     }
     public ProductInfo getProductInformation(int storeId, int productId) throws Exception {
-        Store store = storectrl.getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            return store.getProductInformation(productId);
-        }
-        else {
-            throw new Exception("cant get product information");
-        }
+        Store store = storectrl.getActiveStore(storeId);
+        return store.getProductInformation(productId);
+//        Store store = storectrl.getStore(storeId);
+//        if (store != null && store.isActive())
+//        {
+//            return store.getProductInformation(productId);
+//        }
+//        else {
+//            throw new Exception("cant get product information");
+//        }
     }
+
+
 
     public StoreInfo getStoreInformation(int storeId) throws Exception{
         return storectrl.getStoreInformation(storeId);
@@ -127,19 +129,19 @@ public class MarketController {
     }
 
 
-    public String getStoreDescription(int storeId) throws Exception{
-        Store store = storectrl.getStore(storeId);
-        if (store != null && store.isActive())
-        {
-            return store.getStoreDescription();
-        }
-        else {
-            throw new Exception("can not show store information");
-        }
-    }
+//    public String getStoreDescription(int storeId) throws Exception{
+//        Store store = storectrl.getStore(storeId);
+//        if (store != null && store.isActive())
+//        {
+//            return store.getStoreDescription();
+//        }
+//        else {
+//            throw new Exception("can not show store information");
+//        }
+//    }
 
-    public int addQuestion(Message m) throws Exception {
-        return storectrl.addQuestion(m);
+    public int addQuestion(Question q) throws Exception {
+        return storectrl.addQuestion(q);
     }
 
     public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
@@ -147,14 +149,16 @@ public class MarketController {
     }
 
     public void setStorePurchasePolicy(int storeId,String policy) throws Exception{
-        Store store = storectrl.getStore(storeId);
-        if (store != null )
-        {
-            store.setStorePolicy(policy);
-        }
-        else {
-            throw new Exception("store does not exist");
-        }
+        Store store = storectrl.getActiveStore(storeId);
+        store.setStorePolicy(policy);
+//        Store store = storectrl.getStore(storeId);
+//        if (store != null )
+//        {
+//            store.setStorePolicy(policy);
+//        }
+//        else {
+//            throw new Exception("store does not exist");
+//        }
     }
 
 
@@ -189,18 +193,17 @@ public class MarketController {
 //        }
 //    }
 
-    public void addPurchaseConstraint(int storeId, String constraint) throws Exception {
-        Store s;
-        if((s= storectrl.getStore(storeId) )!= null){
-            s.addPurchaseConstraint(constraint);
-        }
-        else{
-            throw new Exception("store doesn't exist, sorry bruh :(");
-        }
-    }
+//    public void addPurchaseConstraint(int storeId, String constraint) throws Exception {
+//        Store s;
+//        if((s= storectrl.getStore(storeId) )!= null){
+//            s.addPurchaseConstraint(constraint);
+//        }
+//        else{
+//            throw new Exception("store doesn't exist, sorry bruh :(");
+//        }
+//    }
 
-    public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
-        Gson gson = new Gson();
+    public List<Message> getQuestions(int storeId) throws Exception {
         return storectrl.getQuestions(storeId);
 
     }
@@ -215,7 +218,6 @@ public class MarketController {
     }
 
     public AppHistory getAppointments(int storeId) throws Exception {
-        Gson gson = new Gson();
         return storectrl.getAppointments(storeId);
     }
 
@@ -232,7 +234,7 @@ public class MarketController {
         storectrl.updateProduct(storeId,productId,categories,name,description,price,quantity, img);
     }
 
-    public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
+    public List<StoreReview> viewReviews(int storeId) throws Exception {
         return storectrl.viewReviews(storeId);
     }
 

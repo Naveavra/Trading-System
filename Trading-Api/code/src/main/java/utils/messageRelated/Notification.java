@@ -30,4 +30,12 @@ public class Notification<T> extends Information {
         json.put("content", notification);
         return json;
     }
+
+    public NotificationOpcode getOpcode() {
+        return opcode;
+    }
+
+    public void setOpcode(NotificationOpcode opcode) {
+        this.opcode = opcode;
+    }
 }

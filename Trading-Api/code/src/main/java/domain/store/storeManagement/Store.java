@@ -1,6 +1,5 @@
 package domain.store.storeManagement;
 
-import com.google.gson.Gson;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.discount.Discount;
@@ -8,8 +7,9 @@ import domain.store.discount.DiscountFactory;
 import domain.store.discount.discountDataObjects.CompositeDataObject;
 import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
-import domain.store.purchase.PurchasePolicy;
 
+import domain.store.purchase.PurchasePolicy;
+import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
 import org.json.JSONObject;
@@ -17,8 +17,10 @@ import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.*;
 import utils.messageRelated.Message;
-import utils.messageRelated.MessageState;
 import utils.Pair;
+import utils.messageRelated.ProductReview;
+import utils.messageRelated.Question;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 
@@ -36,16 +38,16 @@ public class Store extends Information{
     private final AppHistory appHistory; //first one is always the store creator //n
     private final Inventory inventory; //<productID,<product, quantity>>
     private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
-    private final ConcurrentHashMap<Integer, Message> storeReviews; //<messageid, message>
-    private final ConcurrentHashMap<Integer, Message> questions;
+    private final ConcurrentHashMap<Integer, StoreReview> storeReviews; //<messageid, message>
+    private final ConcurrentHashMap<Integer, Question> questions;
 
     private String imgUrl;
 //    private DiscountPolicy discountPolicy;
-    private PurchasePolicy purchasePolicy;
+//    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
+    private ArrayList<PurchasePolicy> purchasePolicies;
     private ArrayList<Discount> discounts;
     private DiscountFactory discountFactory;
 
-    Gson gson ;
     public Store(int id, String description, Member creator){
         Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
         this.storeid = id;
@@ -56,10 +58,9 @@ public class Store extends Information{
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
-        this.purchasePolicy = new PurchasePolicy();
+        this.purchasePolicies = new ArrayList<>();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
-        gson = new Gson();
         discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
     }
@@ -74,10 +75,9 @@ public class Store extends Information{
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
-        this.purchasePolicy = new PurchasePolicy();
+        this.purchasePolicies = new ArrayList<>();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
-        gson = new Gson();
         discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
         this.storeName = storeName;
@@ -99,7 +99,7 @@ public class Store extends Information{
 
     public double getStoreRating(){
         double sum = 0.0;
-        for(Message msg: storeReviews.values()){
+        for(StoreReview msg: storeReviews.values()){
             sum+= msg.getRating();
         }
         if(storeReviews.size() == 0)
@@ -108,47 +108,43 @@ public class Store extends Information{
             return sum / storeReviews.size();
     }
 
-    public int addQuestion(Message m)
+    public int addQuestion(Question q)
     {
-        questions.put(m.getMessageId(), m);
+        questions.put(q.getMessageId(), q);
         return creator.getId();
     }
+    public ArrayList<Discount> getDiscounts(){return this.discounts;}
 
     public void answerQuestion(int messageID, String answer) throws Exception {
-        Message msg = questions.get(messageID);
-        if (msg != null && msg.getState() == MessageState.question && !msg.getSeen())
-        {
+        Question msg = questions.get(messageID);
+        if(msg != null)
             msg.sendFeedback(answer);
-            return;
-        }
-        throw new Exception("cant answer question");
+        else
+            throw new Exception("the id given does not belong to any question that was sent to store");
     }
 
-    public synchronized void AddDiscount(DiscountDataObject discountData){
+    public synchronized void addDiscount(DiscountDataObject discountData){
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
             discounts.add(dis);
         }
     }
-    public synchronized void AddDiscount(CompositeDataObject discountData) throws Exception {
+    public synchronized void addDiscount(CompositeDataObject discountData) throws Exception {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
             discounts.add(dis);
         }
     }
 
-    public int addProductReview(Message m) throws Exception
+    public int addProductReview(ProductReview m) throws Exception
     {
         if (storeOrders.containsKey(m.getOrderId()))
         {
             inventory.addProductReview(m);
-            //productReviews.put(m.getMessageId(), m);
             return creator.getId();
         }
         else
-        {
             throw new Exception("cant add review for this product");
-        }
     }
 
     public int getStoreId()
@@ -160,18 +156,9 @@ public class Store extends Information{
         return creator.getId();
     }
 
-    public HashMap<Integer, Message> getStoreReviews() {
-        HashMap<Integer, Message> ans = new HashMap<>();
-        for(int messageId : storeReviews.keySet())
-            ans.put(messageId, storeReviews.get(messageId));
-        for(int messageId : inventory.getProductReviews().keySet())
-            ans.put(messageId,  inventory.getProductReviews().get(messageId));
-        return ans;
-    }
-    public HashMap<Integer, Message> getStoreQuestions() {
-        HashMap<Integer, Message> ans = new HashMap<>();
-        for(int messageId : questions.keySet())
-            ans.put(messageId, questions.get(messageId));
+    public List<StoreReview> getStoreReviews() {
+        List<StoreReview> ans = new ArrayList<>(storeReviews.values());
+        ans.addAll(inventory.getProductReviews().values());
         return ans;
     }
     public List<OrderInfo> getOrdersHistory() {
@@ -206,7 +193,7 @@ public class Store extends Information{
         appHistory.addNode(userinchargeid, node);
     }
 
-    public int addReview(int orderId, Message review) throws Exception {
+    public int addReview(int orderId, StoreReview review) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
             storeReviews.put(review.getMessageId(), review);
@@ -424,28 +411,28 @@ public class Store extends Information{
         return inventory.getProducts();
     }
 
-    public void setStorePolicy(String policy) throws Exception {
-        // i think the policy holds the constraints. or in different words, constraints define the policies.
+    public synchronized void setStorePolicy(String policy) throws Exception {
         try {
-            addPurchaseConstraint(policy);
+            purchasePolicies.add(new PurchasePolicyFactory().createPolicy());
         } catch (Exception e) {
             throw new Exception("Couldn't create a new policy");
         }
     }
 
-    public void addPurchaseConstraint(String constraint)throws Exception {
-        if(!purchasePolicy.createConstraint(constraint)){
-            throw new Exception("Couldn't create the constraint");
-        }
+    public ArrayList<PurchasePolicy> getPurchasePolicies(){
+        return purchasePolicies;
     }
 
-    public HashMap<Integer, Message> getQuestions() { //<messageids, message>
-        HashMap<Integer, Message> questionsToAnswer = new HashMap<>();
+    public List<Message> getAllQuestions(){
+        return new ArrayList<>(questions.values());
+    }
+    public List<Message> getQuestions() {
+        List<Message> questionsToAnswer = new ArrayList<>();
         for (Message message : this.questions.values())
         {
             if (!message.getSeen())
             {
-                questionsToAnswer.put(message.getMessageId(), message);
+                questionsToAnswer.add(message);
             }
         }
         return questionsToAnswer;
@@ -524,8 +511,8 @@ public class Store extends Information{
         json.put("appHistory", getAppJson());
         json.put("inventory", infosToJson(getProducts()));
         json.put("storeOrders", infosToJson(getOrdersHistory()));
-        json.put("reviews", hashMapToJson(getStoreReviews(), "messageId", "review"));
-        json.put("questions", hashMapToJson(getStoreQuestions(), "messageId", "question"));
+        json.put("reviews", infosToJson(getStoreReviews()));
+        json.put("questions", infosToJson(getQuestions()));
         json.put("img", getImgUrl());
         json.put("roles", infosToJson(getRoles()));
         return json;

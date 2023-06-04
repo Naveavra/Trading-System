@@ -1,39 +1,47 @@
 package service;
 
+import database.daos.AdminDao;
+import database.daos.MemberDao;
+import database.dtos.*;
 import domain.store.storeManagement.Store;
 import domain.user.*;
 
-import domain.user.history.PurchaseHistory;
+import domain.user.PurchaseHistory;
+import market.Admin;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
-import utils.messageRelated.Message;
-import utils.messageRelated.Notification;
-import utils.messageRelated.NotificationOpcode;
+import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class UserController {
 
+    private AtomicInteger ids;
     private ConcurrentHashMap<Integer, Guest> guestList;
     private ConcurrentHashMap<Integer, Member> memberList;
-    private ConcurrentHashMap<String, Integer> emailToId;
+    private ConcurrentHashMap<Integer, Admin> admins;
     private StringChecks checks;
-    int messageIds;
-
+    private int messageIds;
+    private ConcurrentHashMap<Integer, Complaint> complaints; //complaintId,message
+    private MemberDao memberDao;
+    private AdminDao adminDao;
 
     public UserController(){
+        ids = new AtomicInteger(2);
         guestList = new ConcurrentHashMap<>();
         memberList = new ConcurrentHashMap<>();
-        emailToId = new ConcurrentHashMap<>();
+        admins = new ConcurrentHashMap<>();
         checks = new StringChecks();
         messageIds = 0;
+        complaints = new ConcurrentHashMap<>();
+        memberDao = new MemberDao();
+        adminDao = new AdminDao();
     }
 
 
@@ -58,19 +66,17 @@ public class UserController {
     }
 
     public Member getMember(String email) throws Exception{
-        if(emailToId.containsKey(email))
-            return memberList.get(emailToId.get(email));
+        for(Member m : memberList.values())
+            if(m.getName().equals(email))
+                return m;
         throw new Exception("no member has this email");
     }
-
-    public Member getInActiveMember(int id) throws Exception{
-        if(memberList.containsKey(id)) {
-            if (!memberList.get(id).getIsConnected()) {
-                return memberList.get(id);
-            }
-            throw new Exception("the id given belongs to an active member");
+    public boolean isEmailTaken(String email){
+        try {
+            return getMember(email) != null || checkIsAdmin(email);
+        }catch (Exception e){
+            return false;
         }
-        throw new Exception("the id given does not belong to any member");
     }
     public Member getActiveMember(int id) throws Exception{
         if(memberList.containsKey(id)) {
@@ -82,7 +88,41 @@ public class UserController {
         throw new Exception("the id given does not belong to any member");
     }
 
-    public synchronized int enterGuest(int id){
+    public Subscriber getSubscriber(int id) throws Exception{
+        if(admins.containsKey(id))
+            return admins.get(id);
+        else if(memberList.containsKey(id))
+            return memberList.get(id);
+        throw new Exception("the id given does not belong to any user");
+    }
+    public Subscriber getSubscriber(String email) throws Exception{
+        for(Member m : memberList.values())
+            if(m.getName().equals(email))
+                return m;
+        for(Admin a : admins.values())
+            if(a.getName().equals(email))
+                return a;
+        throw new Exception("no user has this email");
+    }
+
+    public Subscriber getActiveSubscriber(int id) throws Exception{
+        if(memberList.containsKey(id)) {
+            if (memberList.get(id).getIsConnected()) {
+                return memberList.get(id);
+            }
+            throw new Exception("the id given belongs to an inactive member");
+        }
+        if(admins.containsKey(id)){
+            if (admins.get(id).getIsConnected()) {
+                return admins.get(id);
+            }
+            throw new Exception("the id given belongs to an inactive admin");
+        }
+        throw new Exception("the id given does not belong to any member");
+    }
+
+    public synchronized int enterGuest(){
+        int id = ids.getAndIncrement();
         Guest g = new Guest(id);
         guestList.put(id, g);
         return g.getId();
@@ -104,32 +144,36 @@ public class UserController {
         guestList.remove(id);
     }
 
-    public synchronized void register(int id, String email, String password, String hashedPass, String birthday) throws Exception{
+    public synchronized void register(String email, String password, String hashedPass, String birthday) throws Exception{
+        int id = ids.getAndIncrement();
         checks.checkRegisterInfo(email, password, birthday);
-        if(emailToId.containsKey(email))
+        if(isEmailTaken(email))
                 throw new Exception("the email is already taken");
         Member m = new Member(id, email, hashedPass, birthday);
-        emailToId.put(email, id);
         memberList.put(id, m);
     }
 
     //the answers given are for the security questions, if there are no security questions then put an empty list
     public synchronized int login(String email, String password) throws Exception{
-        Member m = getInActiveMember(emailToId.get(email));
-        m.login(password);
-        return m.getId();
+        Subscriber s = getSubscriber(email);
+        s.login(password);
+        return s.getId();
     }
 
     public LoginInformation getLoginInformation(int memberId, String token) throws Exception{
-        Member m = getMember(memberId);
-        return m.getLoginInformation(token);
+        Subscriber s = getSubscriber(memberId);
+        return s.getLoginInformation(token);
 
     }
 
     //when logging out returns to main menu as guest
     public synchronized void logout(int memberId) throws Exception{
-        Member m = getActiveMember(memberId);
-        m.disconnect();
+        try {
+            Subscriber s = getActiveSubscriber(memberId);
+            s.disconnect();
+        }catch (Exception e){
+            exitGuest(memberId);
+        }
     }
 
     //adding the productId to the user's cart with the given quantity
@@ -168,7 +212,7 @@ public class UserController {
         m.openStore(store);
     }
 
-    public synchronized Message writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
+    public synchronized StoreReview writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
         Member m = getActiveMember(userId);
         int tmp = messageIds;
         messageIds++;
@@ -176,7 +220,7 @@ public class UserController {
 
     }
 
-    public synchronized Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId) throws Exception {
+    public synchronized ProductReview writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId) throws Exception {
         Member m = getActiveMember(userId);
         int tmp = messageIds;
         messageIds += 2;
@@ -184,15 +228,20 @@ public class UserController {
     }
 
 
-    public synchronized Message writeComplaintToMarket(int orderId, int storeId, String comment,int userId)throws Exception{
+    public synchronized void writeComplaintToMarket(int orderId, String comment,int userId)throws Exception{
         Member m = getActiveMember(userId);
         int tmp = messageIds;
         messageIds++;
-        return m.writeComplaint(tmp, orderId, storeId, comment);
+        String notify = "a complaint has been submitted";
+        Notification notification = new Notification(NotificationOpcode.COMPLAINT, notify);
+        for(Admin a : admins.values())
+            a.addNotification(notification);
+        Complaint complaint = m.writeComplaint(tmp, orderId, comment);
+        complaints.put(complaint.getMessageId(), complaint);
     }
 
 
-    public Message sendQuestionToStore(int userId, int storeId, String question) throws Exception {
+    public Question sendQuestionToStore(int userId, int storeId, String question) throws Exception {
         Member m = getActiveMember(userId);
         int tmp = messageIds;
         messageIds++;
@@ -200,38 +249,46 @@ public class UserController {
     }
 
     public synchronized void addNotification(int userId, Notification notification) throws Exception{
-        Member m = getMember(userId);
-        m.addNotification(notification);
+        Subscriber s = getSubscriber(userId);
+        s.addNotification(notification);
     }
     public synchronized void addNotification(String userEmail, Notification notification) throws Exception{
-        Member m = getActiveMember(emailToId.get(userEmail));
-        m.addNotification(notification);
+        Subscriber s = getSubscriber(userEmail);
+        s.addNotification(notification);
     }
 
     public synchronized List<Notification> displayNotifications(int userId) throws Exception{
-        Member m = getActiveMember(userId);
-        return m.displayNotifications();
-    }
-
-
-    public PurchaseHistory getUserPurchaseHistory(int userId, boolean isAdmin) throws Exception{
-        Member m;
-        if(isAdmin)
-            m = getMember(userId);
-        else
-            m = getActiveMember(userId);
-        return m.getUserPurchaseHistory();
+        Subscriber s = getActiveSubscriber(userId);
+        return s.displayNotifications();
     }
 
 
 
-    public synchronized void changeMemberAttributes(int userId, String newEmail, String oldPass, String newPass, String newHashedPass) throws Exception {
+    public PurchaseHistory getUserPurchaseHistory(int userId, int buyerId) throws Exception{
+        if(checkIsAdmin(userId))
+            return getMember(buyerId).getUserPurchaseHistory();
+        return getActiveMember(buyerId).getUserPurchaseHistory();
+    }
+
+
+
+    public synchronized void changeMemberAttributes(int userId, String newEmail, String newBirthday) throws Exception {
         Member m = getActiveMember(userId);
-        if (!newPass.equals("null"))
-            checks.checkPassword(newPass);
-        m.setMemberAttributes(newEmail, oldPass, newHashedPass);
         if (!newEmail.equals("null"))
-            emailToId.put(newEmail, m.getId());
+            checks.checkEmail(newEmail);
+
+        if(!newBirthday.equals("null"))
+            checks.checkBirthday(newBirthday);
+
+        m.setMemberAttributes(newEmail, newBirthday);
+    }
+
+    public void changeMemberPassword(int userId, String oldPass, String newPass, String newHashedPass) throws Exception{
+        Member m = getActiveMember(userId);
+        if (!oldPass.equals("null")) {
+            checks.checkPassword(newPass);
+            m.setMemberPassword(oldPass, newHashedPass);
+        }
     }
 
     //starting the functions connecting to the store
@@ -340,8 +397,8 @@ public class UserController {
     }
 
     public synchronized void checkPermission(int userId, Action action, int storeId) throws Exception {
-        Member m = getActiveMember(userId);
-        m.checkPermission(action, storeId);
+        Subscriber s = getActiveSubscriber(userId);
+        s.checkPermission(action, storeId);
     }
 
     public synchronized  Info getWorkerInformation(int userId, int workerId, int storeId) throws Exception{
@@ -366,17 +423,22 @@ public class UserController {
     }
 
     public synchronized String getUserEmail(int userId) throws Exception {
-        Member m = getMember(userId);
-        return m.getName();
+        Subscriber s = getSubscriber(userId);
+        return s.getName();
     }
 
 
     public String getUserName(int id){
         try {
-            User user = getUser(id);
-            return user.getName();
-        }catch (Exception e){
-            return "illegal id" + id;
+            Subscriber s = getSubscriber(id);
+            return s.getName();
+        }catch (Exception e) {
+            try {
+                User user = getUser(id);
+                return user.getName();
+            } catch (Exception e2) {
+                return "illegal id" + id;
+            }
         }
     }
 
@@ -398,7 +460,6 @@ public class UserController {
                 creatorStoreIds.add(storeId);
         }
         memberList.remove(userToRemove);
-        emailToId.remove(m.getName());
         return creatorStoreIds;
     }
 
@@ -414,5 +475,170 @@ public class UserController {
     public void removeCart(int userId) throws Exception{
         User user = getUser(userId);
         user.emptyCart();
+    }
+
+    //admin functions
+    public Admin getAdmin(int adminId) throws Exception {
+        if(admins.containsKey(adminId))
+                return admins.get(adminId);
+        throw new Exception("the id given does not belong to any admin");
+    }
+    public Admin getActiveAdmin(int adminId) throws Exception {
+        if(admins.containsKey(adminId)) {
+            if (admins.get(adminId).getIsConnected())
+                return admins.get(adminId);
+            throw new Exception("the id given belongs to an inActive admin");
+        }
+        throw new Exception("the id given does not belong to any admin");
+    }
+
+    //check if admin
+    public boolean checkIsAdmin(int adminId){
+        return admins.containsKey(adminId);
+    }
+
+    public boolean checkIsAdmin(String email){
+        for(Admin a : admins.values())
+            if(a.checkEmail(email))
+                return true;
+        return false;
+    }
+
+    private void checkRemoveAdmin() throws Exception{
+        if(admins.size() == 1)
+            throw new Exception("the admin cannot be removed because it is the only admin in the system");
+    }
+    public void closeStorePermanently(int adminId, int storeId) throws Exception{
+        Admin admin = getActiveAdmin(adminId);
+        admin.closeStorePermanently(storeId, -1);
+    }
+    public synchronized Admin addAdmin(int userId, String email, String pass)throws Exception {
+        if (userId != 0)
+            getActiveAdmin(userId);
+        if(checks.checkEmail(email))
+            throw new Exception("the email given does not match the email pattern");
+        checks.checkPassword(pass);
+        Admin a = new Admin(ids.getAndIncrement(), email, pass);
+        admins.put(a.getId(), a);
+        return a;
+    }
+    public Admin addAdmin(Admin a, String pass) {
+        Admin admin = new Admin(a.getId(), a.getName(), pass);
+        admins.put(a.getId(), admin);
+        return admin;
+    }
+
+    public void removeAdmin(int adminId) throws Exception{
+        getActiveAdmin(adminId);
+        checkRemoveAdmin();
+        admins.remove(adminId);
+    }
+
+    public HashMap<Integer, Admin> getAdmins(int adminId) throws Exception{
+        getActiveAdmin(adminId);
+        HashMap<Integer, Admin> list = new HashMap<>();
+        for (int key : admins.keySet())
+            list.put(key, admins.get(key));
+        return list;
+    }
+
+    public List<PurchaseHistory> getUsersPurchaseHistory(int adminId) throws Exception{
+        getActiveAdmin(adminId);
+        List<PurchaseHistory> users = getUsersInformation();
+        return users;
+    }
+
+    private void sendFeedback(int messageId, String ans) throws Exception{
+        Complaint m = complaints.get(messageId);
+        if (m != null)
+            m.sendFeedback(ans);
+        else
+            throw new Exception("message does not found");
+
+    }
+
+    public void answerComplaint(int adminId, int complaintId, String ans) throws Exception{
+        getActiveAdmin(adminId);
+        sendFeedback(complaintId, ans);
+    }
+
+    public void cancelMembership(int adminId, int userToRemove) throws Exception{
+        Admin admin = getActiveAdmin(adminId);
+        admin.cancelMembership(userToRemove);
+    }
+
+    public int getAdminSize() {
+        return admins.size();
+    }
+
+    //database
+
+    //users
+    public void saveMemberState(int userId) throws Exception{
+        Member m = getMember(userId);
+        memberDao.saveMember(m.getDto());
+    }
+    public void updateMemberState(int userId) throws Exception{
+        Member m = getMember(userId);
+        memberDao.updateMember(m.getDto());
+    }
+
+    public MemberDto getMemberDto(int id){
+        MemberDto m = memberDao.getMemberById(id);
+        return m;
+    }
+
+    public List<CartDto> getMemberCartDto(int id){
+        List<CartDto> clist = memberDao.getMemberCart(id);
+        return clist;
+    }
+
+    public List<UserHistoryDto> getMemberUserHistoryDto(int id){
+        List<UserHistoryDto> ulist = memberDao.getMemberHistory(id);
+        return ulist;
+    }
+
+    public List<NotificationDto> getSubscriberNotificationsDto(int id){
+        List<NotificationDto> nlist = memberDao.getMemberNotifications(id);
+        return nlist;
+    }
+
+
+
+    //admins
+    public void saveAdminState(int userId) throws Exception{
+        Admin a = getAdmin(userId);
+        adminDao.saveAdmin(a.getAdminDto());
+        memberDao.saveMember(a.getDto());
+    }
+    public void updateAdminState(int userId) throws Exception{
+        Admin a = getAdmin(userId);
+        adminDao.updateAdmin(a.getAdminDto());
+        memberDao.updateMember(a.getDto());
+    }
+
+    public AdminDto getAdminDto(int id){
+        AdminDto a = adminDao.getAdminById(id);
+        return a;
+    }
+
+    public void saveState() throws Exception{
+        for(Member m : memberList.values())
+            saveMemberState(m.getId());
+        for(Admin a : admins.values())
+            saveAdminState(a.getId());
+
+    }
+
+    public void updateState() throws Exception{
+        for(Member m : memberList.values())
+            updateMemberState(m.getId());
+        for(Admin a : admins.values())
+            updateAdminState(a.getId());
+    }
+
+    public List<Complaint> getComplaints(int userId) throws Exception{
+        getActiveAdmin(userId);
+        return new ArrayList<>(complaints.values());
     }
 }

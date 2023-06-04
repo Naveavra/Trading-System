@@ -26,6 +26,7 @@ public class LogicalDiscountComposite extends AbstractDiscountComposite{
         switch (type){
             case Or -> {
                 for(Discount dis: getDiscounts()){
+                    //TODO MAYBE SPLIT THE PERCENTAGE SO IT WONT DOUBLE IF ALL HANDLES SUCCEED;
                     discountValue += dis.handleDiscount(basket,order);
                 }
             }
@@ -82,6 +83,7 @@ public class LogicalDiscountComposite extends AbstractDiscountComposite{
     public DiscountPredicate getPred() {
         return predicate;
     }
+
 
     @Override
     public void setDecidingRule(xorDecidingRules decidingRule) {
