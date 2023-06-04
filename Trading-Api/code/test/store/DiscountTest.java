@@ -312,7 +312,7 @@ public class DiscountTest {
         assertEquals(expectedPrice2,s1.handleDiscount(or));
 
     }
-    //"אם שווי
+    //"אם שוו
     //הסל גבוה מ 100₪- וגם הסל מכיל לפחות 3 חבילות פסטה, אז יש הנחה של 5%
     //על מוצרי חלב.
     @Test
