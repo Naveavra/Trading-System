@@ -423,10 +423,10 @@ public class Server {
         //admins
         post("api/admin/add", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            int adminId = Integer.parseInt(request.get("adminId").toString());
+            int adminId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
-            String name = request.get("adminEmail").toString();
-            String password = request.get("adminPassword").toString();
+            String name = request.get("email").toString();
+            String password = request.get("password").toString();
             toSparkRes(res, api.addAdmin(adminId, token, name, password));
             return res.body();
         });

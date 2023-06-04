@@ -1,11 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { discountApi } from "../api/discountApi";
 import { ApiError } from "../types/apiTypes";
-import { CompositeDataObject, Discount, PredicateDataObject, emptyCompositeDiscount, emptyPredicate, emptyRegularDiscount } from "../types/systemTypes/Discount";
+import { Discount, PredicateDataObject, emptyCompositeDiscount, emptyPredicate, emptyRegularDiscount } from "../types/systemTypes/Discount";
 import { deleteDiscountParams, postCompositeDicountParams, postRegularDicountParams } from "../types/requestTypes/discountTypes";
 import { CompositeDiscountNode, DiscountNodes, RegularDiscountNode } from "../types/systemTypes/DiscountNodes";
 import { Edge, Node } from "reactflow";
-import { stat } from "fs";
 
 const reducerName = 'discounts';
 

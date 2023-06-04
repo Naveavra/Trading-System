@@ -6,16 +6,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { answerComplaintFormValues } from "../../types/formsTypes";
 import AlertDialog from "../Dialog/AlertDialog";
-import { answerComplaint, clearError } from "../../reducers/adminSlice";
+import { answerComplaint, clearError, getComplaints } from "../../reducers/adminSlice";
 
-const Complaint = () => {
+const ComplaintPage = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const form = useForm<answerComplaintFormValues>();
 
     const params = useParams();
     const complaintId = parseInt(params.id ?? '0');
-    const complaint = useAppSelector((state) => state.admin.complaints).filter((complaint) => { complaint.id == complaintId })[0];
+    const conmplaints = useAppSelector((state) => state.admin.complaints);
+    const complaint = conmplaints.find((complaint) => complaint.complaintId == complaintId);
 
     const userId = useAppSelector((state) => state.auth.userId)
     const isLoading = useAppSelector((state) => state.auth.isLoading);
@@ -24,12 +25,13 @@ const Complaint = () => {
     //maybe take it from params
     const handleOnClose = useCallback(() => {
         navigate(-1);
-        //dispatch(getStore({ userId: userId, storeId: storeId }));
+        dispatch(getComplaints(userId));
     }, []);
     const handleOnSubmit = () => {
         form.setValue('adminId', userId);
         form.setValue('complaintId', complaintId);
         dispatch(answerComplaint(form.getValues()));
+        handleOnClose();
     }
     return (
         <>
@@ -63,7 +65,7 @@ const Complaint = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                {complaint.content ?? "no content"}
+                                {complaint?.content ?? "no content"}
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
@@ -107,4 +109,4 @@ const Complaint = () => {
 
 }
 
-export default Complaint;
+export default ComplaintPage;

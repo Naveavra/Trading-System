@@ -10,7 +10,7 @@ export const adminApi = {
         apiErrorHandlerWrapper(getApiClient().post(`api/admin/logger/${adminId}`, { adminId: adminId })),
 
     appointAdmin: (params: addAdminParams): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().post(`api/admin/appointments`, params)),
+        apiErrorHandlerWrapper(getApiClient().post(`api/admin/add`, params)),
 
     getComplaints: (adminId: number): Promise<ApiResponseListData<Complaint>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/admin/complaints/${adminId}`, { adminId: adminId })),

@@ -25,7 +25,7 @@ const CompositeScreen = () => {
 
     const handleRegular = () => {
         console.log('regular');
-        navigate('addNewComposite');
+        navigate('addNewRegular');
     }
     const handleComosite = () => {
         console.log('composite');

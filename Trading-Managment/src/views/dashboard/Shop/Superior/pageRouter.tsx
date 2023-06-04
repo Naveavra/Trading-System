@@ -11,5 +11,6 @@ export const SuperiorPagesShopRoutes =
         <Route path="conditionalDiscount" element={<CompositeDiscount first={true} />} />
         <Route path="conditionalDiscount/leafs" element={<CompositeScreen />} />
         <Route path="conditionalDiscount/leafs/addNewComposite" element={<CompositeDiscount first={false} />} />
+        <Route path="conditionalDiscount/leafs/addNewRegular" element={<MainScreen />} />
     </Route>
     ;
