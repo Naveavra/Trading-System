@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import utils.Pair;
 import utils.infoRelated.Info;
 import utils.infoRelated.ProductInfo;
+import utils.messageRelated.Message;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,6 +40,9 @@ public class StoreDto {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
     private List<AppointmentDto> appointments;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<StoreReviewsDto> storeReviews;
 
     public StoreDto(){
 
@@ -79,10 +83,26 @@ public class StoreDto {
 
     public void setInventory(List<ProductInfo> products) {
         List<InventoryDto> inventoryDtos = new ArrayList<>();
-        for (ProductInfo product : products)
-            inventoryDtos.add(new InventoryDto(this, product.getId(), product.getCategories().toString(), product.getQuantity(), product.name,
-                    product.description, product.getPrice(), product.getImg()));
+        for (ProductInfo product : products) {
+            InventoryDto inventoryDto = new InventoryDto(this, product.getId(), product.getQuantity(), product.name,
+                    product.description, product.getPrice(), product.getImg());
+            inventoryDto.setCategory(product.getCategories());
+            inventoryDtos.add(inventoryDto);
+        }
+
         this.inventoryDtos = inventoryDtos;
+    }
+
+    public List<StoreReviewsDto> getStoreReviews(){
+        return storeReviews;
+    }
+
+    public void setStoreReviews(List<Message> reviews) {
+        List<StoreReviewsDto> ans = new ArrayList<>();
+        for (Message message : reviews)
+            ans.add(new StoreReviewsDto(this, message.getMessageId(), message.getReviewer().getId(), message.getContent(), message.getRating(),
+                    message.getOrderId(), message.getSeen()));
+        this.storeReviews = ans;
     }
     public List<RoleDto> getRoles() {
         return roles;
