@@ -4,11 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="" />
+    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Complaint.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/ProductReview.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Question.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/StoreReview.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/StoreDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/StoreDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/ProductInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/ProductInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/MessageState.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/domain/user/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/MemberTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/work1.iml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
@@ -43,43 +74,19 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.All in work1">
+  <component name="RunManager" selected="JUnit.test in work1">
+    <configuration name="AcceptanceTests in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/AcceptanceTests" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="All in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <option name="PACKAGE_NAME" value="" />
       <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DiscountTest.tenPercentDiscountOver200" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="store.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="store" />
-      <option name="MAIN_CLASS_NAME" value="store.DiscountTest" />
-      <option name="METHOD_NAME" value="tenPercentDiscountOver200" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DiscountTest.xorLogicalCompositeTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="store.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="store" />
-      <option name="MAIN_CLASS_NAME" value="store.DiscountTest" />
-      <option name="METHOD_NAME" value="xorLogicalCompositeTest" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -108,13 +115,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/test" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.test in work1" />
+        <item itemvalue="JUnit.AcceptanceTests in work1" />
         <item itemvalue="JUnit.All in work1" />
         <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
         <item itemvalue="JUnit.junit in code" />
-        <item itemvalue="JUnit.DiscountTest.xorLogicalCompositeTest" />
-        <item itemvalue="JUnit.DiscountTest.tenPercentDiscountOver200" />
       </list>
     </recent_temporary>
   </component>
@@ -128,8 +143,16 @@
       <updated>1685868571060</updated>
       <workItem from="1685868574295" duration="140000" />
       <workItem from="1685868729427" duration="1858000" />
-      <workItem from="1685878244012" duration="1121000" />
+      <workItem from="1685878244012" duration="10797000" />
     </task>
+    <task id="LOCAL-00001" summary="adding jdk">
+      <created>1685879507188</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1685879507188</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -145,6 +168,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="adding jdk" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding jdk" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
