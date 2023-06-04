@@ -38,6 +38,8 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(UserHistoryDto.class);
                 configuration.addAnnotatedClass(ReceiptDto.class);
                 configuration.addAnnotatedClass(StoreDto.class);
+                configuration.addAnnotatedClass(InventoryDto.class);
+
                 configuration.addAnnotatedClass(RoleDto.class);
                 configuration.addAnnotatedClass(PermissionDto.class);
                 configuration.addAnnotatedClass(AppointmentDto.class);

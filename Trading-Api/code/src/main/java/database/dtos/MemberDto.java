@@ -82,6 +82,7 @@ public class MemberDto {
             StoreDto storeDto = new StoreDto(this, s.getStoreId(), s.getName(), s.getStoreDescription(), s.getImgUrl());
             storeDtos.add(storeDto);
             storeDto.setRoles(s.getAppHistory());
+            storeDto.setInventory(s.getProducts());
         }
         this.stores = storeDtos;
     }

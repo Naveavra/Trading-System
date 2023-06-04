@@ -1,14 +1,20 @@
 package database.dtos;
 
+import domain.store.product.Product;
+import domain.store.storeManagement.Store;
 import domain.store.storeManagement.AppHistory;
 import jakarta.persistence.*;
 import utils.Pair;
 import utils.infoRelated.Info;
+import utils.infoRelated.ProductInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -25,6 +31,8 @@ public class StoreDto {
     @ManyToOne
     @JoinColumn(name = "creatorId", foreignKey = @ForeignKey(name = "creatorId"), referencedColumnName = "id")
     private MemberDto memberDto;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<InventoryDto> inventoryDtos;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
     private List<RoleDto> roles;
@@ -65,6 +73,17 @@ public class StoreDto {
 
     public void setDescription(String desc){this.description = desc;}
 
+    public List<InventoryDto> getStoreProducts(){
+        return inventoryDtos;
+    }
+
+    public void setInventory(List<ProductInfo> products) {
+        List<InventoryDto> inventoryDtos = new ArrayList<>();
+        for (ProductInfo product : products)
+            inventoryDtos.add(new InventoryDto(this, product.getId(), product.getCategories().toString(), product.getQuantity(), product.name,
+                    product.description, product.getPrice(), product.getImg()));
+        this.inventoryDtos = inventoryDtos;
+    }
     public List<RoleDto> getRoles() {
         return roles;
     }
@@ -95,5 +114,6 @@ public class StoreDto {
         }
         roles = roleDtos;
         appointments = appointmentDtos;
+
     }
 }
