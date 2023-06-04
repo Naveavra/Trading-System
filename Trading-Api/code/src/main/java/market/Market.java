@@ -856,7 +856,7 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             String hashedPass = userAuth.hashPassword(email, pass);
-            Admin admin = userController.addAdmin(userId, email, hashedPass);
+            Admin admin = userController.addAdmin(userId, email, hashedPass , pass);
             admin.addControllers(userController, marketController);
             return logAndRes(Event.LogStatus.Success, "admin added new admin successfully",
                     StringChecks.curDayString(), "admin"+userId,

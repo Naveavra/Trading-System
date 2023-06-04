@@ -512,15 +512,15 @@ public class UserController {
         Admin admin = getActiveAdmin(adminId);
         admin.closeStorePermanently(storeId, -1);
     }
-    public synchronized Admin addAdmin(int userId, String email, String pass)throws Exception {
+    public synchronized Admin addAdmin(int userId, String email, String hashPass ,String pass)throws Exception {
         if(isEmailTaken(email))
             throw new Exception("the email is already taken");
         if (userId != 0)
             getActiveAdmin(userId);
-        if(checks.checkEmail(email))
+        if(!checks.checkEmail(email))
             throw new Exception("the email given does not match the email pattern");
         checks.checkPassword(pass);
-        Admin a = new Admin(ids.getAndIncrement(), email, pass);
+        Admin a = new Admin(ids.getAndIncrement(), email, hashPass);
         admins.put(a.getId(), a);
         return a;
     }

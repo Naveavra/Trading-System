@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Bar4 from "../../../components/Bars/Navbar/NavBar4";
 import { getLogger } from "../../../reducers/adminSlice";
 import PasswordIcon from '@mui/icons-material/Password';
+import { getClientData, getNotifications } from "../../../reducers/authSlice";
 
 
 const Admin = () => {
@@ -18,8 +19,10 @@ const Admin = () => {
 
 
     const userId = useAppSelector((state) => state.auth.userId);
-    const email = useAppSelector((state) => state.auth.userName);
-    const name = email.split('@')[0];
+    const token = useAppSelector((state) => state.auth.token) ?? "";
+    const userName = useAppSelector((state) => state.auth.userName);
+    const isAdmin = useAppSelector((state) => state.auth.isAdmin);
+    const name = userName.split('@')[0];
     const isLoading = useAppSelector((state) => state.auth.isLoading);
 
     const logs = useAppSelector((state) => state.admin.logRecords) ?? [{ userName: "", id: 0, content: "", status: "" }];
@@ -43,7 +46,55 @@ const Admin = () => {
         // dispatch(setWhatchedCustomer(id as number));
         // navigate(`/dashboard/customers/${id}`);
     };
+    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
+    // Send a ping to the server
+    // const sendPing = () => {
+    //     if (userId != 0) {
+    //         axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
+    //             .then(response => {
+    //                 // Do something with the response if necessary
+    //             })
+    //             .catch(error => {
+    //                 // Handle the error if necessary
+    //             });
+    //         // dispatch(ping(userId));
+    //     }
+    // }
+    const fetchNotification = async () => {
+        try {
+            console.log("trying get notification")
+            if (token != "" && userName != 'guest') {
+
+                const response = await dispatch(getNotifications({ userId: userId, token: token }));
+
+                // if (response.payload?.opcode >= 0 && response.payload?.opcode <= 6) {
+                //     dispatch(getStore({ userId: userId, storeId: storeId }));
+                // }
+                // else if (!isAdmin && ((response.payload?.opcode >= 7 && response.payload?.opcode <= 12) || response.payload?.opcode == 14 || response.payload?.opcode == 15)) {
+                //     dispatch(getClientData({ userId: userId }));
+                // }
+                if (isAdmin && (response.payload?.opcode == 14 || response.payload?.opcode == 13)) {
+                    dispatch(getClientData({ userId: userId }));
+                }
+
+                fetchNotification();
+            }
+        } catch (error) {
+            console.error('Error fetching notification:', error);
+        }
+    };
+    useEffect(() => {
+        // Call the sendPing function every 2 seconds
+        //const pingInterval = setInterval(sendPing, PING_INTERVAL);
+
+        //---------------------notifications---------------------
+
+        fetchNotification();
+        return () => {
+            //clearInterval(pingInterval)
+        };
+    }, [userId, dispatch])
 
     //log table
     const columns: GridColDef[] = useMemo(() => {
@@ -53,7 +104,7 @@ const Admin = () => {
             { field: 'userName', headerName: 'user name', width: 330, editable: false, align: 'center', headerAlign: 'center' },
 
             { field: 'time', headerName: 'time', width: 130, editable: false, align: 'center', headerAlign: 'center' },
-            { field: 'content', headerName: 'content', width: 200, editable: false, align: 'center', headerAlign: 'center' },
+            { field: 'content', headerName: 'content', width: 350, editable: false, align: 'center', headerAlign: 'center' },
             {
                 field: 'status',
                 headerName: 'status',
@@ -118,7 +169,7 @@ const Admin = () => {
                             name : {name}
                         </Typography>
                         <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
-                            email : {email}
+                            email : {userName}
                         </Typography>
                     </CardContent>
                     <CardActions sx={{ marginTop: 10 }}>
@@ -142,12 +193,6 @@ const Admin = () => {
                 <DataGrid
                     rows={logs}
                     columns={columns}
-
-                    pagination
-
-                    paginationMode="server"
-
-
                     components={{
                         Toolbar: EditToolbar,
                     }}
@@ -161,8 +206,6 @@ const Admin = () => {
     );
 };
 function EditToolbar() {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
     return (
         <div>
             <GridToolbarContainer >
@@ -175,130 +218,3 @@ function EditToolbar() {
 }
 
 export default Admin;
-{/* <Grid
-                    spacing={2}
-                    container
-                    component="form"
-                    onSubmit={handleOnSubmit}
-                    sx={{ width: '30%', ml: 2, mt: 5 }}
-                >
-                    <Grid item xs={12}>
-                        <TextField
-                            name="email"
-                            type="text"
-                            fullWidth
-                            label="name"
-                            sx={{ mt: 1, mb: 1 }}
-                            inputProps={{
-                                ...form.register('email', {
-                                    required: {
-                                        value: true,
-                                        message: "name is required"
-                                    }
-                                })
-                            }}
-                            error={!!form.formState.errors['email'] ?? false}
-                            helperText={form.formState.errors['email']?.message ?? undefined}
-                            onChange={(e) => {
-                                validateEmail(e.target.value)
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            name="password"
-                            type="password"
-                            fullWidth
-                            label="password"
-                            sx={{ mt: 1, mb: 1 }}
-                            inputProps={{
-                                ...form.register('password', {
-                                    required: {
-                                        value: true,
-                                        message: "msg is mendatory"
-                                    }
-                                })
-                            }}
-                            error={!!form.formState.errors['password'] ?? false}
-                            helperText={form.formState.errors['password']?.message ?? undefined}
-                            onChange={(e) => {
-                                validatePassword(e.target.value)
-                            }}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <LoadingButton
-                            disabled={newPasswordError != ""}
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2, width: '50%', ml: 19 }}
-                            loading={isLoading}
-                        >
-                            add admin
-                        </LoadingButton>
-                    </Grid>
-                </Grid >
-                <Grid
-                    spacing={2}
-                    container
-                    component="form"
-                    onSubmit={handleOnSubmit}
-                    sx={{ width: '30%', ml: 10, mt: 5 }}
-                >
-                    <Grid item xs={12}>
-                        <TextField
-                            name="email"
-                            type="text"
-                            fullWidth
-                            label="name"
-                            sx={{ mt: 1, mb: 1 }}
-                            inputProps={{
-                                ...form.register('userName', {
-                                    required: {
-                                        value: true,
-                                        message: "name is required"
-                                    }
-                                })
-                            }}
-                            error={!!form.formState.errors['userName'] ?? false}
-                            helperText={form.formState.errors['userName']?.message ?? undefined}
-                            onChange={(e) => {
-                                validateEmail(e.target.value)
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            name="message"
-                            type="text"
-                            fullWidth
-                            label="message"
-                            sx={{ mt: 1, mb: 1 }}
-                            inputProps={{
-                                ...form.register('message', {
-                                    required: {
-                                        value: true,
-                                        message: "msg is mendatory"
-                                    }
-                                })
-                            }}
-                            error={!!form.formState.errors['message'] ?? false}
-                            helperText={form.formState.errors['message']?.message ?? undefined}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <LoadingButton
-                            disabled={emailError != ""}
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2, width: '50%', ml: 19 }}
-                            loading={isLoading}
-                        >
-                            send msg
-                        </LoadingButton>
-                    </Grid>
-                </Grid > */}
