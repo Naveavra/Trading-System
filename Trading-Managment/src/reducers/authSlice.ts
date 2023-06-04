@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ApiError, ApiListData, ApiResponseListData } from "../types/apiTypes";
-import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData, getClientResponseData, getClientNotifications } from "../types/responseTypes/authTypes";
+import { ApiError } from "../types/apiTypes";
+import { TokenResponseBody, getClientResponseData } from "../types/responseTypes/authTypes";
 import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
@@ -8,7 +8,7 @@ import { RegisterPostData, changePasswordParams, complaintParams, editProfilePar
 import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
 import { MyNotification } from "../types/systemTypes/Notification";
-import { Order } from "../types/systemTypes/Order";
+import { Order, emptyOrder } from "../types/systemTypes/Order";
 
 interface AuthState {
     token: string;
@@ -31,6 +31,7 @@ interface AuthState {
     isLogoutLoading: boolean;
     opcode: number;
     purchaseHistory: Order[];
+    whatchedOrder: Order;
 }
 const reducrName = 'auth';
 const initialState: AuthState = {
@@ -60,6 +61,7 @@ const initialState: AuthState = {
     isLogoutLoading: false,
     opcode: 0,
     purchaseHistory: [],
+    whatchedOrder: emptyOrder,
 };
 
 export const login = createAsyncThunk<
@@ -208,6 +210,10 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         clearNotifications: (state) => {
             state.notifications = [];
         },
+        setWatchedOrder: (state, action) => {
+            debugger;
+            state.whatchedOrder = state.purchaseHistory?.find((order) => order.orderId === action.payload) ?? emptyOrder;
+        },
 
     },
     extraReducers: builder => {
@@ -306,7 +312,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         // get notifications
         builder.addCase(getNotifications.pending, (state) => {
-            state.isLoading = true;
             state.error = null;
         });
         builder.addCase(getNotifications.fulfilled, (state, { payload }) => {
@@ -401,5 +406,5 @@ const { reducer: authReducer, actions: authActions } = createSlice({
     }
 });
 // Action creators are generated for each case reducer function
-export const { clearAuthError, clearAuthMsg, clearNotifications } = authActions;
+export const { clearAuthError, clearAuthMsg, clearNotifications, setWatchedOrder } = authActions;
 export default authReducer;

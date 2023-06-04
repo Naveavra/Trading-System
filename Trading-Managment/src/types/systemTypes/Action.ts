@@ -24,6 +24,12 @@ export enum Action {
 
     closeStore = "close store", // creator //todo
     reopenStore = "reopen store", // creator //todo
+
+    //admin
+    closeStorePerminently = 'close store perminently',
+    addAdmin = 'add admin',
+    quit = 'quit',
+    seeComplaints = 'see complaints',
 }
 export const actionOrder = {
     [Action.addProduct]: 1,

@@ -17,6 +17,7 @@ const ShopsBar: React.FC = () => {
                     flexDirection: 'row',
                     overflowX: 'auto',
                 }}
+                key={'shop-list'}
             >
                 {stores_names.map((shop) => (
                     <a
