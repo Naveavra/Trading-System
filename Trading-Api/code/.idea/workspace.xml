@@ -37,13 +37,13 @@
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "project.structure.last.edited": "SDKs",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.UserControllerTest.checkDatabase">
+  <component name="RunManager" selected="JUnit.All in work1">
     <configuration name="All in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <option name="PACKAGE_NAME" value="" />
@@ -110,8 +110,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
         <item itemvalue="JUnit.All in work1" />
+        <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
         <item itemvalue="JUnit.junit in code" />
         <item itemvalue="JUnit.DiscountTest.xorLogicalCompositeTest" />
         <item itemvalue="JUnit.DiscountTest.tenPercentDiscountOver200" />
@@ -128,7 +128,7 @@
       <updated>1685868571060</updated>
       <workItem from="1685868574295" duration="140000" />
       <workItem from="1685868729427" duration="1858000" />
-      <workItem from="1685878244012" duration="967000" />
+      <workItem from="1685878244012" duration="1121000" />
     </task>
     <servers />
   </component>
