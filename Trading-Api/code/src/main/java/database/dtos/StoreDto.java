@@ -1,6 +1,8 @@
 package database.dtos;
 
+import domain.store.discount.Discount;
 import domain.store.product.Product;
+import domain.store.purchase.PurchasePolicy;
 import domain.store.storeManagement.Store;
 import domain.store.storeManagement.AppHistory;
 import jakarta.persistence.*;
@@ -43,6 +45,11 @@ public class StoreDto {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
     private List<StoreReviewsDto> storeReviews;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<DicountDto> dicountDtos;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<ConstraintDto> constraints;
+
 
     public StoreDto(){
 
@@ -97,6 +104,16 @@ public class StoreDto {
         return storeReviews;
     }
 
+    public void setStoreConstraints(List<PurchasePolicy> constraints) {
+        List<ConstraintDto> ans = new ArrayList<>();
+        for (PurchasePolicy policy : constraints)
+            ans.add(new ConstraintDto(this, policy.getId(), policy.getContent()));
+        this.constraints = ans;
+    }
+    public List<ConstraintDto> getStoreConstraints(){
+        return constraints;
+    }
+
     public void setStoreReviews(List<Message> reviews) {
         List<StoreReviewsDto> ans = new ArrayList<>();
         for (Message message : reviews)
@@ -104,6 +121,20 @@ public class StoreDto {
                     message.getOrderId(), message.getSeen()));
         this.storeReviews = ans;
     }
+
+    public List<DicountDto> getDicountDtos() {
+        return dicountDtos;
+    }
+    public void setStoreDiscounts(List<Discount> discounts)
+    {
+        List<DicountDto> ans = new ArrayList<>();
+        for (Discount di : discounts)
+        {
+            ans.add(new DicountDto(this, di.getDiscountID(), di.getContent()));
+        }
+        this.dicountDtos = ans;
+    }
+
     public List<RoleDto> getRoles() {
         return roles;
     }

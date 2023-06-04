@@ -108,6 +108,7 @@ public class Store extends Information{
         questions.put(m.getMessageId(), m);
         return creator.getId();
     }
+    public ArrayList<Discount> getDiscounts(){return this.discounts;}
 
     public void answerQuestion(int messageID, String answer) throws Exception {
         Message msg = questions.get(messageID);

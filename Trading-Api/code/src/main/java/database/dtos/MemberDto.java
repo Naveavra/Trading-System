@@ -85,6 +85,8 @@ public class MemberDto {
             storeDto.setRoles(s.getAppHistory());
             storeDto.setInventory(s.getProducts());
             storeDto.setStoreReviews(new ArrayList<>(s.getStoreReviews().values()));
+            storeDto.setStoreDiscounts(s.getDiscounts());
+            storeDto.setStoreConstraints(s.getPurchasePolicies());
         }
         this.stores = storeDtos;
     }

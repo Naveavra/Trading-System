@@ -22,4 +22,7 @@ public interface Discount {
     public DiscountPredicate getPred();
     public void setOperations(GetProductOperation getP, GetCategoriesOperation getCat);
     public void addDiscount(Discount dis);
+
+    public String getContent();
+    public int getDiscountID();
 }
