@@ -950,7 +950,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> cancelMembership(int adminId, String token, int userToRemove) {
+    public Response<String> cancelMembership(int adminId, String token, String userToRemove) {
         try {
             userAuth.checkUser(adminId, token);
             userController.cancelMembership(adminId, userToRemove);

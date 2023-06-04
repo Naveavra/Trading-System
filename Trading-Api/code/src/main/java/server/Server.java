@@ -240,6 +240,17 @@ public class Server {
             return res.body();
         });
 
+        post("api/stores/:storeId/answerQuestion", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int questionId = Integer.parseInt(request.get("questionId").toString());
+            String answer = request.get("answer").toString();
+            toSparkRes(res, api.answerQuestion(userId, token, storeId, questionId, answer));
+            return res.body();
+        });
+
         //products
         get("api/products", (req, res) -> {
             toSparkRes(res, api.getProducts());
@@ -272,8 +283,7 @@ public class Server {
             return res.body();
         });
         //patch
-        patch("api/products", (req, res) ->
-                {
+        patch("api/products", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("id").toString());
             String token = req.headers("Authorization");
@@ -287,22 +297,8 @@ public class Server {
             }
             String name = request.getString("name");
             String description = request.get("description").toString();
-            int price =0;
-            String strPrice = request.get("price").toString();
-            if(!strPrice.equals("null")){
-                price  = Integer.parseInt(strPrice);
-            }
-            else{
-                price =-1;
-            }
-            int quantity = 0 ;
-            String strQuantity = request.get("quantity").toString();
-            if(!strQuantity.equals(("null"))){
-                quantity =  Integer.parseInt(strQuantity);
-            }
-            else{
-                quantity =-1;
-            }
+            int price = Integer.parseInt(request.get("price").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
             String img = request.get("img").toString();
             toSparkRes(res, api.updateProduct(userId, token, storeId, productId, categories, name, description, price, quantity, img));
             return res.body();
@@ -423,17 +419,35 @@ public class Server {
         //admins
         post("api/admin/add", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            int adminId = Integer.parseInt(request.get("adminId").toString());
+            int adminId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
-            String name = request.get("adminEmail").toString();
-            String password = request.get("adminPassword").toString();
+            String name = request.get("email").toString();
+            String password = request.get("password").toString();
             toSparkRes(res, api.addAdmin(adminId, token, name, password));
+            return res.body();
+        });
+
+        post("api/admin/remove", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.removeAdmin(adminId, token));
+            return res.body();
+        });
+
+        post("api/auth/notifications/complaint", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            int orderId = Integer.parseInt(request.get("orderId").toString());
+            String content = request.get("complaint").toString();
+            toSparkRes(res, api.sendComplaint(userId, token, orderId, content));
             return res.body();
         });
 
         post("api/admin/complaints/answer", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            int adminId = Integer.parseInt(request.get("adminId").toString());
+            int adminId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             int complaintId = Integer.parseInt(request.get("complaintId").toString());
             String answer = request.get("answer").toString();
@@ -443,9 +457,18 @@ public class Server {
 
         post("api/admin/complaints/:adminId", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            int adminId = Integer.parseInt(request.get("adminId").toString());
+            int adminId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             toSparkRes(res, api.getComplaints(adminId, token));
+            return res.body();
+        });
+
+        post("api/admin/cancelMembership", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            String name = request.get("name").toString();
+            toSparkRes(res, api.cancelMembership(adminId, token, name ));
             return res.body();
         });
     }

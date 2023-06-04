@@ -354,7 +354,7 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> cancelMembership(int adminId, String token, int userToRemove)
+    public Pair<Boolean, JSONObject> cancelMembership(int adminId, String token, String userToRemove)
     {
         Response<String> res = market.cancelMembership(adminId, token, userToRemove);
         return fromResToPair(res);

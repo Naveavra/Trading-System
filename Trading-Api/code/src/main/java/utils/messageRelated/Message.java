@@ -54,18 +54,4 @@ public abstract class Message extends Information {
         json.put("seen", getSeen());
         return json;
     }
-//    {
-//        JSONObject json = new JSONObject();
-//        json.put("messageId", getMessageId());
-//        json.put("opcode", opcode.ordinal());
-//        json.put("content", getContent());
-//        json.put("rating", getRating());
-//        json.put("state", getMessageState());
-//        json.put("orderId", getOrderId());
-//        json.put("storeId", getStoreId());
-//        json.put("productId", getProductId());
-//        json.put("gotFeedback", gotFeedback());
-//        json.put("seen", getSeen());
-//        return json;
-//    }
 }
