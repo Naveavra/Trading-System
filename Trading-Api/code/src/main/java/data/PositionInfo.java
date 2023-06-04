@@ -19,6 +19,6 @@ public class PositionInfo {
         this.email = info.getEmail();
         this.birthday = info.getBirthday();
         this.age = info.getAge();
-        this.managerActions = info.getManagerActions();
+        this.managerActions = info.getActions();
     }
 }
