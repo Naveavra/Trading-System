@@ -637,7 +637,7 @@ public class Market implements MarketInterface {
     public Response<String> addPurchaseConstraint(int userId, String token, int storeId, String constraint) {
         try {
             userAuth.checkUser(userId, token);
-            marketController.addPurchaseConstraint(storeId, constraint);
+//            marketController.addPurchaseConstraint(storeId, constraint);
             return logAndRes(Event.LogStatus.Success, "user add purchase constraint successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user add purchase constraint successfully", null, null);

@@ -14,6 +14,7 @@ public abstract class AbstractDiscountComposite implements Discount {
     public int discountID;
     public DiscountPredicate predicate; //used for logical Xor
     private ArrayList<Discount> discounts;
+    private String content;
     private int storeId;
     private  GetCategoriesOperation getCategoriesOp;
     private GetProductOperation getProductOp;
@@ -59,4 +60,10 @@ public abstract class AbstractDiscountComposite implements Discount {
     public abstract void setDecidingRule(LogicalDiscountComposite.xorDecidingRules rule);
     public abstract LogicalDiscountComposite.xorDecidingRules  getDecidingRule();
 
+    @Override
+    public String getContent(){return this.content;}
+    @Override
+    public int getDiscountID() {
+        return this.discountID;
+    }
 }

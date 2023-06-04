@@ -4,21 +4,23 @@ import utils.orderRelated.Order;
 import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
 
-public class UserPolicy implements PurchasePolicy{
-    public int storeID;
+public class UserPolicy extends PurchasePolicy{
+
     public int ageLimit;
     public limiters limiter;
     public int productID;
     public String category;
-    public UserPolicy(int storeID,int ageLimit,int productID,limiters limiter){
+    public UserPolicy(int policyID,int storeID,int ageLimit,int productID,limiters limiter){
         this.storeID = storeID;
+        this.policyID = policyID;
         this.ageLimit = ageLimit;
         this.limiter = limiter;
         this.productID = productID;
         this.category = "";
     }
-    public UserPolicy(int storeID,int ageLimit,String category,limiters limiter){
+    public UserPolicy(int policyID,int storeID,int ageLimit,String category,limiters limiter){
         this.storeID = storeID;
+        this.policyID = policyID;
         this.ageLimit = ageLimit;
         this.limiter = limiter;
         this.productID = -1;
@@ -32,12 +34,14 @@ public class UserPolicy implements PurchasePolicy{
         }
         for(ProductInfo pI : order.getShoppingCart().getBasket(storeID).getContent()){
             if(pI.id == productID || pI.getCategories().contains(category)){
-                return switch (limiter){
+                return handleNext(switch (limiter){
                     case Max -> age <= ageLimit;
                     case Min -> age >= ageLimit;
-                };
+                },order);
             }
         }
-        return false;
+        return handleNext(false,order);
     }
+
+
 }

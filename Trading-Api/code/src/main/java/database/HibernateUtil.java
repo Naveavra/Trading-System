@@ -47,6 +47,10 @@ public class HibernateUtil {
 
                 configuration.addAnnotatedClass(CategoryDto.class);
                 configuration.addAnnotatedClass(StoreReviewsDto.class);
+                configuration.addAnnotatedClass(ConstraintDto.class);
+                configuration.addAnnotatedClass(DicountDto.class);
+
+
 
 
 

@@ -10,6 +10,7 @@ public abstract class AbstractDiscount implements Discount{
 
     //same for all discounts
     public int discountID;
+    public String content;
     private int storeId;
     private double percentage;
     public DiscountPredicate predicate = null; //if not null it's a conditional discount.
@@ -50,6 +51,12 @@ public abstract class AbstractDiscount implements Discount{
     @Override
     public void addDiscount(Discount dis){}
 
+    @Override
+    public String getContent(){return this.content;}
+    @Override
+    public int getDiscountID() {
+        return this.discountID;
+    }
     // Getters
     public DiscountPredicate getPred(){
         return predicate;
@@ -72,6 +79,7 @@ public abstract class AbstractDiscount implements Discount{
     public String getDiscountedCategory() {
         return discountedCategory;
     }
+
 
 //    public void setPercentage(double percentage) {
 //        this.percentage = percentage;

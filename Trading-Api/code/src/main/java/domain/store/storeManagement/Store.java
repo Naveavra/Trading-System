@@ -8,6 +8,8 @@ import domain.store.discount.discountDataObjects.CompositeDataObject;
 import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
 
+import domain.store.purchase.PurchasePolicy;
+import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
 import org.json.JSONObject;
@@ -41,7 +43,8 @@ public class Store extends Information{
 
     private String imgUrl;
 //    private DiscountPolicy discountPolicy;
-    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
+//    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
+    private ArrayList<PurchasePolicy> purchasePolicies;
     private ArrayList<Discount> discounts;
     private DiscountFactory discountFactory;
 
@@ -55,7 +58,7 @@ public class Store extends Information{
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
-        this.purchasePolicy = new domain.store.purchase.PurchasePolicy2Delete();
+        this.purchasePolicies = new ArrayList<>();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
         discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
@@ -72,7 +75,7 @@ public class Store extends Information{
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
-        this.purchasePolicy = new domain.store.purchase.PurchasePolicy2Delete();
+        this.purchasePolicies = new ArrayList<>();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
         discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
@@ -110,6 +113,7 @@ public class Store extends Information{
         questions.put(q.getMessageId(), q);
         return creator.getId();
     }
+    public ArrayList<Discount> getDiscounts(){return this.discounts;}
 
     public void answerQuestion(int messageID, String answer) throws Exception {
         Question msg = questions.get(messageID);
@@ -407,19 +411,16 @@ public class Store extends Information{
         return inventory.getProducts();
     }
 
-    public void setStorePolicy(String policy) throws Exception {
-        // i think the policy holds the constraints. or in different words, constraints define the policies.
+    public synchronized void setStorePolicy(String policy) throws Exception {
         try {
-            addPurchaseConstraint(policy);
+            purchasePolicies.add(new PurchasePolicyFactory().createPolicy());
         } catch (Exception e) {
             throw new Exception("Couldn't create a new policy");
         }
     }
 
-    public void addPurchaseConstraint(String constraint)throws Exception {
-        if(!purchasePolicy.createConstraint(constraint)){
-            throw new Exception("Couldn't create the constraint");
-        }
+    public ArrayList<PurchasePolicy> getPurchasePolicies(){
+        return purchasePolicies;
     }
 
     public List<Message> getAllQuestions(){
