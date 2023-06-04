@@ -3,10 +3,7 @@ package domain.store.purchase;
 import utils.orderRelated.Order;
 import utils.infoRelated.ProductInfo;
 
-public class CategoryPolicy implements PurchasePolicy{
-    public int policyID;
-    public String content;
-    public int storeID;
+public class CategoryPolicy extends PurchasePolicy{
     public String category;
     public int amount;
     public limiters limiter;
@@ -25,10 +22,10 @@ public class CategoryPolicy implements PurchasePolicy{
                 count += pI.getQuantity(); //counts how much items that belongs to "category" appears in the order
             }
         }
-        return switch (limiter){
+        return handleNext(switch (limiter){
             case Max -> handleMax(count);
             case Min -> handleMin(count);
-        };
+        },order);
     }
 
     public boolean handleMax(int numFromCategory){
@@ -39,15 +36,5 @@ public class CategoryPolicy implements PurchasePolicy{
         return numFromCategory <= amount;
     }
 
-    @Override
-    public String getContent(){
-        return this.content;
-    }
-    @Override
-    public int getId(){
-        return this.policyID;
-    }
-    public void setContent(String content){
-        this.content = content;
-    }
+
 }

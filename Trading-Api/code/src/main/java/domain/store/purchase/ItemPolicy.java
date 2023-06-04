@@ -9,10 +9,7 @@ import static domain.store.purchase.PurchasePolicy.limiters.*;
 /**
  * a policy for an item, means that the cart needs to have less/more than a required amount.
  */
-public class ItemPolicy implements PurchasePolicy{
-    public int policyID;
-    public String content;
-    public int storeID;
+public class ItemPolicy extends PurchasePolicy{
     public int productId;
     public int amount;
     public limiters limiter;
@@ -27,13 +24,13 @@ public class ItemPolicy implements PurchasePolicy{
     public boolean validate(Order order) throws Exception {
         for(ProductInfo productInfo : order.getShoppingCart().getBasket(storeID).getContent()){
             if(productInfo.id == productId){
-                return switch (limiter){
+                return handleNext(switch (limiter){
                     case Max ->  handleMax(productInfo);
                     case Min ->  handleMin(productInfo);
-                };
+                },order);
             }
         }
-        throw new Exception("Items was not found in order");
+        return handleNext(false,order);
     }
 
     private boolean handleMin(ProductInfo prod){
@@ -43,16 +40,5 @@ public class ItemPolicy implements PurchasePolicy{
         return prod.quantity <= amount;
     }
 
-    @Override
-    public String getContent(){
-        return this.content;
-    }
-    @Override
-    public int getId(){
-        return this.policyID;
-    }
-    public void setContent(String content){
-        this.content = content;
-    }
 
 }
