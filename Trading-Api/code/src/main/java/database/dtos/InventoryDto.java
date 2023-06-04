@@ -1,6 +1,8 @@
 package database.dtos;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Entity
@@ -13,19 +15,25 @@ public class InventoryDto {
     @ManyToOne
     @JoinColumn(name = "storeId", foreignKey = @ForeignKey(name = "storeId"), referencedColumnName = "storeId")
     private StoreDto storeDto;
-    private String category;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="inventoryDto")
+    private List<CategoryDto> categories;
+
     private int quantity;
+
     private String name;
+
     private String description;
+
     private double price;
+
     private String img;
 
-    public InventoryDto(){};
-    public InventoryDto(StoreDto storeDto,int productId, String category, int quantity, String name, String description
+    public InventoryDto(){}
+    public InventoryDto(StoreDto storeDto,int productId, int quantity, String name, String description
     , double price, String img){
         this.storeDto = storeDto;
         this.productId = productId;
-        this.category = category;
         this.quantity = quantity;
         this.name = name;
         this.description = description;
@@ -58,7 +66,16 @@ public class InventoryDto {
 
     public void setImg(String img){this.img = img;}
 
-    public void setCategory(List<String> category){this.category = category.toString();}//TODO maybe
+
+    public List<CategoryDto> getCategories(){
+        return categories;
+    }
+    public void setCategory(List<String> categories){
+        List<CategoryDto> categoryDtos = new ArrayList<>();
+        for(String category : categories)
+            categoryDtos.add(new CategoryDto(this, category));
+        this.categories = categoryDtos;
+    }//TODO maybe
     //we should implement it ni the dao
 
     public int getProductId(){return productId;}
