@@ -15,7 +15,7 @@ public class Info extends Information{
     private String birthday;
     private int age;
     private Role role;
-    private List<Action> managerActions;
+    private List<Action> actions;
     private PurchaseHistory purchaseHistory;
 
     public Info(int id, String email, String birthday, int age){
@@ -23,17 +23,17 @@ public class Info extends Information{
         this.email = email;
         this.birthday = birthday;
         this.age = age;
-        managerActions = new LinkedList<>();
+        actions = new LinkedList<>();
         purchaseHistory = new PurchaseHistory(id);
     }
 
     public void addRole(Role role){this.role = role;}
-    public void addManagerActions(List<Action> actions){
-        managerActions.addAll(actions);
+    public void addActions(List<Action> actions){
+        this.actions.addAll(actions);
     }
 
-    public List<Action> getManagerActions(){
-        return managerActions;
+    public List<Action> getActions(){
+        return actions;
     }
 
 
@@ -63,7 +63,15 @@ public class Info extends Information{
         json.put("age", getAge());
         json.put("purchaseHistory", infosToJson(purchaseHistory.getReceipts()));
         json.put("role", role);
-        json.put("managerPermissions", fromActionToString(getManagerActions()));
+        json.put("managerPermissions", fromActionToString(getActions()));
         return json;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

@@ -1,6 +1,14 @@
 package database.dtos;
 
+import domain.store.storeManagement.AppHistory;
 import jakarta.persistence.*;
+import utils.Pair;
+import utils.infoRelated.Info;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -17,6 +25,12 @@ public class StoreDto {
     @ManyToOne
     @JoinColumn(name = "creatorId", foreignKey = @ForeignKey(name = "creatorId"), referencedColumnName = "id")
     private MemberDto memberDto;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<RoleDto> roles;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<AppointmentDto> appointments;
 
     public StoreDto(){
 
@@ -50,4 +64,36 @@ public class StoreDto {
     public String getDescription(){return this.description;}
 
     public void setDescription(String desc){this.description = desc;}
+
+    public List<RoleDto> getRoles() {
+        return roles;
+    }
+
+    public List<AppointmentDto> getAppointments() {
+        return appointments;
+    }
+    public void setRoles(AppHistory appHistory) {
+        List<RoleDto> roleDtos = new ArrayList<>();
+        Set<Integer> checkDup = new HashSet<>();
+        List<AppointmentDto> appointmentDtos = new ArrayList<>();
+        for(Pair<Info, List<Info>> p : appHistory.getAppHistory()){
+            if(!checkDup.contains(p.getFirst().getId())) {
+                RoleDto roleDto = new RoleDto(this, p.getFirst().getId(), p.getFirst().getRole().toString(), p.getFirst().getEmail());
+                roleDtos.add(roleDto);
+                roleDto.setPermissions(p.getFirst().getActions());
+                checkDup.add(p.getFirst().getId());
+            }
+            for(Info info : p.getSecond()) {
+                if(!checkDup.contains(info.getId())) {
+                    RoleDto roleDto = new RoleDto(this, info.getId(), info.getRole().toString(), info.getEmail());
+                    roleDtos.add(roleDto);
+                    roleDto.setPermissions(info.getActions());
+                    checkDup.add(info.getId());
+                }
+                appointmentDtos.add(new AppointmentDto(this, p.getFirst().getId(), info.getId()));
+            }
+        }
+        roles = roleDtos;
+        appointments = appointmentDtos;
+    }
 }

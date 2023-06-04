@@ -8,6 +8,7 @@ import utils.infoRelated.Information;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +27,7 @@ public abstract class UserState extends Information {
         this.store = store;
         permission = new Permission();
         isActive = true;
+
 
     }
 
