@@ -431,6 +431,16 @@ public class Server {
             return res.body();
         });
 
+        post("api/admin/complaints/answer", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
+            String token = req.headers("Authorization");
+            int complaintId = Integer.parseInt(request.get("complaintId").toString());
+            String answer = request.get("answer").toString();
+            toSparkRes(res, api.answerComplaint(adminId, token, complaintId, answer));
+            return res.body();
+        });
+
         post("api/admin/complaints/:adminId", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int adminId = Integer.parseInt(request.get("adminId").toString());

@@ -1,5 +1,5 @@
 export interface Complaint {
-    messageId: number;
+    complaintId: number;
     opceode: number;
     content: string;
     userId: number;
