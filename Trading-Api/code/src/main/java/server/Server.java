@@ -366,15 +366,16 @@ public class Server {
             toSparkRes(res, api.makePurchase(userId, getPaymentDetails(request), getSupplierDetails(request)));
             return res.body();
         });
-
-        post("api/getPayments", (req, res) ->{
+      
+        get("api/services/payments", (req, res) ->{
             toSparkRes(res, api.getPaymentAvailableServices());
             return res.body();
         });
-        post("api/getSuppliers", (req, res) ->{
+        get("api/services/suppliers", (req, res) ->{
             toSparkRes(res, api.getSupplierAvailableServices());
             return res.body();
         });
+      
         delete("api/cart/:id", (req, res) ->
         {
             //delete cart

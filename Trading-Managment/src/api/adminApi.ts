@@ -1,5 +1,5 @@
 import { ApiResponse, ApiResponseListData } from "../types/apiTypes";
-import { addAdminParams, answerComplaintParams } from "../types/requestTypes/adminTypes";
+import { addAdminParams, answerComplaintParams, cancelMembershipParams, closeStorePerminentlyParams } from "../types/requestTypes/adminTypes";
 import { Complaint } from "../types/systemTypes/Complaint";
 import { LogRecord } from "../types/systemTypes/Log";
 import { getApiClient } from "./apiClient";
@@ -17,5 +17,14 @@ export const adminApi = {
 
     answerCompolaint: (credentials: answerComplaintParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/admin/complaints/answer`, credentials)),
+
+    adminResign: (credentials: number): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/admin/resign`, { adminId: credentials })),
+
+    closeStorePerminently: (credentials: closeStorePerminentlyParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/admin/closeStorePermanently`, credentials)),
+
+    cancelMembership: (credentials: cancelMembershipParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/admin/cancelMembership`, credentials)),
 
 }

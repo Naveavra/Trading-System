@@ -8,10 +8,10 @@ import { Dehaze } from "@mui/icons-material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Bar4 from "../../../components/Bars/Navbar/NavBar4";
-import { getLogger } from "../../../reducers/adminSlice";
+import { adminResign, getLogger } from "../../../reducers/adminSlice";
 import PasswordIcon from '@mui/icons-material/Password';
 import { getClientData, getNotifications } from "../../../reducers/authSlice";
-
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -27,12 +27,11 @@ const Admin = () => {
 
     const logs = useAppSelector((state) => state.admin.logRecords) ?? [{ userName: "", id: 0, content: "", status: "" }];
     //works but does not look good
-    const arrayForSort = [...logs]
-    const max = arrayForSort.length > 0 ?
-        arrayForSort.sort((a, b) => { if (a.content.length > b.content.length) { return a.content.length } else { return b.content.length } })[0].content.length :
-        330;
 
-
+    const handleResign = () => {
+        dispatch(adminResign(userId));
+        navigate("/auth/login");
+    }
 
     const handleEditClick = (id: GridRowId) => () => {
         //navigate(`/dashboard/customers/edit/${id}`);
@@ -174,6 +173,10 @@ const Admin = () => {
                         </Typography>
                     </CardContent>
                     <CardActions sx={{ marginTop: 10 }}>
+                        <IconButton onClick={handleResign} sx={{ marginLeft: 'auto' }}>
+                            <CancelIcon />
+                        </IconButton>
+
                         <IconButton onClick={() => navigate("editMyProfile")} sx={{ marginLeft: 'auto' }}>
                             <EditIcon />
                         </IconButton>

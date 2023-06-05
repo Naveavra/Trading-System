@@ -30,6 +30,7 @@ export enum Action {
     addAdmin = 'add admin',
     quit = 'quit',
     seeComplaints = 'see complaints',
+    cancelMembership = 'cancel membership',
 }
 export const actionOrder = {
     [Action.addProduct]: 1,
