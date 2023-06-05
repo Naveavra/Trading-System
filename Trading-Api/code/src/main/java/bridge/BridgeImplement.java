@@ -93,8 +93,8 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public List<String> getAvailableExternalSupplierService(int user) {
-        Response<List<String>> res = market.getSupplierServiceAvailable(user);
+    public List<String> getAvailableExternalSupplierService() {
+        Response<List<String>> res = market.getSupplierServiceAvailable();
         if (res != null && !res.errorOccurred()) {
             return res.getValue();
         }
@@ -138,8 +138,8 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public List<String> getAvailableExternalPaymentService(int user) {
-        Response<List<String>> res = market.getPaymentServiceAvailable(user);
+    public List<String> getAvailableExternalPaymentService() {
+        Response<List<String>> res = market.getPaymentServiceAvailable();
         if (res != null && !res.errorOccurred()) {
             return res.getValue();
         }

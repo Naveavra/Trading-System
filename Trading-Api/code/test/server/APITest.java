@@ -67,13 +67,14 @@ class APITest {
 
     @Test
     void getSupplierAvailableServices() {
-        assertTrue(api.getPaymentAvailableServices(0).getSecond().get("value")
+        System.out.println(api.getPaymentAvailableServices().getSecond().get("value"));
+        assertTrue(api.getPaymentAvailableServices().getSecond().get("value")
                 .toString().contains(defaultService));
     }
 
     @Test
     void getPaymentAvailableServices() {
-        assertTrue(api.getSupplierAvailableServices(0).getSecond().get("value")
+        assertTrue(api.getSupplierAvailableServices().getSecond().get("value")
                 .toString().contains(defaultService));
     }
 }

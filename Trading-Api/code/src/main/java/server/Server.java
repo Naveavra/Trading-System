@@ -351,21 +351,15 @@ public class Server {
             toSparkRes(res, api.makePurchase(userId, getPaymentDetails(request), getSupplierDetails(request)));
             return res.body();
         });
-//        TODO:
-//        post("api/cart/buy/:id", (req, res) ->{
-//            //buycart
-//            JSONObject request = new JSONObject(req.body());
-//            int userId = Integer.parseInt(request.get("userId").toString());
-//            toSparkRes(res, api.getPaymentAvailableServices(userId));
-//            return res.body();
-//        });
-//        post("api/cart/buy/:id", (req, res) ->{
-//            //buycart
-//            JSONObject request = new JSONObject(req.body());
-//            int userId = Integer.parseInt(request.get("userId").toString());
-//            toSparkRes(res, api.getSupplierAvailableServices(userId));
-//            return res.body();
-//        });
+
+        post("api/getPayments", (req, res) ->{
+            toSparkRes(res, api.getPaymentAvailableServices());
+            return res.body();
+        });
+        post("api/getSuppliers", (req, res) ->{
+            toSparkRes(res, api.getSupplierAvailableServices());
+            return res.body();
+        });
         delete("api/cart/:id", (req, res) ->
         {
             //delete cart
@@ -493,11 +487,11 @@ public class Server {
             int adminId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             String name = request.get("name").toString();
-            toSparkRes(res, api.cancelMembership(adminId, token, name ));
+            toSparkRes(res, api.cancelMembership(adminId, token, name));
             return res.body();
         });
 
-        post("api/admin/stores/:id", (req, res)-> {
+        post("api/stores/:storeId", (req, res)-> {
             JSONObject request = new JSONObject(req.body());
             int adminId = Integer.parseInt(request.get("userId").toString());
             int storeId = Integer.parseInt(request.get("storeId").toString());

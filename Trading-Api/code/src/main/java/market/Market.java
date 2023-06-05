@@ -1019,7 +1019,7 @@ public class Market implements MarketInterface {
 
     //TODO: fix template for this function
     @Override
-    public Response getPaymentServiceAvailable(int userId) {
+    public Response getPaymentServiceAvailable() {
         try{
             //TODO: userAuth.checkUser(userId);
             return new Response(proxyPayment.getPaymentServicesAvailableOptions(), null, null);
@@ -1083,9 +1083,8 @@ public class Market implements MarketInterface {
 
     //TODO: fix template for this function
     @Override
-    public Response getSupplierServiceAvailable(int userId) {
+    public Response getSupplierServiceAvailable() {
         try{
-            //TODO: userAuth.checkUser(userId);
             return new Response(proxySupplier.getSupplierServicesAvailableOptions(), null, null);
         }
         catch (Exception e){

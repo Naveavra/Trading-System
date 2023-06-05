@@ -66,8 +66,7 @@ public class API {
         }
     }
 
-    private Pair<Boolean, JSONObject> fromResToPairHashMap(Response<HashMap<Integer, ? extends Information>> res, String key,
-                                                           String value){
+    public static Pair<Boolean, JSONObject> fromResToPairListPre(Response<List<Object>> res){
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
         {
@@ -75,7 +74,10 @@ public class API {
             return new Pair<>(false, json);
         }
         else {
-            json.put("value", Information.hashMapToJson(res.getValue(), key, value));
+            List<String> ans = new ArrayList<>();
+            for(Object o : res.getValue())
+                ans.add(o.toString());
+            json.put("value", ans);
             return new Pair<>(true, json);
         }
     }
@@ -395,14 +397,15 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> getSupplierAvailableServices(int userId) {
-        Response<List<String>> res = market.getSupplierServiceAvailable(userId);
-        return fromResToPair(res);
+    public Pair<Boolean, JSONObject> getSupplierAvailableServices() {
+        Response<List<Object>> res = market.getSupplierServiceAvailable();
+
+        return fromResToPairListPre(res);
     }
 
-    public Pair<Boolean, JSONObject> getPaymentAvailableServices(int userId) {
-        Response<List<String>> res = market.getPaymentServiceAvailable(userId);
-        return fromResToPair(res);
+    public Pair<Boolean, JSONObject> getPaymentAvailableServices() {
+        Response<List<Object>> res = market.getPaymentServiceAvailable();
+        return fromResToPairListPre(res);
     }
 
     //for actions to actionString

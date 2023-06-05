@@ -6,7 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/store/DiscountTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/DiscountTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/server/APITest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/server/APITest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +82,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.DiscountTest,storeDiscountTest and 9 more">
+  <component name="RunManager" selected="JUnit.APITest.getSupplierAvailableServices">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -175,11 +184,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.APITest.getSupplierAvailableServices" />
         <item itemvalue="JUnit.DiscountTest,storeDiscountTest and 9 more" />
         <item itemvalue="JUnit.DiscountTest.andLogicalCompositeTest" />
         <item itemvalue="JUnit.test in work1" />
         <item itemvalue="JUnit.APITest.getPaymentAvailableServices" />
-        <item itemvalue="JUnit.APITest.getSupplierAvailableServices" />
       </list>
     </recent_temporary>
   </component>
@@ -199,6 +208,7 @@
       <workItem from="1685922490611" duration="93000" />
       <workItem from="1685922612042" duration="40000" />
       <workItem from="1685981301082" duration="2023000" />
+      <workItem from="1685984211015" duration="1823000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
