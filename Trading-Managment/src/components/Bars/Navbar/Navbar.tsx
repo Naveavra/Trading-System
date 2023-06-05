@@ -66,7 +66,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
         console.log(`confirm message ${idx}`);
     }
     useEffect(() => {
-    }, [notification, numProductsIncart])
+    }, [notification, numProductsIncart, cart])
 
     return (
         <>

@@ -66,8 +66,7 @@ public class API {
         }
     }
 
-    private Pair<Boolean, JSONObject> fromResToPairHashMap(Response<HashMap<Integer, ? extends Information>> res, String key,
-                                                           String value){
+    public static Pair<Boolean, JSONObject> fromResToPairListPre(Response<List<Object>> res){
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
         {
@@ -75,7 +74,10 @@ public class API {
             return new Pair<>(false, json);
         }
         else {
-            json.put("value", Information.hashMapToJson(res.getValue(), key, value));
+            List<String> ans = new ArrayList<>();
+            for(Object o : res.getValue())
+                ans.add(o.toString());
+            json.put("value", ans);
             return new Pair<>(true, json);
         }
     }
@@ -187,6 +189,24 @@ public class API {
     public Pair<Boolean, JSONObject> getStoreProducts(int storeId){
         Response<List<? extends  Information>> res = market.getStoreProducts(storeId);
         return fromResToPairList(res);
+    }
+
+    public Pair<Boolean, JSONObject> getFilterOptions(){
+        Response<List<Object>> options = market.showFilterOptions();
+        return fromResToPairListPre(options);
+    }
+
+    public List<String> getFilterOptionsString(){
+        Response<List<Object>> options = market.showFilterOptions();
+        List<String> ans = new ArrayList<>();
+        for(Object o : options.getValue())
+            ans.add(o.toString());
+        return ans;
+    }
+
+    public Pair<Boolean, JSONObject> filterBy(HashMap<String, String> filters){
+        Response<List<? extends Information>> options = market.filterBy(filters);
+        return fromResToPairList(options);
     }
 
     public Pair<Boolean, JSONObject> viewReviews(int userId, String token, int storeId){
@@ -403,6 +423,17 @@ public class API {
     }
 
 
+
+    public Pair<Boolean, JSONObject> getSupplierAvailableServices() {
+        Response<List<Object>> res = market.getSupplierServiceAvailable();
+
+        return fromResToPairListPre(res);
+    }
+
+    public Pair<Boolean, JSONObject> getPaymentAvailableServices() {
+        Response<List<Object>> res = market.getPaymentServiceAvailable();
+        return fromResToPairListPre(res);
+    }
 
     //for actions to actionString
     private void getActionStrings(){

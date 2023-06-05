@@ -60,6 +60,12 @@ export type answerComplaintFormValues = {
     complaintId: number;
     answer: string;
 };
+export interface answerQuestionFormValues {
+    userId: number;
+    storeId: number;
+    questionId: number;
+    answer: string;
+}
 export type paymentFormValues = {
     userId: number;
     cardNumber: string;

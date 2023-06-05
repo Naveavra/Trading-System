@@ -7,6 +7,8 @@ import utils.infoRelated.LoginInformation;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class APITest {
     private HashMap<Integer, HashMap<Integer, Integer>> cart;
     private LoginInformation li;
@@ -14,7 +16,7 @@ class APITest {
     int userId;
     String token;
     int storeId;
-
+    String defaultService = "WSEP";
     List<String> categories;
     int productId;
     int productId2;
@@ -63,4 +65,16 @@ class APITest {
 //        System.out.println(api.loginToJson(li).toString());
     }
 
+    @Test
+    void getSupplierAvailableServices() {
+        System.out.println(api.getPaymentAvailableServices().getSecond().get("value"));
+        assertTrue(api.getPaymentAvailableServices().getSecond().get("value")
+                .toString().contains(defaultService));
+    }
+
+    @Test
+    void getPaymentAvailableServices() {
+        assertTrue(api.getSupplierAvailableServices().getSecond().get("value")
+                .toString().contains(defaultService));
+    }
 }

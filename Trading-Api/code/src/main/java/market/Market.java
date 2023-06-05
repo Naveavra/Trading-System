@@ -269,7 +269,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public synchronized Response<Receipt> makePurchase(int userId , JSONObject payment, JSONObject supplier) {
+    public synchronized Response<Receipt> makePurchase(int userId, JSONObject payment, JSONObject supplier) {
         try {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
@@ -458,7 +458,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response filterBy(HashMap<String,String> filterOptions) {
+    public Response<List<? extends Information>> filterBy(HashMap<String,String> filterOptions) {
         ArrayList<ProductInfo> result = marketController.filterBy(filterOptions);
         if(result.isEmpty()){
            return new Response<>(null, "No products found by those filter options", "result array is empty, no products found");
@@ -1034,9 +1034,9 @@ public class Market implements MarketInterface {
 
     //TODO: fix template for this function
     @Override
-    public Response getPaymentServiceAvailable(int userId) {
-        Admin admin = null;
+    public Response getPaymentServiceAvailable() {
         try{
+            //TODO: userAuth.checkUser(userId);
             return new Response(proxyPayment.getPaymentServicesAvailableOptions(), null, null);
         }
         catch (Exception e){
@@ -1098,10 +1098,8 @@ public class Market implements MarketInterface {
 
     //TODO: fix template for this function
     @Override
-    public Response getSupplierServiceAvailable(int userId) {
+    public Response getSupplierServiceAvailable() {
         try{
-            //TODO: userAuth.checkUser(userId);
-            //TODO: activeAdmins.get(adminId);
             return new Response(proxySupplier.getSupplierServicesAvailableOptions(), null, null);
         }
         catch (Exception e){

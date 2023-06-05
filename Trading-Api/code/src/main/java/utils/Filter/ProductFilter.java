@@ -56,41 +56,43 @@ public class ProductFilter{
      */
     public FilterStrategy createStrategy(strategies strategy,String params){
         FilterStrategy strat = null;
-        switch(strategy) {
-            case ProductRating: // ProductRating <rating number>
-                FilterProductByRating temp1 =  new FilterProductByRating();
-                temp1.setRating(Integer.parseInt(params)); //expect only one number here
-                strat = temp1;
-                break;
-            case PriceRangeMax:// PriceRangeMax <max number>
-                FilterProductByPriceMax temp2 = new FilterProductByPriceMax();
-                temp2.setMaxPrice(Integer.parseInt(params));
-                strat = temp2;
-                break;
-            case PriceRangeMin:// PriceRangeMin <min number>
-                FilterProductByPriceMin temp3 =  new FilterProductByPriceMin();
-                temp3.setMinPrice(Integer.parseInt(params));
-                strat = temp3;
-                break;
-            case StoreRating:// StoreRating <rating number>
-                FilterProductByStoreRating temp4 = new FilterProductByStoreRating();
-                temp4.setStoreRatingToFilterBy(Integer.parseInt(params));
-                strat = temp4;
-                break;
-            case Categories:// Categories <categories divided by spaces>
-                FilterProductByCategories temp5 =  new FilterProductByCategories();
-                ArrayList<String> categoriesToSearchBy = new ArrayList<>(Arrays.asList(params.split(" ")));
-                temp5.setCategoriesToSearchBy(categoriesToSearchBy);
-                strat = temp5;
-                break;
-            case Keywords:// Keywords <divided by spaces>
-                FilterProductByKeywords temp6 = new FilterProductByKeywords();
-                ArrayList<String> keywordsToSearchBy = new ArrayList<>(Arrays.asList(params.split(" ")));
-                temp6.setKeywords(keywordsToSearchBy);
-                strat = temp6;
-                break;
-            default:
-                return null;
+        if(!params.equals("null")) {
+            switch (strategy) {
+                case ProductRating: // ProductRating <rating number>
+                    FilterProductByRating temp1 = new FilterProductByRating();
+                    temp1.setRating(Integer.parseInt(params)); //expect only one number here
+                    strat = temp1;
+                    break;
+                case PriceRangeMax:// PriceRangeMax <max number>
+                    FilterProductByPriceMax temp2 = new FilterProductByPriceMax();
+                    temp2.setMaxPrice(Integer.parseInt(params));
+                    strat = temp2;
+                    break;
+                case PriceRangeMin:// PriceRangeMin <min number>
+                    FilterProductByPriceMin temp3 = new FilterProductByPriceMin();
+                    temp3.setMinPrice(Integer.parseInt(params));
+                    strat = temp3;
+                    break;
+                case StoreRating:// StoreRating <rating number>
+                    FilterProductByStoreRating temp4 = new FilterProductByStoreRating();
+                    temp4.setStoreRatingToFilterBy(Integer.parseInt(params));
+                    strat = temp4;
+                    break;
+                case Categories:// Categories <categories divided by spaces>
+                    FilterProductByCategories temp5 = new FilterProductByCategories();
+                    ArrayList<String> categoriesToSearchBy = new ArrayList<>(Arrays.asList(params.split(" ")));
+                    temp5.setCategoriesToSearchBy(categoriesToSearchBy);
+                    strat = temp5;
+                    break;
+                case Keywords:// Keywords <divided by spaces>
+                    FilterProductByKeywords temp6 = new FilterProductByKeywords();
+                    ArrayList<String> keywordsToSearchBy = new ArrayList<>(Arrays.asList(params.split(" ")));
+                    temp6.setKeywords(keywordsToSearchBy);
+                    strat = temp6;
+                    break;
+                default:
+                    return null;
+            }
         }
         return strat;
     }

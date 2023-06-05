@@ -1,5 +1,5 @@
 import { Appointment } from "./Appointment";
-import { Message } from "./Message";
+import { Message, Question, Review } from "./Message";
 import { Order } from "./Order";
 import { Product } from "./Product";
 import { RoleInStore, StoreRoleEnum } from "./StoreRole";
@@ -13,9 +13,9 @@ export interface Store {
     img: string;
     rating: number;
     inventory: Product[];
-    questions: { questionId: number, question: Message }[];
+    questions: Question[];
     storeOrders: Order[];
-    reviews: { messageId: number, review: Message }[];
+    reviews: Review[];
     appHistory: Appointment[];
     roles: RoleInStore[];
     //todo add purchase and discount policy

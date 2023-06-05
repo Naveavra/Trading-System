@@ -1,5 +1,5 @@
 import { ApiResponseListData, ApiResponse } from "../types/apiTypes";
-import { AppointUserParams, DeleteStoreParams, GetStoreProducts, GetStoresParams, PatchStoreParams, PostStoreParams, fireUserParams, getAppointmentsHistoryParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
+import { AnswerQuestionParams, AppointUserParams, DeleteStoreParams, GetStoreProducts, GetStoresParams, PatchStoreParams, PostStoreParams, fireUserParams, getAppointmentsHistoryParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
 import { Product } from "../types/systemTypes/Product";
 import { Store } from "../types/systemTypes/Store";
 import { StoreInfo } from "../types/systemTypes/StoreInfo";
@@ -42,5 +42,7 @@ export const storeApi =
     patchPermissions: (params: patchPermissionsParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().patch(`api/stores/${params.storeId}/permissions`, params)),
 
+    amswerQuestion: (params: AnswerQuestionParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/questions/answers`, params)),
 
 }   

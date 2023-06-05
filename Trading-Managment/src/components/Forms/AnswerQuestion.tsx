@@ -1,37 +1,44 @@
-
-
+import { LoadingButton } from "@mui/lab";
+import { Dialog, Box, Grid, Typography, TextField } from "@mui/material";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-
-
+import { answerQuestionFormValues } from "../../types/formsTypes";
 import AlertDialog from "../Dialog/AlertDialog";
-import { sentComplaintFormValues } from "../../types/formsTypes";
-import { clearAuthError, sendComplaint } from "../../reducers/authSlice";
+import { answerComplaint, clearError, getComplaints } from "../../reducers/adminSlice";
+import { answerQuestion, clearStoreError } from "../../reducers/storesSlice";
 
-import { Dialog, Box, Grid, TextField, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-
-const SendComplain = () => {
+const AnswerQuestion = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const form = useForm<sentComplaintFormValues>();
+    const form = useForm<answerQuestionFormValues>();
+
 
     const userId = useAppSelector((state) => state.auth.userId)
     const isLoading = useAppSelector((state) => state.auth.isLoading);
     const error = useAppSelector((state) => state.auth.error);
 
+    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
+    const params = useParams();
+    const questionId = parseInt(params.id ?? '0');
+    const questions = useAppSelector((state) => state.store.storeState.watchedStore.questions);
+    const question = questions.find((complaint) => complaint.questionId == questionId);
 
-    const handleOnSubmitComplaint = () => {
+
+
+    //maybe take it from params
+    const handleOnClose = useCallback(() => {
+        navigate('/dashboard/store/superior/viewmessages');
+        dispatch(getComplaints(userId));
+    }, []);
+    const handleOnSubmit = () => {
         form.setValue('userId', userId);
-        dispatch(sendComplaint(form.getValues()));
+        form.setValue('questionId', questionId);
+        form.setValue('storeId', storeId);
+        dispatch(answerQuestion(form.getValues()));
         handleOnClose();
     }
-    const handleOnClose = useCallback(() => {
-        navigate('/dashboard');
-    }, []);
-
     return (
         <>
             <Dialog onClose={handleOnClose} open={true}>
@@ -55,52 +62,37 @@ const SendComplain = () => {
                         spacing={2}
                         container
                         component="form"
-                        onSubmit={handleOnSubmitComplaint}
+                        onSubmit={handleOnSubmit}
                     >
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                enter orderId and complaint msg
+                                answer complaint
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
+                                {question?.content ?? "no content"}
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                name="orderId"
+                                name="content"
                                 type="text"
                                 fullWidth
-                                label="order Id"
+                                label="answer"
                                 sx={{ mt: 1, mb: 1 }}
                                 inputProps={{
-                                    ...form.register('orderId', {
+                                    ...form.register('answer', {
                                         required: {
                                             value: true,
-                                            message: "orderId is required"
+                                            message: "answer is required"
                                         }
                                     })
                                 }}
-                                error={!!form.formState.errors['orderId'] ?? false}
-                                helperText={form.formState.errors['orderId']?.message ?? undefined}
+                                error={!!form.formState.errors['answer'] ?? false}
+                                helperText={form.formState.errors['answer']?.message ?? undefined}
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                name="complaint"
-                                type="text"
-                                fullWidth
-                                label="complaint"
-                                sx={{ mt: 1, mb: 1 }}
-                                inputProps={{
-                                    ...form.register('complaint', {
-                                        required: {
-                                            value: true,
-                                            message: "complaint is mendatory"
-                                        }
-                                    })
-                                }}
-                                error={!!form.formState.errors['complaint'] ?? false}
-                                helperText={form.formState.errors['complaint']?.message ?? undefined}
-                            />
-                        </Grid>
-
                         <Grid item xs={12}>
                             <LoadingButton
                                 type="submit"
@@ -109,18 +101,18 @@ const SendComplain = () => {
                                 sx={{ mt: 3, mb: 2 }}
                                 loading={isLoading}
                             >
-                                send complaint
+                                answer questionId
                             </LoadingButton>
                         </Grid>
                     </Grid >
-
-                </Box >
+                </Box>
             </Dialog >
             {!!error ?
-                <AlertDialog open={!!error} onClose={() => { dispatch(clearAuthError()); }} text={error} sevirity={"error"} />
+                <AlertDialog open={!!error} onClose={() => { dispatch(clearStoreError({})); }} text={error} sevirity={"error"} />
                 : null}
         </>
     );
 
 }
-export default SendComplain;
+
+export default AnswerQuestion;

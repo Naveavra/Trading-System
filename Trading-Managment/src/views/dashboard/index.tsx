@@ -34,6 +34,9 @@ const DashboardPage: React.FC = () => {
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
 
+    // const cart = useAppSelector((state) => state.cart.responseData);
+    // const numProductsIncart = cart?.reduce((acc, item) => acc + item.quantity, 0) ?? 0;
+
     //success alerts
     const openStoreAlert = useAppSelector((state) => state.store.storeState.responseData);
 
@@ -55,6 +58,7 @@ const DashboardPage: React.FC = () => {
     }
     const fetchNotification = async () => {
         try {
+            debugger;
             console.log("trying get notification")
             if (token != "" && userName != 'guest') {
 

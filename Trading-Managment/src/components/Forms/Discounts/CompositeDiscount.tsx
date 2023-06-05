@@ -28,8 +28,8 @@ const CompositeDiscount: React.FC<CompositeDiscountProps> = ({ first }) => {
     }
     const handleSetpercentage = (input: string) => {
         const percentage = parseFloat(input);
-        if (percentage > 1 || percentage < 0) {
-            setError('percentage must be between 0 to 1');
+        if (percentage > 100 || percentage < 0) {
+            setError('percentage must be between 0 to 100');
         }
         else {
             setError('');
@@ -102,7 +102,7 @@ const CompositeDiscount: React.FC<CompositeDiscountProps> = ({ first }) => {
                         />
                     </Grid> : null
                 }
-                <Grid item xs={12}>
+                <Grid item xs={12} sx={{ mt: 2 }}>
                     <TextField
                         required
                         id="outlined-required"

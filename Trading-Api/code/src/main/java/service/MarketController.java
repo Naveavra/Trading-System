@@ -100,14 +100,6 @@ public class MarketController {
     public ProductInfo getProductInformation(int storeId, int productId) throws Exception {
         Store store = storectrl.getActiveStore(storeId);
         return store.getProductInformation(productId);
-//        Store store = storectrl.getStore(storeId);
-//        if (store != null && store.isActive())
-//        {
-//            return store.getProductInformation(productId);
-//        }
-//        else {
-//            throw new Exception("cant get product information");
-//        }
     }
 
 

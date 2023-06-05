@@ -37,7 +37,7 @@ const BuyCart = () => {
     }
 
     const handleOnClose = useCallback(() => {
-        navigate(-1);
+        navigate('/dashboard');
         //dispatch(getStore({ userId: userId, storeId: storeId }));
     }, []);
     const handleOnSubmit = () => {

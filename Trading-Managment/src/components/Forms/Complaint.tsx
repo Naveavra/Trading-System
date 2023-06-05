@@ -24,7 +24,7 @@ const ComplaintPage = () => {
 
     //maybe take it from params
     const handleOnClose = useCallback(() => {
-        navigate(-1);
+        navigate('/dashboard/admin/seecomplaints');
         dispatch(getComplaints(userId));
     }, []);
     const handleOnSubmit = () => {

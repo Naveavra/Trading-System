@@ -373,9 +373,9 @@ public abstract class ProjectTest{
         return bridge.changeQuantityInCart(userId, storeId, productId, change);
     }
 
-    public List<String> getAvailableExternalSupplierService(int userId)
+    public List<String> getAvailableExternalSupplierService()
     {
-        return bridge.getAvailableExternalSupplierService(userId);
+        return bridge.getAvailableExternalSupplierService();
     }
 
     public List<String> getPossibleExternalSupplierService(int adminId)
@@ -383,9 +383,9 @@ public abstract class ProjectTest{
         return bridge.getPossibleExternalSupplierService(adminId);
     }
 
-    public List<String> getAvailableExternalPaymentService(int userId)
+    public List<String> getAvailableExternalPaymentService()
     {
-        return bridge.getAvailableExternalPaymentService(userId);
+        return bridge.getAvailableExternalPaymentService();
     }
 
     public List<String> getPossibleExternalPaymentService(int adminId)

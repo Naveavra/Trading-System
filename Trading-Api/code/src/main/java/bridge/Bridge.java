@@ -94,7 +94,7 @@ public interface Bridge {
      * @return If succeed returns list of available supplier service. Otherwise,
      *         return null.
      */
-    List<String> getAvailableExternalSupplierService(int user);
+    List<String> getAvailableExternalSupplierService();
 
     /**
      * System external supplier service management - adding external service
@@ -142,7 +142,7 @@ public interface Bridge {
      * @return If succeed returns list of available payment service. Otherwise,
      *         return null.
      */
-    List<String> getAvailableExternalPaymentService(int user);
+    List<String> getAvailableExternalPaymentService();
 
     /**
      * System external payment service management - adding external service
