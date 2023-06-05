@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/PaymentAdapterMock.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/SupplierAdapterMock.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/service/ExternalService/WSEPServiceTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/MemberTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ProxyPayment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ProxyPayment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ProxySupplier.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ProxySupplier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/TestsES.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +18,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -56,7 +52,7 @@
     "WebServerToolWindowFactoryState": "false",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "last_directory_selection": "C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test/server",
+    "last_directory_selection": "C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test",
     "last_opened_file_path": "C:/Users/bench/Desktop/סדנא/Trading-System/Trading-Api/code",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -77,10 +73,11 @@
       <recent name="" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
+      <recent name="service.ExternalService" />
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.MemberTest.testPurchaseFromUnAvailableSSCart">
+  <component name="RunManager" selected="JUnit.WSEPServiceTest">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -143,18 +140,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SystemTests.testRemoveExternalSupplierService" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="WSEPServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="junit.*" />
+          <option name="PATTERN" value="service.ExternalService.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
-      <option name="METHOD_NAME" value="testRemoveExternalSupplierService" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="PACKAGE_NAME" value="service.ExternalService" />
+      <option name="MAIN_CLASS_NAME" value="service.ExternalService.WSEPServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -173,16 +169,16 @@
       <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailablePSCart" />
       <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailableSSCart" />
       <item itemvalue="JUnit.SystemTests" />
-      <item itemvalue="JUnit.SystemTests.testRemoveExternalSupplierService" />
+      <item itemvalue="JUnit.WSEPServiceTest" />
       <item itemvalue="JUnit.junit in work1" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.WSEPServiceTest" />
         <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailableSSCart" />
         <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailablePSCart" />
         <item itemvalue="JUnit.junit in work1" />
         <item itemvalue="JUnit.SystemTests" />
-        <item itemvalue="JUnit.SystemTests.testRemoveExternalSupplierService" />
       </list>
     </recent_temporary>
   </component>
