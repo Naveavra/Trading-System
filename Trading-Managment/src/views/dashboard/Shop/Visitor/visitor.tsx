@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardActions, CardContent, IconButton, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Outlet } from "react-router";
 import ProductCard from "../../../../components/ProductInStore/Card";
@@ -8,11 +8,12 @@ import { getProducts } from "../../../../reducers/productsSlice";
 import { getStoresInfo } from "../../../../reducers/storesSlice";
 import axios from "axios";
 import Bar3 from "../../../../components/Bars/Navbar/NavBar3";
-
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import { useNavigate } from "react-router-dom";
 
 const Visitor: React.FC = () => {
     const dispatch = useAppDispatch();
-
+    const navigate = useNavigate();
     const userId = useAppSelector((state) => state.auth.userId);
     const store = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
     const products = useAppSelector((state) => state.product.responseData);
@@ -60,6 +61,12 @@ const Visitor: React.FC = () => {
                         </Box>
 
                     </CardContent>
+                    <CardActions>
+                        <IconButton aria-label="delete" color="primary" sx={{ ml: 1, mt: 1 }} onClick={() => navigate('SendQuestion')}>
+                            ask us anything
+                            <QuestionMarkIcon />
+                        </IconButton>
+                    </CardActions>
                 </Card>
             </Box >
             <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >

@@ -20,6 +20,7 @@ const Personal = () => {
     const userMessage = useAppSelector((state) => state.auth.message);
     const userError = useAppSelector((state) => state.auth.error);
     const orders = useAppSelector((state) => state.auth.purchaseHistory);
+    const stores = useAppSelector((state) => state.store.storeInfoResponseData);
 
     const handleClickOrder = (orderId: number) => {
         dispatch(setWatchedOrder(orderId));
@@ -69,7 +70,7 @@ const Personal = () => {
             {
                 orders?.map((order, index) => {
                     return (
-                        <Card sx={{ width: 150, mt: 5, ml: 3 }} key={index} onClick={() => handleClickOrder(order.orderId)}>
+                        <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index} onClick={() => handleClickOrder(order.orderId)}>
                             <CardContent>
                                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                     orderId:  {order.orderId}
