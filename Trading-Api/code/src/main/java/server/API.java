@@ -394,6 +394,15 @@ public class API {
         Response<String> res = market.sendNotification(userId, token, NotificationOpcode.CHAT_MESSAGE, username, notification);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> changeRegularDiscount(int userId, String token, int storeId, int prodId,
+                                                           int percentage, String discountType, String discountedCategory,
+                                                           List<String> predicatesLst) {
+        Response<String> res = market.changeRegularDiscount(userId, token, storeId, prodId, percentage, discountType,
+                discountedCategory, predicatesLst);
+        return fromResToPair(res);
+    }
+
+
 
     //for actions to actionString
     private void getActionStrings(){
