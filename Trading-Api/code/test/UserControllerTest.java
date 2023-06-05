@@ -1,5 +1,3 @@
-package java.service;
-
 import database.dtos.MemberDto;
 import database.dtos.NotificationDto;
 import database.dtos.ReceiptDto;
@@ -105,6 +103,7 @@ class UserControllerTest {
             market.addProductToCart(id, sid, pid, 3);
             market.addProductToCart(id, sid, pid2, 5);
             Receipt receipt = market.makePurchase(id, payment, supplier).getValue();
+            assertNotNull(receipt);
             market.writeReviewToStore(id, token, receipt.getOrderId(), sid, "very good", 4);
 //            market.saveState();
             market.updateState();

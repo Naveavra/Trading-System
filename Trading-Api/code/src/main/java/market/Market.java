@@ -55,7 +55,7 @@ public class Market implements MarketInterface {
             proxyPayment = new ProxyPayment();
             proxySupplier = new ProxySupplier();
         } catch (Exception e) {
-
+            System.out.println(e.getMessage());
         }
 
         marketInfo = new MarketInfo();
@@ -273,7 +273,6 @@ public class Market implements MarketInterface {
         try {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
-            //TODO: fix here
             proxyPayment.makePurchase(payment, totalPrice);
             proxySupplier.orderSupplies(supplier, cart);
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
