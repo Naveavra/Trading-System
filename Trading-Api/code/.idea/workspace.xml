@@ -4,164 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_agent_1_14_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_core_5_3_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_junit_jupiter_5_3_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_objenesis_objenesis_3_3.xml" afterDir="false" />
+    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bridge/Bridge.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bridge/BridgeImplement.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/data/AdminInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/data/CartInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/data/GuestInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/data/MessageInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/data/PermissionInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/data/PositionInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/data/ProductInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/data/PurchaseInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/data/StoreInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/data/UserInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/states/Permission.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/states/StoreCreator.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/states/StoreManager.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/states/StoreOwner.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/states/UserState.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/AbstractDiscount$discountTypes.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/AbstractDiscount.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/ConcreteDiscountConstraint.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/Discount$DiscountTypes.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/Discount.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/DiscountConstraint.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/DiscountFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/DiscountFactory$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/DiscountFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/DiscountOnCategory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/DiscountOnItem.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/DiscountOnStore.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/DiscountPolicy.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/compositeDiscountTypes/AbstractDiscountComposite.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/compositeDiscountTypes/LogicalDiscountComposite$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/compositeDiscountTypes/LogicalDiscountComposite$logical.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/compositeDiscountTypes/LogicalDiscountComposite$xorDecidingRules.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/compositeDiscountTypes/LogicalDiscountComposite.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/compositeDiscountTypes/NumericDiscountComposite$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/compositeDiscountTypes/NumericDiscountComposite$numeric.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/compositeDiscountTypes/NumericDiscountComposite.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/discountDataObjects/CompositeDataObject.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/discountDataObjects/DiscountDataObject.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/discountDataObjects/PredicateDataObject.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/discountFunctionalInterface/GetCategoriesOperation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/discountFunctionalInterface/GetProductOperation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/DiscountCategoryPredicate$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/DiscountCategoryPredicate.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/DiscountItemPredicate$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/DiscountItemPredicate.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/DiscountPredicate$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/DiscountPredicate$PredicateTypes.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/DiscountPredicate$composore.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/DiscountPredicate.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/DiscountPricePredicate$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/DiscountPricePredicate.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/PredicateFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/discount/predicates/PredicateFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/order/OrderController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/product/Inventory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/product/Product.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/purchase/ConcrectePurchaseConstraint.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/purchase/PurchaseConstraint.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/purchase/PurchasePolicy.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/storeManagement/AppHistory$Node.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/storeManagement/AppHistory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/storeManagement/Store.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/store/storeManagement/StoreController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/user/Basket.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/user/Guest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/user/Member.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/user/ShoppingCart.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/user/StringChecks.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/user/User.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/user/history/PurchaseHistory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/domain/user/history/UserHistory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/market/Admin.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/market/Market.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/market/MarketInterface.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/server/API.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/server/ConnectedThread.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/server/Server.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/MarketController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/UserController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/payment/ApplePay.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/payment/GooglePay.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/payment/PaymentAdapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/payment/ProxyPayment.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/security/SecurityAdapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/security/UserAuth.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/supplier/DHL.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/supplier/ProxySupplier.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/supplier/SupplierAdapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/service/supplier/UPS.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Filter/FilterProductByCategories.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Filter/FilterProductByKeywords.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Filter/FilterProductByPriceMax.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Filter/FilterProductByPriceMin.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Filter/FilterProductByRating.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Filter/FilterProductByStoreRating.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Filter/FilterStrategy.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Filter/ProductFilter$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Filter/ProductFilter$strategies.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Filter/ProductFilter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Logger$logStatus.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Logger.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Pair.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Response.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/infoRelated/Info.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/infoRelated/Information.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/infoRelated/LoginInformation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/infoRelated/MarketInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/infoRelated/OrderInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/infoRelated/PrivateInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/infoRelated/ProductInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/infoRelated/Receipt.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/infoRelated/StoreInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/messageRelated/Message.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/messageRelated/MessageState.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/messageRelated/Notification.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/messageRelated/NotificationOpcode.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/orderRelated/CalculatePriceOp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/orderRelated/Order.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/orderRelated/SetPricesOp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/orderRelated/Status.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/stateRelated/Action.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/stateRelated/Role.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/AppHistoryTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/UserAuthTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/bridge/Driver.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/bridge/ProxyBridge.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/domain/store/storeManagement/StoreTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/domain/user/BasketTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/domain/user/GuestTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/domain/user/MemberTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/domain/user/ShoppingCartTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/junit/AdminTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/junit/GuestTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/junit/MemberTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/junit/ProjectTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/junit/StoreManagerTests.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/junit/StoreOwnerTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/junit/StoreTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/junit/SystemTests.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/market/AdminTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/market/MarketTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/server/APITest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/service/UserControllerTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/store/DiscountTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/store/InventoryTest$1categories.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/store/InventoryTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/store/OrderTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/store/ProductTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/work1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/work1.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Basket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Basket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/ShoppingCart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/ShoppingCart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/domain/user/ShoppingCartTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/ShoppingCartTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,7 +73,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.AcceptanceTests in work1">
+  <component name="RunManager" selected="Application.runServer">
     <configuration name="TestsES" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="service.ExternalService.TestsES" />
       <module name="work1" />
@@ -249,6 +102,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ShoppingCartTest.changeQuantity0AndRemoveProduct" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.user" />
+      <option name="MAIN_CLASS_NAME" value="domain.user.ShoppingCartTest" />
+      <option name="METHOD_NAME" value="changeQuantity0AndRemoveProduct" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="UserControllerTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <option name="PACKAGE_NAME" value="" />
@@ -268,22 +137,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserControllerTest.checkDatabase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="java.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="java.service" />
-      <option name="MAIN_CLASS_NAME" value="java.service.UserControllerTest" />
-      <option name="METHOD_NAME" value="checkDatabase" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <option name="TEST_OBJECT" value="directory" />
@@ -292,35 +145,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="work1" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="work1" />
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="Application.TestsES" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
+      <item itemvalue="JUnit.ShoppingCartTest.changeQuantity0AndRemoveProduct" />
       <item itemvalue="JUnit.UserControllerTest (1)" />
       <item itemvalue="JUnit.UserControllerTest.checkDatabase (1)" />
       <item itemvalue="JUnit.test in work1" />
-      <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ShoppingCartTest.changeQuantity0AndRemoveProduct" />
+        <item itemvalue="JUnit.UserControllerTest.checkDatabase (1)" />
         <item itemvalue="JUnit.UserControllerTest (1)" />
         <item itemvalue="Application.TestsES" />
-        <item itemvalue="JUnit.UserControllerTest.checkDatabase (1)" />
         <item itemvalue="JUnit.test in work1" />
-        <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
       </list>
     </recent_temporary>
   </component>
@@ -339,6 +179,7 @@
       <workItem from="1685922305319" duration="168000" />
       <workItem from="1685922490611" duration="93000" />
       <workItem from="1685922612042" duration="40000" />
+      <workItem from="1685981301082" duration="641000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -373,23 +214,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/UserControllerTest.java</url>
-          <line>128</line>
+          <line>122</line>
           <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/UserControllerTest.java</url>
-          <line>104</line>
-          <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/service/ExternalService/ExternalService.java</url>
           <line>41</line>
           <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/service/ExternalService/WSEPService.java</url>
-          <line>17</line>
-          <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

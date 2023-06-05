@@ -214,17 +214,7 @@ public class Server {
             }
             return res.body();
         });
-        delete("api/stores/:id", (req, res)-> {
-            JSONObject request = new JSONObject(req.body());
-            int adminId = Integer.parseInt(request.get("adminId").toString());
-            int storeId = Integer.parseInt(request.get("id").toString());
-            String token = req.headers("Authorization");
-            toSparkRes(res, api.closeStorePermanently(adminId, token, storeId));
-            return res.body();
-        });
         post("api/stores/:id/appointments/owners", (req, res) -> {
-            //appoint new owner
-            //this function will receive {"storeId":0,"userIncharge":1,"newOwner":2}
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
@@ -337,9 +327,6 @@ public class Server {
             return res.body();
         });
         patch("api/cart/add/:id", (req, res) -> {
-            //addtoart
-            //when a user change quantity of a product in specific store basket
-            //params {"userId":0,"storeId":0,"prouctId":1,"quantity":5}
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             int storeId = Integer.parseInt(request.get("storeId").toString());
@@ -495,5 +482,24 @@ public class Server {
             toSparkRes(res, api.cancelMembership(adminId, token, name ));
             return res.body();
         });
+
+        post("api/admin/stores/:id", (req, res)-> {
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("userId").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.closeStorePermanently(adminId, token, storeId));
+            return res.body();
+        });
+
+        post("api/admin/marketStatus", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.watchMarketStatus(adminId, token));
+            return res.body();
+        });
+
+
     }
 }
