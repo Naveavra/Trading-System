@@ -9,6 +9,8 @@ import market.Admin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import service.payment.PaymentAdapter;
 
 import java.util.List;
 import java.util.Map;
@@ -18,10 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AdminTest extends ProjectTest {
     private static final int ERROR = -1;
 
+    @Mock
+    private PaymentAdapter goodPaymentES;
+
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
+        goodPaymentES = null;//TODO new DefaultUserService(userRepository, settingRepository, mailClient);
     }
 
     @AfterEach
@@ -117,7 +123,7 @@ public class AdminTest extends ProjectTest {
         int adminId = this.mainAdmin.getAdminId();
         List<AdminInfo> adminInfos = this.getAllAdmins(adminId);
         assertNotNull(adminInfos);
-        int status = this.addAdmin(adminId, "admin2@gmail.com", "admin2");
+        int status = this.addAdmin(adminId, "admin2@gmail.com", "Admin2");
         assertTrue(status > 0);
         int pre = adminInfos.size();
         adminInfos = this.getAllAdmins(adminId);
@@ -182,7 +188,7 @@ public class AdminTest extends ProjectTest {
         UserInfo ui = users_dict.get(users[0][0]);
         int status = login(ui.getEmail(), ui.getPassword());
         assertTrue(status > 0);
-        assertTrue(closeStore(ui.getUserId(), stores.get(0).getStoreId()) > 0);
+        assertTrue(closeStore(ui.getUserId(), stores.get(0).getStoreId()));
         allStores = this.getAllStores();
         assertNotNull(allStores);
         assertEquals(stores.size() -1, allStores.size());
@@ -209,7 +215,7 @@ public class AdminTest extends ProjectTest {
         List<AdminInfo> allAdmins = this.getAllAdmins(adminId);
         assertNotNull(allAdmins);
         assertEquals(admins_dict.size(), allAdmins.size());
-        int status = this.addAdmin(adminId, "admin2", "admin2");
+        int status = this.addAdmin(adminId, "admin2@gmail.com", "Admin2");
         assertTrue(status > 0);
         allAdmins = this.getAllAdmins(adminId);
         assertNotNull(allAdmins);

@@ -12,9 +12,11 @@ public class WSEPService extends ExternalService implements PaymentAdapter, Supp
     private final int MAX_TRANSACTION_ID =  100000;
     private final int MIN_TRANSACTION_ID =  10000;
     private final int FAILED =  -1;
+    private boolean available;
 
     public WSEPService() throws Exception {
         super("https://php-server-try.000webhostapp.com/");
+        available = false;
     }
 
     @Override
@@ -23,7 +25,7 @@ public class WSEPService extends ExternalService implements PaymentAdapter, Supp
     }
 
     @Override
-    public int makePurchase(JSONObject userDetails) throws Exception {
+    public int makePurchase(JSONObject userDetails, double price) throws Exception {
         int result;
         String cardNumber = userDetails.get("cardNumber").toString();
         String month = userDetails.get("month").toString();
@@ -54,12 +56,22 @@ public class WSEPService extends ExternalService implements PaymentAdapter, Supp
 
 
     @Override
+    public boolean isAvailable() {
+        return available;
+    }
+
+    @Override
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    @Override
     public void orderSupplies(int storeId, int productId, int quantity) throws Exception {
 
     }
 
     @Override
-    public int orderSupplies(JSONObject supplyContent) throws Exception {
+    public int orderSupplies(JSONObject supplyContent, ShoppingCart cart) throws Exception {
         int result;
         String name = supplyContent.get("name").toString();
         String address = supplyContent.get("address").toString();

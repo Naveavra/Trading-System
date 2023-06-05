@@ -12,17 +12,16 @@ public class ExternalService {
     private URL url;
 
     public ExternalService(String url) throws Exception {
-        //TODO: "https://php-server-try.000webhostapp.com/"
         this.url = new URL(url);
         handshake();
     }
 
     public void handshake() throws Exception {
-        openConnection();
+//        openConnection();
         // Create the HttpURLConnection object
         Request handshakeRequest = new Request("handshake");
         sendRequest(handshakeRequest);
-        closeConnection();
+//        closeConnection();
     }
 
     public void openConnection() throws IOException {
@@ -40,6 +39,12 @@ public class ExternalService {
     }
 
     public int sendRequest(Request request) throws Exception {
+        // Create the HttpURLConnection object
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        connection.setDoOutput(true);
+
         OutputStream outputStream = connection.getOutputStream();
         outputStream.write(request.toBytes());
         outputStream.flush();
@@ -52,8 +57,9 @@ public class ExternalService {
         while ((response = reader.readLine()) != null) {
             sb.append(response);
         }
+        response = sb.toString();
         reader.close();
-
+        connection.disconnect();
         if (responseCode == HttpURLConnection.HTTP_OK) {
             if(request.isHandshake())
             {
@@ -63,8 +69,6 @@ public class ExternalService {
         } else {
             throw new Exception("Error: " + responseCode);
         }
+
     }
-
-
-
 }

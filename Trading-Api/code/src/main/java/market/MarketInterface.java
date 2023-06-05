@@ -2,9 +2,11 @@ package market;
 
 import domain.store.storeManagement.Store;
 import domain.user.PurchaseHistory;
+import org.json.JSONObject;
 import utils.infoRelated.Information;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
+import utils.infoRelated.Receipt;
 import utils.messageRelated.NotificationOpcode;
 
 import java.util.HashMap;
@@ -23,7 +25,6 @@ public interface MarketInterface {
     public Response removeProductFromCart(int userId,  int storeId, int productId);
     public Response changeQuantityInCart(int userId, int storeId, int productId, int change);
     Response<String> removeCart(int userId);
-    public Response makePurchase(int userId , String accountNumber);
 
 
     //TODO: will change when miki adds all changes
@@ -36,6 +37,9 @@ public interface MarketInterface {
     Response<LoginInformation> getMember(int userId, String token);
     public Response displayNotifications(int userId, String token);
     public Response logout(int userId);
+
+    Response<Receipt> makePurchase(int userId, JSONObject payment, JSONObject supplier);
+
     public Response changeMemberAttributes(int userId, String token, String newEmail, String newBirthday);
 
     Response<String> changeMemberPassword(int userId, String token, String newEmail, String newBirthday);

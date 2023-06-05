@@ -2,6 +2,7 @@ package junit;
 
 import data.CartInfo;
 import data.UserInfo;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MemberTest extends ProjectTest{
     private static final int ERROR = -1;
+    private JSONObject payment = createPaymentJson();
+    private JSONObject supplier = createSupplierJson();
 
     @Override
     @BeforeEach
@@ -80,7 +83,7 @@ public class MemberTest extends ProjectTest{
         assertNotNull(ci);
         assertTrue(ci.getCountOfProduct() > 0);
         //make purchase
-        status  = makePurchase(buyer.getUserId(), "00000000000");
+        status  = makePurchase(buyer.getUserId(), payment, supplier);
         assertTrue(status > 0);
     }
 
@@ -103,7 +106,7 @@ public class MemberTest extends ProjectTest{
         status = this.replaceExternalPaymentService(mainAdmin.getAdminId(), "Apple Pay");
         assertTrue(status > 0);
         //make purchase
-        status  = makePurchase(buyer.getUserId(), "00000000000");
+        status  = makePurchase(buyer.getUserId(), payment, supplier);
         assertTrue(status < 0);
     }
 
@@ -126,7 +129,7 @@ public class MemberTest extends ProjectTest{
         status = this.replaceExternalSupplierService(mainAdmin.getAdminId(), "UPS");
         assertTrue(status > 0);
         //make purchase
-        status  = makePurchase(buyer.getUserId(), "00000000000");
+        status  = makePurchase(buyer.getUserId(), payment, supplier);
         assertTrue(status < 0);
     }
 
@@ -153,8 +156,8 @@ public class MemberTest extends ProjectTest{
         assertNotNull(ci);
         assertTrue(ci.getCountOfProduct() > 0);
         //make purchase
-        int status1 = makePurchase(buyer1.getUserId(), "00000000000");
-        int status2 = makePurchase(buyer2.getUserId(), "33333333333");
+        int status1 = makePurchase(buyer1.getUserId(), payment, supplier);
+        int status2 = makePurchase(buyer2.getUserId(), payment, supplier);
         assertNotEquals(status1, status2);
     }
 
@@ -183,10 +186,10 @@ public class MemberTest extends ProjectTest{
         //make purchase
         AtomicInteger i = new AtomicInteger();
         Thread t1 = new Thread(() -> {
-            i.addAndGet(makePurchase(buyer1.getUserId(), "00000000000"));
+            i.addAndGet(makePurchase(buyer1.getUserId(), payment, supplier));
         });
         Thread t2 = new Thread(() -> {
-            i.addAndGet(makePurchase(buyer2.getUserId(), "33333333333"));
+            i.addAndGet(makePurchase(buyer2.getUserId(), payment, supplier));
         });
         t1.start();
         t2.start();
