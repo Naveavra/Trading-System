@@ -10,7 +10,6 @@ import data.*;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -263,6 +262,10 @@ public abstract class ProjectTest{
 
     public int login(String email, String password) {
         return bridge.login(email, password);
+    }
+
+    public LoginData loginAndGetData(String email, String password) {
+        return bridge.loginAndGetData(email, password);
     }
 
     public int adminLogin(String email, String password) {

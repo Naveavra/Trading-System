@@ -1,9 +1,6 @@
 package junit;
 
-import data.AdminInfo;
-import data.ProductInfo;
-import data.StoreInfo;
-import data.UserInfo;
+import data.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,6 +61,7 @@ public class StoreTest extends ProjectTest{
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
         assertTrue(ui.getUserId() > 0);
     }
+
 
     @Test
     private void isGoodLogout(UserInfo ui)

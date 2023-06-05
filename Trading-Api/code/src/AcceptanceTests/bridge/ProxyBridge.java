@@ -48,6 +48,13 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
+    public LoginData loginAndGetData(String email, String password) {
+        if (real != null)
+            return real.loginAndGetData(email, password);
+        return null;
+    }
+
+    @Override
     public int logout(int user) {
         if (real != null)
             return real.logout(user);

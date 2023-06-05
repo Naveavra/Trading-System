@@ -5,12 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/data/LoginData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/work1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/work1.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +80,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.StoreOwnerTest.testAlertAppointmentLogoutManagerInStore">
+  <component name="RunManager" selected="JUnit.StoreOwnerTest.testAppointmentAlertLogoutOwnerInStore">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -157,7 +159,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StoreOwnerTest.testAppointmentAlertOwnerInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="StoreOwnerTest.testAppointmentAlertLogoutOwnerInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -167,7 +169,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="junit" />
       <option name="MAIN_CLASS_NAME" value="junit.StoreOwnerTest" />
-      <option name="METHOD_NAME" value="testAppointmentAlertOwnerInStore" />
+      <option name="METHOD_NAME" value="testAppointmentAlertLogoutOwnerInStore" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -180,15 +182,15 @@
       <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" />
       <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentManagerInStore" />
       <item itemvalue="JUnit.StoreOwnerTest.testAlertReopenStore" />
-      <item itemvalue="JUnit.StoreOwnerTest.testAppointmentAlertOwnerInStore" />
+      <item itemvalue="JUnit.StoreOwnerTest.testAppointmentAlertLogoutOwnerInStore" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.StoreOwnerTest.testAppointmentAlertLogoutOwnerInStore" />
         <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" />
+        <item itemvalue="JUnit.StoreOwnerTest" />
         <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentManagerInStore" />
         <item itemvalue="JUnit.StoreOwnerTest.testAlertReopenStore" />
-        <item itemvalue="JUnit.StoreOwnerTest.testAppointmentAlertOwnerInStore" />
-        <item itemvalue="JUnit.StoreOwnerTest" />
       </list>
     </recent_temporary>
   </component>
@@ -243,6 +245,11 @@
           <url>file://$PROJECT_DIR$/test/java/market/AdminTest.java</url>
           <line>27</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java</url>
+          <line>578</line>
+          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
