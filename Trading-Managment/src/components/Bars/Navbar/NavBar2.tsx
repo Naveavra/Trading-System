@@ -159,12 +159,12 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                                 <span>{numProductsIncart}</span>
                             </div>
                         </IconButton>
-                        <IconButton sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate('/dashboard/sendMsg')}>
+                        {/* <IconButton sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate('/dashboard/sendMsg')}>
                             <MessageIcon />
                         </IconButton>
                         <IconButton sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate('/dashboard/sendComplaint')}>
                             <RateReviewIcon />
-                        </IconButton>
+                        </IconButton> */}
                     </Toolbar>
                 </AppBar>
             </Box >

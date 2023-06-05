@@ -35,14 +35,13 @@ const AppointUser: React.FC<props> = ({ role }) => {
 
 
     const handleOnClose = useCallback(() => {
-        navigate(-1);
+        navigate('/dashboard/store/superior');
         if (role != 'admin') {
             dispatch(getStore({ userId: userId, storeId: storeId }));
         }
         else {
             //dispatch(getAdminData({}))
         }
-        // navigate(-1);
     }, []);
     const validateEmail = (email: string): void => {
         const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w\+)*(\.\w{2,3})+$/;

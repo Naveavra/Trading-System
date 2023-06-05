@@ -2,9 +2,12 @@ import { Dialog, Box, Grid, Typography, Button, TextField } from "@mui/material"
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../../redux/store";
-import { addRegularDiscount, setCategoryToRegularDiscount, setDiscountTypeToRegularDiscount, setpercentageToRegularDiscount, setProductIdToRegularDiscount, setSourceToRegularDiscount } from "../../../reducers/discountSlice";
+import { addRegularDiscount, addRegularDiscountToSource, setCategoryToRegularDiscount, setDiscountTypeToRegularDiscount, setpercentageToRegularDiscount, setProductIdToRegularDiscount, setSourceForPredicate, setSourceToRegularDiscount } from "../../../reducers/discountSlice";
 
-const regularDiscount = () => {
+interface props {
+    tree: boolean;
+}
+const regularDiscount: React.FC<props> = ({ tree }) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [error, setError] = useState('');
@@ -30,8 +33,8 @@ const regularDiscount = () => {
     }
     const handleSetpercentage = (input: string) => {
         const percentage = parseFloat(input);
-        if (percentage > 1 || percentage < 0) {
-            setError('percentage must be between 0 to 1');
+        if (percentage > 100 || percentage < 0) {
+            setError('percentage must be between 0 to 100');
         }
         else {
             setError('');
@@ -60,18 +63,34 @@ const regularDiscount = () => {
         dispatch(setCategoryToRegularDiscount(input));
     }
     const handleOnSubmit = () => {
-        dispatch(addRegularDiscount({
-            storeId: userId,
-            userId: storeId,
-            percentage: percentage,
-            discountType: discountType,
-            prodId: prodId,
-            discountedCategory: discountedCategory,
-            predicates: predicates,
-        }));
-        navigate("dashboard/store/superior");
+        debugger;
+        if (tree) {
+            dispatch(addRegularDiscountToSource({
+                source: sorce,
+                storeId: userId,
+                userId: storeId,
+                percentage: percentage,
+                discountType: discountType,
+                prodId: prodId,
+                discountedCategory: discountedCategory,
+                predicates: predicates,
+            }));
+        }
+        else {
+            dispatch(addRegularDiscount({
+                storeId: userId,
+                userId: storeId,
+                percentage: percentage,
+                discountType: discountType,
+                prodId: prodId,
+                discountedCategory: discountedCategory,
+                predicates: predicates,
+            }));
+        }
+        navigate(-1);
     };
     const handleAddPredicate = () => {
+        dispatch(setSourceForPredicate(sorce));
         navigate("addPredicate");
     }
 
@@ -95,7 +114,26 @@ const regularDiscount = () => {
                 }}
             >
 
-                <Grid item xs={12}>
+                {tree ?
+                    <>
+                        <Grid item xs={12} sx={{ mt: 2 }}>
+                            <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
+                                enter percentage
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                required
+                                id="outlined-required"
+                                label="root source"
+                                error={error != ''}
+                                onChange={(e) => { handleSetSource(e.target.value) }}
+                            />
+                        </Grid>
+                    </>
+                    : null
+                }
+                <Grid item xs={12} sx={{ mt: 2 }}>
                     <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
                         enter percentage
                     </Typography>
@@ -179,6 +217,18 @@ const regularDiscount = () => {
                         >
                             add predicate
                         </Button>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
+                            onClick={handleOnSubmit}
+                        >
+                            submit
+                        </Button>
+                    </Box> : null}
+                {predicates.length > 0 ?
+                    <Box display={'flex'}>
                         <Button
                             type="submit"
                             fullWidth

@@ -2,7 +2,7 @@ import { Action, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiError, ApiListData, ApiResponse } from "../types/apiTypes";
 
 import { storeApi } from "../api/storeApi";
-import { AppointUserParams, DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams, fireUserParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
+import { AnswerQuestionParams, AppointUserParams, DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams, fireUserParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
 import { Store, emptyStore } from "../types/systemTypes/Store";
 import { StoreInfo, emptyStoreInfo } from "../types/systemTypes/StoreInfo";
 import { store } from "../redux/store";
@@ -20,7 +20,7 @@ interface StoreState {
         wahtchedStoreInfo: StoreInfo;
     },
     isLoading: boolean;
-    storeInfoResponseData: ApiListData<StoreInfo>;
+    storeInfoResponseData: StoreInfo[];
     error: string | null;
 };
 
@@ -78,14 +78,14 @@ export const deleteStore = createAsyncThunk<
     });
 
 export const getStoresInfo = createAsyncThunk<
-    ApiListData<StoreInfo>,
+    StoreInfo[],
     void,
     { rejectValue: ApiError }
 >(
     `${reducerName}/get`,
     async (_, thunkApi) => {
         return storeApi.getStoresInfo()
-            .then((res) => thunkApi.fulfillWithValue(res as ApiListData<StoreInfo>))
+            .then((res) => thunkApi.fulfillWithValue(res as StoreInfo[]))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 //get store
@@ -159,7 +159,20 @@ export const patchPermissions = createAsyncThunk<
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
-//TODO complete the other functions as well
+
+
+export const answerQuestion = createAsyncThunk<
+    string,
+    AnswerQuestionParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/questions/answer`,
+    async (params, thunkApi) => {
+        return storeApi.amswerQuestion(params)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+
 
 const { reducer: storesReducer, actions: storesActions } = createSlice({
     name: reducerName,
@@ -172,7 +185,8 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.storeState.error = null;
         },
         setWhatchedStoreInfo: (state, action) => {
-            state.storeState.wahtchedStoreInfo = state.storeInfoResponseData.find((storeInfo) => storeInfo.id === action.payload) ?? emptyStoreInfo;
+            debugger;
+            state.storeState.wahtchedStoreInfo = state.storeInfoResponseData.find((storeInfo) => storeInfo.storeId === action.payload) ?? emptyStoreInfo;
         },
         clearStoresResponse: (state, action) => {
             state.storeState.responseData = null;
@@ -306,6 +320,20 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.storeState.isLoading = false;
             state.storeState.responseData = payload;
         });
+        //answerQuestion
+        builder.addCase(answerQuestion.pending, (state) => {
+            state.storeState.isLoading = true;
+            state.storeState.error = null;
+        });
+        builder.addCase(answerQuestion.rejected, (state, { payload }) => {
+            state.storeState.error = payload?.message.data ?? "error during getStore";
+            state.storeState.isLoading = false;
+        });
+        builder.addCase(answerQuestion.fulfilled, (state, { payload }) => {
+            state.storeState.isLoading = false;
+            state.storeState.responseData = payload;
+        });
+
     }
 });
 

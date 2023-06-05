@@ -11,7 +11,7 @@ export enum Action {
     addDiscountConstraint = "add discount constraint", // manager, owner, creator //todo 
 
     viewMessages = "view messages", // manager, owner, creator //todo
-    answerMessage = "view messages", // manager, owner, creator //todo
+    answerMessage = "answer message", // manager, owner, creator //todo
     seeStoreHistory = "see store history", // manager, owner, creator //todo
     seeStoreOrders = "see store orders", // manager,owner,creator //todo
     checkWorkersStatus = "check workers status", // manager, owner, creator //todo

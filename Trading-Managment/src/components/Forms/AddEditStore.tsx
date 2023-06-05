@@ -1,18 +1,16 @@
 import { LoadingButton } from "@mui/lab";
 import { Dialog, Box, Grid, Typography, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { clearProductError, getProducts } from "../../reducers/productsSlice";
+import { clearProductError } from "../../reducers/productsSlice";
 import { storeFormValues } from "../../types/formsTypes";
-import error from "../Alerts/error";
 import AlertDialog from "../Dialog/AlertDialog";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
-import { postStore, patchStore, getStore, getStoresInfo } from "../../reducers/storesSlice";
+import { postStore, patchStore, getStore } from "../../reducers/storesSlice";
 import { Action } from "../../types/systemTypes/Action";
 import axios from "axios";
-import { getClientData, getNotifications } from "../../reducers/authSlice";
-import { getCart } from "../../reducers/cartSlice";
+import { getClientData } from "../../reducers/authSlice";
 
 interface storeProps {
     mode: 'add' | 'edit';
@@ -20,10 +18,8 @@ interface storeProps {
 const AddEditStore: React.FC<storeProps> = ({ mode }) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const [open, setOpen] = useState(true);
     const form = useForm<storeFormValues>();
 
-    const token = useAppSelector((state: RootState) => state.auth.token);
     const required = (() => { return mode === 'add' ? true : false })();
     const userId = useAppSelector((state: RootState) => state.auth.userId);
     const isLoading = useAppSelector((state: RootState) => state.store.isLoading);
@@ -51,7 +47,13 @@ const AddEditStore: React.FC<storeProps> = ({ mode }) => {
         handleOnClose();
     }
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard');
+        if (mode === 'add') {
+            navigate('/dashboard');
+        }
+        else {
+            navigate('/dashboard/store/superior');
+        }
+
         dispatch(getClientData({ userId: userId }));
         dispatch(getStore({ userId: userId, storeId: store_id }));
     }, []);
