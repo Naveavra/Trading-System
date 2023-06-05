@@ -36,6 +36,7 @@ const ReviewOnStore = () => {
     const handleOnSubmit = () => {
         form.setValue("userId", userId);
         form.setValue("rating", value);
+        form.setValue("orderId", orderId);
         dispatch(writeReview(form.getValues()));
         handleOnClose();
     }

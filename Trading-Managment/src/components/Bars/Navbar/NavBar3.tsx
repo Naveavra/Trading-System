@@ -54,11 +54,13 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
     }) : [];
 
 
-    const storeInfo = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const handleLogout = () => {
+        debugger;
         dispatch(logout(userId));
+        debugger;
+        navigate('/auth/login');
         navigate('/auth/login');
     };
     const handleChooseStore = (storeNumber: number) => () => {

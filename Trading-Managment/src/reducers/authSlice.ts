@@ -63,6 +63,29 @@ const initialState: AuthState = {
     purchaseHistory: [],
     whatchedOrder: emptyOrder,
 };
+const cleanState: AuthState = {
+    token: '',
+    userId: 0,
+    userName: '',
+    isAdmin: false,
+    birthday: '',
+    age: 0,
+    notifications: [],
+    message: null,
+    hasQestions: false,
+    storeRoles: [],
+    storeNames: [],
+    storeImgs: [],
+    permissions: [],
+    error: null,
+    isLoading: false,
+    isLoginLoading: false,
+    isRegisterLoading: false,
+    isLogoutLoading: false,
+    opcode: 0,
+    purchaseHistory: [],
+    whatchedOrder: emptyOrder,
+};
 
 export const login = createAsyncThunk<
     { rememberMe: boolean, responseBody: TokenResponseBody },
@@ -214,6 +237,9 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             debugger;
             state.whatchedOrder = state.purchaseHistory?.find((order) => order.orderId === action.payload) ?? emptyOrder;
         },
+        resetAuth: () => {
+            return cleanState;
+        }
 
     },
     extraReducers: builder => {
@@ -288,10 +314,17 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             window.localStorage.removeItem(localStorage.auth.token.name);
             window.localStorage.removeItem(localStorage.auth.userId.name);
             window.localStorage.removeItem(localStorage.auth.userName.name);
+            state.token = "";
+            state.userId = 0;
+            state.userName = '';
             state.message = payload;
+            debugger;
             // window.localStorage.removeItem(localStorage.auth.isAdmin.name);
         });
         builder.addCase(logout.rejected, (state, { payload }) => {
+            state.token = "";
+            state.userId = 0;
+            state.userName = '';
             state.isLogoutLoading = false;
             state.error = payload?.message.data ?? "error during logout";
         });
@@ -406,5 +439,5 @@ const { reducer: authReducer, actions: authActions } = createSlice({
     }
 });
 // Action creators are generated for each case reducer function
-export const { clearAuthError, clearAuthMsg, clearNotifications, setWatchedOrder } = authActions;
+export const { clearAuthError, clearAuthMsg, resetAuth, clearNotifications, setWatchedOrder } = authActions;
 export default authReducer;

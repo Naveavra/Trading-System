@@ -479,10 +479,9 @@ public class Market implements MarketInterface {
 
 
     @Override
-    public Response<String> sendQuestion(int userId, String token, String storeName, String msg) {
+    public Response<String> sendQuestion(int userId, String token, int storeId, String msg) {
         try {
             userAuth.checkUser(userId, token);
-            int storeId = marketController.getStoreId(storeName);
             Question q = userController.sendQuestionToStore(userId, storeId, msg);
             int creatorId = marketController.addQuestion(q);
             addNotification(creatorId, NotificationOpcode.QUESTION, "a question of has been added for store: " + storeId);

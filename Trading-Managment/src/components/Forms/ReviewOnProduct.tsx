@@ -37,6 +37,7 @@ const ReviewOnProduct = () => {
         form.setValue("userId", userId);
         form.setValue("storeId", storeId);
         form.setValue("productId", productId);
+        form.setValue("orderId", orderId);
         form.setValue("rating", value);
         dispatch(writeReviewOnProduct(form.getValues()));
         handleOnClose();

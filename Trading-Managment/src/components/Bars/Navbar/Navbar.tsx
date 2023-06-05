@@ -17,7 +17,6 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import MessageIcon from '@mui/icons-material/Message';
-import RateReviewIcon from '@mui/icons-material/RateReview';
 
 interface Props {
     headLine: string;
@@ -127,11 +126,6 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                             <IconButton onClick={() => navigate('/dashboard/sendMsg')}>
                                 <MessageIcon />
                             </IconButton>
-                            <IconButton onClick={() => navigate('/dashboard/sendComplaint')}>
-                                <RateReviewIcon />
-                            </IconButton>
-
-
                             <Dialog
                                 open={profileDialogOpen}
                                 onClose={() => {

@@ -19,7 +19,7 @@ export const adminApi = {
         apiErrorHandlerWrapper(getApiClient().post(`api/admin/complaints/answer`, credentials)),
 
     adminResign: (credentials: number): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().post(`api/admin/resign`, { adminId: credentials })),
+        apiErrorHandlerWrapper(getApiClient().post(`api/admin/remove`, { adminId: credentials })),
 
     closeStorePerminently: (credentials: closeStorePerminentlyParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/admin/closeStorePermanently`, credentials)),

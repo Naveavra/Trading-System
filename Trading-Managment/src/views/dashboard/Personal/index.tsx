@@ -8,7 +8,8 @@ import { clearAuthError, clearAuthMsg, setWatchedOrder } from "../../../reducers
 import PasswordIcon from '@mui/icons-material/Password';
 import SuccessAlert from "../../../components/Alerts/success";
 import ErrorAlert from "../../../components/Alerts/error";
-
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import InfoIcon from '@mui/icons-material/Info';
 const Personal = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -20,7 +21,6 @@ const Personal = () => {
     const userMessage = useAppSelector((state) => state.auth.message);
     const userError = useAppSelector((state) => state.auth.error);
     const orders = useAppSelector((state) => state.auth.purchaseHistory);
-    const stores = useAppSelector((state) => state.store.storeInfoResponseData);
 
     const handleClickOrder = (orderId: number) => {
         dispatch(setWatchedOrder(orderId));
@@ -70,7 +70,7 @@ const Personal = () => {
             {
                 orders?.map((order, index) => {
                     return (
-                        <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index} onClick={() => handleClickOrder(order.orderId)}>
+                        <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index}>
                             <CardContent>
                                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                     orderId:  {order.orderId}
@@ -82,6 +82,14 @@ const Personal = () => {
                                     quntity:  {order.products.length}
                                 </Typography>
                             </CardContent>
+                            <CardActions>
+                                <IconButton onClick={() => handleClickOrder(order.orderId)}>
+                                    <InfoIcon />
+                                </IconButton>
+                                <IconButton onClick={() => navigate(`${order.orderId}/sendComplaint`)}>
+                                    <RateReviewIcon />
+                                </IconButton>
+                            </CardActions>
                         </Card>
                     )
                 })

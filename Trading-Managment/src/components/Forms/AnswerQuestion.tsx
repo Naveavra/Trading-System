@@ -6,8 +6,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { answerQuestionFormValues } from "../../types/formsTypes";
 import AlertDialog from "../Dialog/AlertDialog";
-import { answerComplaint, clearError, getComplaints } from "../../reducers/adminSlice";
-import { answerQuestion, clearStoreError } from "../../reducers/storesSlice";
+import { answerComplaint, getComplaints } from "../../reducers/adminSlice";
+import { answerQuestion, clearStoreError, getStore } from "../../reducers/storesSlice";
 
 const AnswerQuestion = () => {
     const navigate = useNavigate();
@@ -30,7 +30,7 @@ const AnswerQuestion = () => {
     //maybe take it from params
     const handleOnClose = useCallback(() => {
         navigate('/dashboard/store/superior/viewmessages');
-        dispatch(getComplaints(userId));
+        dispatch(getStore({ userId: userId, storeId: storeId }));
     }, []);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);

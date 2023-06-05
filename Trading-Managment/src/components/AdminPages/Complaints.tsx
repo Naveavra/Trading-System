@@ -101,13 +101,9 @@ const Complaints = () => {
                 getActions: ({ id }) => {
                     return [
                         <GridActionsCellItem
-                            icon={<DeleteIcon />}
-                            label="Delete"
-                            onClick={handleDeleteClick(id)}
-                            color="inherit"
-                        />,
-                        <GridActionsCellItem
                             icon={<Dehaze />}
+
+                            disabled={complaints.find((complaint) => complaint.id === id)?.gotFeedback}
                             label="data"
                             onClick={handleShowInfo(id)}
                             color="inherit"

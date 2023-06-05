@@ -72,7 +72,6 @@ const StoreMessages = () => {
     };
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        dispatch(getComplaints(user));
 
         // Stop the ping interval when the user leaves the app
         return () => {
@@ -123,7 +122,7 @@ const StoreMessages = () => {
                             label="data"
                             onClick={handleShowInfo(id)}
                             color="inherit"
-                            disabled={!canAnswer}
+                            disabled={!canAnswer || qestions.find((qestion) => qestion.id === id)?.gotFeedback}
                         />,
                     ];
                 },
