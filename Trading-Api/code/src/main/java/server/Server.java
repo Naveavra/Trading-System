@@ -32,6 +32,31 @@ public class Server {
         }
     }
 
+    private static JSONObject getPaymentDetails(JSONObject req)
+    {
+        JSONObject payment = new JSONObject();
+        payment.put("payment_service", req.get("payment_service").toString());
+        payment.put("cardNumber", req.get("cardNumber").toString());
+        payment.put("month", req.get("month").toString());
+        payment.put("year", req.get("year").toString());
+        payment.put("holder", req.get("holder").toString());
+        payment.put("ccv", req.get("ccv").toString());
+        payment.put("id", req.get("id").toString());
+        return payment;
+    }
+
+    private static JSONObject getSupplierDetails(JSONObject req)
+    {
+        JSONObject supplier = new JSONObject();
+        supplier.put("supply_service", req.get("supply_service").toString());
+        supplier.put("name", req.get("name").toString());
+        supplier.put("address", req.get("address").toString());
+        supplier.put("city", req.get("city").toString());
+        supplier.put("country", req.get("country").toString());
+        supplier.put("zip", req.get("zip").toString());
+        return supplier;
+    }
+
 
     public static void main(String[] args) {
         init();
@@ -336,8 +361,7 @@ public class Server {
             //buycart
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
-            String accountNumber = request.get("accountNumber").toString();
-            toSparkRes(res, api.makePurchase(userId, accountNumber));
+            toSparkRes(res, api.makePurchase(userId, getPaymentDetails(request), getSupplierDetails(request)));
             return res.body();
         });
 
