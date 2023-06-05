@@ -5,14 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/data/LoginData.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/PaymentAdapterMock.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/SupplierAdapterMock.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/MemberTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ProxyPayment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ProxyPayment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ProxySupplier.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ProxySupplier.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +80,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.StoreOwnerTest.testAppointmentAlertLogoutOwnerInStore">
+  <component name="RunManager" selected="JUnit.MemberTest.testPurchaseFromUnAvailableSSCart">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -96,7 +96,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StoreOwnerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="MemberTest.testPurchaseFromUnAvailablePSCart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -105,13 +105,45 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.StoreOwnerTest" />
+      <option name="MAIN_CLASS_NAME" value="junit.MemberTest" />
+      <option name="METHOD_NAME" value="testPurchaseFromUnAvailablePSCart" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MemberTest.testPurchaseFromUnAvailableSSCart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="junit.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.MemberTest" />
+      <option name="METHOD_NAME" value="testPurchaseFromUnAvailableSSCart" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SystemTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="junit.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemTests.testRemoveExternalSupplierService" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -120,57 +152,17 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.StoreOwnerTest" />
-      <option name="METHOD_NAME" value="testAlertAppointmentLogoutManagerInStore" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
+      <option name="METHOD_NAME" value="testRemoveExternalSupplierService" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StoreOwnerTest.testAlertAppointmentManagerInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="junit in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="junit.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.StoreOwnerTest" />
-      <option name="METHOD_NAME" value="testAlertAppointmentManagerInStore" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="StoreOwnerTest.testAlertReopenStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="junit.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.StoreOwnerTest" />
-      <option name="METHOD_NAME" value="testAlertReopenStore" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="StoreOwnerTest.testAppointmentAlertLogoutOwnerInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="junit.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.StoreOwnerTest" />
-      <option name="METHOD_NAME" value="testAppointmentAlertLogoutOwnerInStore" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/AcceptanceTests/junit" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -178,19 +170,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
-      <item itemvalue="JUnit.StoreOwnerTest" />
-      <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" />
-      <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentManagerInStore" />
-      <item itemvalue="JUnit.StoreOwnerTest.testAlertReopenStore" />
-      <item itemvalue="JUnit.StoreOwnerTest.testAppointmentAlertLogoutOwnerInStore" />
+      <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailablePSCart" />
+      <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailableSSCart" />
+      <item itemvalue="JUnit.SystemTests" />
+      <item itemvalue="JUnit.SystemTests.testRemoveExternalSupplierService" />
+      <item itemvalue="JUnit.junit in work1" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.StoreOwnerTest.testAppointmentAlertLogoutOwnerInStore" />
-        <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" />
-        <item itemvalue="JUnit.StoreOwnerTest" />
-        <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentManagerInStore" />
-        <item itemvalue="JUnit.StoreOwnerTest.testAlertReopenStore" />
+        <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailableSSCart" />
+        <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailablePSCart" />
+        <item itemvalue="JUnit.junit in work1" />
+        <item itemvalue="JUnit.SystemTests" />
+        <item itemvalue="JUnit.SystemTests.testRemoveExternalSupplierService" />
       </list>
     </recent_temporary>
   </component>
@@ -251,7 +243,22 @@
           <line>578</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java</url>
+          <line>52</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java</url>
+          <line>96</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="JUnit">
+        <watch expression="!supplierServices.containsKey(supplierAdapter)" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

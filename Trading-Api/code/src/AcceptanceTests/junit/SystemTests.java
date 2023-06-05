@@ -4,6 +4,11 @@ import data.UserInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import service.ExternalService.Payment.PaymentAdapter;
+import service.ExternalService.Payment.PaymentAdapterMock;
 
 import java.util.List;
 
@@ -12,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SystemTests extends ProjectTest{
 
     private final String ERROR = "ERROR";
-    private String[] externalPaymentServices = {"Google Pay", "Apple Pay"};
-    private String[] externalSupplierServices = {"DHL", "UPS"};
+    private String[] externalPaymentServices = {"WSEP", "Mock"};
+    private String[] externalSupplierServices = {"WSEP", "Mock"};
     @Override
     @BeforeEach
     public void setUp() {

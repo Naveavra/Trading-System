@@ -335,6 +335,7 @@ public abstract class ProjectTest{
         return bridge.addExternalSupplierService(adminId, esSupplier);
     }
 
+
     public int removeExternalSupplierService(int adminId, String esSupplier)
     {
         return bridge.removeExternalSupplierService(adminId, esSupplier);
