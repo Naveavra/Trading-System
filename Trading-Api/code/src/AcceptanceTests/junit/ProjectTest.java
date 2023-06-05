@@ -82,11 +82,11 @@ public abstract class ProjectTest{
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
         ui1.setUserId(login(ui1.getEmail(), ui1.getPassword()));
         //Create Stores:
-        StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "iphone", "Phone Store", "img");
+        StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "Apple", "Phone Store", "img");
         StoreInfo newStore1 = new StoreInfo(ui.getUserId(), "nike", "Sport Store", "img");
         StoreInfo newStore2 = new StoreInfo(ui.getUserId(), "store3", "Cloth Store", "img");
         StoreInfo newStore3 = new StoreInfo(ui.getUserId(), "toysRus", "Kids Store", "img");
-        StoreInfo newStore4 = new StoreInfo(ui1.getUserId(), "samsumg", "Phone Store", "img");
+        StoreInfo newStore4 = new StoreInfo(ui1.getUserId(), "samsung", "Phone Store", "img");
         newStore0.setStoreId(createStore(newStore0));
         stores.add(newStore0);
         newStore1.setStoreId(createStore(newStore1));

@@ -43,7 +43,7 @@ public class StoreOwnerTest extends ProjectTest{
 
 
     /** TODO: Add every test also login and logout
-     * 1. Inventory management: ADD/ Remove/ Update - V & TODO Alert Test?
+     * 1. Inventory management: ADD/ Remove/ Update - V
      * 2. Change discount policy - V & TODO Alert Test?
      * 3. Change purchase policy - V & TODO Alert Test?
      * 4. Appointment Store Owner - V

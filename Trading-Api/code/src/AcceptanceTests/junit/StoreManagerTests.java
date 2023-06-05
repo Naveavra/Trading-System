@@ -1,7 +1,14 @@
 package junit;
 
+import data.LoginData;
+import data.ProductInfo;
+import data.UserInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StoreManagerTests extends ProjectTest{
 
@@ -18,9 +25,6 @@ public class StoreManagerTests extends ProjectTest{
     }
 
     /**
-     appointManager, // manager, owner, creator
-     addProduct, // manager, owner, creator
-     removeProduct, //removes a product from store
      updateProduct, //updates product fields
      changeStoreDescription, // manager, owner, creator
      changePurchasePolicy, // manager, owner, creator
@@ -43,8 +47,75 @@ public class StoreManagerTests extends ProjectTest{
      *
      **/
 
-    //Appoint Manager:
+    @Test
+    private void isGoodLogin(UserInfo ui)
+    {
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
+        assertTrue(ui.getUserId() > 0);
+    }
 
+    @Test
+    private LoginData isGoodLoginWithData(UserInfo ui)
+    {
+        LoginData data = loginAndGetData(ui.getEmail(), ui.getPassword());
+        assertNotNull(data);
+        ui.setUserId(data.getUserId());
+        assertTrue(ui.getUserId() > 0);
+        return data;
+    }
 
+    @Test
+    public void AddProductWithoutPermission()
+    {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
+        int storeId = stores.get(0).getStoreId();
+        isGoodLogin(storeOwner);
+        isGoodLogin(appointManager);
+        // TODO: write strong assert for appoint that check the roles in the store
+        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
+        assertTrue(status > 0);
+        // TODO: Remove permission add product:
+        // Add product
+        ProductInfo pi = createProduct5();
+        status = this.addProduct(appointManager.getUserId(), storeId, pi);
+        assertTrue(status < 0);
+        //TODO: Check that the product dont exist in the store
+    }
+
+    @Test
+    public void AppointManagerWithoutPermission()
+    {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointManager1 = this.users_dict.get(users[1][USER_EMAIL]);
+        UserInfo appointManager2 = this.users_dict.get(users[2][USER_EMAIL]);
+        int storeId = stores.get(0).getStoreId();
+        isGoodLogin(storeOwner);
+        isGoodLogin(appointManager1);
+        // TODO: write strong assert for appoint that check the roles in the store
+        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager1.getEmail());
+        assertTrue(status > 0);
+        // TODO: Remove permission of appoint manger to appointManager1:
+        status = this.appointmentManagerInStore(appointManager1.getUserId(), storeId, appointManager2.getEmail());
+        assertTrue(status > 0);
+    }
+
+    @Test
+    public void RemoveProductWithoutPermission()
+    {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
+        int storeId = stores.get(0).getStoreId();
+        isGoodLogin(storeOwner);
+        isGoodLogin(appointManager);
+        // TODO: write strong assert for appoint that check the roles in the store
+        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
+        assertTrue(status > 0);
+        // TODO: Remove permission add product:
+        // Remove product
+        // TODO: status = this.removeProduct(appointManager.getUserId(), storeId, pi);
+        assertTrue(status < 0);
+        //TODO: Check that the product dont exist in the store
+    }
 
 }
