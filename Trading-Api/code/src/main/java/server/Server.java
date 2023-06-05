@@ -491,7 +491,7 @@ public class Server {
             return res.body();
         });
 
-        post("api/stores/:storeId", (req, res)-> {
+        post("api/admin/stores/:storeId", (req, res)-> {
             JSONObject request = new JSONObject(req.body());
             int adminId = Integer.parseInt(request.get("userId").toString());
             int storeId = Integer.parseInt(request.get("storeId").toString());
