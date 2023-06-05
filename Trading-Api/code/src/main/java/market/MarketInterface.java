@@ -44,7 +44,7 @@ public interface MarketInterface {
 
     Response<PurchaseHistory> getUserPurchaseHistory(int userId, String token, int buyerId);
 
-    public Response writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading);
+    public Response writeReviewToStore(int userId, String token, int orderId, String storeName, String content, int grading);
 
     Response<String> sendNotification(int userId, String token, NotificationOpcode opcode, String receiverEmail, String notify);
 
@@ -55,7 +55,7 @@ public interface MarketInterface {
     Response<Store> getStore(int userId, String token, int storeId);
     public Response getStoreProducts(int storeId);
 
-    public Response sendQuestion(int userId, String token, int storeId, String msg);
+    public Response sendQuestion(int userId, String token, String storeName, String msg);
     public Response sendComplaint(int userId, String token, int orderId, String msg);
 
     // manager methods

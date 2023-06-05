@@ -1,5 +1,6 @@
 package database.dtos;
 import jakarta.persistence.*;
+import utils.messageRelated.ProductReview;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,9 @@ public class InventoryDto {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="inventoryDto")
     private List<CategoryDto> categories;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="inventoryDto")
+    private List<ProductReviewDto> reviews;
 
     private int quantity;
 
@@ -75,12 +79,22 @@ public class InventoryDto {
         for(String category : categories)
             categoryDtos.add(new CategoryDto(this, category));
         this.categories = categoryDtos;
-    }//TODO maybe
-    //we should implement it ni the dao
+    }
 
     public int getProductId(){return productId;}
 
     public void setProductId(int id){this.productId = id;}
 
 
+    public List<ProductReviewDto> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<ProductReview> reviews) {
+        List<ProductReviewDto> productReviewDtos = new ArrayList<>();
+        for(ProductReview p : reviews)
+            productReviewDtos.add(new ProductReviewDto(this, p.getMessageId(),
+                    p.getSender().getId(), p.getContent(), p.getRating(), p.getOrderId(), p.getSeen()));
+        this.reviews = productReviewDtos;
+    }
 }

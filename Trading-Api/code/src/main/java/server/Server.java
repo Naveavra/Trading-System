@@ -270,7 +270,17 @@ public class Server {
             return res.body();
         });
 
-        post("api/stores/:storeId/answerQuestion", (req, res) -> {
+        post("api/stores/:storeName/questions/write", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            String storeName = request.get("storeName").toString();
+            String question = request.get("question").toString();
+            toSparkRes(res, api.sendQuestion(userId, token, storeName, question));
+            return res.body();
+        });
+
+        post("api/stores/:storeId/questions/answers", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
@@ -408,24 +418,24 @@ public class Server {
         });
 
         //reviews and questions for store
-        post("api/auth/messages/:storeId", (req, res) -> {
+        post("api/stores/:storeName/reviews/write", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt((request.get("userId").toString()));
             String token = req.headers("Authorization");
             int orderId = Integer.parseInt(request.get("orderId").toString());
-            int storeId = Integer.parseInt(request.get("storeId").toString());
+            String storeName = request.get("storeName").toString();
             String content = request.get("content").toString();
             int rating = Integer.parseInt(request.get("rating").toString());
-            toSparkRes(res, api.writeReviewToStore(userId, token, orderId, storeId, content, rating));
+            toSparkRes(res, api.writeReviewToStore(userId, token, orderId, storeName, content, rating));
             return res.body();
         });
 
-        post("api/auth/messages/:storeId/:productId", (req, res) -> {
+        post("api/stores/:storeName/:productId/reviews/write", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt((request.get("userId").toString()));
             String token = req.headers("Authorization");
             int orderId = Integer.parseInt(request.get("orderId").toString());
-            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int storeId = Integer.parseInt(request.get("storeName").toString());
             int productId = Integer.parseInt(request.get("productId").toString());
             String content = request.get("content").toString();
             int rating = Integer.parseInt(request.get("rating").toString());

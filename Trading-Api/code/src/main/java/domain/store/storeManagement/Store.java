@@ -422,7 +422,7 @@ public class Store extends Information{
         return purchasePolicies;
     }
 
-    public List<Message> getAllQuestions(){
+    public List<Question> getAllQuestions(){
         return new ArrayList<>(questions.values());
     }
     public List<Message> getQuestions() {

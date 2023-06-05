@@ -3,23 +3,23 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "storeReviews")
-public class StoreReviewsDto {
+public class StoreReviewDto {
 
     @Id
     private int reviewId;
+    private int orderId;
+    private int reviewerId;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "storeId", foreignKey = @ForeignKey, referencedColumnName = "storeId")
     private StoreDto storeDto;
-    private int reviewerId;
     private String content;
     private int rating;
-    private int orderId; //TODO we should change it so it will point to the orders table
     private boolean seen;
-    public StoreReviewsDto(){}
-    public StoreReviewsDto(StoreDto storeDto, int reviewId, int reviewerId, String content, int rating,
-    int orderId, boolean seen){
+    public StoreReviewDto(){}
+    public StoreReviewDto(StoreDto storeDto, int reviewId, int reviewerId, String content, int rating,
+                          int orderId, boolean seen){
         this.storeDto = storeDto;
         this.reviewId = reviewId;
         this.reviewerId = reviewerId;

@@ -38,6 +38,7 @@ public class MemberDto {
         this.email = email;
         this.birthday = birthday;
         this.password = password;
+        stores = new ArrayList<>();
     }
 
     public int getId() {
@@ -78,17 +79,19 @@ public class MemberDto {
     public List<StoreDto> getStores(){return stores;}
 
     public void setStores(List<Store> stores) {
-        List<StoreDto> storeDtos = new ArrayList<>();
-        for(Store s : stores) {
-            StoreDto storeDto = new StoreDto(this, s.getStoreId(), s.getName(), s.getStoreDescription(), s.getImgUrl());
-            storeDtos.add(storeDto);
-            storeDto.setRoles(s.getAppHistory());
-            storeDto.setInventory(s.getProducts());
-            storeDto.setStoreDiscounts(s.getDiscounts());
-            storeDto.setStoreConstraints(s.getPurchasePolicies());
-            storeDto.setStoreReviews(new ArrayList<>(s.getStoreReviews()));
-        }
-        this.stores = storeDtos;
+        for(Store s : stores)
+            addStore(s);
+    }
+
+    public void addStore(Store s){
+        StoreDto storeDto = new StoreDto(this, s.getStoreId(), s.getName(), s.getStoreDescription(), s.getImgUrl());
+        stores.add(storeDto);
+        storeDto.setRoles(s.getAppHistory());
+        storeDto.setInventory(s.getProducts());
+        storeDto.setStoreDiscounts(s.getDiscounts());
+        storeDto.setStoreConstraints(s.getPurchasePolicies());
+        storeDto.setStoreReviews(new ArrayList<>(s.getStoreReviews()));
+        storeDto.setQuestions(new ArrayList<>(s.getAllQuestions()));
     }
 
     public void setNotifications(List<Notification> notifications) {

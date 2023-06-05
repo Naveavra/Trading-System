@@ -261,4 +261,8 @@ public class MarketController {
         storectrl.changeRegularDiscount(storeId, prodId, percentage, discountType,
                 discountedCategory, predicatesLst);
     }
+
+    public int getStoreId(String storeName) throws Exception{
+        return storectrl.getStoreId(storeName);
+    }
 }

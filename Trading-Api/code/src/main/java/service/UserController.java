@@ -1,6 +1,7 @@
 package service;
 
 import database.daos.AdminDao;
+import database.daos.ComplaintDao;
 import database.daos.MemberDao;
 import database.dtos.*;
 import domain.store.storeManagement.Store;
@@ -31,6 +32,7 @@ public class UserController {
     private ConcurrentHashMap<Integer, Complaint> complaints; //complaintId,message
     private MemberDao memberDao;
     private AdminDao adminDao;
+    private ComplaintDao complaintDao;
 
     public UserController(){
         ids = new AtomicInteger(2);
@@ -41,6 +43,7 @@ public class UserController {
         messageIds = 0;
         complaints = new ConcurrentHashMap<>();
         memberDao = new MemberDao();
+        complaintDao = new ComplaintDao();
         adminDao = new AdminDao();
     }
 
@@ -572,6 +575,20 @@ public class UserController {
 
     //database
 
+    //complaints
+    public void saveComplaintState(int complaintId) throws Exception{
+        Complaint c = getComplaint(complaintId);
+        complaintDao.saveComplaint(new ComplaintDto(c.getMessageId(), c.getOrderId(), c.getSender().getId(), c.getContent(), c.isGotFeedback(), c.getSeen()));
+    }
+    public void updateComplaintState(int complaintId) throws Exception{
+        Complaint c = getComplaint(complaintId);
+        complaintDao.updateComplaint(new ComplaintDto(c.getMessageId(), c.getOrderId(), c.getSender().getId(), c.getContent(), c.isGotFeedback(), c.getSeen()));
+    }
+
+    public ComplaintDto getComplaintDto(int id){
+        ComplaintDto c = complaintDao.getComplaintById(id);
+        return c;
+    }
     //users
     public void saveMemberState(int userId) throws Exception{
         Member m = getMember(userId);
@@ -634,10 +651,18 @@ public class UserController {
             updateMemberState(m.getId());
         for(Admin a : admins.values())
             updateAdminState(a.getId());
+        for(Complaint c : complaints.values())
+            updateComplaintState(c.getMessageId());
     }
 
     public List<Complaint> getComplaints(int userId) throws Exception{
         getActiveAdmin(userId);
         return new ArrayList<>(complaints.values());
+    }
+
+    private Complaint getComplaint(int complaintId) throws Exception{
+        if(complaints.containsKey(complaintId))
+            return complaints.get(complaintId);
+        throw new Exception("the id does not belong to any complaint");
     }
 }

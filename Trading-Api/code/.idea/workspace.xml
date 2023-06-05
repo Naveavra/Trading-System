@@ -5,63 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
+      <change afterPath="$PROJECT_DIR$/src/main/java/database/daos/ComplaintDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/ComplaintDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/ProductReviewDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/QuestionDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_classmate_1_5_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_protobuf_protobuf_java_3_21_9.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_mysql_mysql_connector_j_8_0_32.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sparkjava_spark_core_2_9_4.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sun_istack_istack_commons_runtime_4_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_smallrye_jandex_3_0_5.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_activation_jakarta_activation_api_2_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_inject_jakarta_inject_api_2_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_persistence_jakarta_persistence_api_3_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_transaction_jakarta_transaction_api_2_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_xml_bind_jakarta_xml_bind_api_4_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__javax_servlet_javax_servlet_api_3_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_12_18.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_agent_1_14_4.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_antlr_antlr4_runtime_4_10_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_angus_angus_activation_2_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_client_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_http_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_io_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_security_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_server_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_servlet_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_util_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_util_ajax_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_webapp_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_xml_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_api_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_client_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_common_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_server_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_servlet_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jaxb_jaxb_core_4_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jaxb_jaxb_runtime_4_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jaxb_txw2_4_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_common_hibernate_commons_annotations_6_0_6_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_orm_hibernate_core_6_2_3_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_logging_jboss_logging_3_5_0_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_json_json_20230227.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_all_1_9_5.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_core_5_3_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_junit_jupiter_5_3_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_objenesis_objenesis_3_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_2_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_25.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/InventoryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/InventoryDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/StoreDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/StoreDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/StoreReviewsDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/StoreReviewDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/StoreReview.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/StoreReview.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserControllerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/work1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/work1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/api/storeApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/api/storeApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/BuyCartForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/BuyCartForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/reducers/storesSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/reducers/storesSlice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/types/formsTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/types/formsTypes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/types/requestTypes/storeTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/types/requestTypes/storeTypes.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,26 +95,10 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.runServer">
+  <component name="RunManager" selected="JUnit.UserControllerTest.checkDatabase">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="APITest.getPaymentAvailableServices" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="server.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="server" />
-      <option name="MAIN_CLASS_NAME" value="server.APITest" />
-      <option name="METHOD_NAME" value="getPaymentAvailableServices" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -213,6 +162,16 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="UserControllerTest.checkDatabase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="UserControllerTest" />
+      <option name="METHOD_NAME" value="checkDatabase" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <option name="TEST_OBJECT" value="directory" />
@@ -224,19 +183,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
+      <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
       <item itemvalue="JUnit.DiscountTest,storeDiscountTest and 9 more" />
       <item itemvalue="JUnit.DiscountTest.andLogicalCompositeTest" />
       <item itemvalue="JUnit.test in work1" />
-      <item itemvalue="JUnit.APITest.getPaymentAvailableServices" />
       <item itemvalue="JUnit.APITest.getSupplierAvailableServices" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
         <item itemvalue="JUnit.test in work1" />
         <item itemvalue="JUnit.APITest.getSupplierAvailableServices" />
         <item itemvalue="JUnit.DiscountTest,storeDiscountTest and 9 more" />
         <item itemvalue="JUnit.DiscountTest.andLogicalCompositeTest" />
-        <item itemvalue="JUnit.APITest.getPaymentAvailableServices" />
       </list>
     </recent_temporary>
   </component>
@@ -256,8 +215,10 @@
       <workItem from="1685922490611" duration="93000" />
       <workItem from="1685922612042" duration="40000" />
       <workItem from="1685981301082" duration="2023000" />
-      <workItem from="1685984211015" duration="4234000" />
-      <workItem from="1685989348713" duration="1289000" />
+      <workItem from="1685984211015" duration="4850000" />
+      <workItem from="1685989196873" duration="44000" />
+      <workItem from="1685989265473" duration="3592000" />
+      <workItem from="1685993590311" duration="2808000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
