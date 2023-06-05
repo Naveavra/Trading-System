@@ -117,7 +117,7 @@ public class AdminTest extends ProjectTest {
         int adminId = this.mainAdmin.getAdminId();
         List<AdminInfo> adminInfos = this.getAllAdmins(adminId);
         assertNotNull(adminInfos);
-        int status = this.addAdmin(adminId, "admin2@gmail.com", "admin2");
+        int status = this.addAdmin(adminId, "admin2@gmail.com", "Admin2");
         assertTrue(status > 0);
         int pre = adminInfos.size();
         adminInfos = this.getAllAdmins(adminId);
@@ -209,7 +209,7 @@ public class AdminTest extends ProjectTest {
         List<AdminInfo> allAdmins = this.getAllAdmins(adminId);
         assertNotNull(allAdmins);
         assertEquals(admins_dict.size(), allAdmins.size());
-        int status = this.addAdmin(adminId, "admin2", "admin2");
+        int status = this.addAdmin(adminId, "admin2@gmail.com", "Admin2");
         assertTrue(status > 0);
         allAdmins = this.getAllAdmins(adminId);
         assertNotNull(allAdmins);
