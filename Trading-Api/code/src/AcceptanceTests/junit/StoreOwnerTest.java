@@ -46,15 +46,43 @@ public class StoreOwnerTest extends ProjectTest{
      * 1. Inventory management: ADD/ Remove/ Update - V & TODO Alert Test?
      * 2. Change discount policy - V & TODO Alert Test?
      * 3. Change purchase policy - V & TODO Alert Test?
-     * 4. Appointment Store Owner - V & TODO Alert Test
-     * 5. Appointment Store Manager - V & TODO Alert Test
-     * 6. Change Store Manager permissions - V & Short TODO Alert
-     * 7. Close Store - V & Short TODO: Alert
+     * 4. Appointment Store Owner - V
+     * 5. Appointment Store Manager - V
+     * 6. Change Store Manager permissions - V
+     * 7. Close Store - V
      * 8. Ask for getting data about position in the store - V
      * 9. get information about purchase in the store - V & TODO: add the todos things
      * 10. Ask for getting data about store manager permissions in the store - V
      * 11. get information about purchase of buyer - V & TODO: add the todos things
      */
+
+    @Test
+    private void isGoodLogin(UserInfo ui)
+    {
+        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
+        assertTrue(ui.getUserId() > 0);
+    }
+
+    @Test
+    private void isGoodLogout(UserInfo ui)
+    {
+        assertTrue(logout(ui.getUserId()) > 0);
+    }
+
+    private void clearNotification(UserInfo ui)
+    {
+        int pre = 0;
+        getNotifications(ui.getUserId());
+        pre = this.getNotifications(ui.getUserId()).size();
+        assertEquals(0, pre);
+    }
+
+    private void except2Notification(UserInfo ui, String notificationMsg)
+    {
+        List<String> notifications = this.getNotifications(ui.getUserId());
+        assertEquals(1, notifications.size());
+        assertTrue(notifications.get(0).contains(notificationMsg));
+    }
 
     //Get information about purchase of buyer:
 
@@ -267,13 +295,10 @@ public class StoreOwnerTest extends ProjectTest{
         uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         int storeId = stores.get(0).getStoreId();
         goodCloseStore(uid.getUserId(), storeId);
-        int pre = this.getNotifications(uid.getUserId()).size();
-        assertEquals(1, pre);
+        clearNotification(uid);
         int status = this.reopenStore(uid.getUserId(), storeId);
         assertTrue(status > 0);
-        //TODO: Get Alert
-        int post = this.getNotifications(uid.getUserId()).size();
-        assertEquals(1, post);
+        except2Notification(uid, "the store: " + storeId + " has been reOpened");
     }
 
     @Test
@@ -338,10 +363,9 @@ public class StoreOwnerTest extends ProjectTest{
         UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
         uid.setUserId(login(uid.getEmail(), uid.getPassword()));
         int storeId = stores.get(0).getStoreId();
+        clearNotification(uid);
         goodCloseStore(uid.getUserId(), storeId);
-        //TODO: Get Alert
-        int pre = this.getNotifications(uid.getUserId()).size();
-        assertEquals(1, pre);
+        except2Notification(uid, "the store: " + storeId + " has been temporarily closed");
     }
 
     @Test
@@ -495,14 +519,52 @@ public class StoreOwnerTest extends ProjectTest{
     //Appointment Store Manager:
 
     @Test
-    public void testAppointmentManagerInStore() {
-        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
-        int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
+    public void testAppointmentNotLoginManagerInStore() {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
-        ui.setUserId(login(ui.getEmail(), ui.getPassword()));
-        String managerEmail = this.users_dict.get(users[1][USER_EMAIL]).getEmail();
-        int status = this.appointmentManagerInStore(ui.getUserId(), storeId,managerEmail);
+        isGoodLogin(storeOwner);
+        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
         assertTrue(status > 0);
+    }
+
+    @Test
+    public void testAppointmentLoginManagerInStore() {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
+        int storeId = stores.get(0).getStoreId();
+        isGoodLogin(storeOwner);
+        isGoodLogin(appointManager);
+        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
+        assertTrue(status > 0);
+    }
+
+    @Test
+    public void testAlertAppointmentManagerInStore() {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
+        int storeId = stores.get(0).getStoreId();
+        isGoodLogin(storeOwner);
+        isGoodLogin(appointManager);
+        clearNotification(appointManager);
+        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
+        assertTrue(status > 0);
+        except2Notification(appointManager, "you have been appointed to manager in store: " + storeId);
+    }
+
+    @Test
+    public void testAlertAppointmentLogoutManagerInStore() {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
+        int storeId = stores.get(0).getStoreId();
+        isGoodLogin(storeOwner);
+        isGoodLogin(appointManager);
+        clearNotification(appointManager);
+        isGoodLogout(appointManager);
+        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
+        assertTrue(status > 0);
+        isGoodLogin(appointManager);
+        except2Notification(appointManager, "you have been appointed to manager in store: " + storeId);
     }
 
     @Test
@@ -526,8 +588,6 @@ public class StoreOwnerTest extends ProjectTest{
         status = this.appointmentOwnerInStore(uid.getUserId(), storeId, ownerEmail);
         assertFalse(status > 0);
     }
-
-    //todo: circular appointment
 
     @Test
     public void testAppointmentExistManagerInStore() {
@@ -556,14 +616,37 @@ public class StoreOwnerTest extends ProjectTest{
     //Appointment Store Owner:
 
     @Test
-    public void testAppointmentOwnerInStore() {
-        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
-        int uIdOwner = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
-        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+    public void testAppointmentNotLoginOwnerInStore() {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointOwner = this.users_dict.get(users[1][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
-        String ownerEmail = this.users_dict.get(users[1][USER_EMAIL]).getEmail();
-        int status = this.appointmentOwnerInStore(uid.getUserId(), storeId,ownerEmail);
+        isGoodLogin(storeOwner);
+        int status = this.appointmentOwnerInStore(storeOwner.getUserId(), storeId, appointOwner.getEmail());
         assertTrue(status > 0);
+    }
+
+    @Test
+    public void testAppointmentOwnerInStore() {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointOwner = this.users_dict.get(users[1][USER_EMAIL]);
+        int storeId = stores.get(0).getStoreId();
+        isGoodLogin(storeOwner);
+        isGoodLogin(appointOwner);
+        int status = this.appointmentOwnerInStore(storeOwner.getUserId(), storeId, appointOwner.getEmail());
+        assertTrue(status > 0);
+    }
+
+    @Test
+    public void testAppointmentAlertOwnerInStore() {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointOwner = this.users_dict.get(users[1][USER_EMAIL]);
+        int storeId = stores.get(0).getStoreId();
+        isGoodLogin(storeOwner);
+        isGoodLogin(appointOwner);
+        clearNotification(appointOwner);
+        int status = this.appointmentOwnerInStore(storeOwner.getUserId(), storeId, appointOwner.getEmail());
+        assertTrue(status > 0);
+        except2Notification(appointOwner, "you have been appointed to owner in store: " + storeId);
     }
 
     @Test
@@ -615,7 +698,6 @@ public class StoreOwnerTest extends ProjectTest{
 
     //Change purchase policy:
 
-    //TODO: next version
     @Test
     public void testChangePurchasePolicy() {
         UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);

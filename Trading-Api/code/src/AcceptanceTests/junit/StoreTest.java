@@ -61,9 +61,14 @@ public class StoreTest extends ProjectTest{
     @Test
     private void isGoodLogin(UserInfo ui)
     {
-        UserInfo user = null;
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
         assertTrue(ui.getUserId() > 0);
+    }
+
+    @Test
+    private void isGoodLogout(UserInfo ui)
+    {
+        assertTrue(logout(ui.getUserId()) > 0);
     }
 
 

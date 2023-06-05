@@ -10,6 +10,9 @@ import data.*;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public abstract class ProjectTest{
@@ -212,9 +215,9 @@ public abstract class ProjectTest{
         return bridge.appointmentOwnerInStore(user, store, newOwnerEmail);
     }
 
-    public int appointmentManagerInStore(int user, int store, String newManagerID)
+    public int appointmentManagerInStore(int user, int store, String newManager)
     {
-        return bridge.appointmentMangerInStore(user, store, newManagerID);
+        return bridge.appointmentMangerInStore(user, store, newManager);
     }
 
     public int changePurchasePolicy(int user, int store, String policy)
