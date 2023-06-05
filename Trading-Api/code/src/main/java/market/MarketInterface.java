@@ -13,10 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface MarketInterface {
-    //assumption :
-        // guest will be recognized by id
-        // member will be recognized by email & id
-        //for each function of guest there will be 2 function , owns get an id and the other gets userName
     //guest methods
     public Response enterGuest();
     public Response exitGuest(int guestId);

@@ -128,15 +128,6 @@ public class UserController {
         return g.getId();
     }
 
-    public Notification getNotification(int userId) throws Exception {
-        if(memberList.containsKey(userId)) {
-            if (memberList.get(userId).getIsConnected()) {
-                return memberList.get(userId).getNotification();
-            }
-            throw new Exception("the id given belongs to an inactive member");
-        }
-        throw new Exception("the id given does not belong to any member");
-    }
 
     public void exitGuest(int id) throws Exception {
         Guest g = getGuest(id);
@@ -193,6 +184,7 @@ public class UserController {
     public synchronized void changeQuantityInCart(int userId, int storeId, ProductInfo product, int change) throws Exception{
         User user = getUser(userId);
         user.changeQuantityInCart(storeId, product, change);
+
     }
 
 
@@ -223,7 +215,7 @@ public class UserController {
     public synchronized ProductReview writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId) throws Exception {
         Member m = getActiveMember(userId);
         int tmp = messageIds;
-        messageIds += 2;
+        messageIds ++;
         return m.writeReview(tmp, storeId, productId, orderId, comment, grading);
     }
 
@@ -257,6 +249,10 @@ public class UserController {
         s.addNotification(notification);
     }
 
+    public Notification getNotification(int userId) throws Exception {
+        Subscriber s = getActiveSubscriber(userId);
+        return s.getNotification();
+    }
     public synchronized List<Notification> displayNotifications(int userId) throws Exception{
         Subscriber s = getActiveSubscriber(userId);
         return s.displayNotifications();
@@ -401,7 +397,7 @@ public class UserController {
         s.checkPermission(action, storeId);
     }
 
-    public synchronized  Info getWorkerInformation(int userId, int workerId, int storeId) throws Exception{
+    public synchronized Info getWorkerInformation(int userId, int workerId, int storeId) throws Exception{
         Member m = getActiveMember(userId);
         Member worker = getMember(workerId);
         if(m.getWorkerIds(storeId).contains(workerId))

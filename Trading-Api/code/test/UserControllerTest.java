@@ -72,7 +72,6 @@ class UserControllerTest {
 
     @Test
     void checkDatabase(){
-        UserController us = new UserController();
         Admin a = new Admin(1, "elibs@gmail.com", "123Aaa");
         Market market = new Market(a);
         try {
@@ -85,12 +84,7 @@ class UserControllerTest {
             int id2 = loginInformation.getUserId();
             String token2 = loginInformation.getToken();
             market.addNotification(id, NotificationOpcode.CHAT_MESSAGE, "test");
-            //Admin a = new Admin(1, "elibs@gmail.com", "123Aaa");
-            //us.addAdmin(a, "aaaaaa");
-//            Member member = us.getMember(2);
-//            Member member2 = us.getMember(3);
-//            Store s = new Store(0, "", member);
-//            Store store = new Store(1, "nike", "good store","",member2);
+
             int sid = market.openStore(id,token, "nike", "good store", "da;nen").getValue();
             int sid2 = market.openStore(id2,token2, "adidas", "bad store", "dkndn").getValue();
             market.appointManager(id, token, "eli2@gmail.com", sid);
