@@ -9,6 +9,8 @@ import market.Admin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import service.payment.PaymentAdapter;
 
 import java.util.List;
 import java.util.Map;
@@ -18,10 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AdminTest extends ProjectTest {
     private static final int ERROR = -1;
 
+    @Mock
+    private PaymentAdapter goodPaymentES;
+
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
+        goodPaymentES = null;//TODO new DefaultUserService(userRepository, settingRepository, mailClient);
     }
 
     @AfterEach
@@ -182,7 +188,7 @@ public class AdminTest extends ProjectTest {
         UserInfo ui = users_dict.get(users[0][0]);
         int status = login(ui.getEmail(), ui.getPassword());
         assertTrue(status > 0);
-        assertTrue(closeStore(ui.getUserId(), stores.get(0).getStoreId()) > 0);
+        assertTrue(closeStore(ui.getUserId(), stores.get(0).getStoreId()));
         allStores = this.getAllStores();
         assertNotNull(allStores);
         assertEquals(stores.size() -1, allStores.size());

@@ -13,17 +13,17 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int initTradingSystem() {
+    public boolean initTradingSystem() {
         if (real != null)
             return real.initTradingSystem();
-        return -1;
+        return false;
     }
 
     @Override
-    public int shutDownTradingSystem() {
+    public boolean shutDownTradingSystem() {
         if (real != null)
             return real.shutDownTradingSystem();
-        return -1;
+        return false;
     }
 
     @Override
@@ -154,10 +154,10 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int removeProduct(int user, int store, int product) {
+    public boolean removeProduct(int user, int store, int product) {
         if (real != null)
             return real.removeProduct(user, store, product);
-        return -1;
+        return false;
     }
 
     @Override
@@ -203,10 +203,10 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int closeStore(int user, int store) {
+    public boolean closeStore(int user, int store) {
         if (real != null)
             return real.closeStore(user, store);
-        return -1;
+        return false;
     }
 
     @Override
@@ -355,6 +355,13 @@ public class ProxyBridge implements Bridge {
     public List<String> getNotifications(int userId) {
         if(real != null)
             return real.getNotifications(userId);
+        return null;
+    }
+
+    @Override
+    public StoreInfo getStoreInfo(int storeId) {
+        if(real != null)
+            return real.getStoreInfo(storeId);
         return null;
     }
 }
