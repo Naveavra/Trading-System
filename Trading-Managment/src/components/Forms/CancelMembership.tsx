@@ -1,36 +1,39 @@
+
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
+
+import AlertDialog from "../Dialog/AlertDialog";
+import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
+import { cancelMembership, clearAdminError } from "../../reducers/adminSlice";
+import { cancelMembershipFormValues } from "../../types/formsTypes";
+
+
 import { LoadingButton } from "@mui/lab";
 import { Dialog, Box, Grid, Typography, TextField } from "@mui/material";
-import { useCallback } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { answerComplaintFormValues } from "../../types/formsTypes";
-import AlertDialog from "../Dialog/AlertDialog";
-import { answerComplaint, clearAdminError, getComplaints } from "../../reducers/adminSlice";
+import { getClientData } from "../../reducers/authSlice";
 
-const ComplaintPage = () => {
-    const navigate = useNavigate();
+
+const CancelMembership = () => {
     const dispatch = useAppDispatch();
-    const form = useForm<answerComplaintFormValues>();
+    const navigate = useNavigate();
 
-    const params = useParams();
-    const complaintId = parseInt(params.id ?? '0');
-    const conmplaints = useAppSelector((state) => state.admin.complaints);
-    const complaint = conmplaints.find((complaint) => complaint.complaintId == complaintId);
+    const form = useForm<cancelMembershipFormValues>();
 
-    const userId = useAppSelector((state) => state.auth.userId)
-    const isLoading = useAppSelector((state) => state.auth.isLoading);
-    const error = useAppSelector((state) => state.auth.error);
+    const userId = useAppSelector((state: RootState) => state.auth.userId);
+    const isLoading = useAppSelector((state: RootState) => state.store.isLoading);
+    const error = useAppSelector((state: RootState) => state.store.error);
 
-    //maybe take it from params
+
+
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard/admin/seecomplaints');
-        dispatch(getComplaints(userId));
+        navigate('/dashboard/admin');
+        dispatch(getClientData({ userId: userId }));
     }, []);
+
     const handleOnSubmit = () => {
-        form.setValue('adminId', userId);
-        form.setValue('complaintId', complaintId);
-        dispatch(answerComplaint(form.getValues()));
+        form.setValue("userId", userId);
+        dispatch(cancelMembership(form.getValues()));
         handleOnClose();
     }
     return (
@@ -41,7 +44,7 @@ const ComplaintPage = () => {
                         marginTop: 4,
                         top: '50%',
                         left: '50%',
-                        height: 330,
+                        height: 250,
                         width: '80%',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -49,7 +52,6 @@ const ComplaintPage = () => {
                         marginRight: 'auto',
                         marginBottom: -2,
                         bgcolor: 'background.paper',
-
                     }}
                 >
                     <Grid
@@ -60,31 +62,26 @@ const ComplaintPage = () => {
                     >
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                answer complaint
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                {complaint?.content ?? "no content"}
+                                please enter the user name
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                name="content"
+                                name="user name "
                                 type="text"
                                 fullWidth
-                                label="answer"
+                                label="user name "
                                 sx={{ mt: 1, mb: 1 }}
                                 inputProps={{
-                                    ...form.register('answer', {
+                                    ...form.register('userName', {
                                         required: {
                                             value: true,
-                                            message: "answer is required"
+                                            message: "user name  is required"
                                         }
                                     })
                                 }}
-                                error={!!form.formState.errors['answer'] ?? false}
-                                helperText={form.formState.errors['answer']?.message ?? undefined}
+                                error={!!form.formState.errors['userName'] ?? false}
+                                helperText={form.formState.errors['userName']?.message ?? undefined}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -95,18 +92,17 @@ const ComplaintPage = () => {
                                 sx={{ mt: 3, mb: 2 }}
                                 loading={isLoading}
                             >
-                                answer complaint
+                                cancel membership
                             </LoadingButton>
                         </Grid>
                     </Grid >
                 </Box>
+
             </Dialog >
             {!!error ?
                 <AlertDialog open={!!error} onClose={() => { dispatch(clearAdminError()); }} text={error} sevirity={"error"} />
                 : null}
         </>
     );
-
 }
-
-export default ComplaintPage;
+export default CancelMembership;

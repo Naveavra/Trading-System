@@ -91,3 +91,11 @@ export type supplyFormValues = {
     zip: string;
     supply_service: string;
 };
+export type closeStoreFormValues = {
+    userId: number;
+    storeId: number;
+};
+export type cancelMembershipFormValues = {
+    userId: number;
+    userName: string;
+};

@@ -351,21 +351,15 @@ public class Server {
             toSparkRes(res, api.makePurchase(userId, getPaymentDetails(request), getSupplierDetails(request)));
             return res.body();
         });
-//        TODO:
-//        post("api/cart/buy/:id", (req, res) ->{
-//            //buycart
-//            JSONObject request = new JSONObject(req.body());
-//            int userId = Integer.parseInt(request.get("userId").toString());
-//            toSparkRes(res, api.getPaymentAvailableServices(userId));
-//            return res.body();
-//        });
-//        post("api/cart/buy/:id", (req, res) ->{
-//            //buycart
-//            JSONObject request = new JSONObject(req.body());
-//            int userId = Integer.parseInt(request.get("userId").toString());
-//            toSparkRes(res, api.getSupplierAvailableServices(userId));
-//            return res.body();
-//        });
+        TODO:
+        get("api/services/payments", (req, res) ->{
+            toSparkRes(res, api.getPaymentAvailableServices(0));
+            return res.body();
+        });
+        get("api/services/suppliers", (req, res) ->{
+            toSparkRes(res, api.getSupplierAvailableServices(0));
+            return res.body();
+        });
         delete("api/cart/:id", (req, res) ->
         {
             //delete cart

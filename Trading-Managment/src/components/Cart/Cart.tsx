@@ -22,6 +22,7 @@ const Cart = () => {
         navigate("/dashboard/cart/payment");
     };
     useEffect(() => {
+
     }, [products]);
 
     return (
