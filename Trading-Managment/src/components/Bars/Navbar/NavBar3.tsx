@@ -124,7 +124,7 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                                 <span>{numProductsIncart}</span>
                             </div>
                         </IconButton>
-                        {isLoggedIn ?
+                        {/* {isLoggedIn ?
                             <>
                                 <IconButton sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate('/dashboard/sendMsg')}>
                                     <MessageIcon />
@@ -133,7 +133,7 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                                     <RateReviewIcon />
                                 </IconButton>
                             </> : null
-                        }
+                        } */}
                     </Toolbar>
                 </AppBar>
             </Box >

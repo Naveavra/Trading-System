@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Product } from "../../types/systemTypes/Product";
 import { Card, CardMedia, CardContent, Typography, Box, CardActions } from "@mui/material";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -15,12 +15,13 @@ interface CardProps {
 }
 const ProductInCart: React.FC<CardProps> = ({ item }) => {
     const dispatch = useAppDispatch();
-    const [quantity, setQuantity] = React.useState(0);
+    const [quantity, setQuantity] = useState(0);
     const userId = useAppSelector((state) => state.auth.userId);
 
 
     const handleAddToCart = () => {
         dispatch(addToCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: quantity }));
+        dispatch(getCart({ userId: userId }));
         dispatch(getCart({ userId: userId }));
         setQuantity(0);
     }
@@ -33,11 +34,13 @@ const ProductInCart: React.FC<CardProps> = ({ item }) => {
         setQuantity(quantity - 1);
         dispatch(removeFromCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: 1 }));
         dispatch(getCart({ userId: userId }));
+        dispatch(getCart({ userId: userId }));
     }
     const handleDelete = () => {
         //dispatch(removeFromCart(item.id))
         dispatch(removeFromCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: quantity }));
         setQuantity(0);
+        dispatch(getCart({ userId: userId }));
         dispatch(getCart({ userId: userId }));
     }
     useEffect(() => {

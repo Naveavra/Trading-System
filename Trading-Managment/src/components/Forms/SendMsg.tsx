@@ -37,12 +37,12 @@ const SendMsg = () => {
 
     //maybe take it from params
     const handleOnClose = useCallback(() => {
-        navigate(-1);
-        //dispatch(getStore({ userId: userId, storeId: storeId }));
+        navigate('/dashboard');
     }, []);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
         dispatch(sendMessage(form.getValues()));
+        handleOnClose();
     }
     return (
         <>

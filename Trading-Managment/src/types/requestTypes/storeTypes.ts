@@ -1,3 +1,5 @@
+import AnswerQuestion from "../../components/Forms/AnswerQuestion";
+
 export interface GetStoresParams {
     userId: number,
     storeId: number,
@@ -47,4 +49,10 @@ export interface patchPermissionsParams {
     managerId: number,
     permissions: string[]
     mode: string;
+}
+export interface AnswerQuestionParams {
+    userId: number;
+    storeId: number;
+    questionId: number;
+    answer: string;
 }

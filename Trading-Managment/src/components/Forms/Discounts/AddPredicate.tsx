@@ -4,10 +4,13 @@ import { Dialog, Box, Grid, Typography, Button, TextField } from "@mui/material"
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../../redux/store";
-import { addPredicateToRegularDiscount, addRegularDiscount, setParamsToTmpPredicate, setPredicateTypeToTmpPredicate, setComposoreToTmpPredicate, clearTmpPredicate, cleanRegularDiscount } from "../../../reducers/discountSlice";
+import { addPredicateToRegularDiscount, addRegularDiscount, setParamsToTmpPredicate, setPredicateTypeToTmpPredicate, setComposoreToTmpPredicate, clearTmpPredicate, cleanRegularDiscount, addRegularDiscountToSource } from "../../../reducers/discountSlice";
 import { Composore, PredicateDataObject, PredicateType } from "../../../types/systemTypes/Discount";
 
-const addPredicate = () => {
+interface props {
+    tree: boolean;
+}
+const addPredicate: React.FC<props> = ({ tree }) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [firstType, setFirstType] = useState('');
@@ -21,8 +24,9 @@ const addPredicate = () => {
     const discountType = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.discountType);
     const prodId = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.prodId);
     const discountedCategory = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.discountedCategory);
-    const predicates = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.predicates);
-    const predicate: PredicateDataObject = useAppSelector((state: RootState) => state.discount?.tmpPredicate);
+    const predicates = useAppSelector((state: RootState) => state.discount.predicates);
+    const predicate: PredicateDataObject = useAppSelector((state: RootState) => state.discount.tmpPredicate);
+    const source = useAppSelector((state: RootState) => state.discount?.source);
 
     const handleOnClose = useCallback(() => {
         navigate(-1);
@@ -59,19 +63,37 @@ const addPredicate = () => {
         dispatch(setParamsToTmpPredicate(input));
     }
     const handleOnSubmit = () => {
+        debugger;
         dispatch(addPredicateToRegularDiscount(predicate));
-        dispatch(addRegularDiscount({
-            storeId: userId,
-            userId: storeId,
-            percentage: percentage,
-            discountType: discountType,
-            prodId: prodId,
-            discountedCategory: discountedCategory,
-            predicates: predicates,
-        }));
-        dispatch(clearTmpPredicate());
-        dispatch(cleanRegularDiscount());
-        navigate("/dashboard/store/superior");
+        if (tree) {
+            dispatch(addRegularDiscountToSource({
+                source: source,
+                storeId: userId,
+                userId: storeId,
+                percentage: percentage,
+                discountType: discountType,
+                prodId: prodId,
+                discountedCategory: discountedCategory,
+                predicates: predicates,
+            }));
+            dispatch(clearTmpPredicate());
+            dispatch(cleanRegularDiscount());
+            navigate(-1);
+        }
+        else {
+            dispatch(addRegularDiscount({
+                storeId: userId,
+                userId: storeId,
+                percentage: percentage,
+                discountType: discountType,
+                prodId: prodId,
+                discountedCategory: discountedCategory,
+                predicates: predicates,
+            }));
+            dispatch(clearTmpPredicate());
+            dispatch(cleanRegularDiscount());
+            navigate(-3);
+        }
     };
     const handleAddComposore = () => {
         setLast(true);

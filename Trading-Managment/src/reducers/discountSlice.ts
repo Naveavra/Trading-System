@@ -25,7 +25,8 @@ interface DiscountState {
     discountEdges: Edge[];
     target: number;
     level: number;
-
+    source: string;
+    predicates: PredicateDataObject[];
 };
 
 const initialState: DiscountState = {
@@ -44,7 +45,9 @@ const initialState: DiscountState = {
     discountNodes: [],
     discountEdges: [],
     target: 0,
-    level: 0
+    level: 0,
+    source: "0",
+    predicates: []
 };
 
 
@@ -101,9 +104,7 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
     name: reducerName,
     initialState,
     reducers: {
-        setCurrentRegularDiscount: (state, { payload }) => {
-            state.currentRegularDiscount = payload;
-        },
+
         setSourceToRegularDiscount: (state, { payload }) => {
             //state.discountEdges.push({ id: `e${payload}-${state.target}`, source: `${payload}`, target: `${state.target}` });
             state.target = state.target + 1;
@@ -145,9 +146,17 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             }
         },
         addPredicateToRegularDiscount: (state, { payload }) => {
-            state.currentRegularDiscount?.predicates.push(payload);
+            debugger;
+            //state.currentRegularDiscount.predicates.push({ predType: payload.predType, params: payload.params, composore: payload.composore });
+            return {
+                ...state,
+                predicates: [...state.predicates, payload]
+            }
         },
         //-------------------tmp predicate---------------
+        setSourceForPredicate: (state, { payload }) => {
+            state.source = payload;
+        },
         setPredicateTypeToTmpPredicate: (state, { payload }) => {
             return {
                 ...state,
@@ -179,54 +188,6 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             state.tmpPredicate = emptyPredicate;
         },
         //-------------------composite-------------------
-        //if first set to current else set to tmp
-        setCurrentCompositeDiscount: (state, { payload }) => {
-            state.currentCompositeDiscount = payload;
-        },
-        setpercentageToCompositeDiscount: (state, { payload }) => {
-
-            return {
-                ...state,
-                currentCompositeDiscount: {
-                    ...state.currentCompositeDiscount,
-                    percentage: payload
-                }
-            }
-        },
-        setNumericTypeToCompositeDiscount: (state, { payload }) => {
-            return {
-                ...state,
-                currentCompositeDiscount: {
-                    ...state.currentCompositeDiscount,
-                    numericType: payload
-                }
-            }
-        },
-        setlogicalTypeToCompositeDiscount: (state, { payload }) => {
-
-            return {
-                ...state,
-                currentCompositeDiscount: {
-                    ...state.currentCompositeDiscount,
-                    logicalType: payload
-                }
-            }
-        },
-        setXorDecidingRuleToCompositeDiscount: (state, { payload }) => {
-            return {
-                ...state,
-                currentCompositeDiscount: {
-                    ...state.currentCompositeDiscount,
-                    xorDecidingRule: payload
-                }
-            }
-        },
-        addComposoreToCompositeDiscount: (state, { payload }) => {
-            // state.currentCompositeDiscount?.composores.push(payload);
-        },
-        addDiscountToCompositeDiscount: (state, { payload }) => {
-            //state.currentCompositeDiscount?.discounts.push(payload);
-        },
         clearDiscountError: (state) => {
             state.discountState.error = null;
         },
@@ -258,7 +219,7 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             //change the father to be a composite
             state.discountNodes.forEach((node) => {
                 if (node.id === payload?.rootSource) {
-                    node.data = { ...node.data, percentage: payload.percentage, numericType: payload.numericType, logicalType: payload.composoreType, xorDecidingRule: payload.xorRule, label: `${payload?.rootSource} , precentage : ${payload.percentage} , type: ${payload.numericType + payload.composoreType}` };
+                    node.data = { ...node.data, percentage: payload.percentage, numericType: payload.numericType, logicalType: payload.composoreType, xorDecidingRule: payload.xorRule, label: `${payload?.rootSource} , precentage : ${payload.percentage} , type: ${payload.numericType + payload.composoreType} , xorDecidingRule :${payload.xorRule} ` };
                 }
             });
             state.discountNodes.push({ id: String(state.target), position: { x: (state.discountNodes.find((node) => node.id === payload?.rootSource)?.position?.x ?? 0) - ((200 * Math.pow(2, state.level - 1)) / 2), y: (state.discountNodes.find((node) => node.id === payload?.rootSource)?.position?.y ?? 0) + 100 }, data: { ...emptyCompositeDiscount, label: `${state.target}` } });
@@ -270,6 +231,17 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             if (state.target > Math.pow(2, state.level)) {
                 state.level++;
             }
+        },
+        addRegularDiscountToSource: (state, { payload }) => {
+            debugger;
+            state.discountNodes.forEach((node) => {
+                if (node.id === payload.source) {
+                    node.data = { ...node.data, percentage: payload.percentage, discountType: payload.discountType, prodId: payload.prodId, discountedCategory: payload.discountedCategory, predicates: [...payload.predicates], label: `${payload?.source} , precentage : ${payload.percentage} , discountType: ${payload.discountType}` };
+                    //node.data.predicates = { ...node.data.predicates, ...payload.predicates };
+                }
+            });
+            state.discountNodes.filter((node) => node.id === payload.source)[0].data = { ...state.discountNodes.filter((node) => node.id === payload.source)[0].data, percentage: payload.percentage, discountType: payload.discountType, prodId: payload.prodId, discountedCategory: payload.discountedCategory, predicates: [...payload.predicates], label: `${payload?.source} , precentage : ${payload.percentage} , discountType: ${payload.discountType}` };
+
         },
         reset: (state) => {
             state.discountNodes = [];
@@ -336,7 +308,6 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
 });
 
 export const {
-    setCurrentRegularDiscount,
     setSourceToRegularDiscount,
     setpercentageToRegularDiscount,
     setDiscountTypeToRegularDiscount,
@@ -347,18 +318,13 @@ export const {
     setParamsToTmpPredicate,
     setComposoreToTmpPredicate,
     clearTmpPredicate,
-    setCurrentCompositeDiscount,
-    setpercentageToCompositeDiscount,
-    setNumericTypeToCompositeDiscount,
-    setlogicalTypeToCompositeDiscount,
-    setXorDecidingRuleToCompositeDiscount,
-    addComposoreToCompositeDiscount,
-    addDiscountToCompositeDiscount,
     clearDiscountError,
     clearDiscountsError,
     cleanRegularDiscount,
     addFirstComposite,
     addSecondComposite,
+    addRegularDiscountToSource,
+    setSourceForPredicate,
     reset,
 } = discountActions;
 export default discountReducer;
