@@ -10,26 +10,28 @@ import service.ExternalService.WSEPService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProxySupplier implements SupplierAdapter {
 
     private SupplierAdapter real = null;
     private HashMap<String, SupplierAdapter> supplierServices;
 
-    private List<String> availableSupplierServices;
-    //TODO: check by the requirement private HashMap<Integer, String> availablePaymentServices;
+
 
     public ProxySupplier() throws Exception {
         this.supplierServices = new HashMap<>();
-        this.availableSupplierServices = new ArrayList<>();
         supplierServices.put("WSEP", new WSEPService());
-        this.availableSupplierServices.add("WSEP");
         this.real = supplierServices.get("WSEP");
     }
 
     public List<String> getSupplierServicesAvailableOptions()
     {
-        return availableSupplierServices;
+        return supplierServices.entrySet()
+                .stream()
+                .filter(sup -> sup.getValue().isAvailable())
+                .map(sup -> sup.getKey())
+                .collect(Collectors.toList());
     }
 
     public List<String> getSupplierServicesPossibleOptions()
@@ -38,61 +40,66 @@ public class ProxySupplier implements SupplierAdapter {
     }
 
     public void addSupplierService(String supplier, SupplierAdapter supplierAdapter) throws Exception {
-        if (availableSupplierServices.contains(supplier))
-        {
-            throw new Exception("This payment service:" + supplier + "already exists!!!");
-
-        }
-        else if(!supplierServices.containsKey(supplier))
+        if (supplierServices.containsKey(supplier))
         {
             throw new Exception("This payment service:" + supplier + "doesn't exists in the possible payment services!!!");
         }
         else{
             supplierServices.put(supplier, supplierAdapter);
-            availableSupplierServices.add(supplier);
+            supplierAdapter.setAvailable(true);
         }
     }
 
-    public void addSupplierService(String supplierAdapter) throws Exception
+    public void addSupplierService(String supplier) throws Exception
     {
-        if (availableSupplierServices.contains(supplierAdapter))
+        if (supplierServices.containsKey(supplier))
         {
-            throw new Exception("This supplier service:" + supplierAdapter + "already exists!!!");
-
+            throw new Exception("This payment service:" + supplier + "doesn't exists in the possible payment services!!!");
         }
-        else if(!supplierServices.containsKey(supplierAdapter))
+        else if(!supplierServices.get(supplier).isAvailable())
         {
-            throw new Exception("This supplier service:" + supplierAdapter + "doesn't exists in the possible supplier services!!!");
+            throw new Exception("This payment service:" + supplier + "already available exists!!!");
         }
-        else {
-            availableSupplierServices.add(supplierAdapter);
+        else{
+            supplierServices.get(supplier).setAvailable(true);
         }
     }
 
     public void removeSupplierService(String supplierAdapter) throws Exception
     {
-        if (availableSupplierServices.size() <= 1)
+        if (getSupplierServicesAvailableOptions().size() <= 1)
         {
             throw new IllegalArgumentException("Can't remove supplier service need at least 1 supplier service!");
         }
-        else if (!availableSupplierServices.contains(supplierAdapter))
+        else if (!supplierServices.containsKey(supplierAdapter) || supplierServices.get(supplierAdapter).isAvailable())
         {
-            throw new IllegalArgumentException("This supplier service:" + supplierAdapter + " doesn't exists!!!");
+            throw new IllegalArgumentException("This supplier service:" + supplierAdapter + " doesn't available or exists!!!");
         }
         else
         {
-            availableSupplierServices.remove(supplierAdapter);
+            supplierServices.get(supplierAdapter).setAvailable(false);
         }
     }
 
 
     public void setRealSupplier(String supplierAdapter) throws Exception{
-        if(availableSupplierServices.contains(supplierAdapter)) {
+        if(supplierServices.containsKey(supplierAdapter) &&
+                supplierServices.get(supplierAdapter).isAvailable()) {
             real = supplierServices.get(supplierAdapter);
         }
         else{
-            throw new Exception("The " + supplierAdapter + "doesn't exist!");
+            throw new Exception("The " + supplierAdapter + "doesn't available or exist!");
         }
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return true;
+    }
+
+    @Override
+    public void setAvailable(boolean available) {
+
     }
 
     @Override
@@ -110,6 +117,14 @@ public class ProxySupplier implements SupplierAdapter {
         return -1;
     }
 
+    public int orderSupplies(String supplier, JSONObject supplyContent) throws Exception {
+        if(supplierServices.containsKey(supplier) &&
+                supplierServices.get(supplier).isAvailable()) {
+            return supplierServices.get(supplier).orderSupplies(supplyContent);
+        }
+        throw new Exception("The " + supplier + "doesn't available or exist!");
+    }
+
     @Override
     public void checkSupply(ShoppingCart cart) throws Exception{
         if (real != null){
@@ -124,9 +139,4 @@ public class ProxySupplier implements SupplierAdapter {
         }
     }
 
-    public void orderSupplies(String supplier, int storeId, int productId, int quantity) throws Exception {
-        if (availableSupplierServices.contains(supplier)){
-            supplierServices.get(supplier).orderSupplies(storeId, productId, quantity);
-        }
-    }
 }
