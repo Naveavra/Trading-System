@@ -56,7 +56,6 @@ public class ShoppingCart{
         }
         else
             addProductToCart(storeId, product, change);
-        System.out.println(Information.infosToJson(getContent()));
     }
 
     public boolean hasStore(int storeId){
