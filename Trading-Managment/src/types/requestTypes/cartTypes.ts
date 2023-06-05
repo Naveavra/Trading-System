@@ -21,5 +21,18 @@ export interface PatchCartParams {
 }
 export interface buyCartParams {
     userId: number;
-    accountNumber: string;
+    cardNumber: string;
+    month: string;
+    year: string;
+    holder: string;
+    ccv: string;
+    id: number;
+    payment_service: string;
+    //-----
+    name: string;
+    address: string;
+    city: string;
+    country: string;
+    zip: string;
+    supply_service: string;
 }

@@ -6,3 +6,9 @@ export interface Order {
     products: Product[];
     totalPrice: number;
 }
+export const emptyOrder: Order = {
+    orderId: 0,
+    userId: 0,
+    products: [],
+    totalPrice: 0,
+}

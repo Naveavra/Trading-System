@@ -2,8 +2,6 @@ import { Typography, Box } from "@mui/material";
 import { GridRowId, GridColDef, GridActionsCellItem, DataGrid, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarExport } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { getNotifications } from "../../reducers/authSlice";
 import { getProducts } from "../../reducers/productsSlice";
 import { getStoresInfo } from "../../reducers/storesSlice";
 import { useAppSelector, useAppDispatch } from "../../redux/store";
@@ -16,7 +14,6 @@ import Bar2 from "../Bars/Navbar/NavBar2";
 const orders = () => {
     const dispatch = useAppDispatch();
     const userId = useAppSelector((state) => state.auth.userId);
-    const token = useAppSelector((state) => state.auth.token);
     const userName = useAppSelector(state => state.auth.userName);
     const privateName = userName.split('@')[0];
     const orders = useAppSelector((state) => state.store.storeState.watchedStore.storeOrders).map((order) => {
@@ -28,15 +25,14 @@ const orders = () => {
         }
     });
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    const PING_INTERVAL2 = 5000; // 10 seconds in milliseconds
 
     const sendPing = () => {
         if (userId != 0) {
             axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(response => {
+                .then(() => {
                     // Do something with the response if necessary
                 })
-                .catch(error => {
+                .catch(() => {
                     // Handle the error if necessary
                 });
             // dispatch(ping(userId));
@@ -54,22 +50,14 @@ const orders = () => {
         //todo implement 
     };
 
-    const getC = () => {
-        // if (token) {
-        //     dispatch(getNotifications({ userId: userId, token: token }));
-        // }
-    }
-
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        const pingInterval2 = setInterval(getC, PING_INTERVAL2);
 
         dispatch(getStoresInfo());
         dispatch(getProducts());
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
-            clearInterval(pingInterval2)
         };
     }, []);
     const columns: GridColDef[] = React.useMemo(() => {
@@ -147,8 +135,6 @@ const orders = () => {
 }
 export default orders;
 function EditToolbar() {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
     const fontSize = 'large';//useAppSelector((state) => state.global.clientSettings.fontSize.size);
 
     return (

@@ -10,9 +10,7 @@ import domain.user.PurchaseHistory;
 import market.Admin;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
-import utils.messageRelated.Message;
-import utils.messageRelated.Notification;
-import utils.messageRelated.NotificationOpcode;
+import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
@@ -30,7 +28,7 @@ public class UserController {
     private ConcurrentHashMap<Integer, Admin> admins;
     private StringChecks checks;
     private int messageIds;
-    private ConcurrentHashMap<Integer, Message> complaints; //complaintId,message
+    private ConcurrentHashMap<Integer, Complaint> complaints; //complaintId,message
     private MemberDao memberDao;
     private AdminDao adminDao;
 
@@ -214,7 +212,7 @@ public class UserController {
         m.openStore(store);
     }
 
-    public synchronized Message writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
+    public synchronized StoreReview writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
         Member m = getActiveMember(userId);
         int tmp = messageIds;
         messageIds++;
@@ -222,7 +220,7 @@ public class UserController {
 
     }
 
-    public synchronized Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId) throws Exception {
+    public synchronized ProductReview writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId) throws Exception {
         Member m = getActiveMember(userId);
         int tmp = messageIds;
         messageIds += 2;
@@ -238,12 +236,12 @@ public class UserController {
         Notification notification = new Notification(NotificationOpcode.COMPLAINT, notify);
         for(Admin a : admins.values())
             a.addNotification(notification);
-        Message complaint = m.writeComplaint(tmp, orderId, comment);
+        Complaint complaint = m.writeComplaint(tmp, orderId, comment);
         complaints.put(complaint.getMessageId(), complaint);
     }
 
 
-    public Message sendQuestionToStore(int userId, int storeId, String question) throws Exception {
+    public Question sendQuestionToStore(int userId, int storeId, String question) throws Exception {
         Member m = getActiveMember(userId);
         int tmp = messageIds;
         messageIds++;
@@ -514,10 +512,15 @@ public class UserController {
         Admin admin = getActiveAdmin(adminId);
         admin.closeStorePermanently(storeId, -1);
     }
-    public synchronized Admin addAdmin(int userId, String email, String pass)throws Exception {
+    public synchronized Admin addAdmin(int userId, String email, String hashPass ,String pass)throws Exception {
+        if(isEmailTaken(email))
+            throw new Exception("the email is already taken");
         if (userId != 0)
             getActiveAdmin(userId);
-        Admin a = new Admin(ids.getAndIncrement(), email, pass);
+        if(!checks.checkEmail(email))
+            throw new Exception("the email given does not match the email pattern");
+        checks.checkPassword(pass);
+        Admin a = new Admin(ids.getAndIncrement(), email, hashPass);
         admins.put(a.getId(), a);
         return a;
     }
@@ -548,7 +551,7 @@ public class UserController {
     }
 
     private void sendFeedback(int messageId, String ans) throws Exception{
-        Message m = complaints.get(messageId);
+        Complaint m = complaints.get(messageId);
         if (m != null)
             m.sendFeedback(ans);
         else
@@ -561,9 +564,10 @@ public class UserController {
         sendFeedback(complaintId, ans);
     }
 
-    public void cancelMembership(int adminId, int userToRemove) throws Exception{
+    public void cancelMembership(int adminId, String userToRemove) throws Exception{
         Admin admin = getActiveAdmin(adminId);
-        admin.cancelMembership(userToRemove);
+        Member m = getMember(userToRemove);
+        admin.cancelMembership(m.getId());
     }
 
     public int getAdminSize() {
@@ -634,5 +638,10 @@ public class UserController {
             updateMemberState(m.getId());
         for(Admin a : admins.values())
             updateAdminState(a.getId());
+    }
+
+    public List<Complaint> getComplaints(int userId) throws Exception{
+        getActiveAdmin(userId);
+        return new ArrayList<>(complaints.values());
     }
 }

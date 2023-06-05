@@ -1,41 +1,43 @@
 import * as React from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { logout, clearNotifications } from '../../../reducers/authSlice';
+import { getStore } from '../../../reducers/storesSlice';
+import { useAppSelector, useAppDispatch } from '../../../redux/store';
+import './NavBar3.css';
+import { StoreRole } from '../../../types/systemTypes/StoreRole';
+
+import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox } from '@mui/material';
-import { logout, getNotifications, clearNotifications } from '../../../reducers/authSlice';
-import { getStore } from '../../../reducers/storesSlice';
-import { useAppSelector, useAppDispatch } from '../../../redux/store';
-import './NavBar3.css';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
-import { StoreRole } from '../../../types/systemTypes/StoreRole';
-import { useEffect, useState } from 'react';
+import MessageIcon from '@mui/icons-material/Message';
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import HomeIcon from '@mui/icons-material/Home';
 
 
 interface Props {
     headLine: string;
 }
-const DRAWER_WIDTH = 240;
 const Bar3: React.FC<Props> = ({ headLine }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [storeOpen, setStoreOpen] = useState(false);
-    const [openDrawer, setOpenDrawer] = useState(false);
     const [profileDialogOpen, setProfileDialogOpen] = useState(false);
     const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
 
     const notifications = useAppSelector((state) => state.auth.notifications);
     const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector((state) => state.auth.userName);
-    const token = useAppSelector((state) => state.auth.token) ?? "";
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
 
     const cart = useAppSelector((state) => state.cart.responseData);
@@ -90,7 +92,9 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
                             {headLine}
                         </Typography>
-
+                        <IconButton className="icon" color="inherit" onClick={() => navigate(`/dashboard`)}>
+                            <HomeIcon />
+                        </IconButton>
                         {isLoggedIn &&
                             <>
 
@@ -120,6 +124,16 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                                 <span>{numProductsIncart}</span>
                             </div>
                         </IconButton>
+                        {isLoggedIn ?
+                            <>
+                                <IconButton sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate('/dashboard/sendMsg')}>
+                                    <MessageIcon />
+                                </IconButton>
+                                <IconButton sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate('/dashboard/sendComplaint')}>
+                                    <RateReviewIcon />
+                                </IconButton>
+                            </> : null
+                        }
                     </Toolbar>
                 </AppBar>
             </Box >
@@ -133,7 +147,7 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                     <>
                         <DialogTitle>Profile</DialogTitle>
                         <DialogContent dividers>
-                            <Box display="flex" alignItems="center">
+                            <Box display="flex" alignItems="center" onClick={() => { navigate('/dashboard/personal') }}>
                                 <Avatar />
                                 <Box ml={3}>
                                     <Typography>{userName}</Typography>

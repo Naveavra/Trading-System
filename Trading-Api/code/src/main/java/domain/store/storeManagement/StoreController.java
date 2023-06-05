@@ -6,6 +6,9 @@ import domain.user.ShoppingCart;
 import utils.infoRelated.ProductInfo;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.StoreInfo;
+import utils.messageRelated.ProductReview;
+import utils.messageRelated.Question;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
@@ -73,16 +76,10 @@ public class StoreController {
         return null;
     }
 
-    public int addQuestion(Message m) throws Exception
+    public int addQuestion(Question q) throws Exception
     {
-        Store store = getActiveStore(m.getStoreId());
-        return store.addQuestion(m);
-//        Store store = storeList.get(m.getStoreId());
-//        if (store != null && store.isActive())
-//        {
-//            return store.addQuestion(m);
-//        }
-//        throw new Exception("store does not exist or is not open");
+        Store store = getActiveStore(q.getStoreId());
+        return store.addQuestion(q);
     }
     public Store getActiveStore(int storeID) throws Exception
     {
@@ -106,24 +103,14 @@ public class StoreController {
     /**
      * @return the store creator id if the store or order doesn't exist return -1
      */
-    public int writeReviewForStore(Message message) throws Exception {
+    public int writeReviewForStore(StoreReview message) throws Exception {
         Store store = getActiveStore(message.getStoreId());
         return store.addReview(message.getOrderId(), message);
-//        Store store = storeList.get(message.getStoreId());
-//        if (store != null && store.isActive()) {
-//            return store.addReview(message.getOrderId(), message);
-//        }
-//        throw new Exception("the storeId given does not belong to any active store");
     }
 
-    public int writeReviewForProduct(Message message) throws Exception {
+    public int writeReviewForProduct(ProductReview message) throws Exception {
         Store store = getActiveStore(message.getStoreId());
         return store.addProductReview(message);
-//        Store store = storeList.get(message.getStoreId());
-//        if (store != null && store.isActive()) {
-//            return store.addProductReview(message);
-//        }
-//        throw new Exception("the storeId given does not belong to any active store");
     }
 
     public int calculatePrice(ShoppingCart cart) throws Exception{
@@ -252,17 +239,9 @@ public class StoreController {
     }
 
 
-    public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
+    public List<Message> getQuestions(int storeId) throws Exception {
         Store store = getActiveStore(storeId);
         return store.getQuestions();
-//        Store store = getStore(storeId);
-//        if (store != null && store.isActive())
-//        {
-//            return store.getQuestions();
-//        }
-//        else {
-//            throw new Exception("store doesnt Exist or Open");
-//        }
     }
 
     public void answerQuestion(int storeId, int questionId, String answer) throws Exception{
@@ -318,17 +297,9 @@ public class StoreController {
         }
     }
 
-    public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
+    public List<StoreReview> viewReviews(int storeId) throws Exception {
         Store store = getActiveStore(storeId);
         return store.getStoreReviews();
-//        Store store = getStore(storeId);
-//        if (store != null && store.isActive())
-//        {
-//            return store.getStoreReviews();
-//        }
-//        else {
-//            throw new Exception("store doesnt Exist or Open");
-//        }
     }
 
     public ArrayList<String> showFilterOptions() {

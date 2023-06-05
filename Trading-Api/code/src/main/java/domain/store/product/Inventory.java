@@ -4,6 +4,7 @@ package domain.store.product;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
+import utils.messageRelated.ProductReview;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -19,7 +20,7 @@ public class Inventory {
     // ConcurrentHashMap<Product, ArrayList<String>> categories;
     private ConcurrentHashMap<String,ArrayList<Integer>> categories; // <Category String,<List<ProductID>>
     private ConcurrentHashMap<Product, CopyOnWriteArrayList<Integer>> productgrading;
-    private ConcurrentHashMap<Integer, Message> productReviews;
+    private ConcurrentHashMap<Integer, ProductReview> productReviews;
 
 
     // AtomicInteger prod_id = new AtomicInteger();
@@ -92,7 +93,7 @@ public class Inventory {
         return relatedCategories;
     }
 
-    public void addProductReview(Message m) throws Exception{
+    public void addProductReview(ProductReview m) throws Exception{
         if(productList.containsKey(m.getProductId())){
             productReviews.put(m.getMessageId(), m);
         }
@@ -103,8 +104,8 @@ public class Inventory {
     /**
      * gets product id and return list of the grading the product got by buyers
      */
-    public HashMap<Integer, Message> getProductReviews(int productID){
-        HashMap<Integer, Message> ans = new HashMap<>();
+    public List<ProductReview> getProductReviews(int productID){
+        List<ProductReview> ans = new ArrayList<>();
         Product p;
         try{
             p = getProduct(productID);
@@ -112,9 +113,9 @@ public class Inventory {
             p = null;
         }
         if (p != null){
-           for(Message m : productReviews.values())
+           for(ProductReview m : productReviews.values())
                 if(m.getProductId() == productID)
-                    ans.put(m.getProductId(), m);
+                    ans.add(m);
         }
         return ans;
     }
@@ -315,7 +316,7 @@ public class Inventory {
         return info;
     }
 
-    public ConcurrentHashMap<Integer, Message> getProductReviews(){
+    public ConcurrentHashMap<Integer, ProductReview> getProductReviews(){
         return productReviews;
     }
 }

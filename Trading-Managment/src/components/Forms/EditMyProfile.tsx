@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form";
 import { editProfileFormValues } from "../../types/formsTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { clearProductError } from "../../reducers/productsSlice";
-import { editProfile, getClientData, ping } from "../../reducers/authSlice";
+import { clearAuthError, editProfile, getClientData, ping } from "../../reducers/authSlice";
+import { DatePicker } from "@mui/x-date-pickers";
 
 
 
@@ -24,15 +25,29 @@ const EditMyProfileForm = () => {
 
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
-    const handleOnSubmit = () => {
-        let response;
-        form.setValue('userId', userId);
-        response = dispatch(editProfile(form.getValues()));
-        handleOnClose();
+    const monthToInt = new Map<string, string>([
+        ['Jan', '01'],
+        ['Feb', '02'],
+        ['Mar', '03'],
+        ['Apr', '04'],
+        ['May', '05'],
+        ['Jun', '06'],
+        ['Jul', '07'],
+        ['Aug', '08'],
+        ['Sep', '09'],
+        ['Oct', '10'],
+        ['Nov', '11'],
+        ['Dec', '12'],
+    ]);
+    // Form Buttons
 
+    const handleOnSubmit = () => {
+        form.setValue('userId', userId);
+        dispatch(editProfile(form.getValues()));
+        handleOnClose();
     };
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard/personal');
+        navigate(-1);
         dispatch(getClientData({ userId: userId }));
         // navigate(-1);
     }, []);
@@ -42,7 +57,17 @@ const EditMyProfileForm = () => {
             dispatch(ping(userId));
         }
     }
+    const getDtae = (day: string, month: string, year: string): string => {
+        return `${day}/${monthToInt.get(month)}/${year}`;
+    }
 
+    const handleDate = (date: React.SetStateAction<Date | null>) => {
+        if (date) {
+            const arr = date.toString().split(' ');
+            form.setValue('birthday', getDtae(arr[2], arr[1], arr[3]));
+        }
+
+    }
     useEffect(() => {
         // Call the sendPing function every 2 seconds
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
@@ -72,7 +97,7 @@ const EditMyProfileForm = () => {
                         marginTop: 4,
                         top: '50%',
                         left: '50%',
-                        height: 520,
+                        height: 300,
                         width: '80%',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -93,25 +118,6 @@ const EditMyProfileForm = () => {
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
                                 <b>update details</b>
                             </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                name="name"
-                                type="text"
-                                fullWidth
-                                label="name"
-                                sx={{ mt: 1, mb: 1 }}
-                                inputProps={{
-                                    ...form.register('name', {
-                                        required: {
-                                            value: false,
-                                            message: "name is not required"
-                                        }
-                                    })
-                                }}
-                                error={!!form.formState.errors['name'] ?? false}
-                                helperText={form.formState.errors['name']?.message ?? undefined}
-                            />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -136,42 +142,7 @@ const EditMyProfileForm = () => {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                name="age"
-                                type="text"
-                                fullWidth
-                                label="age"
-                                sx={{ mt: 1, mb: 1 }}
-                                inputProps={{
-                                    ...form.register('age', {
-                                        required: {
-                                            value: false,
-                                            message: "not mendatory"
-                                        }
-                                    })
-                                }}
-                                error={!!form.formState.errors['age'] ?? false}
-                                helperText={form.formState.errors['age']?.message ?? undefined}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                name="birthday"
-                                type="text"
-                                fullWidth
-                                label="birthday"
-                                sx={{ mt: 1, mb: 1 }}
-                                inputProps={{
-                                    ...form.register('birthday', {
-                                        required: {
-                                            value: false,
-                                            message: "birthday is not mendatory"
-                                        }
-                                    })
-                                }}
-                                error={!!form.formState.errors['birthday'] ?? false}
-                                helperText={form.formState.errors['birthday']?.message ?? undefined}
-                            />
+                            <DatePicker label={'birthday'} onChange={handleDate} sx={{ width: '100%' }} />
                         </Grid>
                         <Grid item xs={12}>
                             <LoadingButton
@@ -189,7 +160,7 @@ const EditMyProfileForm = () => {
                 </Box>
             </Dialog >
             {!!error ?
-                <AlertDialog open={!!error} onClose={() => { dispatch(clearProductError()); }} text={error} sevirity={"error"} />
+                <AlertDialog open={!!error} onClose={() => { dispatch(clearAuthError()); }} text={error} sevirity={"error"} />
                 : null
             }
         </>

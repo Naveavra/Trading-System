@@ -2,13 +2,16 @@ import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { fireUserFormValues } from "../../types/formsTypes";
 import { useNavigate } from "react-router-dom";
+
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { LoadingButton } from "@mui/lab";
-import { Dialog, Box, Grid, Typography, SelectChangeEvent } from "@mui/material";
+import { clearStoreError, fireManager, fireOwner, getStore } from "../../reducers/storesSlice";
+
+import { StoreRoleEnum } from "../../types/systemTypes/StoreRole";
 import AlertDialog from "../Dialog/AlertDialog";
 import SelectAutoWidth from "../Selectors/AutoWidth";
-import { StoreRoleEnum } from "../../types/systemTypes/StoreRole";
-import { clearStoreError, fireManager, fireOwner, getStore } from "../../reducers/storesSlice";
+
+import { LoadingButton } from "@mui/lab";
+import { Dialog, Box, Grid, Typography, SelectChangeEvent } from "@mui/material";
 
 interface props {
     role: 'owner' | 'manager'
@@ -21,7 +24,6 @@ const FireUser: React.FC<props> = ({ role }) => {
     const form = useForm<fireUserFormValues>();
 
 
-    const token = useAppSelector((state) => state.auth.token);
     const userId = useAppSelector((state) => state.auth.userId)
     const isLoading = useAppSelector((state) => state.store.storeState.isLoading);
     const error = useAppSelector((state) => state.store.storeState.error);

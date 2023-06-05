@@ -17,9 +17,7 @@ import domain.store.storeManagement.Store;
 import service.MarketController;
 import utils.infoRelated.*;
 import utils.Response;
-import utils.messageRelated.Message;
-import utils.messageRelated.Notification;
-import utils.messageRelated.NotificationOpcode;
+import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.infoRelated.Receipt;
 
@@ -364,9 +362,8 @@ public class Market implements MarketInterface {
     public Response<String> writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading) {
         try {
             userAuth.checkUser(userId, token);
-            Message m = userController.writeReviewForStore(orderId, storeId, content, grading, userId);
+            StoreReview m = userController.writeReviewForStore(orderId, storeId, content, grading, userId);
             int creatorId = marketController.addReviewToStore(m);
-            m.addOwnerEmail(userController.getUserEmail(creatorId));
             addNotification(creatorId,NotificationOpcode.STORE_REVIEW, "a review of has been added for store: " + storeId);
             return logAndRes(Event.LogStatus.Success, "user wrote review on store successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -383,9 +380,8 @@ public class Market implements MarketInterface {
     public Response<String> writeReviewToProduct(int userId, String token, int orderId, int storeId, int productId, String content, int grading) {
         try {
             userAuth.checkUser(userId, token);
-            Message m = userController.writeReviewForProduct(orderId, storeId, productId, content, grading, userId);
-            int creatorId = marketController.writeReviewForProduct(m);
-            m.addOwnerEmail(userController.getUserEmail(creatorId));
+            ProductReview p = userController.writeReviewForProduct(orderId, storeId, productId, content, grading, userId);
+            int creatorId = marketController.writeReviewForProduct(p);
             addNotification(creatorId,NotificationOpcode.PRODUCT_REVIEW,"a review of has been added for product: "+productId +" in store: " + storeId);
             return logAndRes(Event.LogStatus.Success, "user wrote review on product successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -398,10 +394,10 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<HashMap<Integer, ? extends Information>> checkReviews(int userId, String token, int storeId) {
+    public Response<List<? extends Information>> checkReviews(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            HashMap<Integer, Message> reviews = marketController.viewReviews(storeId);
+            List<StoreReview> reviews = marketController.viewReviews(storeId);
             return logAndRes(Event.LogStatus.Success, "user checked reviews of store " + storeId + " successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     reviews, null, null);
@@ -485,9 +481,8 @@ public class Market implements MarketInterface {
     public Response<String> sendQuestion(int userId, String token, int storeId, String msg) {
         try {
             userAuth.checkUser(userId, token);
-            Message m = userController.sendQuestionToStore(userId, storeId, msg);
-            int creatorId = marketController.addQuestion(m);
-            m.addOwnerEmail(userController.getUserEmail(creatorId));
+            Question q = userController.sendQuestionToStore(userId, storeId, msg);
+            int creatorId = marketController.addQuestion(q);
             addNotification(creatorId, NotificationOpcode.QUESTION, "a question of has been added for store: " + storeId);
             return logAndRes(Event.LogStatus.Success, "user sent question to store " + storeId + " successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -642,7 +637,7 @@ public class Market implements MarketInterface {
     public Response<String> addPurchaseConstraint(int userId, String token, int storeId, String constraint) {
         try {
             userAuth.checkUser(userId, token);
-            marketController.addPurchaseConstraint(storeId, constraint);
+//            marketController.addPurchaseConstraint(storeId, constraint);
             return logAndRes(Event.LogStatus.Success, "user add purchase constraint successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user add purchase constraint successfully", null, null);
@@ -684,10 +679,10 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<HashMap<Integer, ? extends Information>> viewQuestions(int userId, String token, int storeId) {
+    public Response<List<? extends Information>> viewQuestions(int userId, String token, int storeId) {
         try {
             userAuth.checkUser(userId, token);
-            HashMap<Integer, Message> res = marketController.getQuestions(storeId);
+            List<Message> res = marketController.getQuestions(storeId);
             return logAndRes(Event.LogStatus.Success, "user get questions successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     res, null, null);
@@ -861,7 +856,7 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             String hashedPass = userAuth.hashPassword(email, pass);
-            Admin admin = userController.addAdmin(userId, email, hashedPass);
+            Admin admin = userController.addAdmin(userId, email, hashedPass , pass);
             admin.addControllers(userController, marketController);
             return logAndRes(Event.LogStatus.Success, "admin added new admin successfully",
                     StringChecks.curDayString(), "admin"+userId,
@@ -944,7 +939,18 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> cancelMembership(int adminId, String token, int userToRemove) {
+    public Response<List<? extends Information>> getComplaints(int userId, String token) {
+        try {
+            userAuth.checkUser(userId, token);
+            List<Complaint> complaints = userController.getComplaints(userId);
+            return new Response<>(complaints, null, null);
+        }catch (Exception e){
+            return new Response<>(null, "could not get complaints", e.getMessage());
+        }
+    }
+
+    @Override
+    public Response<String> cancelMembership(int adminId, String token, String userToRemove) {
         try {
             userAuth.checkUser(adminId, token);
             userController.cancelMembership(adminId, userToRemove);

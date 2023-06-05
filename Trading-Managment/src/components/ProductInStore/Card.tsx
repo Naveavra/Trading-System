@@ -21,7 +21,6 @@ interface CardProps {
 const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const [isFav, setFav] = React.useState(false);
     const [quantity, setQuantity] = React.useState(0);
 
 
