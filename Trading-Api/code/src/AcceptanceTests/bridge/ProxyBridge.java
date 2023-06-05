@@ -69,9 +69,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public List<String> getAvailableExternalSupplierService(int user) {
+    public List<String> getAvailableExternalSupplierService() {
         if (real != null)
-            return real.getAvailableExternalSupplierService(user);
+            return real.getAvailableExternalSupplierService();
         return null;
     }
 
@@ -104,9 +104,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public List<String> getAvailableExternalPaymentService(int user) {
+    public List<String> getAvailableExternalPaymentService() {
         if (real != null)
-            return real.getAvailableExternalPaymentService(user);
+            return real.getAvailableExternalPaymentService();
         return null;
     }
 

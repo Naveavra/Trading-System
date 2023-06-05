@@ -111,15 +111,25 @@ public interface MarketInterface {
 
     public Response setPaymentService(int adminId, String token, String paymentService);
     public Response getPaymentServicePossible(int adminId, String token);
-    public Response getPaymentServiceAvailable(int userId);
+
+    //TODO: fix template for this function
+    Response getPaymentServiceAvailable();
+
     public Response addPaymentService(int adminId, String token, String paymentService);
     public Response removePaymentService(int adminId, String token, String paymentService);
 
     public Response setSupplierService(int adminId, String token, String supplierService);
     public Response getSupplierServicePossible(int adminId, String token);
-    public Response getSupplierServiceAvailable(int userId);
+
+    //TODO: fix template for this function
+    Response getSupplierServiceAvailable();
+
     public Response addSupplierService(int adminId, String token, String supplierService);
     public Response removeSupplierService(int adminId, String token, String supplierService);
 
     Response<List<? extends Information>> getComplaints(int userId, String token);
+
+    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst);
+
+
 }
