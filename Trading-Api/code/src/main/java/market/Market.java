@@ -51,12 +51,12 @@ public class Market implements MarketInterface {
         marketController = new MarketController();
 
         userAuth = new UserAuth();
-        try {
-            proxyPayment = new ProxyPayment();
-            proxySupplier = new ProxySupplier();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            proxyPayment = new ProxyPayment();
+//            proxySupplier = new ProxySupplier();
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
 
         marketInfo = new MarketInfo();
 
@@ -273,8 +273,8 @@ public class Market implements MarketInterface {
         try {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
-            proxyPayment.makePurchase(payment, totalPrice);
-            proxySupplier.orderSupplies(supplier, cart);
+//            proxyPayment.makePurchase(payment, totalPrice);
+//            proxySupplier.orderSupplies(supplier, cart);
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
             Receipt receipt = ans.getFirst();
             Set<Integer> creatorIds = ans.getSecond();
@@ -359,9 +359,10 @@ public class Market implements MarketInterface {
 
     //TODO: add external service for messages and notifications
     @Override
-    public Response<String> writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading) {
+    public Response<String> writeReviewToStore(int userId, String token, int orderId, String storeName, String content, int grading) {
         try {
             userAuth.checkUser(userId, token);
+            int storeId = marketController.getStoreId(storeName);
             StoreReview m = userController.writeReviewForStore(orderId, storeId, content, grading, userId);
             int creatorId = marketController.addReviewToStore(m);
             addNotification(creatorId,NotificationOpcode.STORE_REVIEW, "a review of has been added for store: " + storeId);
@@ -478,9 +479,10 @@ public class Market implements MarketInterface {
 
 
     @Override
-    public Response<String> sendQuestion(int userId, String token, int storeId, String msg) {
+    public Response<String> sendQuestion(int userId, String token, String storeName, String msg) {
         try {
             userAuth.checkUser(userId, token);
+            int storeId = marketController.getStoreId(storeName);
             Question q = userController.sendQuestionToStore(userId, storeId, msg);
             int creatorId = marketController.addQuestion(q);
             addNotification(creatorId, NotificationOpcode.QUESTION, "a question of has been added for store: " + storeId);

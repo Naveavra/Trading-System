@@ -392,4 +392,10 @@ public class StoreController {
 
     }
 
+    public int getStoreId(String storeName) throws Exception{
+        for(Store s : storeList.values())
+            if(s.getName().equals(storeName))
+                return s.getStoreId();
+        throw new Exception("the name does not belong to any store");
+    }
 }

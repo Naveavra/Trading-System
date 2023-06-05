@@ -177,8 +177,8 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading){
-        Response<String> res = market.writeReviewToStore(userId, token, orderId, storeId, content, grading);
+    public Pair<Boolean, JSONObject> writeReviewToStore(int userId, String token, int orderId, String storeName, String content, int grading){
+        Response<String> res = market.writeReviewToStore(userId, token, orderId, storeName, content, grading);
         return fromResToPair(res);
     }
 
@@ -219,8 +219,8 @@ public class API {
         return fromResToPairList(res);
     }
 
-    public Pair<Boolean, JSONObject> sendQuestion(int userId, String token, int storeId,String msg){
-        Response<String> res = market.sendQuestion(userId, token, storeId, msg);
+    public Pair<Boolean, JSONObject> sendQuestion(int userId, String token, String storeName,String msg){
+        Response<String> res = market.sendQuestion(userId, token, storeName, msg);
         return fromResToPair(res);
     }
 
@@ -514,10 +514,10 @@ public class API {
         market.addProductToCart(id2, sid1, pid1, 1);
         Response<Receipt> res3 = market.makePurchase(id1, payment, supplier);
         market.sendComplaint(id1, token1, res3.getValue().getOrderId(), "baaaaaad");
-        market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), sid2, "bad store", 2);
+        market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), "rollups", "bad store", 2);
         res3 = market.makePurchase(id2, payment, supplier);
-        market.writeReviewToStore(id2, token2, res3.getValue().getOrderId(), sid1, "good store", 4);
-        market.sendQuestion(id1, token1, sid1, "why bad?");
+        market.writeReviewToStore(id2, token2, res3.getValue().getOrderId(), "nike", "good store", 4);
+        market.sendQuestion(id1, token1, "nike", "why bad?");
         market.appointManager(id1, token1, "ziv@gmail.com", sid1);
         market.appointManager(id2, token2, "eli@gmail.com", sid2);
         market.logout(id1);
