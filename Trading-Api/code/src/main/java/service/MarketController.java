@@ -5,6 +5,7 @@ import domain.store.storeManagement.AppHistory;
 import domain.user.Member;
 import domain.user.ShoppingCart;
 import domain.user.User;
+import org.json.JSONObject;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.StoreInfo;
@@ -254,5 +255,10 @@ public class MarketController {
 
     public void checkProductInStore(int storeId, int productId) throws Exception{
         storectrl.checkProductInStore(storeId, productId);
+    }
+
+    public void changeRegularDiscount(int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst) throws Exception {
+        storectrl.changeRegularDiscount(storeId, prodId, percentage, discountType,
+                discountedCategory, predicatesLst);
     }
 }

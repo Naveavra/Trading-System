@@ -950,6 +950,21 @@ public class Market implements MarketInterface {
     }
 
     @Override
+    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst) {
+        try {
+            userAuth.checkUser(userId, token);
+            userController.checkPermission(userId, Action.changeDiscountPolicy, storeId);
+            marketController.changeRegularDiscount(storeId, prodId, percentage, discountType,
+                    discountedCategory, predicatesLst);
+            return logAndRes(Event.LogStatus.Success, "user changed discount successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    "user changed discount policy", null, null);
+        } catch (Exception e) {
+            return new Response<>(null, "could not get complaints", e.getMessage());
+        }
+    }
+
+    @Override
     public Response<String> cancelMembership(int adminId, String token, String userToRemove) {
         try {
             userAuth.checkUser(adminId, token);
@@ -1214,4 +1229,5 @@ public class Market implements MarketInterface {
             return new Response<>(null, "update state failed", e.getMessage());
         }
     }
+
 }

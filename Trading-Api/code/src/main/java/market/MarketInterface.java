@@ -128,4 +128,8 @@ public interface MarketInterface {
     public Response removeSupplierService(int adminId, String token, String supplierService);
 
     Response<List<? extends Information>> getComplaints(int userId, String token);
+
+    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst);
+
+
 }

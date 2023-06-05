@@ -1,8 +1,14 @@
 package domain.store.storeManagement;
 
+import domain.store.discount.AbstractDiscount;
+import domain.store.discount.Discount;
+import domain.store.discount.discountDataObjects.DiscountDataObject;
+import domain.store.discount.discountDataObjects.PredicateDataObject;
+import domain.store.discount.predicates.DiscountPredicate;
 import domain.user.Basket;
 import domain.user.Member;
 import domain.user.ShoppingCart;
+import org.json.JSONObject;
 import utils.infoRelated.ProductInfo;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.StoreInfo;
@@ -363,4 +369,27 @@ public class StoreController {
         Store s = getStore(storeId);
         s.setStoreAttributes(name, description, img);
     }
+    public ArrayList<PredicateDataObject> parsePredicateData(ArrayList<String> predData){
+        ArrayList<PredicateDataObject> predicates = new ArrayList<>();
+        for(String data : predData){
+            JSONObject dataJson = new JSONObject(data);
+            String predTypeStr = dataJson.getString("predType");
+            DiscountPredicate.PredicateTypes predType = DiscountPredicate.PredicateTypes.valueOf(predTypeStr);
+            String params = dataJson.getString("params");
+            String composureStr = dataJson.getString("composore");
+            DiscountPredicate.composore composore = DiscountPredicate.composore.valueOf(composureStr);
+            predicates.add(new PredicateDataObject(predType,params,composore));
+        }
+        return predicates;
+    }
+
+    public void changeRegularDiscount(int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst) throws Exception {
+        Store s = getActiveStore(storeId);
+        AbstractDiscount.discountTypes discountTypeEnum = AbstractDiscount.discountTypes.Store;
+        if (Objects.equals(discountType.toLowerCase(), "product")){discountTypeEnum = AbstractDiscount.discountTypes.Product;}
+        if (Objects.equals(discountType.toLowerCase(), "category")){discountTypeEnum = AbstractDiscount.discountTypes.Category;}
+        s.addDiscount(new DiscountDataObject(percentage,discountTypeEnum,prodId, discountedCategory, parsePredicateData(new ArrayList<>(predicatesLst))));
+
+    }
+
 }
