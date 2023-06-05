@@ -191,6 +191,24 @@ public class API {
         return fromResToPairList(res);
     }
 
+    public Pair<Boolean, JSONObject> getFilterOptions(){
+        Response<List<Object>> options = market.showFilterOptions();
+        return fromResToPairListPre(options);
+    }
+
+    public List<String> getFilterOptionsString(){
+        Response<List<Object>> options = market.showFilterOptions();
+        List<String> ans = new ArrayList<>();
+        for(Object o : options.getValue())
+            ans.add(o.toString());
+        return ans;
+    }
+
+    public Pair<Boolean, JSONObject> filterBy(HashMap<String, String> filters){
+        Response<List<? extends Information>> options = market.filterBy(filters);
+        return fromResToPairList(options);
+    }
+
     public Pair<Boolean, JSONObject> viewReviews(int userId, String token, int storeId){
         Response<List<? extends Information>> res = market.checkReviews(userId, token, storeId);
         return fromResToPairList(res);

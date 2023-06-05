@@ -173,6 +173,21 @@ public class Server {
             toSparkRes(res, api.getStoreProducts(storeId));
             return res.body();
         });
+
+        post("api/stores/:storeId/products/filter/options", (req, res) -> {
+            toSparkRes(res, api.getFilterOptions());
+            return res.body();
+        });
+        post("api/stores/:storeId/products/filter", (req, res) -> {
+            //check all filter options and put them in front, then if needed put a value else put "null"
+            List<String> options = api.getFilterOptionsString();
+            HashMap<String, String> filters = new HashMap<>();
+            JSONObject request = new JSONObject(req.body());
+            for(String option : options)
+                filters.put(option, request.get(option).toString());
+            toSparkRes(res, api.filterBy(filters));
+            return res.body();
+        });
         post("api/stores", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
@@ -491,7 +506,7 @@ public class Server {
             return res.body();
         });
 
-        post("api/admin/stores/:storeId", (req, res)-> {
+        post("api/admin/closeStorePermanently", (req, res)-> {
             JSONObject request = new JSONObject(req.body());
             int adminId = Integer.parseInt(request.get("userId").toString());
             int storeId = Integer.parseInt(request.get("storeId").toString());
