@@ -7,6 +7,7 @@ import domain.store.storeManagement.AppHistory;
 import domain.user.StringChecks;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
+import org.json.JSONObject;
 import service.security.UserAuth;
 import service.ExternalService.Supplier.ProxySupplier;
 import service.UserController;
@@ -268,13 +269,13 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public synchronized Response<Receipt> makePurchase(int userId, String accountNumber) {
+    public synchronized Response<Receipt> makePurchase(int userId , JSONObject payment, JSONObject supplier) {
         try {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
             //TODO: fix here
-            //proxyPayment.makePurchase(accountNumber, totalPrice);
-            //proxySupplier.checkSupply(cart);
+            proxyPayment.makePurchase(payment, totalPrice);
+            proxySupplier.orderSupplies(supplier, cart);
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
             Receipt receipt = ans.getFirst();
             Set<Integer> creatorIds = ans.getSecond();

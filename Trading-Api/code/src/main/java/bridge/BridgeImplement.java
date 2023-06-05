@@ -9,6 +9,7 @@ import market.Market;
 
 import java.util.*;
 
+import org.json.JSONObject;
 import utils.infoRelated.*;
 import utils.Response;
 
@@ -487,8 +488,8 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int makePurchase(int user, String accountNumber) {
-        Response<Receipt> res = market.makePurchase(user, accountNumber);
+    public int makePurchase(int user, JSONObject payment, JSONObject supplier) {
+        Response<Receipt> res = market.makePurchase(user, payment, supplier);
         if(!res.errorOccurred())
         {
             return 1;

@@ -1,6 +1,7 @@
 package junit;
 
 import data.*;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,9 @@ public class StoreOwnerTest extends ProjectTest{
     private ProductInfo goodProduct1;
     private ProductInfo goodProduct2;
     private ProductInfo goodProduct3;
+
+    private JSONObject payment = createPaymentJson();
+    private JSONObject supplier = createSupplierJson();
     private static final int ERROR = -1;
 
     @Override
@@ -82,7 +86,7 @@ public class StoreOwnerTest extends ProjectTest{
         assertEquals(0, purchases.size());
         int status = addProductToCart(buyer.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
         assertTrue(status > -1);
-        status  = makePurchase(buyer.getUserId(), "00000000000");
+        status  = makePurchase(buyer.getUserId(), payment, supplier);
         assertTrue(status > 0);
         purchases = this.getBuyerPurchasesHistory(admin.getAdminId(), buyer.getUserId());
         assertNotNull(purchases);
@@ -197,7 +201,7 @@ public class StoreOwnerTest extends ProjectTest{
         //Add product to cart
         int status = addProductToCart(uid.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
         assertTrue(status > -1);
-        status  = makePurchase(uid.getUserId(), "00000000000");
+        status  = makePurchase(uid.getUserId(), payment, supplier);
         assertTrue(status > 0);
         UserInfo creator = this.users_dict.get(users[1][USER_EMAIL]);
         creator.setUserId(login(creator.getEmail(), creator.getPassword()));

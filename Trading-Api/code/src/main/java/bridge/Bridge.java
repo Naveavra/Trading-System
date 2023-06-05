@@ -1,6 +1,7 @@
 package bridge;
 
 import data.*;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -455,11 +456,12 @@ public interface Bridge {
      * Guest/ Member - Make Purchase
      *
      * @param user user id
-     * @param accountNumber account bank number
+     * @param payment payment details.
+     * @param supplier payment details.
      * @return If succeed returns 1 . Otherwise,
      *          return -1.
      */
-    int makePurchase(int user, String accountNumber);
+    int makePurchase(int user, JSONObject payment, JSONObject supplier);
 
     /**
      * Guest - exit system

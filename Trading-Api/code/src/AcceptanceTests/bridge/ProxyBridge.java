@@ -1,6 +1,7 @@
 package bridge;
 
 import data.*;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -323,9 +324,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int makePurchase(int user, String accountNumber) {
+    public int makePurchase(int user, JSONObject payment, JSONObject supplier) {
         if (real != null)
-            return real.makePurchase(user, accountNumber);
+            return real.makePurchase(user, payment, supplier);
         return -1;
     }
 

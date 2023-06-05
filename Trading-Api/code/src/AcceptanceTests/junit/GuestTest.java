@@ -1,6 +1,7 @@
 package junit;
 
 import data.*;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GuestTest extends ProjectTest{
     private ProductInfo goodProduct0;
     private ProductInfo goodProduct1;
+    private JSONObject payment = createPaymentJson();
+    private JSONObject supplier = createSupplierJson();
+
+
     private static final int ERROR = -1;
 
     @Override
@@ -149,7 +154,7 @@ public class GuestTest extends ProjectTest{
         assertNotNull(ci);
         assertTrue(ci.getCountOfProduct() > 0);
         //make purchase
-        status  = makePurchase(buyer.getId(), "00000000000");
+        status  = makePurchase(buyer.getId(), payment, supplier);
         assertNotEquals(ERROR, status);
     }
 
@@ -177,8 +182,8 @@ public class GuestTest extends ProjectTest{
         assertNotNull(ci);
         assertTrue(ci.getCountOfProduct() > 0);
         //make purchase
-        int status1 = makePurchase(buyer1.getId(), "00000000000");
-        int status2 = makePurchase(buyer2.getId(), "33333333333");
+        int status1 = makePurchase(buyer1.getId(), payment, supplier);
+        int status2 = makePurchase(buyer2.getId(), payment, supplier);
         assertNotEquals(ERROR, status1);
         assertEquals(ERROR, status2);
     }
@@ -208,10 +213,10 @@ public class GuestTest extends ProjectTest{
         //make purchase
         AtomicInteger i = new AtomicInteger();
         Thread t1 = new Thread(() -> {
-            i.addAndGet(makePurchase(buyer1.getId(), "00000000000"));
+            i.addAndGet(makePurchase(buyer1.getId(), payment, supplier));
         });
         Thread t2 = new Thread(() -> {
-            i.addAndGet(makePurchase(buyer2.getId(), "33333333333"));
+            i.addAndGet(makePurchase(buyer2.getId(), payment, supplier));
         });
         t1.start();
         t2.start();

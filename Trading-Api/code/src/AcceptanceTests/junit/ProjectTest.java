@@ -7,6 +7,7 @@ import java.util.List;
 import bridge.Bridge;
 import bridge.Driver;
 import data.*;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -100,6 +101,31 @@ public abstract class ProjectTest{
 
         logout(ui.getUserId());
         logout(ui1.getUserId());
+    }
+
+    protected JSONObject createPaymentJson()
+    {
+        JSONObject payment = new JSONObject();
+        payment.put("payment_service", "WSEP");
+        payment.put("cardNumber", "123456789");
+        payment.put("month", "01");
+        payment.put("year", "30");
+        payment.put("holder", "Israel Visceral");
+        payment.put("ccv", "000");
+        payment.put("id", "123456789");
+        return payment;
+    }
+
+    protected  JSONObject createSupplierJson()
+    {
+        JSONObject supplier = new JSONObject();
+        supplier.put("supply_service", "WSEP");
+        supplier.put("name", "Israel Visceral");
+        supplier.put("address", "Reger 17");
+        supplier.put("city", "Beer Sheva");
+        supplier.put("country", "Israel");
+        supplier.put("zip", "700000");
+        return supplier;
     }
 
     // Auxiliary procedures
@@ -328,9 +354,9 @@ public abstract class ProjectTest{
         return bridge.getCart(user);
     }
 
-    public int makePurchase(int user, String accountNumber)
+    public int makePurchase(int user, JSONObject payment, JSONObject supply)
     {
-        return bridge.makePurchase(user, accountNumber);
+        return bridge.makePurchase(user, payment, supply);
     }
 
     public int removeProductFromCart(int userId,  int storeId, int productId)

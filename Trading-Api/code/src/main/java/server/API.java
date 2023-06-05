@@ -121,8 +121,8 @@ public class API {
         return fromResToPairList(res);
     }
 
-    public Pair<Boolean, JSONObject> makePurchase(int userId , String accountNumber){
-        Response<Receipt> res = market.makePurchase(userId, accountNumber);
+    public Pair<Boolean, JSONObject> makePurchase(int userId , JSONObject payment, JSONObject supplier){
+        Response<Receipt> res = market.makePurchase(userId, payment, supplier);
         return fromResToPairInfo(res);
     }
 
@@ -419,7 +419,35 @@ public class API {
         actionStrings.put(Action.reopenStore.toString(), 19);
     }
 
+    private JSONObject createPaymentJson()
+    {
+        JSONObject payment = new JSONObject();
+        payment.put("payment_service", "WSEP");
+        payment.put("cardNumber", "123456789");
+        payment.put("month", "01");
+        payment.put("year", "30");
+        payment.put("holder", "Israel Visceral");
+        payment.put("ccv", "000");
+        payment.put("id", "123456789");
+        return payment;
+    }
+
+    private static JSONObject createSupplierJson()
+    {
+        JSONObject supplier = new JSONObject();
+        supplier.put("supply_service", "WSEP");
+        supplier.put("name", "Israel Visceral");
+        supplier.put("address", "Reger 17");
+        supplier.put("city", "Beer Sheva");
+        supplier.put("country", "Israel");
+        supplier.put("zip", "700000");
+        return supplier;
+    }
+
+
     public void mockData() {
+        JSONObject payment = createPaymentJson();
+        JSONObject supplier = createSupplierJson();
         market.register("eli@gmail.com", "123Aaa", "24/02/2002");
         market.register("ziv@gmail.com", "456Bbb", "01/01/2002");
         market.register("nave@gmail.com", "789Ccc", "01/01/1996");
@@ -444,10 +472,10 @@ public class API {
         market.addProductToCart(id1, sid1, pid1, 3);
         market.addProductToCart(id1, sid2, pid2, 5);
         market.addProductToCart(id2, sid1, pid1, 1);
-        Response<Receipt> res3 = market.makePurchase(id1, "9999999");
+        Response<Receipt> res3 = market.makePurchase(id1, payment, supplier);
         market.sendComplaint(id1, token1, res3.getValue().getOrderId(), "baaaaaad");
         market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), sid2, "bad store", 2);
-        res3 = market.makePurchase(id2, "111111");
+        res3 = market.makePurchase(id2, payment, supplier);
         market.writeReviewToStore(id2, token2, res3.getValue().getOrderId(), sid1, "good store", 4);
         market.sendQuestion(id1, token1, sid1, "why bad?");
         market.appointManager(id1, token1, "ziv@gmail.com", sid1);

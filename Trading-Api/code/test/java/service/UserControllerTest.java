@@ -1,4 +1,4 @@
-package service;
+package java.service;
 
 import database.dtos.MemberDto;
 import database.dtos.NotificationDto;
@@ -10,7 +10,9 @@ import domain.user.Member;
 import domain.user.StringChecks;
 import market.Admin;
 import market.Market;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import service.UserController;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.Receipt;
@@ -24,7 +26,32 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserControllerTest {
+    private JSONObject payment = createPaymentJson();
+    private JSONObject supplier = createSupplierJson();
+    private JSONObject createPaymentJson()
+    {
+        JSONObject payment = new JSONObject();
+        payment.put("payment_service", "WSEP");
+        payment.put("cardNumber", "123456789");
+        payment.put("month", "01");
+        payment.put("year", "30");
+        payment.put("holder", "Israel Visceral");
+        payment.put("ccv", "000");
+        payment.put("id", "123456789");
+        return payment;
+    }
 
+    private  JSONObject createSupplierJson()
+    {
+        JSONObject supplier = new JSONObject();
+        supplier.put("supply_service", "WSEP");
+        supplier.put("name", "Israel Visceral");
+        supplier.put("address", "Reger 17");
+        supplier.put("city", "Beer Sheva");
+        supplier.put("country", "Israel");
+        supplier.put("zip", "700000");
+        return supplier;
+    }
     @Test
     void enterGuest() {
     }
@@ -77,7 +104,7 @@ class UserControllerTest {
             market.updateProduct(id, token, sid,pid2, categories, "null", "green banana", -1, -1, "null");
             market.addProductToCart(id, sid, pid, 3);
             market.addProductToCart(id, sid, pid2, 5);
-            Receipt receipt = market.makePurchase(id, "000000000").getValue();
+            Receipt receipt = market.makePurchase(id, payment, supplier).getValue();
             market.writeReviewToStore(id, token, receipt.getOrderId(), sid, "very good", 4);
 //            market.saveState();
             market.updateState();

@@ -23,6 +23,7 @@ public class ProxySupplier implements SupplierAdapter {
         this.supplierServices = new HashMap<>();
         supplierServices.put("WSEP", new WSEPService());
         this.real = supplierServices.get("WSEP");
+        this.real.setAvailable(true);
     }
 
     public List<String> getSupplierServicesAvailableOptions()
@@ -42,7 +43,7 @@ public class ProxySupplier implements SupplierAdapter {
     public void addSupplierService(String supplier, SupplierAdapter supplierAdapter) throws Exception {
         if (supplierServices.containsKey(supplier))
         {
-            throw new Exception("This payment service:" + supplier + "doesn't exists in the possible payment services!!!");
+            throw new Exception("This supplier service:" + supplier + "doesn't exists in the possible payment services!!!");
         }
         else{
             supplierServices.put(supplier, supplierAdapter);
@@ -54,11 +55,11 @@ public class ProxySupplier implements SupplierAdapter {
     {
         if (supplierServices.containsKey(supplier))
         {
-            throw new Exception("This payment service:" + supplier + "doesn't exists in the possible payment services!!!");
+            throw new Exception("This supplier service:" + supplier + "doesn't exists in the possible payment services!!!");
         }
         else if(!supplierServices.get(supplier).isAvailable())
         {
-            throw new Exception("This payment service:" + supplier + "already available exists!!!");
+            throw new Exception("This supplier service:" + supplier + "already available exists!!!");
         }
         else{
             supplierServices.get(supplier).setAvailable(true);
@@ -110,17 +111,11 @@ public class ProxySupplier implements SupplierAdapter {
     }
 
     @Override
-    public int orderSupplies(JSONObject supplyContent) throws Exception {
-        if (real != null){
-            return real.orderSupplies(supplyContent);
-        }
-        return -1;
-    }
-
-    public int orderSupplies(String supplier, JSONObject supplyContent) throws Exception {
+    public int orderSupplies(JSONObject supplyContent, ShoppingCart cart) throws Exception {
+        String supplier = supplyContent.getString("supply_service");
         if(supplierServices.containsKey(supplier) &&
                 supplierServices.get(supplier).isAvailable()) {
-            return supplierServices.get(supplier).orderSupplies(supplyContent);
+            return supplierServices.get(supplier).orderSupplies(supplyContent, cart);
         }
         throw new Exception("The " + supplier + "doesn't available or exist!");
     }
