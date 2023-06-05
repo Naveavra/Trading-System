@@ -269,7 +269,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public synchronized Response<Receipt> makePurchase(int userId , JSONObject payment, JSONObject supplier) {
+    public synchronized Response<Receipt> makePurchase(int userId, JSONObject payment, JSONObject supplier) {
         try {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
@@ -1020,8 +1020,8 @@ public class Market implements MarketInterface {
     //TODO: fix template for this function
     @Override
     public Response getPaymentServiceAvailable(int userId) {
-        Admin admin = null;
         try{
+            //TODO: userAuth.checkUser(userId);
             return new Response(proxyPayment.getPaymentServicesAvailableOptions(), null, null);
         }
         catch (Exception e){
@@ -1086,7 +1086,6 @@ public class Market implements MarketInterface {
     public Response getSupplierServiceAvailable(int userId) {
         try{
             //TODO: userAuth.checkUser(userId);
-            //TODO: activeAdmins.get(adminId);
             return new Response(proxySupplier.getSupplierServicesAvailableOptions(), null, null);
         }
         catch (Exception e){

@@ -395,6 +395,16 @@ public class API {
         return fromResToPair(res);
     }
 
+    public Pair<Boolean, JSONObject> getSupplierAvailableServices(int userId) {
+        Response<List<String>> res = market.getSupplierServiceAvailable(userId);
+        return fromResToPair(res);
+    }
+
+    public Pair<Boolean, JSONObject> getPaymentAvailableServices(int userId) {
+        Response<List<String>> res = market.getPaymentServiceAvailable(userId);
+        return fromResToPair(res);
+    }
+
     //for actions to actionString
     private void getActionStrings(){
         actionStrings.put(Action.addProduct.toString(), 0);
