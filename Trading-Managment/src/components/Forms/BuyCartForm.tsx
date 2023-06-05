@@ -26,8 +26,7 @@ const BuyCart = () => {
     const userId = useAppSelector((state: RootState) => state.auth.userId);
     const suppliers = useAppSelector((state) => state.payment.suppliers);
     const payments = useAppSelector((state) => state.payment.paymentServices);
-    const supplierNames = suppliers.map((supplier) => supplier.supplierName);
-    const paymentsNames = payments.map((payment) => payment.paymentName);
+
 
     const handleChangeSupplier = (event: SelectChangeEvent) => {
         setSupplier(event.target.value as string);
@@ -80,7 +79,7 @@ const BuyCart = () => {
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
-                            <SelectAutoWidth label={'payments service'} values={paymentsNames} labels={paymentsNames} value={payment} handleChange={handleChangePayment} />
+                            <SelectAutoWidth label={'payments service'} values={payments} labels={payments} value={payment} handleChange={handleChangePayment} />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -199,7 +198,7 @@ const BuyCart = () => {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <SelectAutoWidth label={'supplier service'} values={supplierNames} labels={supplierNames} value={supplier} handleChange={handleChangeSupplier} />
+                            <SelectAutoWidth label={'supplier service'} values={suppliers} labels={suppliers} value={supplier} handleChange={handleChangeSupplier} />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField

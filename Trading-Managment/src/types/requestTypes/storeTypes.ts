@@ -56,3 +56,21 @@ export interface AnswerQuestionParams {
     questionId: number;
     answer: string;
 }
+export interface WriteReviewParams {
+    userId: number;
+    storeName: string;
+    rating: number;
+    content: string;
+};
+export interface WriteQuestionParams {
+    userId: number;
+    storeId: number;
+    question: string;
+};
+export interface WriteReviewOnProductParams {
+    userId: number;
+    storeId: number;
+    productId: number;
+    rating: number;
+    content: string;
+};
