@@ -10,7 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import service.payment.PaymentAdapter;
+import service.ExternalService.Payment.PaymentAdapter;
 
 import java.util.List;
 import java.util.Map;
@@ -20,15 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AdminTest extends ProjectTest {
     private static final int ERROR = -1;
 
-    @Mock
-    private PaymentAdapter goodPaymentES;
-
-    @Override
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        goodPaymentES = null;//TODO new DefaultUserService(userRepository, settingRepository, mailClient);
-    }
 
     @AfterEach
     public void tearDown() {
