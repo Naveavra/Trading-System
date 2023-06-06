@@ -571,7 +571,7 @@ public class UserController {
     }
 
     public void removeUser(int userId) throws Exception{
-        getActiveMember(userId);
+        getMember(userId);
         memberList.remove(userId);
     }
 
