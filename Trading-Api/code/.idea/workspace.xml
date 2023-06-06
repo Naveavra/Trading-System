@@ -6,9 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +80,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.junit in work1">
+  <component name="RunManager" selected="JUnit.StoreManagerTests.AddProductWithoutPermission">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -94,22 +96,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.testPurchaseFromUnAvailablePSCart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="junit.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.MemberTest" />
-      <option name="METHOD_NAME" value="testPurchaseFromUnAvailablePSCart" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="MemberTest.testPurchaseFromUnAvailableSSCart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
@@ -121,6 +107,22 @@
       <option name="PACKAGE_NAME" value="junit" />
       <option name="MAIN_CLASS_NAME" value="junit.MemberTest" />
       <option name="METHOD_NAME" value="testPurchaseFromUnAvailableSSCart" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StoreManagerTests.AddProductWithoutPermission" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="junit.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.StoreManagerTests" />
+      <option name="METHOD_NAME" value="AddProductWithoutPermission" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -168,19 +170,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
-      <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailablePSCart" />
       <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailableSSCart" />
+      <item itemvalue="JUnit.StoreManagerTests.AddProductWithoutPermission" />
       <item itemvalue="JUnit.StoreManagerTests.AppointManagerWithoutPermission" />
       <item itemvalue="JUnit.WSEPServiceTest" />
       <item itemvalue="JUnit.junit in work1" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.StoreManagerTests.AddProductWithoutPermission" />
         <item itemvalue="JUnit.junit in work1" />
         <item itemvalue="JUnit.StoreManagerTests.AppointManagerWithoutPermission" />
         <item itemvalue="JUnit.WSEPServiceTest" />
         <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailableSSCart" />
-        <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailablePSCart" />
       </list>
     </recent_temporary>
   </component>

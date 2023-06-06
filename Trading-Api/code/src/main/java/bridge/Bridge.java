@@ -2,6 +2,7 @@ package bridge;
 
 import data.*;
 import org.json.JSONObject;
+import utils.stateRelated.Role;
 
 import java.util.List;
 
@@ -514,4 +515,14 @@ public interface Bridge {
      *         return null.
      */
     StoreInfo getStoreInfo(int storeId);
+
+    /**
+     * Member - get role of the user in store
+     *
+     * @param userId user id
+     * @param storeId store id
+     * @return If succeed return role in store. Otherwise,
+     *         return null.
+     **/
+    Role getRoleInStore(int userId, int workerId, int storeId);
 }

@@ -6,9 +6,9 @@ import data.UserInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.stateRelated.Role;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StoreManagerTests extends ProjectTest{
 
@@ -55,6 +55,15 @@ public class StoreManagerTests extends ProjectTest{
     }
 
     @Test
+    private void isGoodManagerAppoint(UserInfo storeOwner, UserInfo appointManager, int storeId)
+    {
+        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
+        assertTrue(status > 0);
+        Role role = getRoleInStore(storeOwner.getUserId(), appointManager.getUserId(), storeId);
+        assertEquals(Role.Manager, role);
+    }
+
+    @Test
     private LoginData isGoodLoginWithData(UserInfo ui)
     {
         LoginData data = loginAndGetData(ui.getEmail(), ui.getPassword());
@@ -72,13 +81,11 @@ public class StoreManagerTests extends ProjectTest{
         int storeId = stores.get(0).getStoreId();
         isGoodLogin(storeOwner);
         isGoodLogin(appointManager);
-        // TODO: write strong assert for appoint that check the roles in the store
-        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
-        assertTrue(status > 0);
+        isGoodManagerAppoint(storeOwner, appointManager, storeId);
         // TODO: Remove permission add product:
         // Add product
         ProductInfo pi = createProduct5();
-        status = this.addProduct(appointManager.getUserId(), storeId, pi);
+        int status = this.addProduct(appointManager.getUserId(), storeId, pi);
         assertTrue(status < 0);
         //TODO: Check that the product dont exist in the store
     }

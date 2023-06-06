@@ -10,6 +10,7 @@ import data.*;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import utils.stateRelated.Role;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -398,5 +399,10 @@ public abstract class ProjectTest{
     public List<String> getPossibleExternalPaymentService(int adminId)
     {
         return bridge.getPossibleExternalPaymentService(adminId);
+    }
+
+    Role getRoleInStore(int userId, int workerId, int storeId)
+    {
+        return bridge.getRoleInStore(userId, workerId, storeId);
     }
 }

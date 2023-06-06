@@ -2,6 +2,7 @@ package bridge;
 
 import data.*;
 import org.json.JSONObject;
+import utils.stateRelated.Role;
 
 import java.util.List;
 
@@ -369,6 +370,13 @@ public class ProxyBridge implements Bridge {
     public StoreInfo getStoreInfo(int storeId) {
         if(real != null)
             return real.getStoreInfo(storeId);
+        return null;
+    }
+
+    @Override
+    public Role getRoleInStore(int userId, int workerId, int storeId) {
+        if(real != null)
+            return real.getRoleInStore(userId, workerId, storeId);
         return null;
     }
 }

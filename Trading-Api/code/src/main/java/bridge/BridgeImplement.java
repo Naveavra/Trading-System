@@ -12,6 +12,7 @@ import java.util.*;
 import org.json.JSONObject;
 import utils.infoRelated.*;
 import utils.Response;
+import utils.stateRelated.Role;
 
 public class BridgeImplement implements Bridge {
     private Market market;
@@ -560,6 +561,16 @@ public class BridgeImplement implements Bridge {
         if(!res.errorOccurred())
         {
             return getStoreFromList(storeId, (List<utils.infoRelated.StoreInfo>) res.getValue());
+        }
+        return null;
+    }
+
+    @Override
+    public Role getRoleInStore(int userId, int workerId, int storeId) {
+        Response<Info> res = market.checkWorkerStatus(userId, token, workerId, storeId);
+        if(!res.errorOccurred())
+        {
+            return res.getValue().getRole();
         }
         return null;
     }
