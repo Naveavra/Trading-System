@@ -237,7 +237,9 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             debugger;
             state.whatchedOrder = state.purchaseHistory?.find((order) => order.orderId === action.payload) ?? emptyOrder;
         },
-        resetAuth: () => {
+        resetAuth: (state) => {
+            debugger;
+            state = cleanState;
             return cleanState;
         }
 

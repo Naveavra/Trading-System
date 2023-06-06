@@ -5,7 +5,7 @@ import { useCallback } from "react";
 
 import AlertDialog from "../Dialog/AlertDialog";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
-import { cancelMembership, clearAdminError } from "../../reducers/adminSlice";
+import { cancelMembership, clearAdminError, removeUser } from "../../reducers/adminSlice";
 import { cancelMembershipFormValues } from "../../types/formsTypes";
 
 
@@ -34,6 +34,7 @@ const CancelMembership = () => {
     const handleOnSubmit = () => {
         form.setValue("userId", userId);
         dispatch(cancelMembership(form.getValues()));
+        dispatch(removeUser(userId));
         handleOnClose();
     }
     return (
