@@ -2,6 +2,7 @@ package bridge;
 
 import data.*;
 import org.json.JSONObject;
+import utils.stateRelated.Role;
 
 import java.util.List;
 
@@ -238,17 +239,17 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int removeStoreManagerPermissions(int user, int store, int managerId, int permissionsIds) {
+    public boolean removeStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
         if (real != null)
             return real.removeStoreManagerPermissions(user, store, managerId, permissionsIds);
-        return -1;
+        return false;
     }
 
     @Override
-    public int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
+    public boolean addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
         if (real != null)
             return real.addStoreManagerPermissions(user, store, managerId, permissionsIds);
-        return -1;
+        return false;
     }
 
 
@@ -369,6 +370,13 @@ public class ProxyBridge implements Bridge {
     public StoreInfo getStoreInfo(int storeId) {
         if(real != null)
             return real.getStoreInfo(storeId);
+        return null;
+    }
+
+    @Override
+    public Role getRoleInStore(int userId, int workerId, int storeId) {
+        if(real != null)
+            return real.getRoleInStore(userId, workerId, storeId);
         return null;
     }
 }
