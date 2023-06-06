@@ -8,6 +8,7 @@ public enum NotificationOpcode {
         REVIEW_FEEDBACK(15);
 
         NotificationOpcode(int i) {
+
         }
 }
 

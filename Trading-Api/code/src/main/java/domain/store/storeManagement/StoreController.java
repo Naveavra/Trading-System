@@ -252,7 +252,8 @@ public class StoreController {
 
     public void answerQuestion(int storeId, int questionId, String answer) throws Exception{
         Store store = getActiveStore(storeId);
-        store.answerQuestion(questionId, answer);
+        store.answerQuestion(questionId, "you got an answer for question: " + questionId + " to store: " + storeId
+                +" the answer is: " + answer);
     }
 
     public List<OrderInfo> getStoreOrderHistory(int storeId) throws Exception {
