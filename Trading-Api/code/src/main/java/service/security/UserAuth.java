@@ -55,7 +55,7 @@ public class UserAuth implements SecurityAdapter{
             return null;
         }
         md.update(salt);
-        byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
+        byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.US_ASCII));
         return new String(hashedPassword);
     }
 }

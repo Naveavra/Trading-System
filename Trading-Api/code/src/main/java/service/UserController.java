@@ -570,8 +570,8 @@ public class UserController {
         admin.cancelMembership(m.getId());
     }
 
-    public void removeUser(int userId) throws Exception{
-        getMember(userId);
+    public void removeUser(String userName) throws Exception{
+        int userId = getMember(userName).getId();
         memberList.remove(userId);
     }
 

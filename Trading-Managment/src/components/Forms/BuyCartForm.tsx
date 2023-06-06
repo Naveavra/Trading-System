@@ -37,13 +37,14 @@ const BuyCart = () => {
 
     const handleOnClose = useCallback(() => {
         navigate('/dashboard');
-        dispatch(getCart({ userId: userId }));
-        dispatch(getClientData({ userId: userId }));
+        dispatch(getCart({userId:userId}));
+        dispatch(getClientData({userId:userId}));
+        //dispatch(getStore({ userId: userId, storeId: storeId }));
     }, []);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
-        form.setValue('supply_service', supplier);
-        form.setValue('payment_service', payment);
+        form.setValue('supply_service',supplier);
+        form.setValue('payment_service',payment);
         dispatch(buyCart(form.getValues()));
         handleOnClose();
     }
@@ -262,16 +263,16 @@ const BuyCart = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                name="country"
+                                name="county"
                                 type="text"
                                 fullWidth
-                                label="country"
+                                label="county"
                                 sx={{ mt: 1, mb: 1 }}
                                 inputProps={{
                                     ...form.register('country', {
                                         required: {
                                             value: true,
-                                            message: "country id is required"
+                                            message: "county id is required"
                                         }
                                     })
                                 }}

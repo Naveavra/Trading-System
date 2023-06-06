@@ -106,7 +106,7 @@ public interface MarketInterface {
     public Response getUsersPurchaseHistory(int buyerId, String token);
     public Response answerComplaint(int adminId, String token, int complaintId, String ans);
     public Response<String> cancelMembership(int adminId, String token, String userToRemove);
-    Response<String> removeUser(int userId);
+    Response<String> removeUser(String userName);
     public Response watchEventLog(int adminId, String token);
     public Response watchMarketStatus(int adminId, String token);
 

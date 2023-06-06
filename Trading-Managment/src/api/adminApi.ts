@@ -27,8 +27,8 @@ export const adminApi = {
     cancelMembership: (credentials: cancelMembershipParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/admin/cancelMembership`, credentials)),
 
-    cleanUser: (userId: number): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().post(`api/removeUser`, { userId: userId })),
+    cleanUser: (userName: string): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/removeUser`, { userName: userName })),
 
 
 }

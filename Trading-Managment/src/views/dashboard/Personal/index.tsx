@@ -67,34 +67,34 @@ const Personal = () => {
             <Typography sx={{ fontSize: 25, mt: 3, ml: '40%' }} gutterBottom>
                 your purchase history
             </Typography>
-            <Box sx={{ width: '100%', display: 'flex', mb: 2 }}>
-                {
-                    orders?.map((order, index) => {
-                        return (
-                            <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index}>
-                                <CardContent>
-                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        orderId:  {order.orderId}
-                                    </Typography>
-                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        price:  {order.totalPrice}
-                                    </Typography>
-                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        quntity:  {order.products.length}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <IconButton onClick={() => handleClickOrder(order.orderId)}>
-                                        <InfoIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => navigate(`${order.orderId}/sendComplaint`)}>
-                                        <RateReviewIcon />
-                                    </IconButton>
-                                </CardActions>
-                            </Card>
-                        )
-                    })
-                }
+            <Box sx={{display:"flex" , width:'100%' , mb:2}}>
+            {
+                orders?.map((order, index) => {
+                    return (
+                        <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index}>
+                            <CardContent>
+                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                    orderId:  {order.orderId}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                    price:  {order.totalPrice}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                    quntity:  {order.products.length}
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <IconButton onClick={() => handleClickOrder(order.orderId)}>
+                                    <InfoIcon />
+                                </IconButton>
+                                <IconButton onClick={() => navigate(`${order.orderId}/sendComplaint`)}>
+                                    <RateReviewIcon />
+                                </IconButton>
+                            </CardActions>
+                        </Card>
+                    )
+                })
+            }
             </Box>
             <Outlet />
         </>
