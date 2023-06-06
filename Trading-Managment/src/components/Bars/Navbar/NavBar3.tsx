@@ -20,8 +20,6 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
-import MessageIcon from '@mui/icons-material/Message';
-import RateReviewIcon from '@mui/icons-material/RateReview';
 import HomeIcon from '@mui/icons-material/Home';
 
 
@@ -56,11 +54,13 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
     }) : [];
 
 
-    const storeInfo = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const handleLogout = () => {
+        debugger;
         dispatch(logout(userId));
+        debugger;
+        navigate('/auth/login');
         navigate('/auth/login');
     };
     const handleChooseStore = (storeNumber: number) => () => {
@@ -124,7 +124,7 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                                 <span>{numProductsIncart}</span>
                             </div>
                         </IconButton>
-                        {isLoggedIn ?
+                        {/* {isLoggedIn ?
                             <>
                                 <IconButton sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate('/dashboard/sendMsg')}>
                                     <MessageIcon />
@@ -133,7 +133,7 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                                     <RateReviewIcon />
                                 </IconButton>
                             </> : null
-                        }
+                        } */}
                     </Toolbar>
                 </AppBar>
             </Box >

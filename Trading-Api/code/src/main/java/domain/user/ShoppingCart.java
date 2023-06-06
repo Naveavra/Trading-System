@@ -1,5 +1,6 @@
 package domain.user;
 
+import utils.infoRelated.Information;
 import utils.infoRelated.ProductInfo;
 
 import java.util.ArrayList;
@@ -38,9 +39,9 @@ public class ShoppingCart{
     public void removeProductFromCart(int storeId, int productId) throws Exception {
         Basket basket = getBasket(storeId);
         if(basket != null) {
-            boolean check = basket.removeProductFromCart(productId);
-            if(!check)
-                baskets.remove(getBasket(storeId));
+            int check = basket.removeProductFromCart(productId);
+            if(check == 0)
+                baskets.remove(basket);
         }
         else
             throw new Exception("the product isn't in the cart");
@@ -49,9 +50,9 @@ public class ShoppingCart{
     public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
         Basket b = getBasket(storeId);
         if(b != null) {
-            boolean check = b.changeQuantityInCart(product, change);
-            if(!check)
-                baskets.remove(storeId);
+            int check = b.changeQuantityInCart(product, change);
+            if(check == 0)
+                baskets.remove(b);
         }
         else
             addProductToCart(storeId, product, change);

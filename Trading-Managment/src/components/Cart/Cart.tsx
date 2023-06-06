@@ -7,6 +7,7 @@ import { Button, Typography } from "@mui/material";
 import ProductInCart from "../ProductInCart/ProductCart";
 import { useNavigate } from "react-router-dom";
 import Bar3 from "../Bars/Navbar/NavBar3";
+import { useEffect } from "react";
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -20,6 +21,9 @@ const Cart = () => {
     const handlePayment = async () => {
         navigate("/dashboard/cart/payment");
     };
+    useEffect(() => {
+
+    }, [products]);
 
     return (
         <>

@@ -60,6 +60,12 @@ export type answerComplaintFormValues = {
     complaintId: number;
     answer: string;
 };
+export interface answerQuestionFormValues {
+    userId: number;
+    storeId: number;
+    questionId: number;
+    answer: string;
+}
 export type paymentFormValues = {
     userId: number;
     cardNumber: string;
@@ -84,4 +90,32 @@ export type supplyFormValues = {
     country: string;
     zip: string;
     supply_service: string;
+};
+export type closeStoreFormValues = {
+    userId: number;
+    storeId: number;
+};
+export type cancelMembershipFormValues = {
+    userId: number;
+    userName: string;
+};
+export type reviewOnStoreFormValues = {
+    userId: number;
+    storeName: string;
+    orderId: number;
+    rating: number;
+    content: string;
+};
+export type reviewOnProductFormValues = {
+    userId: number;
+    storeId: number;
+    orderId: number;
+    productId: number;
+    rating: number;
+    content: string;
+};
+export type sendQuestionFormValues = {
+    userId: number;
+    storeId: number;
+    question: string;
 };

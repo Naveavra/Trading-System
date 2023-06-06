@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { LogRecord } from "../types/systemTypes/Log";
 import { adminApi } from "../api/adminApi";
 import { Complaint } from "../types/systemTypes/Complaint";
-import { addAdminParams, answerComplaintParams } from "../types/requestTypes/adminTypes";
+import { addAdminParams, answerComplaintParams, cancelMembershipParams, closeStorePerminentlyParams } from "../types/requestTypes/adminTypes";
 import { ApiError } from "../types/apiTypes";
 
 interface AdminState {
@@ -67,16 +67,50 @@ export const answerComplaint = createAsyncThunk<
             .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
     });
 
+export const adminResign = createAsyncThunk<
+    string,
+    number,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/adminResign`,
+    async (adminId, thunkAPI) => {
+        return adminApi.adminResign(adminId)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
 
+export const closeStorePerminently = createAsyncThunk<
+    string,
+    closeStorePerminentlyParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/closeStorePerminently`,
+    async (closeStorePerminentlyParams, thunkAPI) => {
+        return adminApi.closeStorePerminently(closeStorePerminentlyParams)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
+
+export const cancelMembership = createAsyncThunk<
+    string,
+    cancelMembershipParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/cancelMembership`,
+    async (cancelMembershipParams, thunkAPI) => {
+        return adminApi.cancelMembership(cancelMembershipParams)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
 
 const { reducer: adminReducer, actions: authActions } = createSlice({
     name: reducerName,
     initialState,
     reducers: {
-        clearMsg: (state) => {
+        clearAdminMsg: (state) => {
             state.msg = '';
         },
-        clearError: (state) => {
+        clearAdminError: (state) => {
             state.error = '';
         }
     },
@@ -114,8 +148,45 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during get complaints";
         });
+        builder.addCase(answerComplaint.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(answerComplaint.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.msg = payload;
+        });
+        builder.addCase(answerComplaint.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during answer complaint";
+        });
+        builder.addCase(adminResign.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(adminResign.fulfilled, (state, { payload }) => {
+            debugger;
+            console.log(payload);
+            state.isLoading = false;
+            state.msg = payload;
+        });
+        builder.addCase(adminResign.rejected, (state, { payload }) => {
+            debugger;
+            console.log(payload);
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during admin resign";
+        });
+        builder.addCase(closeStorePerminently.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(closeStorePerminently.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.msg = payload;
+        });
+        builder.addCase(closeStorePerminently.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during close store perminently";
+        });
     }
 });
-export const { clearMsg, clearError } = authActions;
+export const { clearAdminMsg, clearAdminError } = authActions;
 
 export default adminReducer;

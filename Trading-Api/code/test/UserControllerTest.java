@@ -72,7 +72,6 @@ class UserControllerTest {
 
     @Test
     void checkDatabase(){
-        UserController us = new UserController();
         Admin a = new Admin(1, "elibs@gmail.com", "123Aaa");
         Market market = new Market(a);
         try {
@@ -85,12 +84,7 @@ class UserControllerTest {
             int id2 = loginInformation.getUserId();
             String token2 = loginInformation.getToken();
             market.addNotification(id, NotificationOpcode.CHAT_MESSAGE, "test");
-            //Admin a = new Admin(1, "elibs@gmail.com", "123Aaa");
-            //us.addAdmin(a, "aaaaaa");
-//            Member member = us.getMember(2);
-//            Member member2 = us.getMember(3);
-//            Store s = new Store(0, "", member);
-//            Store store = new Store(1, "nike", "good store","",member2);
+
             int sid = market.openStore(id,token, "nike", "good store", "da;nen").getValue();
             int sid2 = market.openStore(id2,token2, "adidas", "bad store", "dkndn").getValue();
             market.appointManager(id, token, "eli2@gmail.com", sid);
@@ -103,25 +97,13 @@ class UserControllerTest {
             market.addProductToCart(id, sid, pid, 3);
             market.addProductToCart(id, sid, pid2, 5);
             Receipt receipt = market.makePurchase(id, payment, supplier).getValue();
+            market.addProductToCart(id, sid, pid, 2);
             assertNotNull(receipt);
-            market.writeReviewToStore(id, token, receipt.getOrderId(), sid, "very good", 4);
-//            market.saveState();
+            market.writeReviewToStore(id, token, receipt.getOrderId(), "nike", "very good", 4);
+            market.writeReviewToProduct(id, token, receipt.getOrderId(), sid, pid, "very good", 4);
+            market.sendComplaint(id, token, receipt.getOrderId(), "baaaad?");
+            market.sendQuestion(id, token, sid2, "is open at 8?");
             market.updateState();
-//            us.updateAdminState(1);
-//            us.updateMemberState(2);
-//            us.saveMemberState(3);
-
-//            MemberDto m = us.getMemberDto(2);
-//            System.out.println(m.getEmail());
-//            List<NotificationDto> nlist = us.getSubscriberNotificationsDto(2);
-//            for(NotificationDto n : nlist)
-//                System.out.println(n.getId() + " " + n.getContent());
-//            List<UserHistoryDto> hlist = us.getMemberUserHistoryDto(2);
-//            for(UserHistoryDto history : hlist) {
-//                System.out.println(history.getReceiptId() + " " + history.getTotalPrice());
-//                for(ReceiptDto r : history.getReceiptDtos())
-//                    System.out.println(r.getStoreId() + " " + r.getProductId() + " " + r.getQuantity());
-//            }
             assert true;
         }catch (Exception e){
             System.out.println(e.getMessage());

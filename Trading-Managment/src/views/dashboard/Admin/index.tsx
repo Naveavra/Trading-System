@@ -8,10 +8,13 @@ import { Dehaze } from "@mui/icons-material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Bar4 from "../../../components/Bars/Navbar/NavBar4";
-import { getLogger } from "../../../reducers/adminSlice";
+import { adminResign, clearAdminError, clearAdminMsg, getLogger } from "../../../reducers/adminSlice";
 import PasswordIcon from '@mui/icons-material/Password';
-import { getClientData, getNotifications } from "../../../reducers/authSlice";
-
+import { getClientData, getNotifications, resetAuth } from "../../../reducers/authSlice";
+import CancelIcon from '@mui/icons-material/Cancel';
+import { reset } from "../../../reducers/discountSlice";
+import ErrorAlert from "../../../components/Alerts/error";
+import SuccessAlert from "../../../components/Alerts/success";
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -23,14 +26,25 @@ const Admin = () => {
     const userName = useAppSelector((state) => state.auth.userName);
     const isAdmin = useAppSelector((state) => state.auth.isAdmin);
     const name = userName.split('@')[0];
-    const isLoading = useAppSelector((state) => state.auth.isLoading);
-
+    const msg = useAppSelector((state) => state.admin.msg);
+    const error = useAppSelector((state) => state.admin.error);
     const logs = useAppSelector((state) => state.admin.logRecords) ?? [{ userName: "", id: 0, content: "", status: "" }];
     //works but does not look good
-    const arrayForSort = [...logs]
-    const max = arrayForSort.length > 0 ?
-        arrayForSort.sort((a, b) => { if (a.content.length > b.content.length) { return a.content.length } else { return b.content.length } })[0].content.length :
-        330;
+
+    const handleResign = () => {
+        debugger;
+        dispatch(adminResign(userId)).then((res) => {
+            debugger;
+            console.log(res, "response!!!");
+            debugger;
+            if (res.payload?.message?.data !== 'the admin cannot be removed because it is the only admin in the system') {
+                dispatch(resetAuth());
+                navigate("/auth/login");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
 
 
 
@@ -157,6 +171,9 @@ const Admin = () => {
     return (
         <>
             <Bar4 headLine={"welcome admin"} />
+            {msg ? <SuccessAlert message={msg} onClose={() => { dispatch(clearAdminMsg()) }} /> : null}
+            {error ? <ErrorAlert message={error} onClose={() => { dispatch(clearAdminError()) }} /> : null}
+
             <Box sx={{ width: '100%', display: 'flex' }}>
                 <Typography sx={{ fontSize: 25, mt: 3, ml: '10%' }} gutterBottom>
                     your personal data
@@ -173,6 +190,10 @@ const Admin = () => {
                         </Typography>
                     </CardContent>
                     <CardActions sx={{ marginTop: 10 }}>
+                        <IconButton onClick={handleResign} sx={{ marginLeft: 'auto' }}>
+                            <CancelIcon />
+                        </IconButton>
+
                         <IconButton onClick={() => navigate("editMyProfile")} sx={{ marginLeft: 'auto' }}>
                             <EditIcon />
                         </IconButton>

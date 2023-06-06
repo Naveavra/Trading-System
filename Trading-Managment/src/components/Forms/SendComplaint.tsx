@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 
 
@@ -16,20 +16,23 @@ import { LoadingButton } from "@mui/lab";
 const SendComplain = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const params = useParams();
     const form = useForm<sentComplaintFormValues>();
 
     const userId = useAppSelector((state) => state.auth.userId)
     const isLoading = useAppSelector((state) => state.auth.isLoading);
     const error = useAppSelector((state) => state.auth.error);
 
+    const orderId = parseInt(params.id ?? '0');
 
     const handleOnSubmitComplaint = () => {
         form.setValue('userId', userId);
+        form.setValue('orderId', orderId);
         dispatch(sendComplaint(form.getValues()));
         handleOnClose();
     }
     const handleOnClose = useCallback(() => {
-        navigate(-1);
+        navigate('/dashboard/personal');
     }, []);
 
     return (
@@ -59,27 +62,8 @@ const SendComplain = () => {
                     >
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                enter orderId and complaint msg
+                                enter complaint msg
                             </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                name="orderId"
-                                type="text"
-                                fullWidth
-                                label="order Id"
-                                sx={{ mt: 1, mb: 1 }}
-                                inputProps={{
-                                    ...form.register('orderId', {
-                                        required: {
-                                            value: true,
-                                            message: "orderId is required"
-                                        }
-                                    })
-                                }}
-                                error={!!form.formState.errors['orderId'] ?? false}
-                                helperText={form.formState.errors['orderId']?.message ?? undefined}
-                            />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField

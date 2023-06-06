@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { answerComplaintFormValues } from "../../types/formsTypes";
 import AlertDialog from "../Dialog/AlertDialog";
-import { answerComplaint, clearError, getComplaints } from "../../reducers/adminSlice";
+import { answerComplaint, clearAdminError, getComplaints } from "../../reducers/adminSlice";
 
 const ComplaintPage = () => {
     const navigate = useNavigate();
@@ -24,7 +24,7 @@ const ComplaintPage = () => {
 
     //maybe take it from params
     const handleOnClose = useCallback(() => {
-        navigate(-1);
+        navigate('/dashboard/admin/seecomplaints');
         dispatch(getComplaints(userId));
     }, []);
     const handleOnSubmit = () => {
@@ -102,7 +102,7 @@ const ComplaintPage = () => {
                 </Box>
             </Dialog >
             {!!error ?
-                <AlertDialog open={!!error} onClose={() => { dispatch(clearError()); }} text={error} sevirity={"error"} />
+                <AlertDialog open={!!error} onClose={() => { dispatch(clearAdminError()); }} text={error} sevirity={"error"} />
                 : null}
         </>
     );

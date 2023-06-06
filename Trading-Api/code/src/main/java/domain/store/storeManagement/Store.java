@@ -384,7 +384,6 @@ public class Store extends Information{
 
         if (inventory.getProduct(productId) != null)
         {
-            Product p = inventory.getProduct(productId);
             return inventory.getProductInfo(storeid, productId);
         }
         throw new Exception("cant get product information");
@@ -423,7 +422,7 @@ public class Store extends Information{
         return purchasePolicies;
     }
 
-    public List<Message> getAllQuestions(){
+    public List<Question> getAllQuestions(){
         return new ArrayList<>(questions.values());
     }
     public List<Message> getQuestions() {

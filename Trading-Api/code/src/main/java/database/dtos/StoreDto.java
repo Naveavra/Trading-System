@@ -2,15 +2,13 @@ package database.dtos;
 
 
 import domain.store.discount.Discount;
-import domain.store.product.Product;
 import domain.store.purchase.PurchasePolicy;
-import domain.store.storeManagement.Store;
 import domain.store.storeManagement.AppHistory;
 import jakarta.persistence.*;
 import utils.Pair;
 import utils.infoRelated.Info;
 import utils.infoRelated.ProductInfo;
-import utils.messageRelated.Message;
+import utils.messageRelated.Question;
 import utils.messageRelated.StoreReview;
 
 import java.util.ArrayList;
@@ -43,7 +41,10 @@ public class StoreDto {
     private List<AppointmentDto> appointments;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
-    private List<StoreReviewsDto> storeReviews;
+    private List<StoreReviewDto> storeReviews;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
+    private List<QuestionDto> questions;
     @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
     private List<DicountDto> dicountDtos;
     @OneToMany(cascade = CascadeType.ALL, mappedBy="storeDto")
@@ -93,13 +94,14 @@ public class StoreDto {
             InventoryDto inventoryDto = new InventoryDto(this, product.getId(), product.getQuantity(), product.name,
                     product.description, product.getPrice(), product.getImg());
             inventoryDto.setCategory(product.getCategories());
+            inventoryDto.setReviews(product.getReviews());
             inventoryDtos.add(inventoryDto);
         }
 
         this.inventoryDtos = inventoryDtos;
     }
 
-    public List<StoreReviewsDto> getStoreReviews(){
+    public List<StoreReviewDto> getStoreReviews(){
         return storeReviews;
     }
 
@@ -115,9 +117,9 @@ public class StoreDto {
     }
 
     public void setStoreReviews(List<StoreReview> reviews) {
-        List<StoreReviewsDto> ans = new ArrayList<>();
+        List<StoreReviewDto> ans = new ArrayList<>();
         for (StoreReview message : reviews)
-            ans.add(new StoreReviewsDto(this, message.getMessageId(), message.getSender().getId(), message.getContent(), message.getRating(),
+            ans.add(new StoreReviewDto(this, message.getMessageId(), message.getSender().getId(), message.getContent(), message.getRating(),
                     message.getOrderId(), message.getSeen()));
         this.storeReviews = ans;
     }
@@ -166,5 +168,17 @@ public class StoreDto {
         roles = roleDtos;
         appointments = appointmentDtos;
 
+    }
+
+    public List<QuestionDto> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        List<QuestionDto> ans = new ArrayList<>();
+        for (Question message : questions)
+            ans.add(new QuestionDto(this, message.getMessageId(), message.getSender().getId(), message.getContent(), message.isGotFeedback(),
+                     message.getSeen()));
+        this.questions = ans;
     }
 }

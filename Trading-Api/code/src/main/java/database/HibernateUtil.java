@@ -1,11 +1,8 @@
 package database;
 
-import database.daos.AdminDao;
-import database.daos.MemberDao;
 import database.dtos.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.boot.registry.internal.StandardServiceRegistryImpl;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
@@ -46,9 +43,13 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(LoggerDto.class);
 
                 configuration.addAnnotatedClass(CategoryDto.class);
-                configuration.addAnnotatedClass(StoreReviewsDto.class);
+                configuration.addAnnotatedClass(StoreReviewDto.class);
+                configuration.addAnnotatedClass(QuestionDto.class);
+                configuration.addAnnotatedClass(ProductReviewDto.class);
                 configuration.addAnnotatedClass(ConstraintDto.class);
                 configuration.addAnnotatedClass(DicountDto.class);
+
+                configuration.addAnnotatedClass(ComplaintDto.class);
 
 
 

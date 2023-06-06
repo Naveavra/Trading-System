@@ -47,7 +47,7 @@ const EditMyProfileForm = () => {
         handleOnClose();
     };
     const handleOnClose = useCallback(() => {
-        navigate(-1);
+        navigate("/dashboard/personal");
         dispatch(getClientData({ userId: userId }));
         // navigate(-1);
     }, []);

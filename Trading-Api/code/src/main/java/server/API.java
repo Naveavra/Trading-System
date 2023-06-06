@@ -66,8 +66,7 @@ public class API {
         }
     }
 
-    private Pair<Boolean, JSONObject> fromResToPairHashMap(Response<HashMap<Integer, ? extends Information>> res, String key,
-                                                           String value){
+    public static Pair<Boolean, JSONObject> fromResToPairListPre(Response<List<Object>> res){
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
         {
@@ -75,7 +74,10 @@ public class API {
             return new Pair<>(false, json);
         }
         else {
-            json.put("value", Information.hashMapToJson(res.getValue(), key, value));
+            List<String> ans = new ArrayList<>();
+            for(Object o : res.getValue())
+                ans.add(o.toString());
+            json.put("value", ans);
             return new Pair<>(true, json);
         }
     }
@@ -175,8 +177,8 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading){
-        Response<String> res = market.writeReviewToStore(userId, token, orderId, storeId, content, grading);
+    public Pair<Boolean, JSONObject> writeReviewToStore(int userId, String token, int orderId, String storeName, String content, int grading){
+        Response<String> res = market.writeReviewToStore(userId, token, orderId, storeName, content, grading);
         return fromResToPair(res);
     }
 
@@ -187,6 +189,24 @@ public class API {
     public Pair<Boolean, JSONObject> getStoreProducts(int storeId){
         Response<List<? extends  Information>> res = market.getStoreProducts(storeId);
         return fromResToPairList(res);
+    }
+
+    public Pair<Boolean, JSONObject> getFilterOptions(){
+        Response<List<Object>> options = market.showFilterOptions();
+        return fromResToPairListPre(options);
+    }
+
+    public List<String> getFilterOptionsString(){
+        Response<List<Object>> options = market.showFilterOptions();
+        List<String> ans = new ArrayList<>();
+        for(Object o : options.getValue())
+            ans.add(o.toString());
+        return ans;
+    }
+
+    public Pair<Boolean, JSONObject> filterBy(HashMap<String, String> filters){
+        Response<List<? extends Information>> options = market.filterBy(filters);
+        return fromResToPairList(options);
     }
 
     public Pair<Boolean, JSONObject> viewReviews(int userId, String token, int storeId){
@@ -394,15 +414,25 @@ public class API {
         Response<String> res = market.sendNotification(userId, token, NotificationOpcode.CHAT_MESSAGE, username, notification);
         return fromResToPair(res);
     }
-
-    public Pair<Boolean, JSONObject> getSupplierAvailableServices(int userId) {
-        Response<List<String>> res = market.getSupplierServiceAvailable(userId);
+    public Pair<Boolean, JSONObject> changeRegularDiscount(int userId, String token, int storeId, int prodId,
+                                                           int percentage, String discountType, String discountedCategory,
+                                                           List<String> predicatesLst) {
+        Response<String> res = market.changeRegularDiscount(userId, token, storeId, prodId, percentage, discountType,
+                discountedCategory, predicatesLst);
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> getPaymentAvailableServices(int userId) {
-        Response<List<String>> res = market.getPaymentServiceAvailable(userId);
-        return fromResToPair(res);
+
+
+    public Pair<Boolean, JSONObject> getSupplierAvailableServices() {
+        Response<List<Object>> res = market.getSupplierServiceAvailable();
+
+        return fromResToPairListPre(res);
+    }
+
+    public Pair<Boolean, JSONObject> getPaymentAvailableServices() {
+        Response<List<Object>> res = market.getPaymentServiceAvailable();
+        return fromResToPairListPre(res);
     }
 
     //for actions to actionString
@@ -484,9 +514,9 @@ public class API {
         market.addProductToCart(id2, sid1, pid1, 1);
         Response<Receipt> res3 = market.makePurchase(id1, payment, supplier);
         market.sendComplaint(id1, token1, res3.getValue().getOrderId(), "baaaaaad");
-        market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), sid2, "bad store", 2);
+        market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), "rollups", "bad store", 2);
         res3 = market.makePurchase(id2, payment, supplier);
-        market.writeReviewToStore(id2, token2, res3.getValue().getOrderId(), sid1, "good store", 4);
+        market.writeReviewToStore(id2, token2, res3.getValue().getOrderId(), "nike", "good store", 4);
         market.sendQuestion(id1, token1, sid1, "why bad?");
         market.appointManager(id1, token1, "ziv@gmail.com", sid1);
         market.appointManager(id2, token2, "eli@gmail.com", sid2);

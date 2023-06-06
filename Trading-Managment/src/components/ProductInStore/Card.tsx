@@ -33,6 +33,7 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
         dispatch(addToCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: quantity }));
         dispatch(getCart({ userId: userId }));
         setQuantity(0);
+        dispatch(getCart({ userId: userId }));
     }
     const addProdut = () => {
         setQuantity(quantity + 1);

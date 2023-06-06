@@ -369,9 +369,10 @@ public class Market implements MarketInterface {
 
     //TODO: add external service for messages and notifications
     @Override
-    public Response<String> writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading) {
+    public Response<String> writeReviewToStore(int userId, String token, int orderId, String storeName, String content, int grading) {
         try {
             userAuth.checkUser(userId, token);
+            int storeId = marketController.getStoreId(storeName);
             StoreReview m = userController.writeReviewForStore(orderId, storeId, content, grading, userId);
             int creatorId = marketController.addReviewToStore(m);
             addNotification(creatorId,NotificationOpcode.STORE_REVIEW, "a review of has been added for store: " + storeId);
@@ -468,7 +469,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response filterBy(HashMap<String,String> filterOptions) {
+    public Response<List<? extends Information>> filterBy(HashMap<String,String> filterOptions) {
         ArrayList<ProductInfo> result = marketController.filterBy(filterOptions);
         if(result.isEmpty()){
            return new Response<>(null, "No products found by those filter options", "result array is empty, no products found");
@@ -960,6 +961,21 @@ public class Market implements MarketInterface {
     }
 
     @Override
+    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst) {
+        try {
+            userAuth.checkUser(userId, token);
+            userController.checkPermission(userId, Action.changeDiscountPolicy, storeId);
+            marketController.changeRegularDiscount(storeId, prodId, percentage, discountType,
+                    discountedCategory, predicatesLst);
+            return logAndRes(Event.LogStatus.Success, "user changed discount successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    "user changed discount policy", null, null);
+        } catch (Exception e) {
+            return new Response<>(null, "could not get complaints", e.getMessage());
+        }
+    }
+
+    @Override
     public Response<String> cancelMembership(int adminId, String token, String userToRemove) {
         try {
             userAuth.checkUser(adminId, token);
@@ -1029,7 +1045,7 @@ public class Market implements MarketInterface {
 
     //TODO: fix template for this function
     @Override
-    public Response getPaymentServiceAvailable(int userId) {
+    public Response getPaymentServiceAvailable() {
         try{
             //TODO: userAuth.checkUser(userId);
             return new Response(proxyPayment.getPaymentServicesAvailableOptions(), null, null);
@@ -1093,9 +1109,8 @@ public class Market implements MarketInterface {
 
     //TODO: fix template for this function
     @Override
-    public Response getSupplierServiceAvailable(int userId) {
+    public Response getSupplierServiceAvailable() {
         try{
-            //TODO: userAuth.checkUser(userId);
             return new Response(proxySupplier.getSupplierServicesAvailableOptions(), null, null);
         }
         catch (Exception e){
@@ -1225,4 +1240,5 @@ public class Market implements MarketInterface {
             return new Response<>(null, "update state failed", e.getMessage());
         }
     }
+
 }

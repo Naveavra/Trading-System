@@ -5,6 +5,7 @@ import domain.store.storeManagement.AppHistory;
 import domain.user.Member;
 import domain.user.ShoppingCart;
 import domain.user.User;
+import org.json.JSONObject;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.StoreInfo;
@@ -99,14 +100,6 @@ public class MarketController {
     public ProductInfo getProductInformation(int storeId, int productId) throws Exception {
         Store store = storectrl.getActiveStore(storeId);
         return store.getProductInformation(productId);
-//        Store store = storectrl.getStore(storeId);
-//        if (store != null && store.isActive())
-//        {
-//            return store.getProductInformation(productId);
-//        }
-//        else {
-//            throw new Exception("cant get product information");
-//        }
     }
 
 
@@ -262,5 +255,14 @@ public class MarketController {
 
     public void checkProductInStore(int storeId, int productId) throws Exception{
         storectrl.checkProductInStore(storeId, productId);
+    }
+
+    public void changeRegularDiscount(int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst) throws Exception {
+        storectrl.changeRegularDiscount(storeId, prodId, percentage, discountType,
+                discountedCategory, predicatesLst);
+    }
+
+    public int getStoreId(String storeName) throws Exception{
+        return storectrl.getStoreId(storeName);
     }
 }

@@ -6,8 +6,8 @@ import { ApiError } from "../types/apiTypes";
 interface PaymentState {
     isLoading: boolean;
     responseData: string | number | null;
-    suppliers: Supplier[];
-    paymentServices: paymentService[];
+    suppliers: string[];
+    paymentServices: string[];
     error: string | null;
 };
 const reducerName = 'payment';
@@ -20,26 +20,26 @@ const initialState: PaymentState = {
 };
 
 export const getSuppliers = createAsyncThunk<
-    Supplier[],
+    string[],
     void,
     { rejectValue: ApiError }
 >(
     `${reducerName}/getSuppliers`,
     async (_, thunkApi) => {
         return paymentApi.getSuppliers()
-            .then((res) => thunkApi.fulfillWithValue(res as Supplier[]))
+            .then((res) => thunkApi.fulfillWithValue(res as string[]))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
 export const getPaymentsService = createAsyncThunk<
-    paymentService[],
+    string[],
     void,
     { rejectValue: ApiError }
 >(
     `${reducerName}/getPaymentsService`,
     async (_, thunkApi) => {
         return paymentApi.getPaymentsService()
-            .then((res) => thunkApi.fulfillWithValue(res as paymentService[]))
+            .then((res) => thunkApi.fulfillWithValue(res as string[]))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 

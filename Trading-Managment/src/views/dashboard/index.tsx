@@ -3,11 +3,11 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
 import AlertDialog from '../../components/Dialog/AlertDialog';
-import { clearAuthError, getClientData, getNotifications } from '../../reducers/authSlice';
+import { clearAuthError, getClientData, getNotifications, resetAuth } from '../../reducers/authSlice';
 import CartLogo from '../../components/Loaders/cartLoader';
 import { clearStoresError, clearStoresResponse, getStore, getStoresInfo } from '../../reducers/storesSlice';
 import axios from 'axios';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { clearProductsError, getProducts } from '../../reducers/productsSlice';
 import { Divider } from '@mui/material';
 import Bar from '../../components/Bars/Navbar/Navbar';
@@ -20,6 +20,7 @@ import SuccessAlert from '../../components/Alerts/success';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const [text, setText] = useState('');
     const isLoadingShops = useAppSelector((state) => !!state.store.isLoading);
     const isLoadingProducts = useAppSelector((state) => !!state.product.isLoading);
@@ -33,6 +34,9 @@ const DashboardPage: React.FC = () => {
     const error = useAppSelector((state) => state.auth.error);
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
+
+    // const cart = useAppSelector((state) => state.cart.responseData);
+    // const numProductsIncart = cart?.reduce((acc, item) => acc + item.quantity, 0) ?? 0;
 
     //success alerts
     const openStoreAlert = useAppSelector((state) => state.store.storeState.responseData);
@@ -57,10 +61,9 @@ const DashboardPage: React.FC = () => {
         try {
             console.log("trying get notification")
             if (token != "" && userName != 'guest') {
-
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
-
                 if (response.payload?.opcode >= 0 && response.payload?.opcode <= 6) {
+                    dispatch(getClientData({ userId: userId }));
                     dispatch(getStore({ userId: userId, storeId: storeId }));
                 }
                 else if (!isAdmin && ((response.payload?.opcode >= 7 && response.payload?.opcode <= 12) || response.payload?.opcode == 14 || response.payload?.opcode == 15)) {
@@ -68,6 +71,11 @@ const DashboardPage: React.FC = () => {
                 }
                 if (isAdmin && (response.payload?.opcode == 14 || response.payload?.opcode == 13)) {
                     //dispatch(getAdminData());
+                }
+                debugger;
+                if (response.payload?.opcode == 16) {
+                    dispatch(resetAuth());
+                    navigate('auth/login')
                 }
 
                 fetchNotification();

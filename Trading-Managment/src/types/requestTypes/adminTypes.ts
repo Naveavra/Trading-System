@@ -7,5 +7,12 @@ export interface addAdminParams {
     userId: number;
     email: string;
     password: string;
-
+};
+export interface closeStorePerminentlyParams {
+    userId: number;
+    storeId: number;
+};
+export interface cancelMembershipParams {
+    userId: number;
+    userName: string;
 };

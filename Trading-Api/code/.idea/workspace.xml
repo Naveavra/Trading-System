@@ -4,13 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="">
+    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/NotificationOpcode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/NotificationOpcode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/work1.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,7 +24,6 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
-        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -49,25 +51,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "last_directory_selection": "C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test",
-    "last_opened_file_path": "C:/Users/bench/Desktop/סדנא/Trading-System/Trading-Api/code",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test/server&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Owner/BGU/Sadna/Trading-System/Trading-Api/code&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -76,14 +79,29 @@
       <recent name="" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
-      <recent name="service.ExternalService" />
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.StoreManagerTests.AddProductWithoutPermission">
+  <component name="RunManager" selected="Application.runServer">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="APITest.getSupplierAvailableServices" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="server" />
+      <option name="MAIN_CLASS_NAME" value="server.APITest" />
+      <option name="METHOD_NAME" value="getSupplierAvailableServices" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -96,73 +114,55 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.testPurchaseFromUnAvailableSSCart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DiscountTest.andLogicalCompositeTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="junit.*" />
+          <option name="PATTERN" value="store.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.MemberTest" />
-      <option name="METHOD_NAME" value="testPurchaseFromUnAvailableSSCart" />
+      <option name="PACKAGE_NAME" value="store" />
+      <option name="MAIN_CLASS_NAME" value="store.DiscountTest" />
+      <option name="METHOD_NAME" value="andLogicalCompositeTest" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StoreManagerTests.AddProductWithoutPermission" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DiscountTest,storeDiscountTest and 9 more" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="junit.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.StoreManagerTests" />
-      <option name="METHOD_NAME" value="AddProductWithoutPermission" />
+      <option name="TEST_OBJECT" value="pattern" />
+      <patterns>
+        <pattern testClass="store.DiscountTest,storeDiscountTest" />
+        <pattern testClass="store.DiscountTest,categoryDiscountTest" />
+        <pattern testClass="store.DiscountTest,itemDiscountTestWithPredCompose" />
+        <pattern testClass="store.DiscountTest,testSimpleCompositeDiscount" />
+        <pattern testClass="store.DiscountTest,tenPercentDiscountOver200" />
+        <pattern testClass="store.DiscountTest,xorLogicalCompositeTest" />
+        <pattern testClass="store.DiscountTest,orLogicalCompositeTest" />
+        <pattern testClass="store.DiscountTest,predComposeTest" />
+        <pattern testClass="store.DiscountTest,maxNumericCompositeTest" />
+        <pattern testClass="store.DiscountTest,additionNumericCompositeTest" />
+      </patterns>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserControllerTest.checkDatabase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="UserControllerTest" />
+      <option name="METHOD_NAME" value="checkDatabase" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StoreManagerTests.AppointManagerWithoutPermission" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="junit.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.StoreManagerTests" />
-      <option name="METHOD_NAME" value="AppointManagerWithoutPermission" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="WSEPServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="service.ExternalService.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="service.ExternalService" />
-      <option name="MAIN_CLASS_NAME" value="service.ExternalService.WSEPServiceTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="junit in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/src/AcceptanceTests/junit" />
+      <dir value="$PROJECT_DIR$/test" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -170,19 +170,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
-      <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailableSSCart" />
-      <item itemvalue="JUnit.StoreManagerTests.AddProductWithoutPermission" />
-      <item itemvalue="JUnit.StoreManagerTests.AppointManagerWithoutPermission" />
-      <item itemvalue="JUnit.WSEPServiceTest" />
-      <item itemvalue="JUnit.junit in work1" />
+      <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
+      <item itemvalue="JUnit.DiscountTest,storeDiscountTest and 9 more" />
+      <item itemvalue="JUnit.DiscountTest.andLogicalCompositeTest" />
+      <item itemvalue="JUnit.test in work1" />
+      <item itemvalue="JUnit.APITest.getSupplierAvailableServices" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.StoreManagerTests.AddProductWithoutPermission" />
-        <item itemvalue="JUnit.junit in work1" />
-        <item itemvalue="JUnit.StoreManagerTests.AppointManagerWithoutPermission" />
-        <item itemvalue="JUnit.WSEPServiceTest" />
-        <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailableSSCart" />
+        <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
+        <item itemvalue="JUnit.test in work1" />
+        <item itemvalue="JUnit.APITest.getSupplierAvailableServices" />
+        <item itemvalue="JUnit.DiscountTest,storeDiscountTest and 9 more" />
+        <item itemvalue="JUnit.DiscountTest.andLogicalCompositeTest" />
       </list>
     </recent_temporary>
   </component>
@@ -201,6 +201,12 @@
       <workItem from="1685922305319" duration="168000" />
       <workItem from="1685922490611" duration="93000" />
       <workItem from="1685922612042" duration="40000" />
+      <workItem from="1685981301082" duration="2023000" />
+      <workItem from="1685984211015" duration="4850000" />
+      <workItem from="1685989196873" duration="44000" />
+      <workItem from="1685989265473" duration="3592000" />
+      <workItem from="1685993590311" duration="2808000" />
+      <workItem from="1685997722228" duration="9154000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -239,26 +245,11 @@
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java</url>
-          <line>578</line>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java</url>
-          <line>52</line>
-          <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java</url>
-          <line>96</line>
-          <option name="timeStamp" value="21" />
+          <url>file://$PROJECT_DIR$/test/store/DiscountTest.java</url>
+          <line>268</line>
+          <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="JUnit">
-        <watch expression="!supplierServices.containsKey(supplierAdapter)" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

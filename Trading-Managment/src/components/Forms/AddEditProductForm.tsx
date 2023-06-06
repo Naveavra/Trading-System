@@ -31,7 +31,6 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
     const isLoading = useAppSelector((state) => state.product.isLoading)
 
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    const PING_INTERVAL2 = 5000;
     // Send a ping to the server
 
 
@@ -39,7 +38,6 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
     const handleOnSubmit = () => {
         //todo : handle null in edit
         let response;
-        debugger;
         form.setValue('storeId', storeId);
         form.setValue('id', userId);
         switch (mode) {
@@ -58,7 +56,6 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
     const handleOnClose = useCallback(() => {
         navigate('/dashboard/store/superior');
         dispatch(getStore({ userId: userId, storeId: storeId }));
-        // navigate(-1);
     }, []);
 
     const sendPing = () => {
@@ -66,19 +63,12 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
             dispatch(ping(userId));
         }
     }
-    const getNotifiy = () => {
-        // if (token != '') {
-        //     dispatch(getNotifications({ userId: userId, token: token }));
-        // }
-    }
     useEffect(() => {
         // Call the sendPing function every 2 seconds
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        const pingInterval2 = setInterval(getNotifiy, PING_INTERVAL2);
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
-            clearInterval(pingInterval2)
         };
 
     }, [])

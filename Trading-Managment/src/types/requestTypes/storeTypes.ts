@@ -1,3 +1,5 @@
+import AnswerQuestion from "../../components/Forms/AnswerQuestion";
+
 export interface GetStoresParams {
     userId: number,
     storeId: number,
@@ -48,3 +50,29 @@ export interface patchPermissionsParams {
     permissions: string[]
     mode: string;
 }
+export interface AnswerQuestionParams {
+    userId: number;
+    storeId: number;
+    questionId: number;
+    answer: string;
+}
+export interface WriteReviewParams {
+    userId: number;
+    storeName: string;
+    orderId: number;
+    rating: number;
+    content: string;
+};
+export interface WriteQuestionParams {
+    userId: number;
+    storeId: number;
+    question: string;
+};
+export interface WriteReviewOnProductParams {
+    userId: number;
+    storeId: number;
+    productId: number;
+    orderId: number;
+    rating: number;
+    content: string;
+};
