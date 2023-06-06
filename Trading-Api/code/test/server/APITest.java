@@ -3,6 +3,7 @@ package server;
 import market.Market;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Response;
 import utils.infoRelated.LoginInformation;
 
 import java.util.*;
@@ -26,19 +27,19 @@ class APITest {
         api = new API();
         Market m = api.market;
         //api.mockData();
-        m.register("eli@gmail.com", "123Aaa", "24/02/2002");
-        userId = m.login("eli@gmail.com", "123Aaa").getValue().getUserId();
-        token = m.addTokenForTests();
-        storeId = m.openStore(userId, token, "eli store", "good store", "img").getValue();
-        categories = new ArrayList<>();
-        categories.add("food");
-        categories.add("hang out");
-        productId = m.addProduct(userId, token, storeId, categories, "burger", "from McDonald", 5, 2, "img").getValue();
-        productId2 = m.addProduct(userId, token, storeId, categories, "burger2", "from McDonald", 5, 2, "img").getValue();
-        m.addProductToCart(userId, storeId, productId, 1);
-        m.addProductToCart(userId, storeId, productId2, 1);
-        m.register("chai@gmail.com", "456Bbb", "01/01/2000");
-        m.appointManager(userId, token, "chai@gmail.com", storeId);
+//        m.register("eli@gmail.com", "123Aaa", "24/02/2002");
+//        userId = m.login("eli@gmail.com", "123Aaa").getValue().getUserId();
+//        token = m.addTokenForTests();
+//        storeId = m.openStore(userId, token, "eli store", "good store", "img").getValue();
+//        categories = new ArrayList<>();
+//        categories.add("food");
+//        categories.add("hang out");
+//        productId = m.addProduct(userId, token, storeId, categories, "burger", "from McDonald", 5, 2, "img").getValue();
+//        productId2 = m.addProduct(userId, token, storeId, categories, "burger2", "from McDonald", 5, 2, "img").getValue();
+//        m.addProductToCart(userId, storeId, productId, 1);
+//        m.addProductToCart(userId, storeId, productId2, 1);
+//        m.register("chai@gmail.com", "456Bbb", "01/01/2000");
+//        m.appointManager(userId, token, "chai@gmail.com", storeId);
     }
 
     @Test
@@ -76,5 +77,12 @@ class APITest {
     void getPaymentAvailableServices() {
         assertTrue(api.getSupplierAvailableServices().getSecond().get("value")
                 .toString().contains(defaultService));
+    }
+
+    @Test
+    void getMarketInfo(){
+        api.mockData();
+        api.login("elibenshimol6@gmail.com", "123Aaa");
+        System.out.println(api.watchMarketStatus(1, api.market.addTokenForTests()).getSecond());
     }
 }

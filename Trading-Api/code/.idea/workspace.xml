@@ -6,14 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/security/UserAuth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/security/UserAuth.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/java/market/AdminTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/java/market/AdminTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/MarketInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/MarketInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/server/APITest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/server/APITest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +78,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.MemberTest.testPurchaseCart">
+  <component name="RunManager" selected="JUnit.APITest.getMarketInfo">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -91,7 +86,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="APITest.getSupplierAvailableServices" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="APITest.getMarketInfo" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -101,7 +96,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="server" />
       <option name="MAIN_CLASS_NAME" value="server.APITest" />
-      <option name="METHOD_NAME" value="getSupplierAvailableServices" />
+      <option name="METHOD_NAME" value="getMarketInfo" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -160,19 +155,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
+      <item itemvalue="JUnit.APITest.getMarketInfo" />
       <item itemvalue="JUnit.MemberTest.testPurchaseCart" />
       <item itemvalue="JUnit.junit in work1" />
       <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
       <item itemvalue="JUnit.test in work1" />
-      <item itemvalue="JUnit.APITest.getSupplierAvailableServices" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.APITest.getMarketInfo" />
         <item itemvalue="JUnit.MemberTest.testPurchaseCart" />
         <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
         <item itemvalue="JUnit.test in work1" />
         <item itemvalue="JUnit.junit in work1" />
-        <item itemvalue="JUnit.APITest.getSupplierAvailableServices" />
       </list>
     </recent_temporary>
   </component>
