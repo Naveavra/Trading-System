@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public abstract class ProjectTest{
     private Bridge bridge;
@@ -80,11 +82,11 @@ public abstract class ProjectTest{
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
         ui1.setUserId(login(ui1.getEmail(), ui1.getPassword()));
         //Create Stores:
-        StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "iphone", "Phone Store", "img");
+        StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "Apple", "Phone Store", "img");
         StoreInfo newStore1 = new StoreInfo(ui.getUserId(), "nike", "Sport Store", "img");
         StoreInfo newStore2 = new StoreInfo(ui.getUserId(), "store3", "Cloth Store", "img");
         StoreInfo newStore3 = new StoreInfo(ui.getUserId(), "toysRus", "Kids Store", "img");
-        StoreInfo newStore4 = new StoreInfo(ui1.getUserId(), "samsumg", "Phone Store", "img");
+        StoreInfo newStore4 = new StoreInfo(ui1.getUserId(), "samsung", "Phone Store", "img");
         newStore0.setStoreId(createStore(newStore0));
         stores.add(newStore0);
         newStore1.setStoreId(createStore(newStore1));
@@ -212,9 +214,9 @@ public abstract class ProjectTest{
         return bridge.appointmentOwnerInStore(user, store, newOwnerEmail);
     }
 
-    public int appointmentManagerInStore(int user, int store, String newManagerID)
+    public int appointmentManagerInStore(int user, int store, String newManager)
     {
-        return bridge.appointmentMangerInStore(user, store, newManagerID);
+        return bridge.appointmentMangerInStore(user, store, newManager);
     }
 
     public int changePurchasePolicy(int user, int store, String policy)
@@ -260,6 +262,10 @@ public abstract class ProjectTest{
 
     public int login(String email, String password) {
         return bridge.login(email, password);
+    }
+
+    public LoginData loginAndGetData(String email, String password) {
+        return bridge.loginAndGetData(email, password);
     }
 
     public int adminLogin(String email, String password) {
@@ -328,6 +334,7 @@ public abstract class ProjectTest{
     {
         return bridge.addExternalSupplierService(adminId, esSupplier);
     }
+
 
     public int removeExternalSupplierService(int adminId, String esSupplier)
     {
