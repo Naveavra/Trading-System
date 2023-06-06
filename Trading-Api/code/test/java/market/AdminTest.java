@@ -77,6 +77,7 @@ class AdminTest {
         int login = market.login("nave@gmail.com", "123Ccc").getValue().getUserId();
         market.openStore(login, token, "nike", "good store", "img");
         market.cancelMembership(adminId, token, "nave@gmail.com");
+        market.removeUser(login);
         assertTrue(market.getMember(login, token).errorOccurred());
         Response<Store> res = market.getStore(1, token, 0);
         assertTrue(res.errorOccurred());
