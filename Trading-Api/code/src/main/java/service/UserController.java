@@ -570,6 +570,11 @@ public class UserController {
         admin.cancelMembership(m.getId());
     }
 
+    public void removeUser(int userId) throws Exception{
+        getActiveMember(userId);
+        memberList.remove(userId);
+    }
+
     public int getAdminSize() {
         return admins.size();
     }
@@ -666,4 +671,5 @@ public class UserController {
             return complaints.get(complaintId);
         throw new Exception("the id does not belong to any complaint");
     }
+
 }

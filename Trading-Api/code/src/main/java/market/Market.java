@@ -27,8 +27,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-//TODO: find a way to generate tokens, hash passwords, ...
-
 public class Market implements MarketInterface {
     private final UserController userController;
     private final MarketController marketController;
@@ -987,6 +985,16 @@ public class Market implements MarketInterface {
             return logAndRes(Event.LogStatus.Fail, "user failed cancel Membership because:" + e.getMessage(),
                     StringChecks.curDayString(), "admin"+adminId,
                     null, "cancel Membership failed", e.getMessage());
+        }
+    }
+
+    @Override
+    public Response<String> removeUser(int userId) {
+        try{
+            userController.removeUser(userId);
+            return new Response<>("the user was successfully removed", null, null);
+        }catch (Exception e){
+            return new Response<>(null, "cant remove user", e.getMessage());
         }
     }
 

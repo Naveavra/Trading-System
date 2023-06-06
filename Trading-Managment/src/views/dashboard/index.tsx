@@ -22,6 +22,7 @@ const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [text, setText] = useState('');
+    const [left, setLeft] = useState(false);
     const isLoadingShops = useAppSelector((state) => !!state.store.isLoading);
     const isLoadingProducts = useAppSelector((state) => !!state.product.isLoading);
 
@@ -60,7 +61,8 @@ const DashboardPage: React.FC = () => {
     const fetchNotification = async () => {
         try {
             console.log("trying get notification")
-            if (token != "" && userName != 'guest') {
+            debugger;
+            if (token != "" && userName != 'guest' && !left) {
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
                 if (response.payload?.opcode >= 0 && response.payload?.opcode <= 6) {
                     dispatch(getClientData({ userId: userId }));
@@ -74,11 +76,13 @@ const DashboardPage: React.FC = () => {
                 }
                 debugger;
                 if (response.payload?.opcode == 16) {
+                    setLeft(true);
                     dispatch(resetAuth());
-                    navigate('auth/login')
+                    navigate('/auth/login')
                 }
-
-                fetchNotification();
+                if (response.payload?.opcode !== 16) {
+                    fetchNotification();
+                }
             }
         } catch (error) {
             console.error('Error fetching notification:', error);
@@ -98,7 +102,7 @@ const DashboardPage: React.FC = () => {
         return () => {
             clearInterval(pingInterval)
         };
-    }, [userId, dispatch])
+    }, [userId, dispatch, token, userName])
     const handleSet = (text: string) => {
         setText(text);
     }

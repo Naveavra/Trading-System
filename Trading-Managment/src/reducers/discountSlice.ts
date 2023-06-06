@@ -5,6 +5,7 @@ import { Discount, PredicateDataObject, emptyCompositeDiscount, emptyPredicate, 
 import { deleteDiscountParams, postCompositeDicountParams, postRegularDicountParams } from "../types/requestTypes/discountTypes";
 import { CompositeDiscountNode, DiscountNodes, RegularDiscountNode } from "../types/systemTypes/DiscountNodes";
 import { Edge, Node } from "reactflow";
+import { stat } from "fs";
 
 const reducerName = 'discounts';
 
@@ -150,7 +151,10 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             //state.currentRegularDiscount.predicates.push({ predType: payload.predType, params: payload.params, composore: payload.composore });
             return {
                 ...state,
-                predicates: [...state.predicates, payload]
+                currentRegularDiscount: {
+                    ...state.currentRegularDiscount,
+                    predicates: [...state.currentRegularDiscount.predicates, payload]
+                }
             }
         },
         //-------------------tmp predicate---------------

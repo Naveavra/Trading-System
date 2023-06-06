@@ -82,7 +82,7 @@ public class Permission {
     }
 
     public static HashMap<Action, Integer> getActionsMap(){
-        if(actionIds == null)
+        if(actionsMap == null)
         {
             actionsMap = new HashMap<>();
             setActionsMap();

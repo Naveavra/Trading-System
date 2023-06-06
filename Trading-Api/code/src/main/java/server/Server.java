@@ -520,6 +520,13 @@ public class Server {
             return res.body();
         });
 
+        post("api/removeUser", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            toSparkRes(res, api.removeUser(userId));
+            return res.body();
+        });
+
         // ------------------------Discount-------------------------------
         post("api/discounts/regular", (req, res) -> {
             JSONObject request = new JSONObject(req.body());

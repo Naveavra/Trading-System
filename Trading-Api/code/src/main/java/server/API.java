@@ -380,6 +380,11 @@ public class API {
         return fromResToPair(res);
     }
 
+    public Pair<Boolean, JSONObject> removeUser(int userId) {
+        Response<String> res = market.removeUser(userId);
+        return fromResToPair(res);
+    }
+
     //TODO: fix
     public Pair<Boolean, JSONObject> watchEventLog(int adminId, String token)
     {
@@ -523,6 +528,4 @@ public class API {
         market.logout(id1);
         market.logout(id2);
     }
-
-
 }
