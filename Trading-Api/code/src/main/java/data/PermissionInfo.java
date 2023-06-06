@@ -16,6 +16,11 @@ public class PermissionInfo {
         return actions;
     }
 
+    public boolean havePermission(Action action)
+    {
+        return actions.contains(action);
+    }
+
     public int size(){
         return actions.size();
     }

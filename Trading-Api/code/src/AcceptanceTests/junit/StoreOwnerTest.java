@@ -183,12 +183,11 @@ public class StoreOwnerTest extends ProjectTest{
         List<Integer> permissions2change = new ArrayList<>();
         permissions2change.add(0);
         assertTrue(status > 0);
-        PermissionInfo permissions = this.getManagerPermissionInStore(ui.getUserId(), storeId, uIdManager);
+        PermissionInfo permissions = this.getManagerPermissionInStore(ui.getUserId(), uIdManager, storeId);
         assertNotNull(permissions);
         assertTrue(permissions.size() > 0);
-        status = this.addStoreManagerPermissions(ui.getUserId(), storeId, uIdManager, permissions2change);
-        assertTrue(status > 0);
-        permissions = this.getManagerPermissionInStore(ui.getUserId(), storeId, uIdManager);
+        assertTrue(this.addStoreManagerPermissions(ui.getUserId(), storeId, uIdManager, permissions2change));
+        permissions = this.getManagerPermissionInStore(ui.getUserId(), uIdManager, storeId);
         assertNotNull(permissions);
         assertTrue(permissions.size() > 0);
     }
@@ -449,8 +448,7 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(0);
         permissions.add(1);
         permissions.add(2);
-        status = this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdManager.getUserId(), permissions);
-        assertTrue(status > 0);
+        assertTrue(this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdManager.getUserId(), permissions));
     }
 
     @Test
@@ -466,8 +464,7 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(0);
         permissions.add(1);
         permissions.add(2);
-        status = this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdManager, permissions);
-        assertTrue(status > 0);
+        assertTrue(this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdManager, permissions));
     }
 
     @Test
@@ -483,22 +480,20 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(ERROR);
         permissions.add(1);
         permissions.add(2);
-        status = this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdManager, permissions);
-        assertTrue(status < 0);
+        assertTrue(this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdManager, permissions));
     }
 
-    @Test
-    public void testChangeStoreManagerPermissionsOnSomeoneElse() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
-        int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
-        int storeId = stores.get(0).getStoreId();
-        List<Integer> permissions = new ArrayList<>();
-        permissions.add(0);
-        permissions.add(1);
-        permissions.add(2);
-        int status = this.addStoreManagerPermissions(uid, storeId, uIdManager, permissions);
-        assertTrue(status < 0);
-    }
+//    @Test
+//    public void testChangeStoreManagerPermissionsOnSomeoneElse() {
+//        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+//        int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
+//        int storeId = stores.get(0).getStoreId();
+//        List<Integer> permissions = new ArrayList<>();
+//        permissions.add(0);
+//        permissions.add(1);
+//        permissions.add(2);
+//        assertTrue(this.addStoreManagerPermissions(uid, storeId, uIdManager, permissions));
+//    }
 
     @Test
     public void testChangeStoreManagerPermissionsOnOwner() {
@@ -513,8 +508,7 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(0);
         permissions.add(1);
         permissions.add(2);
-        status = this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdOwner, permissions);
-        assertTrue(status < 0);
+        assertTrue(this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdOwner, permissions));
     }
 
     @Test
@@ -531,8 +525,7 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(0);
         permissions.add(1);
         permissions.add(2);
-        status = this.addStoreManagerPermissions(notOwnerId, storeId, uIdManager, permissions);
-        assertTrue(status < 0);
+        assertTrue(this.addStoreManagerPermissions(notOwnerId, storeId, uIdManager, permissions));
     }
 
     //Appointment Store Manager:

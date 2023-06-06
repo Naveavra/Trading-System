@@ -239,17 +239,17 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int removeStoreManagerPermissions(int user, int store, int managerId, int permissionsIds) {
+    public boolean removeStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
         if (real != null)
             return real.removeStoreManagerPermissions(user, store, managerId, permissionsIds);
-        return -1;
+        return false;
     }
 
     @Override
-    public int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
+    public boolean addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
         if (real != null)
             return real.addStoreManagerPermissions(user, store, managerId, permissionsIds);
-        return -1;
+        return false;
     }
 
 

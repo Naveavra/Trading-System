@@ -315,25 +315,15 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int removeStoreManagerPermissions(int user, int store, int managerId,int permissionsIds) {
-        List<Integer> ids = new ArrayList<>();
-        ids.add(permissionsIds);
-        Response<String> res = market.removeManagerPermissions(user, token, managerId, store, ids);
-        if(res == null || res.errorOccurred())
-        {
-            return -1;
-        }
-        return 1;
+    public boolean removeStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
+        Response<String> res = market.removeManagerPermissions(user, token, managerId, store, permissionsIds);
+        return res != null && !res.errorOccurred();
     }
 
     @Override
-    public int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
+    public boolean addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
         Response<String> res = market.addManagerPermissions(user, token, managerId, store, permissionsIds);
-        if(res == null || res.errorOccurred())
-        {
-            return -1;
-        }
-        return 1;
+        return res != null && !res.errorOccurred();
     }
 
     @Override
@@ -568,7 +558,7 @@ public class BridgeImplement implements Bridge {
     @Override
     public Role getRoleInStore(int userId, int workerId, int storeId) {
         Response<Info> res = market.checkWorkerStatus(userId, token, workerId, storeId);
-        if(!res.errorOccurred())
+        if(res != null && !res.errorOccurred())
         {
             return res.getValue().getRole();
         }

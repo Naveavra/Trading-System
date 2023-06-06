@@ -141,7 +141,6 @@ public interface Bridge {
     /**
      * System external payment service management - getting all possible external service
      *
-     * @param user user Id
      * @return If succeed returns list of available payment service. Otherwise,
      *         return null.
      */
@@ -336,10 +335,10 @@ public interface Bridge {
      * @param store store id
      * @param managerId manager id
      * @param permissionsIds  permission id
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int removeStoreManagerPermissions(int user, int store, int managerId, int permissionsIds);
+    boolean removeStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds);
 
     /**
      * Change the store manager permissions
@@ -348,10 +347,10 @@ public interface Bridge {
      * @param store store id
      * @param managerId manager id
      * @param permissionsIds list of the permissions
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds);
+    boolean addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds);
 
     /**
      * Gets information about store manager’s permissions
