@@ -50,10 +50,15 @@ public class Permission {
     }
 
     public static HashMap<Integer, Action> getActionIds(){
+        if(actionIds == null)
+        {
+            actionIds = new HashMap<>();
+            setActionIds();
+        }
         return actionIds;
     }
 
-    public void setActionIds(){
+    public static void setActionIds(){
         actionIds.put(0, Action.addProduct);
         actionIds.put(1, Action.removeProduct);
         actionIds.put(2, Action.updateProduct);
@@ -77,9 +82,14 @@ public class Permission {
     }
 
     public static HashMap<Action, Integer> getActionsMap(){
+        if(actionsMap == null)
+        {
+            actionsMap = new HashMap<>();
+            setActionsMap();
+        }
         return actionsMap;
     }
-    private void setActionsMap() {
+    private static void setActionsMap() {
         for(int id : actionIds.keySet())
             actionsMap.put(actionIds.get(id), id);
     }
