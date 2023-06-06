@@ -102,7 +102,7 @@ class UserControllerTest {
             market.writeReviewToStore(id, token, receipt.getOrderId(), "nike", "very good", 4);
             market.writeReviewToProduct(id, token, receipt.getOrderId(), sid, pid, "very good", 4);
             market.sendComplaint(id, token, receipt.getOrderId(), "baaaad?");
-            market.sendQuestion(id, token, "adidas", "is open at 8?");
+            market.sendQuestion(id, token, sid2, "is open at 8?");
             market.updateState();
             assert true;
         }catch (Exception e){
