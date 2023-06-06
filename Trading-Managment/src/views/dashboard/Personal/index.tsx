@@ -67,6 +67,7 @@ const Personal = () => {
             <Typography sx={{ fontSize: 25, mt: 3, ml: '40%' }} gutterBottom>
                 your purchase history
             </Typography>
+            <Box sx={{display:"flex" , width:'100%' , mb:2}}>
             {
                 orders?.map((order, index) => {
                     return (
@@ -94,6 +95,7 @@ const Personal = () => {
                     )
                 })
             }
+            </Box>
             <Outlet />
         </>
     );

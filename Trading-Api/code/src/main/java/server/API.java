@@ -380,8 +380,8 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> removeUser(int userId) {
-        Response<String> res = market.removeUser(userId);
+    public Pair<Boolean, JSONObject> removeUser(String userName) {
+        Response<String> res = market.removeUser(userName);
         return fromResToPair(res);
     }
 

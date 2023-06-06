@@ -989,9 +989,9 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<String> removeUser(int userId) {
+    public Response<String> removeUser(String userName) {
         try{
-            userController.removeUser(userId);
+            userController.removeUser(userName);
             return new Response<>("the user was successfully removed", null, null);
         }catch (Exception e){
             return new Response<>(null, "cant remove user", e.getMessage());
@@ -1221,7 +1221,6 @@ public class Market implements MarketInterface {
                     StringChecks.curDayString(), userController.getUserName(userId),
                     userController.getNotification(userId), null, null);
         }catch (Exception e){
-            System.out.println(e.getMessage());
             return new Response<>(null, "get member notifications failed", e.getMessage());
         }
     }

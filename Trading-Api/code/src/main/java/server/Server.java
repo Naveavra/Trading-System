@@ -522,8 +522,8 @@ public class Server {
 
         post("api/removeUser", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            int userId = Integer.parseInt(request.get("userId").toString());
-            toSparkRes(res, api.removeUser(userId));
+            String userName = request.get("userName").toString();
+            toSparkRes(res, api.removeUser(userName));
             return res.body();
         });
 

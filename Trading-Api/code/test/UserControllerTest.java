@@ -99,6 +99,9 @@ class UserControllerTest {
             market.addProductToCart(id, sid, pid2, 5);
             Receipt receipt = market.makePurchase(id, payment, supplier).getValue();
             market.addProductToCart(id, sid, pid, 2);
+            market.addProductToCart(id, sid, pid2, 3);
+            int gid = market.enterGuest().getValue();
+            market.addProductToCart(gid, sid, pid2, 3);
             assertNotNull(receipt);
             market.writeReviewToStore(id, token, receipt.getOrderId(), "nike", "very good", 4);
             market.writeReviewToProduct(id, token, receipt.getOrderId(), sid, pid, "very good", 4);

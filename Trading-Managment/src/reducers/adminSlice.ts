@@ -104,12 +104,12 @@ export const cancelMembership = createAsyncThunk<
     });
 export const removeUser = createAsyncThunk<
     string,
-    number,
+    string,
     { rejectValue: ApiError }
 >(
     `${reducerName}/removeUser`,
-    async (userId, thunkAPI) => {
-        return adminApi.cleanUser(userId)
+    async (userName, thunkAPI) => {
+        return adminApi.cleanUser(userName)
             .then((res) => thunkAPI.fulfillWithValue(res as string))
             .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
     });
