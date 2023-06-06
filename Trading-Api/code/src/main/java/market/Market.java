@@ -52,12 +52,12 @@ public class Market implements MarketInterface {
         marketController = new MarketController();
 
         userAuth = new UserAuth();
-        try {
-            proxyPayment = new ProxyPayment();
-            proxySupplier = new ProxySupplier();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            proxyPayment = new ProxyPayment();
+//            proxySupplier = new ProxySupplier();
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
 
         marketInfo = new MarketInfo();
 
@@ -283,8 +283,8 @@ public class Market implements MarketInterface {
         try {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
-            proxyPayment.makePurchase(payment, totalPrice);
-            proxySupplier.orderSupplies(supplier, cart);
+//            proxyPayment.makePurchase(payment, totalPrice);
+//            proxySupplier.orderSupplies(supplier, cart);
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
             Receipt receipt = ans.getFirst();
             Set<Integer> creatorIds = ans.getSecond();

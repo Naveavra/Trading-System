@@ -19,4 +19,6 @@ public interface User {
     public void emptyCart();
     public String getName();
     public int getAge();
+
+    public void setShoppingCart(ShoppingCart cart);
 }
