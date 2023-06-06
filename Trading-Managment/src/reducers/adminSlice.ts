@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { LogRecord } from "../types/systemTypes/Log";
 import { adminApi } from "../api/adminApi";
 import { Complaint } from "../types/systemTypes/Complaint";
-import { addAdminParams, answerComplaintParams, cancelMembershipParams, closeStorePerminentlyParams } from "../types/requestTypes/adminTypes";
+import { addAdminParams, answerComplaintParams, cancelMembershipParams, closeStorePerminentlyParams, updateServiceParams } from "../types/requestTypes/adminTypes";
 import { ApiError } from "../types/apiTypes";
 
 interface AdminState {
@@ -113,6 +113,28 @@ export const removeUser = createAsyncThunk<
             .then((res) => thunkAPI.fulfillWithValue(res as string))
             .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
     });
+export const marketStatus = createAsyncThunk<
+    string,
+    number,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/marketStatus`,
+    async (adminId, thunkAPI) => {
+        return adminApi.marketStatus(adminId)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
+export const updateService = createAsyncThunk<
+    string,
+    updateServiceParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/updateService`,
+    async (updateServiceParams, thunkAPI) => {
+        return adminApi.updateService(updateServiceParams)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
 
 const { reducer: adminReducer, actions: authActions } = createSlice({
     name: reducerName,
@@ -206,6 +228,28 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         builder.addCase(removeUser.rejected, (state, { payload }) => {
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during remove user";
+        });
+        builder.addCase(marketStatus.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(marketStatus.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.msg = payload;
+        });
+        builder.addCase(marketStatus.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during market status";
+        });
+        builder.addCase(updateService.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(updateService.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.msg = payload;
+        });
+        builder.addCase(updateService.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during update service";
         });
     }
 });

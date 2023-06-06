@@ -41,7 +41,7 @@ const Bar4: React.FC<Props> = ({ headLine }) => {
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
 
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-    const adminActions: Action[] = [Action.addAdmin, Action.closeStorePerminently, Action.seeComplaints, Action.cancelMembership];
+    const adminActions: Action[] = [Action.addAdmin, Action.closeStorePerminently, Action.seeComplaints, Action.cancelMembership, Action.watchMarketStatus, Action.updateServices];
 
     const handleLogout = () => {
         dispatch(logout(userId));

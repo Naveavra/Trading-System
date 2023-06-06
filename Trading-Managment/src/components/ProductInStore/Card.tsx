@@ -2,7 +2,7 @@ import React from "react";
 import "./Card.css";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../types/systemTypes/Product";
-import { Card, CardMedia, CardContent, Typography, Box, CardActions } from "@mui/material";
+import { Card, CardMedia, CardContent, Typography, Box, CardActions, Rating } from "@mui/material";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -95,10 +95,11 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
                 <Typography gutterBottom variant="h6" component="div" sx={{ ml: 3, mt: 1 }}>
                     {quantity}
                 </Typography>
-                <Box>
-                    <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10 }}>
+                <Box display={'flex'}>
+                    <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10, mr: 10 }}>
                         {(item.price * (quantity)).toFixed(2)}$
                     </Typography>
+                    <Rating name="read-only" value={item.rating} readOnly />
                 </Box>
             </CardActions>
             <CardContent sx={{ height: 55 }} >

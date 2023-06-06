@@ -22,6 +22,7 @@ import { Node } from 'reactflow';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
 import { DiscountNodes } from '../../types/systemTypes/DiscountNodes';
+import { marketStatus } from '../../reducers/adminSlice';
 
 
 
@@ -37,7 +38,7 @@ export default function App() {
 
 
     const handleRegular = () => {
-        navigate('/dashboard/store/superior/regularDiscount');
+        dispatch(marketStatus(1));
     }
     const handleComosite = () => {
     }
