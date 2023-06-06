@@ -4,10 +4,10 @@ import AlertDialog from "../Dialog/AlertDialog";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
 import { useCallback, useEffect, useState } from "react";
-import { clearAuthError } from "../../reducers/authSlice";
+import { clearAuthError, getClientData } from "../../reducers/authSlice";
 import { useForm } from "react-hook-form";
 import { paymentFormValues } from "../../types/formsTypes";
-import { buyCart } from "../../reducers/cartSlice";
+import { buyCart, getCart } from "../../reducers/cartSlice";
 import { getSuppliers, getPaymentsService } from "../../reducers/paymentSlice";
 import SelectAutoWidth from "../Selectors/AutoWidth";
 
@@ -37,11 +37,14 @@ const BuyCart = () => {
 
     const handleOnClose = useCallback(() => {
         navigate('/dashboard');
-        //dispatch(getStore({ userId: userId, storeId: storeId }));
+        dispatch(getCart({ userId: userId }));
+        dispatch(getClientData({ userId: userId }));
     }, []);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
-        dispatch(buyCart(form.getValues()))
+        form.setValue('supply_service', supplier);
+        form.setValue('payment_service', payment);
+        dispatch(buyCart(form.getValues()));
         handleOnClose();
     }
 
@@ -255,6 +258,25 @@ const BuyCart = () => {
                                 }}
                                 error={!!form.formState.errors['city'] ?? false}
                                 helperText={form.formState.errors['city']?.message ?? undefined}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                name="country"
+                                type="text"
+                                fullWidth
+                                label="country"
+                                sx={{ mt: 1, mb: 1 }}
+                                inputProps={{
+                                    ...form.register('country', {
+                                        required: {
+                                            value: true,
+                                            message: "country id is required"
+                                        }
+                                    })
+                                }}
+                                error={!!form.formState.errors['country'] ?? false}
+                                helperText={form.formState.errors['country']?.message ?? undefined}
                             />
                         </Grid>
                         <Grid item xs={12}>

@@ -57,7 +57,7 @@ const OrderPage = () => {
             {message ? <SuccessAlert message={message} onClose={() => { dispatch(clearStoresResponse({})) }} /> : null}
             {error ? <ErrorAlert message={error} onClose={() => { dispatch(clearStoreError({})) }} /> : null}
             <h2>Products in Order</h2>
-            <Box sx={{ ml: 2 }} display='flex'>
+            <Box sx={{ ml: 2 }} display="flex" alignItems="center">
                 {order.products?.map((product) => (
                     <Card sx={{ ml: 2, mr: 2, width: 250 }}>
                         <CardMedia
