@@ -561,7 +561,7 @@ public class UserController {
 
     public void answerComplaint(int adminId, int complaintId, String ans) throws Exception{
         getActiveAdmin(adminId);
-        sendFeedback(complaintId, ans);
+        sendFeedback(complaintId, "you got an answer for complaint: " + complaintId + ", answer is: " + ans);
     }
 
     public void cancelMembership(int adminId, String userToRemove) throws Exception{
