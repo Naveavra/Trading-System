@@ -55,7 +55,7 @@ public interface MarketInterface {
     Response<Store> getStore(int userId, String token, int storeId);
     public Response getStoreProducts(int storeId);
 
-    public Response sendQuestion(int userId, String token, String storeName, String msg);
+    public Response sendQuestion(int userId, String token, int storeId, String msg);
     public Response sendComplaint(int userId, String token, int orderId, String msg);
 
     // manager methods

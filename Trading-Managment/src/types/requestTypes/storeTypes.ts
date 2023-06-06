@@ -59,6 +59,7 @@ export interface AnswerQuestionParams {
 export interface WriteReviewParams {
     userId: number;
     storeName: string;
+    orderId: number;
     rating: number;
     content: string;
 };
@@ -71,6 +72,7 @@ export interface WriteReviewOnProductParams {
     userId: number;
     storeId: number;
     productId: number;
+    orderId: number;
     rating: number;
     content: string;
 };

@@ -66,6 +66,15 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
+    public LoginData loginAndGetData(String email, String password) {
+        Response<LoginInformation> res = market.login(email, password);
+        if (res != null && !res.errorOccurred()) {
+            return new LoginData(res.getValue());
+        }
+        return null;
+    }
+
+    @Override
     public int logout(int user) {
         Response<String> res = market.logout(user);
         if (res != null && !res.errorOccurred()) {

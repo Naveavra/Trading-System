@@ -458,7 +458,8 @@ public class UserController {
             else
                 creatorStoreIds.add(storeId);
         }
-        memberList.remove(userToRemove);
+        addNotification(userToRemove, new Notification<>(NotificationOpcode.CANCEL_MEMBERSHIP, "you have been removed from the system"));
+        //memberList.remove(userToRemove);
         return creatorStoreIds;
     }
 

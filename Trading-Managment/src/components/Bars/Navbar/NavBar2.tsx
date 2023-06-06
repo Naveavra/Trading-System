@@ -23,8 +23,8 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SideDrawer from '../../SideDrawer';
-import MessageIcon from '@mui/icons-material/Message';
-import RateReviewIcon from '@mui/icons-material/RateReview';
+import { Action } from '../../../types/systemTypes/Action';
+
 
 
 import './NavBar2.css';
@@ -57,6 +57,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const store = useAppSelector((state) => state.store.storeState.watchedStore);
     const permissions = useAppSelector((state: RootState) => state.auth.permissions);
     const actions = permissions?.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
+    const canCloseStore = actions.includes(Action.closeStore);
 
     const stores = stores_roles ? stores_roles.map((role, index) => {
         return {
@@ -131,8 +132,9 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
 
                         {isLoggedIn &&
                             <>
-
-                                <Switch {...label} defaultChecked color="warning" value={store.isActive} onClick={handleChangeOpen} />
+                                {canCloseStore ?
+                                    <Switch {...label} defaultChecked color="warning" value={store.isActive} onClick={handleChangeOpen} />
+                                    : null}
                                 <IconButton className="icon" color="inherit" onClick={handleLogout}>
                                     <LogoutIcon />
                                 </IconButton>

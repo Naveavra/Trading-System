@@ -139,7 +139,10 @@ public class Server {
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
             String newEmail = request.get("email").toString();
-            String newBirthday = request.get("birthday").toString();
+            String newBirthday = "null";
+            try {
+                newBirthday = request.get("birthday").toString();
+            }catch (Exception ignored){}
             toSparkRes(res, api.changeMemberAttributes(userId, token, newEmail, newBirthday));
             return res.body();
         });
@@ -274,9 +277,9 @@ public class Server {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
-            String storeName = request.get("storeName").toString();
+            int storeId = Integer.parseInt(request.get("storeId").toString());
             String question = request.get("question").toString();
-            toSparkRes(res, api.sendQuestion(userId, token, storeName, question));
+            toSparkRes(res, api.sendQuestion(userId, token, storeId, question));
             return res.body();
         });
 
@@ -474,7 +477,7 @@ public class Server {
 
         post("api/admin/remove", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            int adminId = Integer.parseInt(request.get("userId").toString());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
             String token = req.headers("Authorization");
             toSparkRes(res, api.removeAdmin(adminId, token));
             return res.body();
@@ -492,7 +495,7 @@ public class Server {
 
         post("api/admin/complaints/answer", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            int adminId = Integer.parseInt(request.get("userId").toString());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
             String token = req.headers("Authorization");
             int complaintId = Integer.parseInt(request.get("complaintId").toString());
             String answer = request.get("answer").toString();
@@ -502,7 +505,7 @@ public class Server {
 
         post("api/admin/complaints/:adminId", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            int adminId = Integer.parseInt(request.get("userId").toString());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
             String token = req.headers("Authorization");
             toSparkRes(res, api.getComplaints(adminId, token));
             return res.body();
@@ -512,7 +515,7 @@ public class Server {
             JSONObject request = new JSONObject(req.body());
             int adminId = Integer.parseInt(request.get("userId").toString());
             String token = req.headers("Authorization");
-            String name = request.get("name").toString();
+            String name = request.get("userName").toString();
             toSparkRes(res, api.cancelMembership(adminId, token, name));
             return res.body();
         });

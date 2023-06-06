@@ -163,10 +163,14 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
             state.isLoading = true;
         });
         builder.addCase(adminResign.fulfilled, (state, { payload }) => {
+            debugger;
+            console.log(payload);
             state.isLoading = false;
             state.msg = payload;
         });
         builder.addCase(adminResign.rejected, (state, { payload }) => {
+            debugger;
+            console.log(payload);
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during admin resign";
         });

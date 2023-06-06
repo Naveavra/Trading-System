@@ -58,6 +58,8 @@ public interface Bridge {
      */
     int login(String email, String password);
 
+    LoginData loginAndGetData(String email, String password);
+
     /**
      * User - user logout from the system
      *

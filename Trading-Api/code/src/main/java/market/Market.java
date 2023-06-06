@@ -24,6 +24,7 @@ import utils.infoRelated.Receipt;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 //TODO: find a way to generate tokens, hash passwords, ...
@@ -161,6 +162,15 @@ public class Market implements MarketInterface {
         Notification<String> notification = new Notification<>(opcode, notify);
         userController.addNotification(userId, notification);
     }
+
+    private List<String> toStringList(List<Notification> notifications)
+    {
+        return notifications
+                .stream()
+                .map(notification -> notification.toString())
+                .collect(Collectors.toList());
+    }
+
     @Override
     public Response<List<String>> displayNotifications(int userId, String token) {
         try {
@@ -168,7 +178,7 @@ public class Market implements MarketInterface {
             List<Notification> notifications = userController.displayNotifications(userId);
                 return logAndRes(Event.LogStatus.Success, "user got notifications successfully",
                         StringChecks.curDayString(), userController.getUserName(userId),
-                        notifications, null, null);
+                        toStringList(notifications), null, null);
         }
         catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "user cant get his notifications because " + e.getMessage() ,
@@ -479,10 +489,9 @@ public class Market implements MarketInterface {
 
 
     @Override
-    public Response<String> sendQuestion(int userId, String token, String storeName, String msg) {
+    public Response<String> sendQuestion(int userId, String token, int storeId, String msg) {
         try {
             userAuth.checkUser(userId, token);
-            int storeId = marketController.getStoreId(storeName);
             Question q = userController.sendQuestionToStore(userId, storeId, msg);
             int creatorId = marketController.addQuestion(q);
             addNotification(creatorId, NotificationOpcode.QUESTION, "a question of has been added for store: " + storeId);

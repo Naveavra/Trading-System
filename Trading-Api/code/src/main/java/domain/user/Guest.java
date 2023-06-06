@@ -20,6 +20,12 @@ public class Guest implements User{
     public int getAge(){
         return -1;
     }
+
+    @Override
+    public void setShoppingCart(ShoppingCart cart) {
+        this.cart = cart;
+    }
+
     public int getId(){
         return id;
     }

@@ -102,12 +102,14 @@ export type cancelMembershipFormValues = {
 export type reviewOnStoreFormValues = {
     userId: number;
     storeName: string;
+    orderId: number;
     rating: number;
     content: string;
 };
 export type reviewOnProductFormValues = {
     userId: number;
     storeId: number;
+    orderId: number;
     productId: number;
     rating: number;
     content: string;

@@ -10,6 +10,6 @@ export const PersonalRoutes = [
         <Route path="editMyProfile" element={<EditMyProfileForm />} />
         <Route path="changePassword" element={<ChangePassword />} />
         <Route path="sendMsg" element={<SendMsg />} />
-        <Route path="sendComplaint" element={<SendComplain />} />
+        <Route path=":id/sendComplaint" element={<SendComplain />} />
     </Route>
 ];

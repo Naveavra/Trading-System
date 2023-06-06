@@ -35,11 +35,12 @@ const AppointUser: React.FC<props> = ({ role }) => {
 
 
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard/store/superior');
         if (role != 'admin') {
+            navigate('/dashboard/store/superior');
             dispatch(getStore({ userId: userId, storeId: storeId }));
         }
         else {
+            navigate('/dashboard/admin');
             //dispatch(getAdminData({}))
         }
     }, []);
