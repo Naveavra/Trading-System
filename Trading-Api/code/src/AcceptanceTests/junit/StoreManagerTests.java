@@ -74,6 +74,15 @@ public class StoreManagerTests extends ProjectTest{
     }
 
     @Test
+    private void isGoodRemovePermission(UserInfo storeOwner, UserInfo appointManager, int storeId)
+    {
+        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
+        assertTrue(status > 0);
+        Role role = getRoleInStore(storeOwner.getUserId(), appointManager.getUserId(), storeId);
+        assertEquals(Role.Manager, role);
+    }
+
+    @Test
     public void AddProductWithoutPermission()
     {
         UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
@@ -99,11 +108,9 @@ public class StoreManagerTests extends ProjectTest{
         int storeId = stores.get(0).getStoreId();
         isGoodLogin(storeOwner);
         isGoodLogin(appointManager1);
-        // TODO: write strong assert for appoint that check the roles in the store
-        int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager1.getEmail());
-        assertTrue(status > 0);
+        isGoodManagerAppoint(storeOwner, appointManager1, storeId);
         // TODO: Remove permission of appoint manger to appointManager1:
-        status = this.appointmentManagerInStore(appointManager1.getUserId(), storeId, appointManager2.getEmail());
+        int status = this.appointmentManagerInStore(appointManager1.getUserId(), storeId, appointManager2.getEmail());
         assertTrue(status > 0);
     }
 
