@@ -37,6 +37,4 @@ export const authApi = {
     changePassword: (credentials: changePasswordParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/auth/password', credentials)),
 
-
-
 }

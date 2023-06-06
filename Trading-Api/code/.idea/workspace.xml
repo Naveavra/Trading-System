@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/RegularDiscount.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/RegularDiscount.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +199,8 @@
       <workItem from="1685989265473" duration="3592000" />
       <workItem from="1685993590311" duration="2808000" />
       <workItem from="1685997722228" duration="9154000" />
-      <workItem from="1686037390759" duration="1251000" />
+      <workItem from="1686037390759" duration="1761000" />
+      <workItem from="1686041070720" duration="3009000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>

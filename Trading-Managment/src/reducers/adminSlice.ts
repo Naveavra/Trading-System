@@ -102,6 +102,17 @@ export const cancelMembership = createAsyncThunk<
             .then((res) => thunkAPI.fulfillWithValue(res as string))
             .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
     });
+export const removeUser = createAsyncThunk<
+    string,
+    number,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/removeUser`,
+    async (userId, thunkAPI) => {
+        return adminApi.cleanUser(userId)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
 
 const { reducer: adminReducer, actions: authActions } = createSlice({
     name: reducerName,
@@ -184,6 +195,17 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         builder.addCase(closeStorePerminently.rejected, (state, { payload }) => {
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during close store perminently";
+        });
+        builder.addCase(removeUser.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(removeUser.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.msg = payload;
+        });
+        builder.addCase(removeUser.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during remove user";
         });
     }
 });
