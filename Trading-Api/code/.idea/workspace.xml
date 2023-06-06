@@ -5,17 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/DbConnector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/DaoTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/DaoTemplate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/NotificationDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/NotificationDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/NotificationOpcode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/NotificationOpcode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/java/market/AdminTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/java/market/AdminTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/work1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/work1.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/Permission.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/Permission.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserControllerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +76,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.AdminTest.closeStorePermanently">
+  <component name="RunManager" selected="JUnit.UserControllerTest.checkDatabase">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -180,8 +172,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.AdminTest.closeStorePermanently" />
         <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
+        <item itemvalue="JUnit.AdminTest.closeStorePermanently" />
         <item itemvalue="JUnit.test in work1" />
         <item itemvalue="JUnit.APITest.getSupplierAvailableServices" />
         <item itemvalue="JUnit.DiscountTest,storeDiscountTest and 9 more" />
