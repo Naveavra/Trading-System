@@ -17,6 +17,35 @@ public class MemberTest extends ProjectTest{
     private JSONObject payment = createPaymentJson();
     private JSONObject supplier = createSupplierJson();
 
+    private JSONObject paymentMock = createMockPaymentJson();
+
+    private JSONObject createMockPaymentJson() {
+        JSONObject payment = new JSONObject();
+        payment.put("payment_service", "Mock");
+        payment.put("Mock", "off");
+        payment.put("cardNumber", "123456789");
+        payment.put("month", "01");
+        payment.put("year", "30");
+        payment.put("holder", "Israel Visceral");
+        payment.put("ccv", "000");
+        payment.put("id", "123456789");
+        return payment;
+    }
+
+    private JSONObject supplierMock = createMockSupplierJson();
+
+    private JSONObject createMockSupplierJson() {
+        JSONObject supplier = new JSONObject();
+        supplier.put("supply_service", "Mock");
+        payment.put("Mock", "off");
+        supplier.put("name", "Israel Visceral");
+        supplier.put("address", "Reger 17");
+        supplier.put("city", "Beer Sheva");
+        supplier.put("country", "Israel");
+        supplier.put("zip", "700000");
+        return supplier;
+    }
+
     @Override
     @BeforeEach
     public void setUp() {
@@ -101,12 +130,10 @@ public class MemberTest extends ProjectTest{
         CartInfo ci = getCart(buyer.getUserId());
         assertNotNull(ci);
         assertTrue(ci.getCountOfProduct() > 0);
-        status = this.addExternalPaymentService(mainAdmin.getAdminId(), "Apple Pay");
-        assertTrue(status > 0);
-        status = this.replaceExternalPaymentService(mainAdmin.getAdminId(), "Apple Pay");
+        status = this.addExternalPaymentService(mainAdmin.getAdminId(), "Mock");
         assertTrue(status > 0);
         //make purchase
-        status  = makePurchase(buyer.getUserId(), payment, supplier);
+        status  = makePurchase(buyer.getUserId(), paymentMock, supplier);
         assertTrue(status < 0);
     }
 
@@ -124,12 +151,10 @@ public class MemberTest extends ProjectTest{
         CartInfo ci = getCart(buyer.getUserId());
         assertNotNull(ci);
         assertTrue(ci.getCountOfProduct() > 0);
-        status = this.addExternalSupplierService(mainAdmin.getAdminId(), "UPS");
-        assertTrue(status > 0);
-        status = this.replaceExternalSupplierService(mainAdmin.getAdminId(), "UPS");
+        status = this.addExternalSupplierService(mainAdmin.getAdminId(), "Mock");
         assertTrue(status > 0);
         //make purchase
-        status  = makePurchase(buyer.getUserId(), payment, supplier);
+        status  = makePurchase(buyer.getUserId(), payment, supplierMock);
         assertTrue(status < 0);
     }
 

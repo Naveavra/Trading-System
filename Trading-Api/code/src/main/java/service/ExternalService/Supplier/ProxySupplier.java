@@ -22,6 +22,7 @@ public class ProxySupplier implements SupplierAdapter {
     public ProxySupplier() throws Exception {
         this.supplierServices = new HashMap<>();
         supplierServices.put("WSEP", new WSEPService());
+        supplierServices.put("Mock", new SupplierAdapterMock());
         this.real = supplierServices.get("WSEP");
         this.real.setAvailable(true);
     }
@@ -53,11 +54,11 @@ public class ProxySupplier implements SupplierAdapter {
 
     public void addSupplierService(String supplier) throws Exception
     {
-        if (supplierServices.containsKey(supplier))
+        if (!supplierServices.containsKey(supplier))
         {
             throw new Exception("This supplier service:" + supplier + "doesn't exists in the possible payment services!!!");
         }
-        else if(!supplierServices.get(supplier).isAvailable())
+        else if(supplierServices.get(supplier).isAvailable())
         {
             throw new Exception("This supplier service:" + supplier + "already available exists!!!");
         }
@@ -72,7 +73,7 @@ public class ProxySupplier implements SupplierAdapter {
         {
             throw new IllegalArgumentException("Can't remove supplier service need at least 1 supplier service!");
         }
-        else if (!supplierServices.containsKey(supplierAdapter) || supplierServices.get(supplierAdapter).isAvailable())
+        else if (!supplierServices.containsKey(supplierAdapter) || !supplierServices.get(supplierAdapter).isAvailable())
         {
             throw new IllegalArgumentException("This supplier service:" + supplierAdapter + " doesn't available or exists!!!");
         }

@@ -12,6 +12,7 @@ public enum NotificationOpcode {
 
 
         NotificationOpcode(int i) {
+
         }
 }
 

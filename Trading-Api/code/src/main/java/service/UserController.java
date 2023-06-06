@@ -561,13 +561,18 @@ public class UserController {
 
     public void answerComplaint(int adminId, int complaintId, String ans) throws Exception{
         getActiveAdmin(adminId);
-        sendFeedback(complaintId, ans);
+        sendFeedback(complaintId, "you got an answer for complaint: " + complaintId + ", answer is: " + ans);
     }
 
     public void cancelMembership(int adminId, String userToRemove) throws Exception{
         Admin admin = getActiveAdmin(adminId);
         Member m = getMember(userToRemove);
         admin.cancelMembership(m.getId());
+    }
+
+    public void removeUser(int userId) throws Exception{
+        getActiveMember(userId);
+        memberList.remove(userId);
     }
 
     public int getAdminSize() {
@@ -666,4 +671,5 @@ public class UserController {
             return complaints.get(complaintId);
         throw new Exception("the id does not belong to any complaint");
     }
+
 }

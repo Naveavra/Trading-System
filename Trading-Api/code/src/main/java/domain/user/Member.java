@@ -43,6 +43,8 @@ public class Member extends Subscriber implements User{
         isConnected = false;
     }
 
+    public void setPurchaseHistory(PurchaseHistory history){this.purchaseHistory = history;}
+
     public void changeRoleInStore(UserState userState, Store store) throws Exception{
         int storeId = store.getStoreId();
         UserState state;
@@ -327,4 +329,6 @@ public class Member extends Subscriber implements User{
         memberDto.setStores(getStores());
         return memberDto;
     }
+    @Override
+    public void setShoppingCart(ShoppingCart cart) {this.g.setShoppingCart(cart);}
 }

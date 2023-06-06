@@ -106,6 +106,7 @@ public interface MarketInterface {
     public Response getUsersPurchaseHistory(int buyerId, String token);
     public Response answerComplaint(int adminId, String token, int complaintId, String ans);
     public Response<String> cancelMembership(int adminId, String token, String userToRemove);
+    Response<String> removeUser(int userId);
     public Response watchEventLog(int adminId, String token);
     public Response watchMarketStatus(int adminId, String token);
 
@@ -130,6 +131,4 @@ public interface MarketInterface {
     Response<List<? extends Information>> getComplaints(int userId, String token);
 
     public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst);
-
-
 }

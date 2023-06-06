@@ -7,6 +7,8 @@ import utils.infoRelated.ProductInfo;
 import utils.infoRelated.Receipt;
 import utils.messageRelated.Message;
 import utils.messageRelated.Notification;
+import utils.messageRelated.NotificationOpcode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +99,7 @@ public class MemberDto {
     public void setNotifications(List<Notification> notifications) {
         List<NotificationDto> notificationDtos = new ArrayList<>();
         for(Notification n : notifications)
-            notificationDtos.add(new NotificationDto(this, n.getNotification().toString(), n.getOpcode().toString()));
+            notificationDtos.add(new NotificationDto(this, n.getNotification().toString(), n.getOpcode().ordinal()));
         this.notifications = notificationDtos;
     }
 

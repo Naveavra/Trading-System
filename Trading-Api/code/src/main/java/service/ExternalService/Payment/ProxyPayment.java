@@ -18,6 +18,7 @@ public class ProxyPayment implements PaymentAdapter {
     public ProxyPayment() throws Exception {
         this.paymentServices = new HashMap<>();
         this.paymentServices.put("WSEP", new WSEPService());
+        this.paymentServices.put("Mock", new PaymentAdapterMock());
         this.real = paymentServices.get("WSEP");
         this.real.setAvailable(true);
     }
@@ -49,11 +50,11 @@ public class ProxyPayment implements PaymentAdapter {
 
     public void addPaymentService(String paymentService) throws Exception
     {
-        if (paymentServices.containsKey(paymentService))
+        if (!paymentServices.containsKey(paymentService))
         {
             throw new Exception("This payment service:" + paymentService + "doesn't exists in the possible payment services!!!");
         }
-        else if(!paymentServices.get(paymentService).isAvailable())
+        else if(paymentServices.get(paymentService).isAvailable())
         {
             throw new Exception("This payment service:" + paymentService + "already available exists!!!");
         }
@@ -70,7 +71,7 @@ public class ProxyPayment implements PaymentAdapter {
         {
             throw new IllegalArgumentException("Can't remove payment service need at least 1 supplier service!");
         }
-        else if (!paymentServices.containsKey(paymentService) || paymentServices.get(paymentService).isAvailable())
+        else if (!paymentServices.containsKey(paymentService) || !paymentServices.get(paymentService).isAvailable())
         {
             throw new IllegalArgumentException("This payment service:" + paymentService + " doesn't available or exists!!!");
         }

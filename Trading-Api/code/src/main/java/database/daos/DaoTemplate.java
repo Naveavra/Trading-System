@@ -65,4 +65,21 @@ public class DaoTemplate {
         }
         return list;
     }
+
+    public static List<?> getListByCompositeKey(Class c, int id1, int id2, String entityName, String param1, String param2){
+        Transaction transaction = null;
+        List<?> list = new ArrayList<>();
+        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+            transaction = session.beginTransaction();
+            String sql = String.format("FROM %s WHERE %s = %d and %s == %d", entityName, param1, id1, param2, id2);
+            Query query = session.createQuery(sql, c);
+            list = query.list();
+            transaction.commit();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            if(transaction != null)
+                transaction.rollback();
+        }
+        return list;
+    }
 }

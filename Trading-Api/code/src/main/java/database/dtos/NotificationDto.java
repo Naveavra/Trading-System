@@ -15,22 +15,22 @@ public class NotificationDto{
     @JoinColumn(name = "userId", foreignKey = @ForeignKey(name = "userId"), referencedColumnName = "id")
     private MemberDto memberDto;
     private String content;
-    private String opcode;
+    private int opcode;
 
     public NotificationDto(){
     }
-    public NotificationDto(MemberDto memberDto, String content, String opcode){
+    public NotificationDto(MemberDto memberDto, String content, int opcode){
         this.memberDto = memberDto;
         this.content = content;
         this.opcode = opcode;
 
     }
 
-    public String getOpcode() {
+    public int getOpcode() {
         return opcode;
     }
 
-    public void setOpcode(String opcode) {
+    public void setOpcode(int opcode) {
         this.opcode = opcode;
     }
 

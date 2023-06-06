@@ -24,9 +24,8 @@ import utils.infoRelated.Receipt;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-
-//TODO: find a way to generate tokens, hash passwords, ...
 
 public class Market implements MarketInterface {
     private final UserController userController;
@@ -51,12 +50,12 @@ public class Market implements MarketInterface {
         marketController = new MarketController();
 
         userAuth = new UserAuth();
-//        try {
-//            proxyPayment = new ProxyPayment();
-//            proxySupplier = new ProxySupplier();
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
+        try {
+            proxyPayment = new ProxyPayment();
+            proxySupplier = new ProxySupplier();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         marketInfo = new MarketInfo();
 
@@ -161,6 +160,15 @@ public class Market implements MarketInterface {
         Notification<String> notification = new Notification<>(opcode, notify);
         userController.addNotification(userId, notification);
     }
+
+    private List<String> toStringList(List<Notification> notifications)
+    {
+        return notifications
+                .stream()
+                .map(notification -> notification.toString())
+                .collect(Collectors.toList());
+    }
+
     @Override
     public Response<List<String>> displayNotifications(int userId, String token) {
         try {
@@ -168,7 +176,7 @@ public class Market implements MarketInterface {
             List<Notification> notifications = userController.displayNotifications(userId);
                 return logAndRes(Event.LogStatus.Success, "user got notifications successfully",
                         StringChecks.curDayString(), userController.getUserName(userId),
-                        notifications, null, null);
+                        toStringList(notifications), null, null);
         }
         catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "user cant get his notifications because " + e.getMessage() ,
@@ -273,8 +281,8 @@ public class Market implements MarketInterface {
         try {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
-//            proxyPayment.makePurchase(payment, totalPrice);
-//            proxySupplier.orderSupplies(supplier, cart);
+            proxyPayment.makePurchase(payment, totalPrice);
+            proxySupplier.orderSupplies(supplier, cart);
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
             Receipt receipt = ans.getFirst();
             Set<Integer> creatorIds = ans.getSecond();
@@ -977,6 +985,16 @@ public class Market implements MarketInterface {
             return logAndRes(Event.LogStatus.Fail, "user failed cancel Membership because:" + e.getMessage(),
                     StringChecks.curDayString(), "admin"+adminId,
                     null, "cancel Membership failed", e.getMessage());
+        }
+    }
+
+    @Override
+    public Response<String> removeUser(int userId) {
+        try{
+            userController.removeUser(userId);
+            return new Response<>("the user was successfully removed", null, null);
+        }catch (Exception e){
+            return new Response<>(null, "cant remove user", e.getMessage());
         }
     }
 
