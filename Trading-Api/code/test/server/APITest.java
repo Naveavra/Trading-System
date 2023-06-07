@@ -3,6 +3,7 @@ package server;
 import market.Market;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.security.UserAuth;
 import utils.Response;
 import utils.infoRelated.LoginInformation;
 
@@ -84,5 +85,11 @@ class APITest {
         api.mockData();
         api.login("elibenshimol6@gmail.com", "123Aaa");
         System.out.println(api.watchMarketStatus(1, api.market.addTokenForTests()).getSecond());
+    }
+
+    @Test
+    void testHash(){
+        UserAuth userAuth = new UserAuth();
+        System.out.println(userAuth.hashPassword("eli@gmail.com", "123Aaa"));
     }
 }

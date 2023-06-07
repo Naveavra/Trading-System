@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/MarketInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/MarketInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/security/UserAuth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/security/UserAuth.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/server/APITest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/server/APITest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -78,7 +78,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.APITest.getMarketInfo">
+  <component name="RunManager" selected="JUnit.test in work1">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -97,6 +97,22 @@
       <option name="PACKAGE_NAME" value="server" />
       <option name="MAIN_CLASS_NAME" value="server.APITest" />
       <option name="METHOD_NAME" value="getMarketInfo" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="APITest.testHash" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="server" />
+      <option name="MAIN_CLASS_NAME" value="server.APITest" />
+      <option name="METHOD_NAME" value="testHash" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -136,14 +152,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="junit in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/src/AcceptanceTests/junit" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <option name="TEST_OBJECT" value="directory" />
@@ -156,18 +164,18 @@
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
       <item itemvalue="JUnit.APITest.getMarketInfo" />
+      <item itemvalue="JUnit.APITest.testHash" />
       <item itemvalue="JUnit.MemberTest.testPurchaseCart" />
-      <item itemvalue="JUnit.junit in work1" />
       <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
       <item itemvalue="JUnit.test in work1" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.test in work1" />
+        <item itemvalue="JUnit.APITest.testHash" />
         <item itemvalue="JUnit.APITest.getMarketInfo" />
         <item itemvalue="JUnit.MemberTest.testPurchaseCart" />
         <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
-        <item itemvalue="JUnit.test in work1" />
-        <item itemvalue="JUnit.junit in work1" />
       </list>
     </recent_temporary>
   </component>
@@ -230,6 +238,16 @@
           <url>file://$PROJECT_DIR$/test/store/DiscountTest.java</url>
           <line>268</line>
           <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/utils/infoRelated/MarketInfo.java</url>
+          <line>50</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/service/security/UserAuth.java</url>
+          <line>57</line>
+          <option name="timeStamp" value="35" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
