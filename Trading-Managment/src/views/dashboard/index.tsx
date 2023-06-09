@@ -139,12 +139,12 @@ const DashboardPage: React.FC = () => {
                                 <ShopsBar />
                                 <Divider />
                                 {/* <Categories /> */}
-                                <Box sx={{ marginTop: 1 }} display={'flex'} >
-                                    <Box sx={{ marginTop: 1 }} display={'flex'} >
+                                <Box sx={{ marginTop: 1, width: '100%' }} display={'flex'} >
+                                    <Box sx={{ marginTop: 1, width: '50%' }} display={'flex'} >
                                         <Categories2 />
                                     </Box>
-                                    <Box sx={{ marginTop: 1, mr: 10, width: 300 }}  >
-                                        <Typography id="input-slider" gutterBottom sx={{ mb: 3 }}>
+                                    <Box sx={{ marginTop: 1, ml: '25%', width: '20%' }}  >
+                                        <Typography id="input-slider" gutterBottom sx={{ mb: 2 }}>
                                             Price range
                                         </Typography>
                                         <AirbnbSlider
@@ -156,7 +156,7 @@ const DashboardPage: React.FC = () => {
                                             max={5000}
                                             valueLabelDisplay="on"
                                         />
-                                        <Typography gutterBottom sx={{ mb: 3 }}>product rating</Typography>
+                                        <Typography gutterBottom sx={{ mb: 2 }}>product rating</Typography>
                                         <Slider
                                             getAriaLabel={() => 'product rating'}
                                             value={productRating}
@@ -167,7 +167,7 @@ const DashboardPage: React.FC = () => {
                                             min={0}
                                             step={1}
                                         />
-                                        <Typography gutterBottom sx={{ mb: 3 }}>store rating</Typography>
+                                        <Typography gutterBottom sx={{ mb: 2 }}>store rating</Typography>
                                         <Slider
                                             getAriaLabel={() => 'store rating'}
                                             value={storeRating}

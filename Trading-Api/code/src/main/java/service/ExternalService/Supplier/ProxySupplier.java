@@ -21,9 +21,9 @@ public class ProxySupplier implements SupplierAdapter {
 
     public ProxySupplier() throws Exception {
         this.supplierServices = new HashMap<>();
-        supplierServices.put("WSEP", new WSEPService());
+//        supplierServices.put("WSEP", new WSEPService());
         supplierServices.put("Mock", new SupplierAdapterMock());
-        this.real = supplierServices.get("WSEP");
+        this.real = supplierServices.get("Mock");
         this.real.setAvailable(true);
     }
 
@@ -114,6 +114,7 @@ public class ProxySupplier implements SupplierAdapter {
     @Override
     public int orderSupplies(JSONObject supplyContent, ShoppingCart cart) throws Exception {
         String supplier = supplyContent.getString("supply_service");
+//        supplier = "Mock";
         if(supplierServices.containsKey(supplier) &&
                 supplierServices.get(supplier).isAvailable()) {
             return supplierServices.get(supplier).orderSupplies(supplyContent, cart);

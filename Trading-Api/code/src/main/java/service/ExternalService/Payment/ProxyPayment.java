@@ -17,9 +17,9 @@ public class ProxyPayment implements PaymentAdapter {
 
     public ProxyPayment() throws Exception {
         this.paymentServices = new HashMap<>();
-        this.paymentServices.put("WSEP", new WSEPService());
+//        this.paymentServices.put("WSEP", new WSEPService());
         this.paymentServices.put("Mock", new PaymentAdapterMock());
-        this.real = paymentServices.get("WSEP");
+        this.real = paymentServices.get("Mock");
         this.real.setAvailable(true);
     }
 
@@ -112,6 +112,7 @@ public class ProxyPayment implements PaymentAdapter {
     @Override
     public int makePurchase(JSONObject paymentContent, double price) throws Exception {
         String payment = paymentContent.getString("payment_service");
+//        payment = "Mock";
         if(paymentServices.containsKey(payment) &&
                 paymentServices.get(payment).isAvailable()) {
             return paymentServices.get(payment).makePurchase(paymentContent, price);

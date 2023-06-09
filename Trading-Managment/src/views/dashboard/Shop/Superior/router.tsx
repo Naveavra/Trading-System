@@ -9,6 +9,7 @@ import UpdatePermissions from "../../../../components/Forms/UpdatePermissions";
 import RegularDiscount from "../../../../components/Forms/Discounts/RegularDiscount";
 import AddPredicate from "../../../../components/Forms/Discounts/AddPredicate";
 import SendComplain from "../../../../components/Forms/SendComplaint";
+import AddPurchasePolicy from "../../../../components/Forms/SuppingRoles/AddPurchasePolicy";
 
 export const SuperiorShopRoutes =
     <Route key="routes" path="superior" element={<Superior />}>
@@ -26,5 +27,7 @@ export const SuperiorShopRoutes =
 
         <Route path="regularDiscount/addPredicate" element={<AddPredicate tree={false} />} />
         <Route path="sendComplaint" element={<SendComplain />} />
+        <Route path="addpurchaseconstraint" element={<AddPurchasePolicy />} />
+
     </Route>
     ;

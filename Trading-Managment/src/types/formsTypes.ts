@@ -119,9 +119,15 @@ export type sendQuestionFormValues = {
     storeId: number;
     question: string;
 };
-export type updateService = {
+export type updateServiceFormValues = {
     userId: number;
     service: string;
     action: string;
     content: string;
+}
+export type makeBidFormValues = {
+    userId: number;
+    storeId: number;
+    productId: number;
+    price: number;
 }

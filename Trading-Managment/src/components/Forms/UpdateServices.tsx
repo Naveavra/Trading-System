@@ -1,19 +1,21 @@
 import { LoadingButton } from "@mui/lab";
 import { Dialog, Box, Grid, Typography, Button, TextField, SelectChangeEvent } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { clearStoreError } from "../../reducers/storesSlice";
 import error from "../Alerts/error";
 import AlertDialog from "../Dialog/AlertDialog";
 import SelectAutoWidth from "../Selectors/AutoWidth";
 import { useNavigate } from "react-router-dom";
-import { updateService } from "../../types/formsTypes";
+import { updateServiceFormValues } from "../../types/formsTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { useForm } from "react-hook-form";
+import { getPaymentsService, getSuppliers } from "../../reducers/paymentSlice";
+import { updateService } from "../../reducers/adminSlice";
 
 const UpdateServices = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const form = useForm<updateService>();
+    const form = useForm<updateServiceFormValues>();
     const [service, setService] = useState('');
     const [action, setAction] = useState('');
     const [param, setParam] = useState('');
@@ -34,15 +36,20 @@ const UpdateServices = () => {
     const handleChange = (event: SelectChangeEvent) => {
         setParam(event.target.value as string);
     }
-
+    useEffect(() => {
+        dispatch(getPaymentsService());
+        dispatch(getSuppliers());
+    }, [])
     const handleOnClose = useCallback(() => {
         navigate('/dashboard/admin');
-        //dispatch(getStore({ userId: userId, storeId: storeId }));
+        dispatch(getPaymentsService());
+        dispatch(getSuppliers());
     }, []);
     const handleOnSubmit = () => {
         form.setValue("userId", userId);
         form.setValue("service", service);
         form.setValue("action", action);
+        dispatch(updateService(form.getValues()));
         handleOnClose();
     }
 

@@ -6,9 +6,28 @@
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ProxyPayment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ProxyPayment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ProxySupplier.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ProxySupplier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/api/adminApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/api/adminApi.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/AdminPages/MarketStatus.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/NavBar2.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/NavBar2.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/NavBar3.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/NavBar3.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/UpdateServices.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/UpdateServices.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/ProductInStore/Card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/ProductInStore/Card.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/config.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/reducers/adminSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/reducers/adminSlice.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/types/formsTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/types/formsTypes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Admin/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Admin/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Admin/pageRouter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Admin/pageRouter.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Personal/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Personal/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/router.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/router.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/tests/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/tests/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/tsconfig.node.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/tsconfig.node.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/vite.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,29 +65,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "last_directory_selection": "C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test/server",
-    "last_opened_file_path": "C:/Users/Owner/BGU/Sadna/Trading-System/Trading-Api/code",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2022.1.3\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test/server&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Owner/BGU/Sadna/Trading-System/Trading-Api/code&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2022.1.3\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -197,6 +216,13 @@
       <workItem from="1686037390759" duration="1761000" />
       <workItem from="1686041070720" duration="3009000" />
       <workItem from="1686082884489" duration="4587000" />
+      <workItem from="1686117494291" duration="890000" />
+      <workItem from="1686120611928" duration="135000" />
+      <workItem from="1686120792531" duration="379000" />
+      <workItem from="1686128694925" duration="4309000" />
+      <workItem from="1686138494081" duration="1905000" />
+      <workItem from="1686230462599" duration="635000" />
+      <workItem from="1686303545535" duration="2942000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -234,6 +260,20 @@
           <line>268</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/market/Market.java</url>
+          <line>53</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/server/API.java</url>
+          <line>521</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="23" />
+        </breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
