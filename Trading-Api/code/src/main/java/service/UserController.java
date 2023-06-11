@@ -1,9 +1,11 @@
 package service;
 
+import database.DbConnector;
 import database.daos.AdminDao;
 import database.daos.ComplaintDao;
 import database.daos.MemberDao;
 import database.dtos.*;
+import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import domain.user.*;
 
@@ -11,6 +13,7 @@ import domain.user.PurchaseHistory;
 import market.Admin;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
+import utils.infoRelated.Receipt;
 import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
@@ -34,6 +37,7 @@ public class UserController {
     private AdminDao adminDao;
     private ComplaintDao complaintDao;
 
+    private DbConnector dbConnector;
     public UserController(){
         ids = new AtomicInteger(2);
         guestList = new ConcurrentHashMap<>();
@@ -45,6 +49,8 @@ public class UserController {
         memberDao = new MemberDao();
         complaintDao = new ComplaintDao();
         adminDao = new AdminDao();
+
+        dbConnector = new DbConnector();
     }
 
 
@@ -196,9 +202,9 @@ public class UserController {
         return user.getShoppingCart();
     }
 
-    public synchronized void purchaseMade(int userId, int orderId, double totalPrice) throws Exception{
+    public synchronized void purchaseMade(int userId, Receipt receipt) throws Exception{
         User user = getUser(userId);
-        user.purchaseMade(orderId, totalPrice);
+        user.purchaseMade(receipt);
     }
 
 
@@ -594,6 +600,11 @@ public class UserController {
     public ComplaintDto getComplaintDto(int id){
         ComplaintDto c = complaintDao.getComplaintById(id);
         return c;
+    }
+
+    public void checkSaveSubscriber(int id) throws Exception{
+        Subscriber s = getSubscriber(id);
+        dbConnector.checkSaveSubscriber(s);
     }
     //users
     public void saveMemberState(int userId) throws Exception{

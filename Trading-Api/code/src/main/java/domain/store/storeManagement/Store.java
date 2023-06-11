@@ -12,6 +12,7 @@ import domain.store.purchase.PurchasePolicy;
 import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
+import jakarta.persistence.*;
 import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
@@ -29,45 +30,70 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+
+@Entity
+@Table(name = "stores")
 public class Store extends Information{
-    private final int storeid;
+    @Id
+    private int storeId;
     private String storeName;
     private boolean isActive;
-    private transient Member creator;
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "creatorId", foreignKey = @ForeignKey, referencedColumnName = "id")
+    private Member creator;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="store")
+    private List<UserState> storeRoles;
     private String storeDescription;
-    private final AppHistory appHistory; //first one is always the store creator //n
-    private final Inventory inventory; //<productID,<product, quantity>>
-    private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
-    private final ConcurrentHashMap<Integer, StoreReview> storeReviews; //<messageid, message>
-    private final ConcurrentHashMap<Integer, Question> questions;
+    @Transient
+    private AppHistory appHistory; //first one is always the store creator //n
+    @Transient
+    private Inventory inventory; //<productID,<product, quantity>>
+    @Transient
+    private ConcurrentHashMap<Integer, Order> storeOrders; //orederid, order
+    @Transient
+    private ConcurrentHashMap<Integer, StoreReview> storeReviews; //<messageid, message>
+    @Transient
+    private ConcurrentHashMap<Integer, Question> questions;
 
     private String imgUrl;
 //    private DiscountPolicy discountPolicy;
 //    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
+    @Transient
     private ArrayList<PurchasePolicy> purchasePolicies;
+    @Transient
     private ArrayList<Discount> discounts;
+    @Transient
     private DiscountFactory discountFactory;
 
+    public Store(){
+    }
     public Store(int id, String description, Member creator){
-        Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
-        this.storeid = id;
-        appHistory = new AppHistory(storeid, creatorNode);
+        StoreCreator sc = new StoreCreator(creator, creator.getName(), this);
+        Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
+        this.storeId = id;
+        appHistory = new AppHistory(storeId, creatorNode);
         this.storeDescription = description;
         this.creator = creator;
-        this.inventory = new Inventory(storeid);
+        this.inventory = new Inventory(storeId);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
         this.purchasePolicies = new ArrayList<>();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
-        discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
+        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
+
+        storeRoles = new ArrayList<>();
+        storeRoles.add(sc);
     }
 
     public Store(int storeid, String storeName, String description, String imgUrl, Member creator){
-        Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
-        this.storeid = storeid;
+        StoreCreator sc = new StoreCreator(creator, creator.getName(), this);
+        Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
+        this.storeId = storeid;
         appHistory = new AppHistory(storeid, creatorNode);
         this.storeDescription = description;
         this.creator = creator;
@@ -82,6 +108,9 @@ public class Store extends Information{
         discounts = new ArrayList<>();
         this.storeName = storeName;
         this.imgUrl = imgUrl;
+
+        storeRoles = new ArrayList<>();
+        storeRoles.add(sc);
     }
 
     public void changeName(String storeName){
@@ -149,7 +178,7 @@ public class Store extends Information{
 
     public int getStoreId()
     {
-        return storeid;
+        return storeId;
     }
 
     public int getCreator() {
@@ -189,6 +218,7 @@ public class Store extends Information{
 
 
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
+        storeRoles.add(role);
         Pair<Member, UserState> node = new Pair<>(newUser, role);
         appHistory.addNode(userinchargeid, node);
     }
@@ -384,7 +414,7 @@ public class Store extends Information{
 
         if (inventory.getProduct(productId) != null)
         {
-            return inventory.getProductInfo(storeid, productId);
+            return inventory.getProductInfo(storeId, productId);
         }
         throw new Exception("cant get product information");
     }
@@ -468,14 +498,14 @@ public class Store extends Information{
     }
 
     public StoreInfo getStoreInformation() {
-        StoreInfo info = new StoreInfo(storeid, storeName, storeDescription, isActive, creator.getId(), getStoreRating(), imgUrl);
+        StoreInfo info = new StoreInfo(storeId, storeName, storeDescription, isActive, creator.getId(), getStoreRating(), imgUrl);
         return info;
     }
 
     public double handleDiscount(Order order) throws Exception {
         double totalAmountToBeSubtracted = 0;
         for(Discount dis: discounts){
-            totalAmountToBeSubtracted += dis.handleDiscount(order.getShoppingCart().getBasket(storeid),order);
+            totalAmountToBeSubtracted += dis.handleDiscount(order.getShoppingCart().getBasket(storeId),order);
         }
         order.setTotalPrice(order.getTotalPrice() - totalAmountToBeSubtracted);
         return order.getTotalPrice();

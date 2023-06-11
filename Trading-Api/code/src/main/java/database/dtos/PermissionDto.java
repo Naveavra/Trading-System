@@ -1,6 +1,5 @@
 package database.dtos;
 
-import domain.states.Permission;
 import jakarta.persistence.*;
 
 @Entity

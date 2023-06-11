@@ -4,8 +4,10 @@ import database.dtos.MemberDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
+import jakarta.persistence.*;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
+import utils.infoRelated.Receipt;
 import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
@@ -17,20 +19,34 @@ import java.util.*;
 import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
 
 
+@Entity
 public class Member extends Subscriber implements User{
 
+    @Transient
     private transient Guest g;
-    private String birthday;
 
+    @Transient
     private List<UserState> roles; //connection between registered to the shops
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="creator")
+    private List<Store> stores;
+
+    @Transient
     private PurchaseHistory purchaseHistory;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="member")
+    private List<Receipt> receipts;
+
+    public Member(){
+    }
     public Member(int id, String email, String password, String birthday) {
         super(id, email, password);
         this.birthday = birthday;
         roles = new ArrayList<>();
-        purchaseHistory = new PurchaseHistory(this.id);
+        purchaseHistory = new PurchaseHistory(id);
         g = new Guest(id);
         memberDto.setBirthday(birthday);
+        stores = new ArrayList<>();
+        receipts = new ArrayList<>();
     }
     public boolean getIsConnected(){
         return isConnected;
@@ -110,13 +126,16 @@ public class Member extends Subscriber implements User{
         return g.getCartContent();
     }
 
-    public void purchaseMade(int orderId, double totalPrice){
-        purchaseHistory.addPurchaseMade(orderId, totalPrice, g.getShoppingCart());
+    public void purchaseMade(Receipt receipt){
+        receipt.setMember(this);
+        purchaseHistory.addPurchaseMade(receipt);
+        receipts.add(receipt);
         g.emptyCart();
     }
 
     public void openStore(Store store) {
-        UserState creator = new StoreCreator(id, email, store);
+        stores.add(store);
+        UserState creator = new StoreCreator(this, email, store);
         roles.add(creator);
     }
 
@@ -248,7 +267,7 @@ public class Member extends Subscriber implements User{
     }
 
     public Info getInformation(int storeId){
-        Info info = new Info(id, email, birthday, StringChecks.calculateAge(birthday));
+        Info info = new Info(id, email, birthday, StringChecks.calculateAge(birthday), purchaseHistory);
         try {
             UserState state = getRole(storeId);
             info.addRole(state.getRole());
@@ -274,6 +293,10 @@ public class Member extends Subscriber implements User{
                 ans.put(state.getStore().getStoreId(), state.getRole());
         }
         return ans;
+    }
+
+    public List<UserState> getStates(){
+        return roles;
     }
 
     public HashMap<Integer, String> getStoreNames() {

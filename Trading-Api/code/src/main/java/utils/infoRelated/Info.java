@@ -18,13 +18,13 @@ public class Info extends Information{
     private List<Action> actions;
     private PurchaseHistory purchaseHistory;
 
-    public Info(int id, String email, String birthday, int age){
+    public Info(int id, String email, String birthday, int age, PurchaseHistory purchaseHistory){
         this.id = id;
         this.email = email;
         this.birthday = birthday;
         this.age = age;
         actions = new LinkedList<>();
-        purchaseHistory = new PurchaseHistory(id);
+        this.purchaseHistory = purchaseHistory;
     }
 
     public void addRole(Role role){this.role = role;}

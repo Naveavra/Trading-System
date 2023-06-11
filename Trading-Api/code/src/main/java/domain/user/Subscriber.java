@@ -1,6 +1,10 @@
 package domain.user;
 
 import database.dtos.MemberDto;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -11,15 +15,29 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+
+
+
+@Entity
+@Table(name = "users")
 public abstract class Subscriber {
 
+    @Id
     protected int id;
     protected String email;
     protected String birthday;
     protected String password;
+
+    @Transient
     protected boolean isConnected;
+    @Transient
     protected MemberDto memberDto;
+
+    @Transient
     protected BlockingQueue<Notification> notifications;
+
+    public Subscriber(){
+    }
     public Subscriber(int id, String email, String password){
         this.id = id;
         this.email = email;
@@ -37,6 +55,8 @@ public abstract class Subscriber {
         return email;
     }
     public String getPassword(){return password;}
+
+    public String getBirthday(){return birthday;}
 
     public void connect(){
         isConnected = true;

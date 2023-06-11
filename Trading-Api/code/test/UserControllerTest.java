@@ -12,6 +12,7 @@ import market.Market;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import service.UserController;
+import service.security.UserAuth;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.Receipt;
@@ -111,6 +112,28 @@ class UserControllerTest {
             MemberDao memberDao = new MemberDao();
             memberDao.getMemberNotifications(id);
             assert true;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            assert false;
+        }
+    }
+
+    @Test
+    void checkNewImp(){
+        UserController userController = new UserController();
+        try {
+            UserAuth userAuth = new UserAuth();
+            String p1 = userAuth.hashPassword("eli@gmail.com", "123Aaa");
+            String p2 = userAuth.hashPassword("elibenshimol6@gmail.com", "123Aaa");
+            userController.register("eli@gmail.com", "123Aaa", p1, "24/02/2002");
+            Admin a = new Admin(1, "elibenshimol6@gmail.com", "123Aaa");
+            userController.addAdmin(a, p2);
+            int id = userController.login("eli@gmail.com", p1);
+            int id2 = userController.login("elibenshimol6@gmail.com", p2);
+            Store s = new Store(1, "nike", "good store", "img", userController.getMember(id));
+            userController.openStore(id, s);
+            userController.checkSaveSubscriber(id);
+            userController.checkSaveSubscriber(id2);
         }catch (Exception e){
             System.out.println(e.getMessage());
             assert false;

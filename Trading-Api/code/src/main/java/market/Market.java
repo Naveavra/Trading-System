@@ -2,7 +2,7 @@ package market;
 
 import database.daos.LoggerDao;
 import database.dtos.LoggerDto;
-import domain.states.Permission;
+import domain.states.Permissions;
 import domain.store.storeManagement.AppHistory;
 import domain.user.StringChecks;
 import domain.user.PurchaseHistory;
@@ -59,7 +59,7 @@ public class Market implements MarketInterface {
 
         marketInfo = new MarketInfo();
 
-        actionIds = Permission.getActionIds();
+        actionIds = Permissions.getActionIds();
 
         addAdmin(a);
 
@@ -281,12 +281,12 @@ public class Market implements MarketInterface {
         try {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
+            Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
 //            proxyPayment.makePurchase(payment, totalPrice);
 //            proxySupplier.orderSupplies(supplier, cart);
-            Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
             Receipt receipt = ans.getFirst();
             Set<Integer> creatorIds = ans.getSecond();
-            userController.purchaseMade(userId, receipt.getOrderId(), receipt.getTotalPrice());
+            userController.purchaseMade(userId, receipt);
             for(int creatorId : creatorIds)
                 addNotification(creatorId, NotificationOpcode.PURCHASE_IN_STORE, "a new purchase was made in your store");
             marketInfo.addPurchaseCount();
@@ -1172,31 +1172,6 @@ public class Market implements MarketInterface {
     public int getAdminSize(){
         return userController.getAdminSize();
     }
-
-
-    public void setActionIds(){
-        actionIds.put(0, Action.addProduct);
-        actionIds.put(1, Action.removeProduct);
-        actionIds.put(2, Action.updateProduct);
-        actionIds.put(3, Action.changeStoreDetails);
-        actionIds.put(4, Action.changePurchasePolicy);
-        actionIds.put(5, Action.changeDiscountPolicy);
-        actionIds.put(6, Action.addPurchaseConstraint);
-        actionIds.put(7, Action.addDiscountConstraint);
-        actionIds.put(8, Action.viewMessages);
-        actionIds.put(9, Action.answerMessage);
-        actionIds.put(10, Action.seeStoreHistory);
-        actionIds.put(11, Action.seeStoreOrders);
-        actionIds.put(12, Action.checkWorkersStatus);
-        actionIds.put(13, Action.appointManager);
-        actionIds.put(14, Action.fireManager);
-        actionIds.put(15, Action.appointOwner);
-        actionIds.put(16, Action.fireOwner);
-        actionIds.put(17, Action.changeManagerPermission);
-        actionIds.put(18, Action.closeStore);
-        actionIds.put(19, Action.reopenStore);
-    }
-
 
     //atomic function to log and get response
     public Response logAndRes(Event.LogStatus state, String content, String time, String userName,

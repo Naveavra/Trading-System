@@ -1,23 +1,36 @@
 package utils.infoRelated;
 
-import domain.user.Basket;
-import domain.user.ShoppingCart;
+import domain.user.*;
+import jakarta.persistence.*;
 import org.json.JSONObject;
 
 import java.util.List;
 
+@Entity
+@Table(name = "receipts")
 public class Receipt extends Information{
 
-    private int userId;
-    private transient int orderId;
+    @Id
+    private int orderId;
+
+    @ManyToOne
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private Member member;
+
+
+    @Transient
     private ShoppingCart products; // a hashmap from storeId to hashmap from productId to quantity
+
     private double totalPrice;
 
-    public Receipt(int userId,int orderId,ShoppingCart products,double totalPrice){
-        this.userId = userId;
+    public Receipt(int orderId, ShoppingCart products, double totalPrice){
         this.orderId = orderId;
         this.products = products;
         this.totalPrice = totalPrice;
+    }
+
+    public void setMember(Member member){
+        this.member = member;
     }
     public int getOrderId(){
         return orderId;
@@ -31,13 +44,13 @@ public class Receipt extends Information{
 
     public List<Basket> getContent(){return products.getBaskets();}
 
+
     public JSONObject toJson(){
         JSONObject json = new JSONObject();
-        json.put("userId", userId);
+        json.put("userId", member.getId());
         json.put("orderId", orderId);
         json.put("totalPrice", totalPrice);
         json.put("products", infosToJson(products.getContent()));
         return json;
     }
-
 }

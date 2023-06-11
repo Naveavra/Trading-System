@@ -177,11 +177,11 @@ public class Server {
             return res.body();
         });
 
-        post("api/stores/:storeId/products/filter/options", (req, res) -> {
+        post("api/stores/products/filter/options", (req, res) -> {
             toSparkRes(res, api.getFilterOptions());
             return res.body();
         });
-        post("api/stores/:storeId/products/filter", (req, res) -> {
+        post("api/stores/products/filter", (req, res) -> {
             //check all filter options and put them in front, then if needed put a value else put "null"
             List<String> options = api.getFilterOptionsString();
             HashMap<String, String> filters = new HashMap<>();
