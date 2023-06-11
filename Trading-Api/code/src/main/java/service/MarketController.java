@@ -265,4 +265,14 @@ public class MarketController {
     public int getStoreId(String storeName) throws Exception{
         return storectrl.getStoreId(storeName);
     }
+
+    public void placeBid(int storeId, int userId, int prodId, int price) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        //TODO MIKI
+    }
+
+    public void answerBid(int userId, int storeId, boolean ans, int prodId) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        //todo miki
+    }
 }

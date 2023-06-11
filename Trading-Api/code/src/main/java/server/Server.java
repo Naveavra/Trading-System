@@ -3,10 +3,7 @@ package server;
 import org.json.JSONObject;
 import utils.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -549,6 +546,9 @@ public class Server {
             return res.body();
         });
 
+
+        // ------------------------Discount-------------------------------
+
         post("api/admin/closeStorePermanently", (req, res)-> {
             JSONObject request = new JSONObject(req.body());
             int adminId = Integer.parseInt(request.get("userId").toString());
@@ -565,5 +565,32 @@ public class Server {
             toSparkRes(res, api.watchMarketStatus(adminId, token));
             return res.body();
         });
+
+        // ------------------------Bid-------------------------------
+
+        //TODO get bid
+        post("api/biddings/regular/addBid", (req, res)->{
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            int price = Integer.parseInt(request.get("price").toString());
+            int prodId = Integer.parseInt(request.get("storeId").toString());
+            toSparkRes(res, api.placeBid(token, storeId, prodId, userId, price));
+            return res.body();
+
+        });
+        post("api/biddings/regular/answerBid", (req, res) -> {
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String answer = request.get("answer").toString();
+            boolean ans = Objects.equals(answer, "true");
+            int prodId = Integer.parseInt(request.get("prodId").toString());
+            toSparkRes(res, api.answerBid(token, storeId, userId, ans, prodId));
+            return res.body();
+        });
+
     }
 }
