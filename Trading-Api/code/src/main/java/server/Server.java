@@ -574,9 +574,10 @@ public class Server {
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int userId = Integer.parseInt(request.get("userId").toString());
-            int price = Integer.parseInt(request.get("price").toString());
+            double price = Double.parseDouble(request.get("price").toString());
             int prodId = Integer.parseInt(request.get("storeId").toString());
-            toSparkRes(res, api.placeBid(token, storeId, prodId, userId, price));
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.placeBid(token, storeId, prodId, userId, price,quantity));
             return res.body();
 
         });

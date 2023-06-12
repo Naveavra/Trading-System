@@ -56,7 +56,10 @@ public class Store extends Information{
     private ConcurrentHashMap<Integer, StoreReview> storeReviews; //<messageid, message>
     @Transient
     private ConcurrentHashMap<Integer, Question> questions;
-
+    @Transient
+    private ArrayList<Bid> bids;
+    @Transient
+    private ArrayList<Bid> approvedBids;
     private String imgUrl;
 //    private DiscountPolicy discountPolicy;
 //    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
@@ -85,7 +88,8 @@ public class Store extends Information{
         this.isActive = true;
         discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
-
+        bids = new ArrayList<>();
+        approvedBids = new ArrayList<>();
         storeRoles = new ArrayList<>();
         storeRoles.add(sc);
     }
@@ -556,17 +560,34 @@ public class Store extends Information{
             changeImg(img);
     }
 
-//    public void setStoreDiscountPolicy(String policy) throws Exception {
-//        try {
-//            addDiscountConstraint(policy);
-//        } catch (Exception e) {
-//            throw new Exception("Couldn't create a new policy");
-//        }
-//    }
-//
-//    private void addDiscountConstraint(String policy) throws Exception {
-//        if(!discountPolicy.createConstraint(policy)){
-//            throw new Exception("Couldn't create the constraint");
-//        }
-//    }
+    //sets the bid flag on a product to true; meaning that potential costumers can now bid on the product.
+    public void createBid(int prodId) throws Exception {
+        inventory.getProduct(prodId).setBid();
+    }
+
+
+    public void placeBid(Member user, int prodId, double price,int quantity) throws Exception {
+        for(Bid bid : this.bids){
+            if(bid.getUser().getId() == user.getId() && bid.getProduct().getID() == prodId)
+                throw new Exception("Cannot place a bid on the same item more than once.");
+        }
+        bids.add(new Bid(user,inventory.getProduct(prodId),price,quantity));
+
+    }
+
+    public Bid answerBid(int userId, int prodId, boolean ans) throws Exception {
+        for(Bid bid : this.bids){
+            if(bid.getUser().getId() == userId && bid.getProduct().getID()== prodId){
+                if(ans){
+                    bid.approveBid();
+                    bids.remove(bid);
+                    approvedBids.add(bid);
+                    return bid;
+                }
+                bid.declineBid();
+                return null;
+            }
+        }
+        return null;
+    }
 }

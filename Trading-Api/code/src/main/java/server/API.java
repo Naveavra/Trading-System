@@ -438,8 +438,8 @@ public class API {
         Response<List<Object>> res = market.getPaymentServiceAvailable();
         return fromResToPairListPre(res);
     }
-    public Pair<Boolean, JSONObject> placeBid(String token, int storeId, int prodId, int userId, int price) {
-        Response<String> res = market.placeBid(token, userId, storeId, prodId, price);
+    public Pair<Boolean, JSONObject> placeBid(String token, int storeId, int prodId, int userId, double price,int quantity) {
+        Response<String> res = market.placeBid(token, userId, storeId, prodId, price,quantity);
         return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> answerBid(String token, int storeId, int userId, boolean ans, int prodId) {

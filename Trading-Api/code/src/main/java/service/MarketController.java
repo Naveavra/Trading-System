@@ -2,6 +2,7 @@ package service;
 
 
 import domain.store.storeManagement.AppHistory;
+import domain.store.storeManagement.Bid;
 import domain.user.Member;
 import domain.user.ShoppingCart;
 import domain.user.User;
@@ -266,13 +267,31 @@ public class MarketController {
         return storectrl.getStoreId(storeName);
     }
 
-    public void placeBid(int storeId, int userId, int prodId, int price) throws Exception {
+    public void createBidOnProduct(int storeId,int prodId) throws Exception {
         Store s = storectrl.getActiveStore(storeId);
-        //TODO MIKI
+        s.createBid(prodId);
+    }
+    public void placeBid(int storeId, Member user, int prodId, double price,int quantity) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        s.placeBid(user,prodId,price,quantity);
+        //ELI SAVE US ALL
     }
 
-    public void answerBid(int userId, int storeId, boolean ans, int prodId) throws Exception {
+    public Pair<Receipt,Set<Integer>> answerBid(int userId, int storeId, boolean ans, int prodId) throws Exception {
         Store s = storectrl.getActiveStore(storeId);
-        //todo miki
+        Bid bid = s.answerBid(userId,prodId,ans);
+        if(bid != null){
+            ShoppingCart sc = new ShoppingCart();
+            sc.addProductToCart(storeId,getProductInformation(storeId,prodId),bid.quantity);
+            Order or = orderctrl.createNewOrder(bid.getUser(),sc,bid.getOffer());
+            or.setStatus(Status.pending);
+            Set<Integer> creatorIds = storectrl.purchaseProducts(sc,or);
+            or.setStatus(Status.submitted);
+            Receipt receipt = new Receipt(or.getOrderId(),sc,or.getTotalPrice());
+            Pair<Receipt,Set<Integer>> res = new Pair<>(receipt,creatorIds);
+            return res;
+        }
+        return null;
+        //PLEASE, ELI YOU'RE OUR ONLY HOPE
     }
 }

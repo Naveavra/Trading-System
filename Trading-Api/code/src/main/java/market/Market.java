@@ -4,6 +4,7 @@ import database.daos.LoggerDao;
 import database.dtos.LoggerDto;
 import domain.states.Permissions;
 import domain.store.storeManagement.AppHistory;
+import domain.user.Member;
 import domain.user.StringChecks;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
@@ -972,11 +973,12 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response placeBid(String token, int userId, int storeId, int prodId, int price) {
+    public Response placeBid(String token, int userId, int storeId, int prodId, double price,int quantity) {
         try {
             userAuth.checkUser(userId, token);
             // im assuming there is no need to check permission for this action
-            marketController.placeBid(storeId, userId, prodId, price);
+            Member user = userController.getMember(userId);
+            marketController.placeBid(storeId, user, prodId, price,quantity);
             return logAndRes(Event.LogStatus.Success, "user placed his successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user placed his bid", null, null);
