@@ -267,10 +267,11 @@ public class MarketController {
         return storectrl.getStoreId(storeName);
     }
 
-    public void createBidOnProduct(int storeId,int prodId) throws Exception {
-        Store s = storectrl.getActiveStore(storeId);
-        s.createBid(prodId);
-    }
+//    public void createBidOnProduct(int storeId,int prodId) throws Exception {
+//        Store s = storectrl.getActiveStore(storeId);
+//        s.createBid(prodId);
+//    }
+    
     public void placeBid(int storeId, Member user, int prodId, double price,int quantity) throws Exception {
         Store s = storectrl.getActiveStore(storeId);
         s.placeBid(user,prodId,price,quantity);

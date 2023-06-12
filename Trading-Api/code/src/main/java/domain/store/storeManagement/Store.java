@@ -561,9 +561,9 @@ public class Store extends Information{
     }
 
     //sets the bid flag on a product to true; meaning that potential costumers can now bid on the product.
-    public void createBid(int prodId) throws Exception {
-        inventory.getProduct(prodId).setBid();
-    }
+//    public void createBid(int prodId) throws Exception {
+//        inventory.getProduct(prodId).setBid();
+//    }
 
 
     public void placeBid(Member user, int prodId, double price,int quantity) throws Exception {

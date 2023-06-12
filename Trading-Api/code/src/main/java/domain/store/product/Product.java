@@ -11,7 +11,6 @@ public class Product {
     public int quantity;
     public double rating;
     private String imgUrl;
-    public boolean onBid;
 //    public ArrayList<String> categories;
     //private ConcurrentLinkedDeque<String> categories;
     //private double discount;  no need for discount here, the discount is calculated by the policy
@@ -29,7 +28,6 @@ public class Product {
         price = 0;
         categories = new ArrayList<>();
         rating = 5;
-        onBid =false;
     }
 
     public Product(int prod_id, String _name, String desc, String imgUrl){
@@ -39,7 +37,6 @@ public class Product {
         price = 0;
         categories = new ArrayList<>();
         rating = 5;
-        onBid =false;
         this.imgUrl = imgUrl;
     }
 
@@ -134,7 +131,5 @@ public class Product {
         return getCategories().contains(discountedCategory);
     }
 
-    public void setBid() {
-        onBid = true;
-    }
+
 }
