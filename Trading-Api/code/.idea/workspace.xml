@@ -6,28 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ProxyPayment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ProxyPayment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ProxySupplier.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ProxySupplier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/api/adminApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/api/adminApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/AdminPages/MarketStatus.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/NavBar2.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/NavBar2.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/NavBar3.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/NavBar3.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Bars/Navbar/Navbar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/UpdateServices.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/UpdateServices.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/ProductInStore/Card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/ProductInStore/Card.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/reducers/adminSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/reducers/adminSlice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/types/formsTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/types/formsTypes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Admin/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Admin/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Admin/pageRouter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Admin/pageRouter.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Personal/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Personal/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/router.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/router.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/tests/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/tests/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/tsconfig.node.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/tsconfig.node.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/vite.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/AddPredicate.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/CompositeDiscount.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/CompositeDiscount.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/CompositeScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/CompositeScreen.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/reducers/discountSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/reducers/discountSlice.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/types/requestTypes/discountTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/types/requestTypes/discountTypes.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,6 +207,9 @@
       <workItem from="1686138494081" duration="1905000" />
       <workItem from="1686230462599" duration="635000" />
       <workItem from="1686303545535" duration="2942000" />
+      <workItem from="1686493932569" duration="1325000" />
+      <workItem from="1686496555706" duration="596000" />
+      <workItem from="1686502875320" duration="3871000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -261,14 +248,9 @@
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/market/Market.java</url>
-          <line>53</line>
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/server/API.java</url>
-          <line>521</line>
-          <option name="timeStamp" value="25" />
+          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
+          <line>551</line>
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.NullPointerException" package="java.lang" />

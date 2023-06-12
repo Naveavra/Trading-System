@@ -1,8 +1,11 @@
-import { CompositeDataObject, Composore, DiscountDataObject, DiscountType, Numeric, PredicateDataObject, XorDecidingRules } from "../systemTypes/Discount";
+import { Edge, Node } from "reactflow";
+import { DiscountType, PredicateDataObject } from "../systemTypes/Discount";
+import { DiscountNodes } from "../systemTypes/DiscountNodes";
 
 export interface postRegularDicountParams {
     storeId: number;
     userId: number;
+    description: string;
     percentage: Number;
     discountType: DiscountType;
     prodId: number;
@@ -12,12 +15,9 @@ export interface postRegularDicountParams {
 export interface postCompositeDicountParams {
     storeId: number;
     userId: number;
-    percentage: Number;
-    numericType: Numeric;
-    locigalType: Composore;
-    xorDecidingRule: XorDecidingRules;
-    discounts: DiscountDataObject[];
-    composores: CompositeDataObject[];
+    description: string;
+    discountNodes: Node<DiscountNodes>[];
+    discountEdges: Edge[];
 }
 export interface deleteDiscountParams {
     storeId: number;

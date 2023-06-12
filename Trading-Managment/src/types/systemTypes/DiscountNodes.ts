@@ -1,6 +1,8 @@
 import { Composore, DiscountType, Numeric, PredicateDataObject, XorDecidingRules } from "./Discount";
 import { Node } from 'reactflow';
 export interface RegularDiscountNode {
+    type: 'regular';
+    description: string;
     label: string;
     parentNode?: string;
     percentage: Number;
@@ -10,6 +12,8 @@ export interface RegularDiscountNode {
     predicates: PredicateDataObject[];
 }
 export interface CompositeDiscountNode {
+    type: 'composite';
+    description: string;
     label: string;
     parentNode?: string;
     percentage: Number;

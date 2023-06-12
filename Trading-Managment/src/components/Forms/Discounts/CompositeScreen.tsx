@@ -1,20 +1,20 @@
-import { Dialog, Box, Grid, Typography, Button } from "@mui/material";
-import { useCallback, useState } from "react";
-import { getStore } from "../../../reducers/storesSlice";
+import { Box, Button } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
-import { LoadingButton } from "@mui/lab";
 import ReactFlow, { Edge, OnNodesChange, applyNodeChanges, OnEdgesChange, applyEdgeChanges, Connection, addEdge, Controls, MiniMap, Background } from "reactflow";
 import { DiscountNodes } from "../../../types/systemTypes/DiscountNodes";
-
 
 import 'reactflow/dist/style.css';
 import { Node } from 'reactflow';
 import Bar2 from "../../Bars/Navbar/NavBar2";
-import { reset } from "../../../reducers/discountSlice";
+import { addCompositeDiscount, reset } from "../../../reducers/discountSlice";
+
 const CompositeScreen = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const userId = useAppSelector(state => state.auth.userId);
+    const storeId = useAppSelector(state => state.store.storeState.watchedStore.storeId);
     const userName = useAppSelector(state => state.auth.userName);
     const privateName = userName.split('@')[0];
     const initialNodes = useAppSelector(state => state.discount.discountNodes);
@@ -41,7 +41,9 @@ const CompositeScreen = () => {
     );
 
     const onConnect = useCallback((params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+    useEffect(() => {
 
+    }, [nodes, edges, initialNodes, initialEdges]);
     return (
         <>
             <Bar2 headLine={`hello ${privateName} , wellcome to `} />
@@ -49,7 +51,17 @@ const CompositeScreen = () => {
                 <Button sx={{ mt: 2, mr: 2 }} variant="contained" onClick={handleRegular}>add regular discount</Button>
                 <Button sx={{ mt: 2, ml: 2 }} variant="contained" onClick={handleComosite}>add composite discount</Button>
                 <Button sx={{ mt: 2, ml: 2 }} variant="contained" onClick={() => dispatch(reset())}>reset</Button>
-            </Box>
+                <Button sx={{ mt: 2, ml: 2 }} variant="contained" onClick={() => {
+                    dispatch(addCompositeDiscount({
+                        storeId: storeId,
+                        userId: userId,
+                        description: nodes[0].data.description,
+                        discountNodes: nodes,
+                        discountEdges: edges
+                    }));
+                    dispatch(reset());
+                }}>submit</Button>
+            </Box >
             <div style={{ width: '100vw', height: '100vh' }}>
                 <ReactFlow
                     nodes={nodes}
@@ -64,7 +76,7 @@ const CompositeScreen = () => {
                 >
                     <Controls />
                     <MiniMap />
-                    <Background variant="dots" gap={12} size={1} />
+                    <Background variant={"dots"} gap={12} size={1} />
                 </ReactFlow>
             </div>
         </>
