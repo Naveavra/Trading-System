@@ -61,7 +61,6 @@ public class Store extends Information{
     @Transient
     private ArrayList<Bid> approvedBids;
     private String imgUrl;
-//    private DiscountPolicy discountPolicy;
 //    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
     @Transient
     private ArrayList<PurchasePolicy> purchasePolicies;
@@ -91,8 +90,7 @@ public class Store extends Information{
         discounts = new ArrayList<>();
         bids = new ArrayList<>();
         approvedBids = new ArrayList<>();
-        storeRoles = new ArrayList<>();
-        storeRoles.add(sc);
+
     }
 
     public Store(int storeid, String storeName, String description, String imgUrl, Member creator){

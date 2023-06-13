@@ -60,6 +60,8 @@ public abstract class UserState extends Information {
 
 
     public Store getStore(){return store;}
+
+    public int getUserId(){return userId;}
     public void setIsActive(boolean isActive){
         this.isActive = isActive;
     }
