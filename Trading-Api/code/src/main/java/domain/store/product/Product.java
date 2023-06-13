@@ -146,4 +146,6 @@ public class Product {
     public boolean belongsToCategory(String discountedCategory) {
         return getCategories().contains(discountedCategory);
     }
+
+
 }

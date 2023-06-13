@@ -438,6 +438,18 @@ public class API {
         Response<List<Object>> res = market.getPaymentServiceAvailable();
         return fromResToPairListPre(res);
     }
+    public Pair<Boolean, JSONObject> placeBid(String token, int storeId, int prodId, int userId, double price,int quantity) {
+        Response<String> res = market.placeBid(token, userId, storeId, prodId, price,quantity);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> answerBid(String token, int storeId, int userId, boolean ans, int prodId, int bidId) {
+        Response<String> res = market.answerBid(token, userId, storeId, ans, prodId, bidId);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> counterBid(String token, int storeId, int userId, int ans, int prodId, int bidId) {
+        Response<String> res = market.counterBid(token, userId, storeId, ans, prodId, bidId);
+        return fromResToPair(res);
+    }
 
     //for actions to actionString
     private void getActionStrings(){
@@ -529,4 +541,7 @@ public class API {
         market.logout(id1);
         market.logout(id2);
     }
+
+
+
 }
