@@ -61,7 +61,7 @@ class MemberTest {
     void changeRoleInStore_success() {
         try{
             m.login("ziv1234");
-            UserState u = new StoreCreator(m, m.getName(), s);
+            UserState u = new StoreCreator(m.getId(), m.getName(), s);
             m.changeRoleInStore(u,s);
             m.checkPermission(Action.appointOwner,0);
             assert true;
@@ -73,7 +73,7 @@ class MemberTest {
     void changeRoleInStore_fail() {
         try{
             m.login("ziv1234");
-            UserState u =new StoreManager(m, m.getName(),s);
+            UserState u =new StoreManager(m.getId(), m.getName(),s);
             m.changeRoleInStore(u,s);
             m.checkPermission(Action.appointOwner,0);
             assert false;
@@ -204,7 +204,7 @@ class MemberTest {
     @Test
     void displayNotifications() {
         try {
-            Notification<String> n = new Notification<>(NotificationOpcode.CLOSE_STORE, "u have a new message");
+            Notification n = new Notification(NotificationOpcode.CLOSE_STORE, "u have a new message");
             m.login("ziv1234");
             m.addNotification(n);
            List<Notification> notifiy =  m.displayNotifications();
@@ -225,14 +225,14 @@ class MemberTest {
             m.checkPermission(Action.viewMessages, s.getStoreId());
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             newMem1.login("Ziv12345");
-            s.appointUser(m.getId(),newMem1, new StoreManager(newMem1, newMem1.getName(), s));
-            StoreManager sm = new StoreManager(newMem1, m.getName(),s);
+            s.appointUser(m.getId(),newMem1, new StoreManager(newMem1.getId(), newMem1.getName(), s));
+            StoreManager sm = new StoreManager(newMem1.getId(), m.getName(),s);
             newMem1.changeRoleInStore(sm, s);
             newMem1.checkPermission(Action.viewMessages,s.getStoreId());
             Member newMem2 = new Member(5,"ziv1@gmail.com","Ziv12345","1/1/2000");
             newMem2.login("Ziv12345");
-            s.appointUser(m.getId(),newMem2, new StoreOwner(newMem2, newMem2.getName(), s));
-            StoreOwner so = new StoreOwner(newMem2, m.getName(), s);
+            s.appointUser(m.getId(),newMem2, new StoreOwner(newMem2.getId(), newMem2.getName(), s));
+            StoreOwner so = new StoreOwner(newMem2.getId(), m.getName(), s);
             newMem2.changeRoleInStore(so, s);
             newMem2.checkPermission(Action.viewMessages, s.getStoreId());
         }catch (Exception e){
@@ -249,14 +249,14 @@ class MemberTest {
             m.checkPermission(Action.answerMessage, s.getStoreId());
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             newMem1.login("Ziv12345");
-            s.appointUser(m.getId(),newMem1, new StoreManager(newMem1, newMem1.getName(), s));
-            StoreManager sm = new StoreManager(newMem1, m.getName(), s);
+            s.appointUser(m.getId(),newMem1, new StoreManager(newMem1.getId(), newMem1.getName(), s));
+            StoreManager sm = new StoreManager(newMem1.getId(), m.getName(), s);
             newMem1.changeRoleInStore(sm, s);
             newMem1.checkPermission(Action.answerMessage, s.getStoreId());
             Member newMem2 = new Member(5,"ziv1@gmail.com","Ziv12345","1/1/2000");
             newMem2.login("Ziv12345");
-            s.appointUser(m.getId(),newMem2, new StoreManager(newMem2, newMem2.getName(), s));
-            StoreOwner so = new StoreOwner(newMem2, m.getName(), s);
+            s.appointUser(m.getId(),newMem2, new StoreManager(newMem2.getId(), newMem2.getName(), s));
+            StoreOwner so = new StoreOwner(newMem2.getId(), m.getName(), s);
             newMem2.changeRoleInStore(so, s);
             newMem2.checkPermission(Action.answerMessage, s.getStoreId());
         }catch (Exception e){
@@ -361,7 +361,7 @@ class MemberTest {
             m.openStore(s);
             Member newMem1 = new Member(3,"ziv0@gmail.com","Ziv12345","1/1/2000");
             m.appointToManager(newMem1, s.getStoreId());
-            StoreManager sm = new StoreManager(newMem1, m.getName(), s);
+            StoreManager sm = new StoreManager(newMem1.getId(), m.getName(), s);
             List<Action> act = new LinkedList<>(sm.getActions());
             for(Action a : act){
                 newMem1.removeAction(a,s.getStoreId());

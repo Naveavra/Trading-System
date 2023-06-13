@@ -1,10 +1,8 @@
 package domain.user;
 
+import database.daos.DaoTemplate;
 import database.dtos.MemberDto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -80,20 +78,26 @@ public abstract class Subscriber {
     }
 
     public synchronized void addNotification(Notification notification){
-        notifications.offer(notification);
+        notification.setSubId(id);
+        boolean got = notifications.offer(notification);
+        if(got) {
+            DaoTemplate.save(notification);
+        }
+
     }
 
     public List<Notification> displayNotifications(){
-        List<Notification> display = new LinkedList<>();
-        for (Notification notification : notifications)
-            display.add(notification);
+        List<Notification> display = new LinkedList<>(notifications);
+        DaoTemplate.removeIf("Notification", String.format("subId = %d", id));
         notifications.clear();
         return display;
     }
 
     public Notification getNotification() throws InterruptedException {
         synchronized (notifications) {
-            return notifications.take();
+            Notification n = notifications.take();
+            DaoTemplate.remove(n);
+            return n;
         }
     }
 

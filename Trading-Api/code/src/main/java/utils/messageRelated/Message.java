@@ -1,14 +1,24 @@
 package utils.messageRelated;
 
 import domain.user.Member;
+import jakarta.persistence.*;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
 
+@Entity
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public abstract class Message extends Information {
+
+    @Id
     protected int messageId;
+
+    @Enumerated(EnumType.STRING)
     protected NotificationOpcode opcode;
     protected String content;
+
+    @Transient
     protected Member sender;
+    protected int senderId;
     private boolean seen;
 
 
@@ -18,6 +28,7 @@ public abstract class Message extends Information {
         this.messageId = messageId;
         this.content = content;
         this.sender = reviewer;
+        this.senderId = sender.getId();
         this.opcode  = opcode;
         seen = false;
     }

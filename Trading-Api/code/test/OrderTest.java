@@ -29,9 +29,9 @@ public class OrderTest {
         // Test that adds products to a new store
 //        order.clean();
         int storeID = 1;
-        apple = new Product(0, "apple", "red apple");
+        apple = new Product(storeID, 0, "apple", "red apple");
         p =  new ProductInfo(storeID, apple, 10);
-        banana = new Product(1, "banana", "yellow banana");
+        banana = new Product(storeID, 1, "banana", "yellow banana");
         p2 =  new ProductInfo(storeID, banana, 10);
         Basket products = new Basket(0);
         products.addProductToCart(p, 101);
@@ -49,9 +49,9 @@ public class OrderTest {
 //        order.clean();
         try {
             int storeID = -1;
-            apple = new Product(0, "apple", "red apple");
+            apple = new Product(storeID, 0, "apple", "red apple");
             p =  new ProductInfo(storeID, apple, 10);
-            banana = new Product(1, "banana", "yellow banana");
+            banana = new Product(storeID, 1, "banana", "yellow banana");
             p2 =  new ProductInfo(storeID, banana, 10);
             Basket products = new Basket(0);
             products.addProductToCart(p, 10);

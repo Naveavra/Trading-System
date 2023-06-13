@@ -3,10 +3,12 @@ import database.dtos.MemberDto;
 import database.dtos.NotificationDto;
 import database.dtos.ReceiptDto;
 import database.dtos.UserHistoryDto;
+import domain.states.Permissions;
 import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import domain.user.StringChecks;
+import domain.user.User;
 import market.Admin;
 import market.Market;
 import org.json.JSONObject;
@@ -18,9 +20,11 @@ import utils.infoRelated.ProductInfo;
 import utils.infoRelated.Receipt;
 import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
+import utils.stateRelated.Action;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -120,20 +124,63 @@ class UserControllerTest {
 
     @Test
     void checkNewImp(){
-        UserController userController = new UserController();
+        Admin a = new Admin(1, "elibenshimol6@gmail.com", "123Aaa");
+        Market market = new Market(a);
         try {
-            UserAuth userAuth = new UserAuth();
-            String p1 = userAuth.hashPassword("eli@gmail.com", "123Aaa");
-            String p2 = userAuth.hashPassword("elibenshimol6@gmail.com", "123Aaa");
-            userController.register("eli@gmail.com", "123Aaa", p1, "24/02/2002");
-            Admin a = new Admin(1, "elibenshimol6@gmail.com", "123Aaa");
-            userController.addAdmin(a, p2);
-            int id = userController.login("eli@gmail.com", p1);
-            int id2 = userController.login("elibenshimol6@gmail.com", p2);
-            Store s = new Store(1, "nike", "good store", "img", userController.getMember(id));
-            userController.openStore(id, s);
-            userController.checkSaveSubscriber(id);
-            userController.checkSaveSubscriber(id2);
+            market.register("eli@gmail.com", "123Aaa", "24/02/2002");
+            market.register("chai@gmail.com", "123Aaa", "01/01/2002");
+            market.register("miki@gmail.com", "123Aaa", "01/01/2002");
+
+            LoginInformation log = market.login("eli@gmail.com", "123Aaa").getValue();
+            LoginInformation log2 = market.login("elibenshimol6@gmail.com", "123Aaa").getValue();
+            LoginInformation log3 = market.login("chai@gmail.com", "123Aaa").getValue();
+            LoginInformation log4 = market.login("miki@gmail.com", "123Aaa").getValue();
+
+            int sid = market.openStore(log.getUserId(), log.getToken(), "nike", "good store", "img").getValue();
+            List<String> categories = new ArrayList<>();
+            categories.add("good");
+            categories.add("yumi");
+            int pid = market.addProduct(log.getUserId(), log.getToken(), sid, categories, "boot",
+                    "good one", 100, 20, "img").getValue();
+
+            market.addProductToCart(log.getUserId(), sid, pid, 4);
+            int oid = market.makePurchase(log.getUserId(), null, null).getValue().getOrderId();
+            market.sendComplaint(log.getUserId(), log.getToken(), oid, "the products were bad");
+            market.sendQuestion(log.getUserId(), log.getToken(), sid, "is open at 8?");
+            market.writeReviewToStore(log.getUserId(), log.getToken(), oid, "nike", "good store", 4);
+            market.writeReviewToProduct(log.getUserId(), log.getToken(), oid, sid, pid, "good store", 4);
+
+            market.addProductToCart(log.getUserId(), sid, pid, 6);
+            market.changeQuantityInCart(log.getUserId(), sid, pid, 2);
+
+            market.addNotification(log.getUserId(), NotificationOpcode.CHAT_MESSAGE, "test");
+            market.addNotification(log2.getUserId(), NotificationOpcode.CHAT_MESSAGE, "test");
+            market.displayNotifications(log.getUserId(), log.getToken());
+
+            market.appointOwner(log.getUserId(), log.getToken(), "chai@gmail.com", sid);
+            market.appointManager(log3.getUserId(), log3.getToken(), "miki@gmail.com", sid);
+
+            List<Action> addActions = new ArrayList<>();
+            addActions.add(Action.addProduct);
+            addActions.add(Action.removeProduct);
+            List<Integer> addIds = new ArrayList<>();
+            for(Action action : addActions)
+                addIds.add(Permissions.actionsMap.get(action));
+            market.addManagerPermissions(log.getUserId(), log.getToken(), log4.getUserId(), sid, addIds);
+            addActions.remove(Action.removeProduct);
+            addIds.clear();
+            for(Action action : addActions)
+                addIds.add(Permissions.actionsMap.get(action));
+            market.removeManagerPermissions(log.getUserId(), log.getToken(), log4.getUserId(), sid, addIds);
+
+            market.answerComplaint(log2.getUserId(), log2.getToken(), 0, "sent new products");
+            market.answerQuestion(log.getUserId(), log.getToken(), sid, 1, "yes");
+
+            //market.fireOwner(log.getUserId(), log.getToken(), log4.getUserId(), sid);
+            market.displayNotifications(log2.getUserId(), log2.getToken());
+            //market.displayNotifications(log4.getUserId(), log4.getToken());
+
+//            market.deleteProduct(log.getUserId(), log.getToken(), sid, pid);
         }catch (Exception e){
             System.out.println(e.getMessage());
             assert false;

@@ -3,6 +3,7 @@ package service;
 import database.DbConnector;
 import database.daos.AdminDao;
 import database.daos.ComplaintDao;
+import database.daos.DaoTemplate;
 import database.daos.MemberDao;
 import database.dtos.*;
 import domain.states.UserState;
@@ -150,6 +151,7 @@ public class UserController {
         if(isEmailTaken(email))
                 throw new Exception("the email is already taken");
         Member m = new Member(id, email, hashedPass, birthday);
+        dbConnector.checkSaveSubscriber(m);
         memberList.put(id, m);
     }
 
@@ -238,6 +240,7 @@ public class UserController {
         for(Admin a : admins.values())
             a.addNotification(notification);
         Complaint complaint = m.writeComplaint(tmp, orderId, comment);
+        DaoTemplate.save(complaint);
         complaints.put(complaint.getMessageId(), complaint);
     }
 
@@ -301,7 +304,7 @@ public class UserController {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
         owner.appointToOwner(appointed, storeId);
-        Notification<String> notify = new Notification<>(NotificationOpcode.APPOINT_OWNER, "you have been appointed to owner in store: " + storeId);
+        Notification notify = new Notification(NotificationOpcode.APPOINT_OWNER, "you have been appointed to owner in store: " + storeId);
         appointed.addNotification(notify);
     }
 
@@ -310,11 +313,11 @@ public class UserController {
     public void fireIds(Set<Integer> firedIds, int storeId) throws Exception{
         for (int firedId : firedIds) {
             Member fired = getMember(firedId);
-            Notification<String> notify;
+            Notification notify;
             if (fired.getRole(storeId).getRole() == Role.Owner)
-               notify = new Notification<>(NotificationOpcode.FIRE_OWNER, "you have been fired from owner in store: " + storeId);
+               notify = new Notification(NotificationOpcode.FIRE_OWNER, "you have been fired from owner in store: " + storeId);
              else
-                notify = new Notification<>(NotificationOpcode.FIRE_MANAGER, "you have been fired from manager in store: " + storeId);
+                notify = new Notification(NotificationOpcode.FIRE_MANAGER, "you have been fired from manager in store: " + storeId);
             fired.addNotification(notify);
             fired.removeRoleInStore(storeId);
         }
@@ -330,7 +333,7 @@ public class UserController {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
         owner.appointToManager(appointed, storeId);
-        Notification<String> notify = new Notification<>(NotificationOpcode.APPOINT_MANAGER, "you have been appointed to manager in store: " + storeId);
+        Notification notify = new Notification(NotificationOpcode.APPOINT_MANAGER, "you have been appointed to manager in store: " + storeId);
         appointed.addNotification(notify);
     }
 
@@ -347,7 +350,7 @@ public class UserController {
         Member manager = getMember(managerId);
         for(Action a : actions) {
             manager.addAction(a, storeId);
-            Notification<String> notify = new Notification<>(NotificationOpcode.ADD_MANGER_PERMISSTION, "the following action: " + a.toString() + "\n" +
+            Notification notify = new Notification(NotificationOpcode.ADD_MANGER_PERMISSTION, "the following action: " + a.toString() + "\n" +
                     "has been added for you for store: " + storeId);
             manager.addNotification(notify);
         }
@@ -359,8 +362,8 @@ public class UserController {
         Member manager = getMember(managerId);
         for(Action a : actions) {
             manager.removeAction(a, storeId);
-            Notification<String> notify = new Notification<>(NotificationOpcode.REMOVE_MANGER_PERMISSTION, "the following action: " + a.toString() + "\n" +
-                    "has been added for you for store: " + storeId);
+            Notification notify = new Notification(NotificationOpcode.REMOVE_MANGER_PERMISSTION, "the following action: " + a.toString() + "\n" +
+                    "has been removed from you for store: " + storeId);
             manager.addNotification(notify);
         }
     }
@@ -383,7 +386,7 @@ public class UserController {
             Member worker = getMember(workerId);
             worker.changeToInActive(storeId);
             String notify = "the store: " + storeId + " has been temporarily closed";
-            Notification<String> notification = new Notification<>(NotificationOpcode.CLOSE_STORE, notify);
+            Notification notification = new Notification(NotificationOpcode.CLOSE_STORE, notify);
             addNotification(workerId, notification);
         }
     }
@@ -396,7 +399,7 @@ public class UserController {
             Member worker = getMember(workerId);
             worker.changeToActive(storeId);
             String notify = "the store: " + storeId + " has been reOpened";
-            Notification<String> notification = new Notification<>(NotificationOpcode.OPEN_STORE,  notify);
+            Notification notification = new Notification(NotificationOpcode.OPEN_STORE,  notify);
             addNotification(workerId, notification);
         }
     }
@@ -464,7 +467,7 @@ public class UserController {
             else
                 creatorStoreIds.add(storeId);
         }
-        addNotification(userToRemove, new Notification<>(NotificationOpcode.CANCEL_MEMBERSHIP, "you have been removed from the system"));
+        addNotification(userToRemove, new Notification(NotificationOpcode.CANCEL_MEMBERSHIP, "you have been removed from the system"));
         //memberList.remove(userToRemove);
         return creatorStoreIds;
     }
@@ -527,11 +530,13 @@ public class UserController {
             throw new Exception("the email given does not match the email pattern");
         checks.checkPassword(pass);
         Admin a = new Admin(ids.getAndIncrement(), email, hashPass);
+        dbConnector.checkSaveSubscriber(a);
         admins.put(a.getId(), a);
         return a;
     }
     public Admin addAdmin(Admin a, String pass) {
         Admin admin = new Admin(a.getId(), a.getName(), pass);
+        dbConnector.checkSaveSubscriber(a);
         admins.put(a.getId(), admin);
         return admin;
     }
@@ -558,8 +563,10 @@ public class UserController {
 
     private void sendFeedback(int messageId, String ans) throws Exception{
         Complaint m = complaints.get(messageId);
-        if (m != null)
+        if (m != null) {
             m.sendFeedback(ans);
+            DaoTemplate.update(m);
+        }
         else
             throw new Exception("message does not found");
 

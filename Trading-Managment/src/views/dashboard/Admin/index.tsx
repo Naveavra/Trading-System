@@ -8,7 +8,7 @@ import { Dehaze } from "@mui/icons-material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Bar4 from "../../../components/Bars/Navbar/NavBar4";
-import { adminResign, clearAdminError, clearAdminMsg, getLogger } from "../../../reducers/adminSlice";
+import { adminResign, clearAdminError, clearAdminMsg, getLogger, getMarketStatus } from "../../../reducers/adminSlice";
 import PasswordIcon from '@mui/icons-material/Password';
 import { getClientData, getNotifications, resetAuth } from "../../../reducers/authSlice";
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -28,8 +28,11 @@ const Admin = () => {
     const name = userName.split('@')[0];
     const msg = useAppSelector((state) => state.admin.msg);
     const error = useAppSelector((state) => state.admin.error);
+
     const logs = useAppSelector((state) => state.admin.logRecords) ?? [{ userName: "", id: 0, content: "", status: "" }];
+    const systemStatus = useAppSelector((state) => state.admin.status);
     //works but does not look good
+
 
     const handleResign = () => {
         debugger;
@@ -165,7 +168,8 @@ const Admin = () => {
 
 
     useEffect(() => {
-        dispatch(getLogger(userId))
+        dispatch(getLogger(userId));
+        dispatch(getMarketStatus(userId));
     }, [dispatch]);
 
     return (
@@ -173,43 +177,72 @@ const Admin = () => {
             <Bar4 headLine={"welcome admin"} />
             {msg ? <SuccessAlert message={msg} onClose={() => { dispatch(clearAdminMsg()) }} /> : null}
             {error ? <ErrorAlert message={error} onClose={() => { dispatch(clearAdminError()) }} /> : null}
-
             <Box sx={{ width: '100%', display: 'flex' }}>
-                <Typography sx={{ fontSize: 25, mt: 3, ml: '10%' }} gutterBottom>
-                    your personal data
-                </Typography>
+                <Box sx={{ width: '80%' }}>
+                    <Box sx={{ width: '100%', display: 'flex' }}>
+                        <Typography sx={{ fontSize: 25, mt: 3, ml: '10%' }} gutterBottom>
+                            your personal data
+                        </Typography>
+                    </Box>
+                    <Box sx={{ width: '100%', display: 'flex' }}>
+                        <Card sx={{ minWidth: 275, width: '50%', mt: 5, ml: 3 }}>
+                            <CardContent sx={{ padding: 2 }}>
+                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5" gutterBottom>
+                                    name : {name}
+                                </Typography>
+                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                    email : {userName}
+                                </Typography>
+                            </CardContent>
+                            <CardActions sx={{ marginTop: 10 }}>
+                                <IconButton onClick={handleResign} sx={{ marginLeft: 'auto' }}>
+                                    <CancelIcon />
+                                </IconButton>
+
+                                <IconButton onClick={() => navigate("editMyProfile")} sx={{ marginLeft: 'auto' }}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton onClick={() => navigate("changePassword")} sx={{ marginLeft: 'auto' }}>
+                                    <PasswordIcon />
+                                </IconButton>
+                            </CardActions>
+                        </Card>
+                    </Box >
+                </Box>
+                <Box sx={{ width: '70%' }}>
+                    <Box sx={{ width: '100%', display: 'flex' }}>
+                        <Typography sx={{ fontSize: 25, mt: 3, ml: '10%' }} gutterBottom>
+                            system state
+                        </Typography>
+                    </Box>
+                    <Box sx={{ width: '100%', display: 'flex' }}>
+                        <Card sx={{ minWidth: 275, width: '50%', mt: 3, ml: 3 }}>
+                            <CardContent sx={{ padding: 2 }}>
+                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5" gutterBottom>
+                                    average purchase : {systemStatus.averagePurchase}
+                                </Typography>
+                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                    acerage registered : {systemStatus.averageRegistered}
+                                </Typography>
+                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                    average user in system : {systemStatus.averageUserIn}
+                                </Typography>
+                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                    average user out : {systemStatus.averageUserOut}
+                                </Typography>
+
+                            </CardContent>
+                        </Card>
+                    </Box >
+                </Box>
             </Box>
-            <Box sx={{ width: '100%', display: 'flex' }}>
-                <Card sx={{ minWidth: 275, width: '30%', mt: 5, ml: 3 }}>
-                    <CardContent sx={{ padding: 2 }}>
-                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5" gutterBottom>
-                            name : {name}
-                        </Typography>
-                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
-                            email : {userName}
-                        </Typography>
-                    </CardContent>
-                    <CardActions sx={{ marginTop: 10 }}>
-                        <IconButton onClick={handleResign} sx={{ marginLeft: 'auto' }}>
-                            <CancelIcon />
-                        </IconButton>
-
-                        <IconButton onClick={() => navigate("editMyProfile")} sx={{ marginLeft: 'auto' }}>
-                            <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={() => navigate("changePassword")} sx={{ marginLeft: 'auto' }}>
-                            <PasswordIcon />
-                        </IconButton>
-                    </CardActions>
-                </Card>
-            </Box >
 
             <Divider />
             <Typography sx={{ fontSize: 25, mt: 3, ml: '40%' }} gutterBottom>
                 system log history
             </Typography>
             <Box sx={{
-                height: 550, width: '70%', right: 2, mt: 7, ml: '10%', borderColor: 'divider'
+                height: 550, width: '80%', right: 2, mt: 7, ml: '10%', borderColor: 'divider'
             }}>
                 <DataGrid
                     rows={logs}

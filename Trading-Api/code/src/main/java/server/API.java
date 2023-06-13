@@ -478,7 +478,8 @@ public class API {
     private JSONObject createPaymentJson()
     {
         JSONObject payment = new JSONObject();
-        payment.put("payment_service", "WSEP");
+        payment.put("payment_service", "Mock");
+        payment.put("Mock", "on");
         payment.put("cardNumber", "123456789");
         payment.put("month", "01");
         payment.put("year", "30");
@@ -491,7 +492,8 @@ public class API {
     private static JSONObject createSupplierJson()
     {
         JSONObject supplier = new JSONObject();
-        supplier.put("supply_service", "WSEP");
+        supplier.put("supply_service", "Mock");
+        supplier.put("Mock", "on");
         supplier.put("name", "Israel Visceral");
         supplier.put("address", "Reger 17");
         supplier.put("city", "Beer Sheva");

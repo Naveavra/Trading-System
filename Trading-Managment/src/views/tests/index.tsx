@@ -37,7 +37,6 @@ export default function App() {
 
 
     const handleRegular = () => {
-        navigate('/dashboard/store/superior/regularDiscount');
     }
     const handleComosite = () => {
     }

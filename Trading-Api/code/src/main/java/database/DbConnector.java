@@ -129,7 +129,7 @@ public class DbConnector {
         }
         InventoryDto inventoryDto = storeDao.getStoreProduct(storeId, productId);
         if(inventoryDto != null) {
-            Product product = new Product(inventoryDto.getProductId(), inventoryDto.getName(),
+            Product product = new Product(inventoryDto.getStoreDto().getId(), inventoryDto.getProductId(), inventoryDto.getName(),
                     inventoryDto.getDescription(), inventoryDto.getImg());
             if (!storeExist){
                 storesInventory.put(storeId, new HashMap<>());

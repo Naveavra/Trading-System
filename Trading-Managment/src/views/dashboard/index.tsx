@@ -9,7 +9,7 @@ import { clearStoresError, clearStoresResponse, getStore, getStoresInfo } from '
 import axios from 'axios';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { clearProductsError, getProducts } from '../../reducers/productsSlice';
-import { Divider } from '@mui/material';
+import { Box, Divider, Slider, SliderThumb, Typography, styled } from '@mui/material';
 import Bar from '../../components/Bars/Navbar/Navbar';
 import { SearchBar } from '../../components/Bars/SearchBar/SearchBar';
 import ShopsBar from '../../components/Bars/ShopBar/ShopBar';
@@ -36,6 +36,21 @@ const DashboardPage: React.FC = () => {
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
 
+
+
+    const [price, setPrice] = React.useState<number[]>([0, 10000]);
+    const [productRating, setProductRating] = React.useState<number[]>([0, 5]);
+    const [storeRating, setStoreRating] = React.useState<number[]>([0, 5]);
+
+    const handleChangePrice = (event: Event, newValue: number | number[]) => {
+        setPrice(newValue as number[]);
+    };
+    const handleChangeProductRating = (event: Event, newValue: number | number[]) => {
+        setProductRating(newValue as number[]);
+    };
+    const handleChangeStoreRating = (event: Event, newValue: number | number[]) => {
+        setStoreRating(newValue as number[]);
+    };
     // const cart = useAppSelector((state) => state.cart.responseData);
     // const numProductsIncart = cart?.reduce((acc, item) => acc + item.quantity, 0) ?? 0;
 
@@ -124,9 +139,49 @@ const DashboardPage: React.FC = () => {
                                 <ShopsBar />
                                 <Divider />
                                 {/* <Categories /> */}
-                                <Categories2 />
+                                <Box sx={{ marginTop: 1, width: '100%' }} display={'flex'} >
+                                    <Box sx={{ marginTop: 1, width: '50%' }} display={'flex'} >
+                                        <Categories2 />
+                                    </Box>
+                                    <Box sx={{ marginTop: 1, ml: '25%', width: '20%' }}  >
+                                        <Typography id="input-slider" gutterBottom sx={{ mb: 2 }}>
+                                            Price range
+                                        </Typography>
+                                        <AirbnbSlider
+                                            value={price}
+                                            onChange={handleChangePrice}
+                                            slots={{ thumb: AirbnbThumbComponent }}
+                                            getAriaLabel={(index) => (index === 0 ? 'Minimum price' : 'Maximum price')}
+                                            defaultValue={[0, 4000]}
+                                            max={5000}
+                                            valueLabelDisplay="on"
+                                        />
+                                        <Typography gutterBottom sx={{ mb: 2 }}>product rating</Typography>
+                                        <Slider
+                                            getAriaLabel={() => 'product rating'}
+                                            value={productRating}
+                                            onChange={handleChangeProductRating}
+                                            valueLabelDisplay="auto"
+                                            marks={marks}
+                                            max={5}
+                                            min={0}
+                                            step={1}
+                                        />
+                                        <Typography gutterBottom sx={{ mb: 2 }}>store rating</Typography>
+                                        <Slider
+                                            getAriaLabel={() => 'store rating'}
+                                            value={storeRating}
+                                            onChange={handleChangeStoreRating}
+                                            valueLabelDisplay="auto"
+                                            marks={marks}
+                                            max={5}
+                                            min={0}
+                                            step={1}
+                                        />
+                                    </Box>
+                                </Box>
                                 <Divider />
-                                <Products text={text} />
+                                <Products text={text} price={price} productRating={productRating} storeRating={storeRating} />
                                 <Outlet />
                             </>
             }
@@ -138,5 +193,122 @@ const DashboardPage: React.FC = () => {
 
     )
 };
+const AirbnbSlider = styled(Slider)(({ theme }) => ({
+    color: '#3a8589',
+    height: 3,
+    padding: '13px 0',
+    '& .MuiSlider-thumb': {
+        height: 27,
+        width: 27,
+        backgroundColor: '#fff',
+        border: '1px solid currentColor',
+        '&:hover': {
+            boxShadow: '0 0 0 8px rgba(58, 133, 137, 0.16)',
+        },
+        '& .airbnb-bar': {
+            height: 9,
+            width: 1,
+            backgroundColor: 'currentColor',
+            marginLeft: 1,
+            marginRight: 1,
+        },
+    },
+    '& .MuiSlider-track': {
+        height: 3,
+    },
+    '& .MuiSlider-rail': {
+        color: theme.palette.mode === 'dark' ? '#bfbfbf' : '#d8d8d8',
+        opacity: theme.palette.mode === 'dark' ? undefined : 1,
+        height: 3,
+    },
+}));
+
+interface AirbnbThumbComponentProps extends React.HTMLAttributes<unknown> { }
+
+function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
+    const { children, ...other } = props;
+    return (
+        <SliderThumb {...other}>
+            {children}
+            <span className="airbnb-bar" />
+            <span className="airbnb-bar" />
+            <span className="airbnb-bar" />
+        </SliderThumb>
+    );
+}
+const iOSBoxShadow =
+    '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)';
+
+const marks = [
+    {
+        value: 0,
+    },
+    {
+        value: 1,
+    },
+    {
+        value: 2,
+    },
+    {
+        value: 3,
+    },
+    {
+        value: 4,
+    },
+    {
+        value: 5,
+    },
+];
+
+const IOSSlider = styled(Slider)(({ theme }) => ({
+    color: theme.palette.mode === 'dark' ? '#3880ff' : '#3880ff',
+    height: 2,
+    padding: '15px 0',
+    '& .MuiSlider-thumb': {
+        height: 28,
+        width: 28,
+        backgroundColor: '#fff',
+        boxShadow: iOSBoxShadow,
+        '&:focus, &:hover, &.Mui-active': {
+            boxShadow:
+                '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
+            // Reset on touch devices, it doesn't add specificity
+            '@media (hover: none)': {
+                boxShadow: iOSBoxShadow,
+            },
+        },
+    },
+    '& .MuiSlider-valueLabel': {
+        fontSize: 12,
+        fontWeight: 'normal',
+        top: -6,
+        backgroundColor: 'unset',
+        color: theme.palette.text.primary,
+        '&:before': {
+            display: 'none',
+        },
+        '& *': {
+            background: 'transparent',
+            color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+        },
+    },
+    '& .MuiSlider-track': {
+        border: 'none',
+    },
+    '& .MuiSlider-rail': {
+        opacity: 0.5,
+        backgroundColor: '#bfbfbf',
+    },
+    '& .MuiSlider-mark': {
+        backgroundColor: '#bfbfbf',
+        height: 8,
+        width: 1,
+        '&.MuiSlider-markActive': {
+            opacity: 1,
+            backgroundColor: 'currentColor',
+        },
+    },
+}));
+
 
 export default DashboardPage;

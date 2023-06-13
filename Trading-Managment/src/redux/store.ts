@@ -10,6 +10,7 @@ import { getPersistConfig } from 'redux-deep-persist';
 import discountReducer from '../reducers/discountSlice';
 import adminReducer from '../reducers/adminSlice';
 import paymentReducer from '../reducers/paymentSlice';
+import shoppingRuleReducer from '../reducers/ShoppingRules';
 
 
 const authPersistConfig = {
@@ -38,6 +39,7 @@ export const store = configureStore({
         discount: discountReducer,
         admin: adminReducer,
         payment: paymentReducer,
+        shoppingRule: shoppingRuleReducer,
 
     },
     middleware(getDefaultMiddleware) {

@@ -3,13 +3,11 @@ package database.dtos;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "receipts")
+@Table(name = "receiptsProducts")
 public class ReceiptDto {
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "userhId", foreignKey = @ForeignKey, referencedColumnName = "userId")
-    private UserHistoryDto userHistoryDto;
+    private int orderId;
     @Id
     private int storeId;
     @Id
@@ -19,8 +17,8 @@ public class ReceiptDto {
     public ReceiptDto(){
     }
 
-    public ReceiptDto(UserHistoryDto userHistoryDto, int storeId, int productId, int quantity){
-        this.userHistoryDto = userHistoryDto;
+    public ReceiptDto(int receiptId, int storeId, int productId, int quantity){
+        this.orderId = receiptId;
         this.storeId = storeId;
         this.productId = productId;
         this.quantity = quantity;
@@ -34,12 +32,12 @@ public class ReceiptDto {
         this.productId = productId;
     }
 
-    public UserHistoryDto getUserHistoryDto() {
-        return userHistoryDto;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setUserHistoryDto(UserHistoryDto userHistoryDto) {
-        this.userHistoryDto = userHistoryDto;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public int getStoreId() {
