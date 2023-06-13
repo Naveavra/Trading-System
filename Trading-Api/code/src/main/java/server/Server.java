@@ -603,7 +603,7 @@ public class Server {
             return res.body();
         });
 
-        post("api/biddings/regular/answerBid", (req, res) -> {
+        post("api/biddings/answerBid", (req, res) -> {
             JSONObject request= new JSONObject(req.body());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
@@ -615,7 +615,7 @@ public class Server {
             toSparkRes(res, api.answerBid(token, storeId, userId, ans, prodId, bidId));
             return res.body();
         });
-        post("api/biddings/regular/counterBid", (req, res) -> {
+        post("api/biddings/counterBid", (req, res) -> {
             JSONObject request= new JSONObject(req.body());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
@@ -624,6 +624,18 @@ public class Server {
             int prodId = Integer.parseInt(request.get("prodId").toString());
             int bidId = Integer.parseInt(request.get("bidId").toString());
             toSparkRes(res, api.counterBid(token, storeId, userId, ans, prodId, bidId));
+            return res.body();
+        });
+        patch("api/biddings/addBid", (req, res) -> { //editBid, customer changing his bid
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            int bidId = Integer.parseInt(request.get("bidId").toString());
+            double price = Double.parseDouble(request.get("price").toString());
+            int prodId = Integer.parseInt(request.get("storeId").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.editBid(token, storeId, prodId, userId, price,quantity,bidId));
             return res.body();
         });
 

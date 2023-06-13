@@ -300,4 +300,9 @@ public class MarketController {
     public void counterBid(int userId, int storeId, int ans, int prodId, int bidId) {
         //TODO MIKI
     }
+
+    public void editBid(int storeId, Member user, int prodId, double price, int quantity) {
+
+        //todo miki
+    }
 }

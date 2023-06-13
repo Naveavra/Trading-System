@@ -450,6 +450,10 @@ public class API {
         Response<String> res = market.counterBid(token, userId, storeId, ans, prodId, bidId);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> editBid(String token, int storeId, int prodId, int userId, double price, int quantity, int bidId) {
+        Response<String> res = market.editBid(token, userId, storeId, prodId, price,quantity, bidId);
+        return fromResToPair(res);
+    }
 
     //for actions to actionString
     private void getActionStrings(){

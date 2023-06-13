@@ -987,9 +987,23 @@ public class Market implements MarketInterface {
         } catch (Exception ex) {
             return new Response<>(null, "could not place bid", ex.getMessage());
         }
+    }
+    @Override
+    public Response editBid(String token, int userId, int storeId, int prodId, double price,int quantity, int bidId) {
+        try {
+            userAuth.checkUser(userId, token);
+            // im assuming there is no need to check permission for this action
+            Member user = userController.getMember(userId);
+            marketController.editBid(storeId, user, prodId, price,quantity);
+            //usercontoller send notification to other store owners TODO ELI
+            return logAndRes(Event.LogStatus.Success, "user placed his successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    "user placed his bid", null, null);
+        } catch (Exception ex) {
+            return new Response<>(null, "could not place bid", ex.getMessage());
+        }
+    }
 
-
-}
 
     @Override
     public Response answerBid(String token, int userId, int storeId, boolean ans, int prodId, int bidId) {

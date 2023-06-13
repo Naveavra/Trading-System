@@ -137,4 +137,6 @@ public interface MarketInterface {
     public Response answerBid(String token, int userId, int storeId, boolean ans, int prodId, int bidId);
 
     public Response counterBid(String token, int userId, int storeId, int ans, int prodId, int bidId);
+
+    public Response editBid(String token, int userId, int storeId, int prodId, double price, int quantity, int bidId);
 }
