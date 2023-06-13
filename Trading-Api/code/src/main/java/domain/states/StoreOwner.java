@@ -15,8 +15,8 @@ public class StoreOwner extends UserState {
     public StoreOwner(){
     }
 
-    public  StoreOwner(Member member, String name, Store store){
-        super(member, name, store);
+    public  StoreOwner(int memberId, String name, Store store){
+        super(memberId, name, store);
         role = Role.Owner;
         List<Action> actions = new LinkedList<>();
 

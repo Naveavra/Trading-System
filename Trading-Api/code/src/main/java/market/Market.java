@@ -1,5 +1,6 @@
 package market;
 
+import database.daos.DaoTemplate;
 import database.daos.LoggerDao;
 import database.dtos.LoggerDto;
 import domain.states.Permissions;
@@ -143,7 +144,7 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             String senderEmail = userController.getUserEmail(userId);
-            Notification<String> notification = new Notification<>(opcode, notify + ". from " + senderEmail);
+            Notification notification = new Notification(opcode, notify + ". from " + senderEmail);
             userController.addNotification(receiverEmail, notification);
             return logAndRes(Event.LogStatus.Success, "notification was sent to " + receiverEmail,
                     StringChecks.curDayString(), senderEmail,
@@ -157,7 +158,7 @@ public class Market implements MarketInterface {
 
 
     public void addNotification(int userId,NotificationOpcode opcode, String notify) throws Exception{
-        Notification<String> notification = new Notification<>(opcode, notify);
+        Notification notification = new Notification(opcode, notify);
         userController.addNotification(userId, notification);
     }
 
@@ -1176,7 +1177,9 @@ public class Market implements MarketInterface {
     //atomic function to log and get response
     public Response logAndRes(Event.LogStatus state, String content, String time, String userName,
                               Object value, String errorTi , String errorMsg) {
-        logger.log(state, content, time, userName);
+        Event event = new Event(state, content, time, userName);
+        logger.log(event);
+        DaoTemplate.save(event);
         return new Response<>(value, errorTi, errorMsg);
     }
 

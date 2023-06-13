@@ -162,7 +162,7 @@ public class StoreDto {
                     roleDto.setPermissions(info.getActions());
                     checkDup.add(info.getId());
                 }
-                appointmentDtos.add(new AppointmentDto(this, p.getFirst().getId(), info.getId()));
+                appointmentDtos.add(new AppointmentDto(0, p.getFirst().getId(), info.getId()));
             }
         }
         roles = roleDtos;

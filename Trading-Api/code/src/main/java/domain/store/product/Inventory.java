@@ -1,6 +1,8 @@
 package domain.store.product;
 
 
+import database.daos.DaoTemplate;
+import database.dtos.CategoryDto;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.Message;
@@ -43,7 +45,7 @@ public class Inventory {
         Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
-            p = new Product(id,name,description, "");
+            p = new Product(storeId, id,name,description, "");
             p.setPrice(price);
             p.replaceQuantity(quantity);
             for(Product product : productList.values())
@@ -52,6 +54,7 @@ public class Inventory {
                     throw new Exception("the product already exists in the system, aborting add");
                 }
             productList.put(id,p);
+            DaoTemplate.save(p);
         }
         return p;
     }
@@ -61,7 +64,7 @@ public class Inventory {
         Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
-            p = new Product(id,name,description, img);
+            p = new Product(storeId,id,name,description, img);
             p.setPrice(price);
             p.replaceQuantity(quantity);
             for(Product product : productList.values())
@@ -70,11 +73,15 @@ public class Inventory {
                     throw new Exception("the product already exists in the system, aborting add");
                 }
             productList.put(id,p);
+            DaoTemplate.save(p);
         }
         return p;
     }
     public synchronized Product addProduct(Product p) throws Exception{
-        if(getProductByName(p.name) == null) productList.put(p.getID(), p);
+        if(getProductByName(p.name) == null) {
+            productList.put(p.getID(), p);
+            DaoTemplate.save(p);
+        }
         return p;
     }
 
@@ -95,6 +102,7 @@ public class Inventory {
 
     public void addProductReview(ProductReview m) throws Exception{
         if(productList.containsKey(m.getProductId())){
+            DaoTemplate.save(m);
             productReviews.put(m.getMessageId(), m);
         }
         else{
@@ -204,17 +212,20 @@ public class Inventory {
         }else{
             categories.put(category,new ArrayList<>());
             categories.get(category).add(productId);
+            DaoTemplate.save(new CategoryDto(storeId, productId, category));
         }
     }
 
     public synchronized int removeProduct(int productId) {
         if(productList.containsKey(productId)){
+            DaoTemplate.remove(productList.get(productId));
             productList.remove(productId);
             for(ArrayList<Integer> prodIds : categories.values()){
                 if(prodIds.contains(productId)){
                     prodIds.remove(Integer.valueOf(productId));
                 }
             }
+            DaoTemplate.removeIf("CategoryDto", String.format("productId = %d", productId));
             return 0;
         }
         return -1;
@@ -240,6 +251,7 @@ public class Inventory {
             }
             if(img != null && !img.equals("null"))
                 changeImg(productId, img);
+            DaoTemplate.save(productList.get(productId));
         }
         else
             throw new Exception("the product does not exist in the store");
@@ -266,6 +278,7 @@ public class Inventory {
                 category.remove(Integer.valueOf(productId));
             }
         }
+        DaoTemplate.removeIf("CategoryDto", String.format("productId = %d", productId));
         for(String category: categories){
             addToCategory(category,productId);
         }

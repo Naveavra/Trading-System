@@ -5,34 +5,51 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
-      <change afterPath="$PROJECT_DIR$/src/main/java/domain/states/Permissions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/database/DbConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/DbConnector.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/PermissionDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/PermissionDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/RoleDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/RoleDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/Permission.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/Permission.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/DaoTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/DaoTemplate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/AppointmentDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/AppointmentDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/CartDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/CartDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/CategoryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/CategoryDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/InventoryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/InventoryDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/ReceiptDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/ReceiptDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/StoreDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/StoreDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/StoreCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/StoreCreator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/StoreManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/StoreManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/StoreOwner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/StoreOwner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/AppHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/AppHistory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Guest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Guest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/PurchaseHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/PurchaseHistory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/market/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Admin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Event.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Logger.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Receipt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Receipt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Complaint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Complaint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Notification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/ProductReview.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/ProductReview.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Question.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Question.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/StoreReview.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/StoreReview.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/AppHistoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/AppHistoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/OrderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/OrderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ProductTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/ProductTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserControllerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/domain/user/BasketTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/BasketTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/domain/user/GuestTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/GuestTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/domain/user/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/MemberTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/domain/user/ShoppingCartTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/ShoppingCartTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/store/InventoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/InventoryTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,6 +135,16 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="AppHistoryTest.getNodeExists" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="AppHistoryTest" />
+      <option name="METHOD_NAME" value="getNodeExists" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="MemberTest.writeReview" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
@@ -129,16 +156,6 @@
       <option name="PACKAGE_NAME" value="domain.user" />
       <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
       <option name="METHOD_NAME" value="writeReview" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="UserControllerTest.checkDatabase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="UserControllerTest" />
-      <option name="METHOD_NAME" value="checkDatabase" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -175,19 +192,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
+      <item itemvalue="JUnit.AppHistoryTest.getNodeExists" />
       <item itemvalue="JUnit.MemberTest.writeReview" />
       <item itemvalue="JUnit.UserControllerTest.checkNewImp" />
       <item itemvalue="JUnit.UserControllerTest.fireManager" />
-      <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
       <item itemvalue="JUnit.test in work1" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.UserControllerTest.checkNewImp" />
-        <item itemvalue="JUnit.MemberTest.writeReview" />
         <item itemvalue="JUnit.test in work1" />
+        <item itemvalue="JUnit.AppHistoryTest.getNodeExists" />
+        <item itemvalue="JUnit.MemberTest.writeReview" />
         <item itemvalue="JUnit.UserControllerTest.fireManager" />
-        <item itemvalue="JUnit.UserControllerTest.checkDatabase" />
       </list>
     </recent_temporary>
   </component>
@@ -262,9 +279,9 @@
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/UserControllerTest.java</url>
-          <line>134</line>
-          <option name="timeStamp" value="45" />
+          <url>file://$PROJECT_DIR$/test/AppHistoryTest.java</url>
+          <line>35</line>
+          <option name="timeStamp" value="52" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

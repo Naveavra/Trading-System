@@ -110,7 +110,7 @@ public class MemberDto {
     public void setCartProducts(ShoppingCart cart) {
         List<CartDto> cartDtos = new ArrayList<>();
         for(ProductInfo p : cart.getContent())
-            cartDtos.add(new CartDto(this, p.getStoreId(), p.getId(), p.getQuantity()));
+            cartDtos.add(new CartDto(0, p.getStoreId(), p.getId(), p.getQuantity()));
         this.cartProducts = cartDtos;
     }
 
@@ -124,7 +124,7 @@ public class MemberDto {
             UserHistoryDto userHistoryDto = new UserHistoryDto(this, r.getOrderId(), r.getTotalPrice());
             List<ReceiptDto> receiptDtos = new ArrayList<>();
             for(ProductInfo product : r.getCart().getContent()){
-                receiptDtos.add(new ReceiptDto(userHistoryDto, product.getStoreId(), product.getId(), product.getQuantity()));
+                receiptDtos.add(new ReceiptDto(0, product.getStoreId(), product.getId(), product.getQuantity()));
             }
             userHistoryDto.setReceiptDtos(receiptDtos);
             userHistoryDtos.add(userHistoryDto);

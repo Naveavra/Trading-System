@@ -15,8 +15,8 @@ public class StoreCreator extends UserState {
     public StoreCreator(){
     }
 
-    public StoreCreator(Member member, String name, Store store){
-        super(member, name, store);
+    public StoreCreator(int memberId, String name, Store store){
+        super(memberId, name, store);
         role = Role.Creator;
         List<Action> actions = new LinkedList<>();
 

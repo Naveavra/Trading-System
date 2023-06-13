@@ -1,9 +1,12 @@
 package utils.infoRelated;
 
+import database.daos.DaoTemplate;
+import database.dtos.ReceiptDto;
 import domain.user.*;
 import jakarta.persistence.*;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,11 +16,7 @@ public class Receipt extends Information{
     @Id
     private int orderId;
 
-    @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "id")
-    private Member member;
-
-
+    private int memberId;
     @Transient
     private ShoppingCart products; // a hashmap from storeId to hashmap from productId to quantity
 
@@ -27,10 +26,12 @@ public class Receipt extends Information{
         this.orderId = orderId;
         this.products = products;
         this.totalPrice = totalPrice;
+        for(ProductInfo productInfo : products.getContent())
+            DaoTemplate.save(new ReceiptDto(orderId, productInfo.storeId, productInfo.id, productInfo.getQuantity()));
     }
 
-    public void setMember(Member member){
-        this.member = member;
+    public void setMemberId(int memberId){
+        this.memberId = memberId;
     }
     public int getOrderId(){
         return orderId;
@@ -47,7 +48,7 @@ public class Receipt extends Information{
 
     public JSONObject toJson(){
         JSONObject json = new JSONObject();
-        json.put("userId", member.getId());
+        json.put("userId", memberId);
         json.put("orderId", orderId);
         json.put("totalPrice", totalPrice);
         json.put("products", infosToJson(products.getContent()));

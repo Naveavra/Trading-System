@@ -77,7 +77,7 @@ public class InventoryDto {
     public void setCategory(List<String> categories){
         List<CategoryDto> categoryDtos = new ArrayList<>();
         for(String category : categories)
-            categoryDtos.add(new CategoryDto(this, category));
+            categoryDtos.add(new CategoryDto(0, 0, category));
         this.categories = categoryDtos;
     }
 

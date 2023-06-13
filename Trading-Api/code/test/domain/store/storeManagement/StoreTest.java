@@ -43,8 +43,8 @@ class StoreTest {
         store.getInventory().getProduct(0).replaceQuantity(10);
         store.addNewProduct("coke", "diet", new AtomicInteger(1), 10, 3);
         store.getInventory().getProduct(1).replaceQuantity(10);
-        store.appointUser(0, worker, new StoreManager(worker, worker.getName(), null));
-        store.appointUser(1, worker2, new StoreManager(worker2, worker2.getName(), null));
+        store.appointUser(0, worker, new StoreManager(worker.getId(), worker.getName(), null));
+        store.appointUser(1, worker2, new StoreManager(worker2.getId(), worker2.getName(), null));
         member = new Member(2, "lala@gmail.com", "aA12345", "31/08/2022");
         ShoppingCart cart = new ShoppingCart();
         p = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(0), 10);

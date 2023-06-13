@@ -1,5 +1,6 @@
 package domain.states;
 
+import database.daos.DaoTemplate;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import jakarta.persistence.*;
@@ -17,15 +18,13 @@ import java.util.Set;
 @Table(name = "roles")
 public abstract class UserState extends Information {
 
-    @Transient
-    protected Member member;
 
     @Id
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "storeId", foreignKey = @ForeignKey, referencedColumnName = "storeId"),
-            @JoinColumn(name = "userId", foreignKey = @ForeignKey, referencedColumnName = "creatorId")
-    })
+    protected int userId;
+
+    @Id
+    protected int storeId;
+    @Transient
     protected Store store;
     protected String userName;
     @Transient
@@ -41,10 +40,12 @@ public abstract class UserState extends Information {
     public UserState(){
     }
 
-    public UserState(Member member, String name, Store store){
-        this.member = member;
+    public UserState(int memberId, String name, Store store){
+        this.userId = memberId;
         this.userName = name;
         this.store = store;
+        if(store != null)
+            this.storeId = store.getStoreId();
         permissions = new Permissions();
         permissionList = new ArrayList<>();
         isActive = true;
@@ -86,13 +87,13 @@ public abstract class UserState extends Information {
 
     public void appointManager(Member appointed) throws Exception{
         checkPermission(Action.appointManager);
-        StoreManager m = new StoreManager(appointed, appointed.getName(), store);
-        store.appointUser(member.getId(), appointed, m);
+        StoreManager m = new StoreManager(appointed.getId(), appointed.getName(), store);
+        store.appointUser(userId, appointed, m);
         appointed.changeRoleInStore(m, store);
     }
 
     public Set<Integer> fireManager(int appointedId) throws Exception{
-        if(member.getId() == appointedId)
+        if(userId == appointedId)
             return store.fireUser(appointedId);
         checkPermission(Action.fireManager);
         return store.fireUser(appointedId);
@@ -100,13 +101,13 @@ public abstract class UserState extends Information {
 
     public void appointOwner(Member appointed) throws Exception{
         checkPermission(Action.appointOwner);
-        StoreOwner s = new StoreOwner(appointed, appointed.getName(), store);
-        store.appointUser(member.getId(), appointed, s);
+        StoreOwner s = new StoreOwner(appointed.getId(), appointed.getName(), store);
+        store.appointUser(userId, appointed, s);
         appointed.changeRoleInStore(s, store);
     }
 
     public Set<Integer> fireOwner(int appointedId) throws Exception{
-        if(member.getId() == appointedId)
+        if(userId == appointedId)
             return store.fireUser(appointedId);
         checkPermission(Action.fireOwner);
         return store.fireUser(appointedId);
@@ -115,13 +116,17 @@ public abstract class UserState extends Information {
     public Set<Integer> closeStore() throws Exception{
         checkPermission(Action.closeStore);
         //setIsActive(false);
-        return store.closeStoreTemporary(member.getId());
+        Set<Integer> ans = store.closeStoreTemporary(userId);
+        DaoTemplate.update(store);
+        return ans;
     }
 
     public Set<Integer> reOpenStore() throws Exception{
         checkPermission(Action.reopenStore);
         //setIsActive(true);
-        return store.reopenStore(member.getId());
+        Set<Integer> ans = store.reopenStore(userId);
+        DaoTemplate.update(store);
+        return ans;
     }
 
     public Set<Integer> getWorkerIds() throws Exception{
@@ -131,10 +136,18 @@ public abstract class UserState extends Information {
 
     public JSONObject toJson(){
         JSONObject json = new JSONObject();
-        json.put("userId", member);
+        json.put("userId", userId);
         json.put("userName", userName);
         json.put("storeRole", role.toString());
         json.put("actions", fromActionToString(getActions()));
         return json;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
     }
 }

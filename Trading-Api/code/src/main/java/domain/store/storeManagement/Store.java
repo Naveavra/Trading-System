@@ -1,5 +1,7 @@
 package domain.store.storeManagement;
 
+import database.daos.DaoTemplate;
+import database.dtos.AppointmentDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.discount.Discount;
@@ -39,12 +41,10 @@ public class Store extends Information{
     private String storeName;
     private boolean isActive;
     @Id
-    @ManyToOne
-    @JoinColumn(name = "creatorId", foreignKey = @ForeignKey, referencedColumnName = "id")
+    private int creatorId;//for db, don't remove
+    @Transient
     private Member creator;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="store")
-    private List<UserState> storeRoles;
     private String storeDescription;
     @Transient
     private AppHistory appHistory; //first one is always the store creator //n
@@ -70,12 +70,13 @@ public class Store extends Information{
     public Store(){
     }
     public Store(int id, String description, Member creator){
-        StoreCreator sc = new StoreCreator(creator, creator.getName(), this);
+        StoreCreator sc = new StoreCreator(creator.getId(), creator.getName(), this);
         Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
         this.storeId = id;
         appHistory = new AppHistory(storeId, creatorNode);
         this.storeDescription = description;
         this.creator = creator;
+        this.creatorId = creator.getId();
         this.inventory = new Inventory(storeId);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
@@ -85,18 +86,16 @@ public class Store extends Information{
         this.isActive = true;
         discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
-
-        storeRoles = new ArrayList<>();
-        storeRoles.add(sc);
     }
 
     public Store(int storeid, String storeName, String description, String imgUrl, Member creator){
-        StoreCreator sc = new StoreCreator(creator, creator.getName(), this);
+        StoreCreator sc = new StoreCreator(creator.getId(), creator.getName(), this);
         Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
         this.storeId = storeid;
         appHistory = new AppHistory(storeid, creatorNode);
         this.storeDescription = description;
         this.creator = creator;
+        this.creatorId = creator.getId();
         this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
@@ -108,9 +107,6 @@ public class Store extends Information{
         discounts = new ArrayList<>();
         this.storeName = storeName;
         this.imgUrl = imgUrl;
-
-        storeRoles = new ArrayList<>();
-        storeRoles.add(sc);
     }
 
     public void changeName(String storeName){
@@ -139,6 +135,7 @@ public class Store extends Information{
 
     public int addQuestion(Question q)
     {
+        DaoTemplate.save(q);
         questions.put(q.getMessageId(), q);
         return creator.getId();
     }
@@ -146,8 +143,10 @@ public class Store extends Information{
 
     public void answerQuestion(int messageID, String answer) throws Exception {
         Question msg = questions.get(messageID);
-        if(msg != null)
+        if(msg != null) {
             msg.sendFeedback(answer);
+            DaoTemplate.save(msg);
+        }
         else
             throw new Exception("the id given does not belong to any question that was sent to store");
     }
@@ -218,14 +217,15 @@ public class Store extends Information{
 
 
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
-        storeRoles.add(role);
         Pair<Member, UserState> node = new Pair<>(newUser, role);
         appHistory.addNode(userinchargeid, node);
+        DaoTemplate.save(new AppointmentDto(storeId, userinchargeid, newUser.getId()));
     }
 
     public int addReview(int orderId, StoreReview review) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
+            DaoTemplate.save(review);
             storeReviews.put(review.getMessageId(), review);
             return creator.getId();
         }
@@ -251,7 +251,9 @@ public class Store extends Information{
      */
     public Set<Integer> fireUser(int joblessuser) throws Exception
     {
-        return new HashSet<>(appHistory.removeChild(joblessuser));
+        Set<Integer> ans = new HashSet<>(appHistory.removeChild(joblessuser));
+        DaoTemplate.removeIf("AppointmentDto", String.format("fatherId = %d OR childId = %d", joblessuser, joblessuser));
+        return ans;
     }
 
     public Inventory getInventory()

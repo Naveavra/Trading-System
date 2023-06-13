@@ -1,6 +1,11 @@
 package database;
 
+import database.dtos.AppointmentDto;
+import database.dtos.CartDto;
+import database.dtos.CategoryDto;
+import database.dtos.ReceiptDto;
 import domain.states.*;
+import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import domain.user.PurchaseHistory;
@@ -10,7 +15,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
+import utils.Event;
 import utils.infoRelated.Receipt;
+import utils.messageRelated.*;
 
 import java.util.Properties;
 
@@ -57,17 +64,30 @@ public class HibernateUtil {
 //                configuration.addAnnotatedClass(ComplaintDto.class);
 
                 configuration.addAnnotatedClass(Member.class);
+                configuration.addAnnotatedClass(Notification.class);
+                configuration.addAnnotatedClass(CartDto.class);
                 configuration.addAnnotatedClass(Receipt.class);
+                configuration.addAnnotatedClass(ReceiptDto.class);
 
                 configuration.addAnnotatedClass(Admin.class);
+
+                configuration.addAnnotatedClass(Complaint.class);
+                configuration.addAnnotatedClass(StoreReview.class);
+                configuration.addAnnotatedClass(ProductReview.class);
+                configuration.addAnnotatedClass(Question.class);
 
                 configuration.addAnnotatedClass(UserState.class);
                 configuration.addAnnotatedClass(StoreManager.class);
                 configuration.addAnnotatedClass(StoreCreator.class);
                 configuration.addAnnotatedClass(StoreOwner.class);
                 configuration.addAnnotatedClass(Permission.class);
+                configuration.addAnnotatedClass(AppointmentDto.class);
 
                 configuration.addAnnotatedClass(Store.class);
+                configuration.addAnnotatedClass(Product.class);
+                configuration.addAnnotatedClass(CategoryDto.class);
+
+                configuration.addAnnotatedClass(Event.class);
 
 
 
