@@ -278,7 +278,8 @@ public class MarketController {
         //ELI SAVE US ALL
     }
 
-    public Pair<Receipt,Set<Integer>> answerBid(int userId, int storeId, boolean ans, int prodId) throws Exception {
+    public Pair<Receipt,Set<Integer>> answerBid(int userId, int storeId, boolean ans, int prodId, int bidId) throws Exception {
+        //TODO miki
         Store s = storectrl.getActiveStore(storeId);
         Bid bid = s.answerBid(userId,prodId,ans);
         if(bid != null){
@@ -294,5 +295,9 @@ public class MarketController {
         }
         return null;
         //PLEASE, ELI YOU'RE OUR ONLY HOPE
+    }
+
+    public void counterBid(int userId, int storeId, int ans, int prodId, int bidId) {
+        //TODO MIKI
     }
 }

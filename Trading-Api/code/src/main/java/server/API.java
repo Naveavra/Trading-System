@@ -442,8 +442,12 @@ public class API {
         Response<String> res = market.placeBid(token, userId, storeId, prodId, price,quantity);
         return fromResToPair(res);
     }
-    public Pair<Boolean, JSONObject> answerBid(String token, int storeId, int userId, boolean ans, int prodId) {
-        Response<String> res = market.answerBid(token, userId, storeId, ans, prodId);
+    public Pair<Boolean, JSONObject> answerBid(String token, int storeId, int userId, boolean ans, int prodId, int bidId) {
+        Response<String> res = market.answerBid(token, userId, storeId, ans, prodId, bidId);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> counterBid(String token, int storeId, int userId, int ans, int prodId, int bidId) {
+        Response<String> res = market.counterBid(token, userId, storeId, ans, prodId, bidId);
         return fromResToPair(res);
     }
 
