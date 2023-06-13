@@ -17,7 +17,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import MessageIcon from '@mui/icons-material/Message';
-
+import GavelIcon from '@mui/icons-material/Gavel';
 interface Props {
     headLine: string;
 }
@@ -72,7 +72,8 @@ const Bar: React.FC<Props> = ({ headLine }) => {
             <div className="navbar">
                 <div className="wrapper">
                     <div className="center">
-                        <Typography variant="h4" component="h4" className="logo" fontFamily={"Gill Sans"}>
+                        <Typography variant="h4" component="h4" className="logo"
+                            sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                             {headLine}
                         </Typography>
                     </div>
@@ -93,6 +94,9 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                                     </IconButton>
                                     <IconButton onClick={() => setStoreOpen(true)}>
                                         <StorefrontIcon />
+                                    </IconButton>
+                                    <IconButton onClick={() => navigate('biddingCenter')}>
+                                        <GavelIcon />
                                     </IconButton>
 
                                     <IconButton onClick={handleNotification}>

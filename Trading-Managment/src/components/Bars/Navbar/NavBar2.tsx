@@ -120,7 +120,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                         </IconButton>
 
 
-                        <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
+                        <Typography variant="h6" component="div" sx={{ display: 'flex', justifyContent: 'center', flexGrow: 2, ml: 73 }}>
                             {headLine} {store.storeName}
                         </Typography>
                         <Typography variant="h6" component="div" sx={{ width: 50, flexGrow: 2 }}>

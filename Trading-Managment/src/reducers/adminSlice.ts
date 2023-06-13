@@ -2,20 +2,23 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { LogRecord } from "../types/systemTypes/Log";
 import { adminApi } from "../api/adminApi";
 import { Complaint } from "../types/systemTypes/Complaint";
-import { addAdminParams, answerComplaintParams, cancelMembershipParams, closeStorePerminentlyParams } from "../types/requestTypes/adminTypes";
+import { addAdminParams, answerComplaintParams, cancelMembershipParams, closeStorePerminentlyParams, updateServiceParams } from "../types/requestTypes/adminTypes";
 import { ApiError } from "../types/apiTypes";
+import { SystemStatus, emptySystemStatus } from "../types/systemTypes/SystemStatus";
 
 interface AdminState {
     isLoading: boolean;
     error: string;
     logRecords: LogRecord[];
     complaints: Complaint[];
+    status: SystemStatus;
     msg: string;
 }
 const reducerName = 'adminSlice';
 const initialState: AdminState = {
     logRecords: [],
     complaints: [],
+    status: emptySystemStatus,
     isLoading: false,
     error: '',
     msg: '',
@@ -113,6 +116,28 @@ export const removeUser = createAsyncThunk<
             .then((res) => thunkAPI.fulfillWithValue(res as string))
             .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
     });
+export const getMarketStatus = createAsyncThunk<
+    SystemStatus,
+    number,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/marketStatus`,
+    async (adminId, thunkAPI) => {
+        return adminApi.marketStatus(adminId)
+            .then((res) => thunkAPI.fulfillWithValue(res as SystemStatus))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
+export const updateService = createAsyncThunk<
+    string,
+    updateServiceParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/updateService`,
+    async (updateServiceParams, thunkAPI) => {
+        return adminApi.updateService(updateServiceParams)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
 
 const { reducer: adminReducer, actions: authActions } = createSlice({
     name: reducerName,
@@ -207,6 +232,29 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during remove user";
         });
+        builder.addCase(getMarketStatus.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(getMarketStatus.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.status = payload;
+        });
+        builder.addCase(getMarketStatus.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during market status";
+        });
+        builder.addCase(updateService.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(updateService.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.msg = payload;
+        });
+        builder.addCase(updateService.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during update service";
+        });
+
     }
 });
 export const { clearAdminMsg, clearAdminError } = authActions;

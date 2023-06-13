@@ -1,7 +1,8 @@
 import { ApiResponse, ApiResponseListData } from "../types/apiTypes";
-import { addAdminParams, answerComplaintParams, cancelMembershipParams, closeStorePerminentlyParams } from "../types/requestTypes/adminTypes";
+import { addAdminParams, answerComplaintParams, cancelMembershipParams, closeStorePerminentlyParams, updateServiceParams } from "../types/requestTypes/adminTypes";
 import { Complaint } from "../types/systemTypes/Complaint";
 import { LogRecord } from "../types/systemTypes/Log";
+import { SystemStatus } from "../types/systemTypes/SystemStatus";
 import { getApiClient } from "./apiClient";
 import { apiErrorHandlerWrapper } from "./util";
 
@@ -30,5 +31,10 @@ export const adminApi = {
     cleanUser: (userName: string): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/removeUser`, { userName: userName })),
 
+    marketStatus: (credentials: number): Promise<ApiResponse<SystemStatus>> =>
+        apiErrorHandlerWrapper(getApiClient().post('api/admin/marketStatus', { userId: credentials })),
+
+    updateService: (credentials: updateServiceParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post('api/admin/updateService', credentials)),
 
 }

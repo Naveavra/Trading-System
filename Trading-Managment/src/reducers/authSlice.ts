@@ -367,6 +367,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.error = null;
         });
         builder.addCase(getClientData.fulfilled, (state, { payload }) => {
+            debugger;
             state.isLoading = false;
             state.userName = payload.userName;
             state.isAdmin = payload.isAdmin;

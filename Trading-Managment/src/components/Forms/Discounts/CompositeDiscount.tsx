@@ -2,7 +2,7 @@ import { Dialog, Box, Grid, Typography, Button, TextField } from "@mui/material"
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../../redux/store";
-import { addFirstComposite, addSecondComposite, setpercentageToRegularDiscount } from "../../../reducers/discountSlice";
+import { addFirstComposite, addSecondComposite, rearrangeTree, setpercentageToRegularDiscount } from "../../../reducers/discountSlice";
 
 interface CompositeDiscountProps {
     first: boolean;
@@ -10,6 +10,8 @@ interface CompositeDiscountProps {
 const CompositeDiscount: React.FC<CompositeDiscountProps> = ({ first }) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    const [description, setDescription] = useState('');
     const [rootSource, setRootSource] = useState('');
     const [percentageInput, setPercentageInput] = useState('');
     const [error, setError] = useState('');
@@ -17,6 +19,7 @@ const CompositeDiscount: React.FC<CompositeDiscountProps> = ({ first }) => {
     const [composoreType, setComposoreType] = useState('');
     const [numericType, setNumericType] = useState('');
     const [xorRule, setXorRule] = useState('');
+
 
 
     const handleOnClose = useCallback(() => {
@@ -48,6 +51,7 @@ const CompositeDiscount: React.FC<CompositeDiscountProps> = ({ first }) => {
         debugger;
         if (first) {
             dispatch(addFirstComposite({
+                description: description,
                 percentage: percentageInput,
                 type: type,
                 composoreType: composoreType,
@@ -57,6 +61,7 @@ const CompositeDiscount: React.FC<CompositeDiscountProps> = ({ first }) => {
         }
         else {
             dispatch(addSecondComposite({
+                description: '',
                 rootSource: rootSource,
                 percentage: percentageInput,
                 type: type,
@@ -64,6 +69,7 @@ const CompositeDiscount: React.FC<CompositeDiscountProps> = ({ first }) => {
                 numericType: numericType,
                 xorRule: xorRule,
             }));
+            //dispatch(rearrangeTree());
         }
         navigate("/dashboard/store/superior/conditionalDiscount/leafs");
     };
@@ -100,7 +106,22 @@ const CompositeDiscount: React.FC<CompositeDiscountProps> = ({ first }) => {
                             error={error != ''}
                             onChange={(e) => { handleSetSource(e.target.value) }}
                         />
-                    </Grid> : null
+                    </Grid> :
+                    <>
+                        <Grid item xs={12} sx={{ mt: 2 }}>
+                            <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
+                                enter description
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                required
+                                id="outlined-required"
+                                label="description"
+                                onChange={(e) => { setDescription(e.target.value) }}
+                            />
+                        </Grid>
+                    </>
                 }
                 <Grid item xs={12} sx={{ mt: 2 }}>
                     <TextField
