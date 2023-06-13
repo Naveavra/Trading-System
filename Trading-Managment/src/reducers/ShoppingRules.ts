@@ -69,8 +69,7 @@ const { reducer: shoppingRuleReducer, actions: shoppingRuleActions } = createSli
             state.tmpShopRule = payload;
         },
         setDescritionToCurrent(state, { payload }) {
-            debugger;
-            state.currentShoppingRule.description = payload;
+            //state.currentShoppingRule.description = payload;
             return {
                 ...state,
                 currentShoppingRule: {

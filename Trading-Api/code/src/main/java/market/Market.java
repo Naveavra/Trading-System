@@ -1269,5 +1269,35 @@ public class Market implements MarketInterface {
             return new Response<>(null, "get member notifications failed", e.getMessage());
         }
     }
+    @Override
+    public Response addShoppingRule(int userId, String token, int storeId, String purchasePolicy){
+        try {
+            userAuth.checkUser(userId, token);
+            userController.checkPermission(userId, Action.addPurchaseConstraint, storeId);
+            marketController.addPurchaseConstraint(userId, storeId, purchasePolicy);
+            return logAndRes(Event.LogStatus.Success, "Member added shopping constraint " + userId + " has successfully entered",
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    purchasePolicy, null, null);
+        }catch (Exception e){
+            return logAndRes(Event.LogStatus.Fail, "cant add shopping rule because: " + e.getMessage(),
+                    StringChecks.curDayString(), "user"+userId,
+                    null, "add shopping rule failed", e.getMessage());
+        }
+    }
+    @Override
+     public Response deletePurchasePolicy(String token, int userId, int storeId, int purchasePolicyId){
+        try {
+            userAuth.checkUser(userId, token);
+            userController.checkPermission(userId, Action.addPurchaseConstraint, storeId);
+            marketController.deletePurchaseConstraint(userId, storeId, purchasePolicyId);
+            return logAndRes(Event.LogStatus.Success, "Member deleted shopping constraint " + userId + " has successfully entered",
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    purchasePolicyId, null, null);
+        }catch (Exception e){
+            return logAndRes(Event.LogStatus.Fail, "cant delete shopping rule because: " + e.getMessage(),
+                    StringChecks.curDayString(), "user"+userId,
+                    null, "delete shopping rule failed", e.getMessage());
+        }
+    }
 
 }

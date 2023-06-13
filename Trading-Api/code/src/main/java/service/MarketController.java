@@ -308,4 +308,12 @@ public class MarketController {
         return bid.approvers;
         //send a message to all shop owners and people who need to approve this bid.
     }
+
+    public void addPurchaseConstraint(int userId, int storeId, String purchasePolicy) {
+        //todo miki
+    }
+
+    public void deletePurchaseConstraint(int userId, int storeId, int purchasePolicyId) {
+        //todo miki
+    }
 }

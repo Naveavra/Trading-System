@@ -42,6 +42,11 @@ const AddPurchasePolicy = () => {
         setType(input);
     }
 
+    const handleDescription = (input: string) => {
+        setDescription(input);
+        dispatch(setDescritionToCurrent(input));
+    }
+
     const handleOnSubmit = () => {
         debugger;
         switch (type) {
@@ -62,7 +67,7 @@ const AddPurchasePolicy = () => {
                 break;
         }
         dispatch(addTmpToCurrent());
-        dispatch(setDescritionToCurrent(description));
+        //dispatch(setDescritionToCurrent(description));
         dispatch(addPurchasePolicy({ userId: userId, storeId: storeId, purchasePolicy: purchasePolicy }));
         dispatch(clearTmpShopRule());
         dispatch(clearCurrentShoppingRules());
@@ -136,7 +141,7 @@ const AddPurchasePolicy = () => {
                         required
                         id="outlined-required"
                         label="enter description"
-                        onChange={(e) => { setDescription(e.target.value) }}
+                        onChange={(e) => { handleDescription(e.target.value) }}
                     />
                 </Grid>
                 <Box display={'flex'}>

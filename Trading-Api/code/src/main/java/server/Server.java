@@ -589,13 +589,13 @@ public class Server {
         // ------------------------Bid-------------------------------
 
         //TODO get bid
-        post("api/biddings/regular/addBid", (req, res)->{ //customer places his bid
+        post("api/biddings/addBid", (req, res)->{ //customer places his bid
             JSONObject request= new JSONObject(req.body());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int userId = Integer.parseInt(request.get("userId").toString());
             double price = Double.parseDouble(request.get("price").toString());
-            int prodId = Integer.parseInt(request.get("storeId").toString());
+            int prodId = Integer.parseInt(request.get("prodId").toString());
             int quantity = Integer.parseInt(request.get("quantity").toString());
             toSparkRes(res, api.placeBid(token, storeId, prodId, userId, price,quantity));
             return res.body();
@@ -608,7 +608,7 @@ public class Server {
             int userId = Integer.parseInt(request.get("userId").toString());
             String answer = request.get("answer").toString();
             boolean ans = Objects.equals(answer, "true");
-            int prodId = Integer.parseInt(request.get("prodId").toString());
+            int prodId = Integer.parseInt(request.get("productId").toString());
             int bidId = Integer.parseInt(request.get("bidId").toString());
             toSparkRes(res, api.answerBid(token, storeId, userId, ans, prodId, bidId));
             return res.body();
@@ -633,6 +633,27 @@ public class Server {
             double price = Double.parseDouble(request.get("price").toString());
             int quantity = Integer.parseInt(request.get("quantity").toString());
             toSparkRes(res, api.editBid(token, storeId, userId, price,quantity,bidId));
+            return res.body();
+        });
+
+        //----------------------Bid-------------------------------------
+        //----------------------Purchase--------------------------------
+        post("api/shoppingRule", (req, res) ->{
+           JSONObject request = new JSONObject(req.body());
+           String token = req.headers("Authorization");
+           int storeId = Integer.parseInt(request.get("storeId").toString());
+           int userId = Integer.parseInt(request.get("userId").toString());
+           String purchasePolicy = request.get("purchasePolicy").toString();
+           toSparkRes(res, api.addShoppingRule(token, storeId, userId, purchasePolicy));
+           return res.body();
+        });
+        delete("api/shoppingRule", (req, res) ->{
+            JSONObject request = new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            int purchasePolicyId = Integer.parseInt(request.get("purchasePolicyId").toString());
+            toSparkRes(res, api.deletePurchasePolicy(token, userId, storeId, purchasePolicyId));
             return res.body();
         });
 
