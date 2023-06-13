@@ -275,13 +275,12 @@ public class MarketController {
     public void placeBid(int storeId, Member user, int prodId, double price,int quantity) throws Exception {
         Store s = storectrl.getActiveStore(storeId);
         s.placeBid(user,prodId,price,quantity);
-        //ELI SAVE US ALL
+        //ELI send messages to all shop owners and stuff
     }
 
-    public Pair<Receipt,Set<Integer>> answerBid(int userId, int storeId, boolean ans, int prodId, int bidId) throws Exception {
-        //TODO miki
+    public Pair<Receipt,Set<Integer>> answerBid(String userName, int storeId, boolean ans, int prodId, int bidId) throws Exception {
         Store s = storectrl.getActiveStore(storeId);
-        Bid bid = s.answerBid(userId,prodId,ans);
+        Bid bid = s.answerBid(bidId,userName,prodId,ans);
         if(bid != null){
             ShoppingCart sc = new ShoppingCart();
             sc.addProductToCart(storeId,getProductInformation(storeId,prodId),bid.quantity);
@@ -294,15 +293,18 @@ public class MarketController {
             return res;
         }
         return null;
-        //PLEASE, ELI YOU'RE OUR ONLY HOPE
     }
 
-    public void counterBid(int userId, int storeId, int ans, int prodId, int bidId) {
-        //TODO MIKI
+    public void counterBid(String userName, int storeId, double counterOffer, int prodId, int bidId) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        s.counterBid(bidId,counterOffer,userName);
+        //eli send a message to the user that placed this bid in the first place that he got a counter offer.
+        //send a message to all shop owners and people who need to approve this bid.
     }
 
-    public void editBid(int storeId, Member user, int prodId, double price, int quantity) {
-
-        //todo miki
+    public void editBid(int storeId, int bidId, double price, int quantity) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        Bid bid = s.editBid(bidId,price,quantity);
+        //send a message to all shop owners and people who need to approve this bid.
     }
 }

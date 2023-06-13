@@ -989,12 +989,12 @@ public class Market implements MarketInterface {
         }
     }
     @Override
-    public Response editBid(String token, int userId, int storeId, int prodId, double price,int quantity, int bidId) {
+    public Response editBid(String token, int userId, int storeId,  double price,int quantity, int bidId) {
         try {
             userAuth.checkUser(userId, token);
             // im assuming there is no need to check permission for this action
             Member user = userController.getMember(userId);
-            marketController.editBid(storeId, user, prodId, price,quantity);
+            marketController.editBid(storeId, bidId, price,quantity);
             //usercontoller send notification to other store owners TODO ELI
             return logAndRes(Event.LogStatus.Success, "user placed his successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -1010,7 +1010,7 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.updateProduct, storeId);
-            marketController.answerBid(userId, storeId, ans, prodId, bidId);
+            marketController.answerBid( userController.getUser(userId).getName(), storeId, ans, prodId, bidId);
             return logAndRes(Event.LogStatus.Success, "user answer the bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user answer the bid", null, null);
@@ -1020,11 +1020,11 @@ public class Market implements MarketInterface {
         }
     }
     @Override
-    public Response counterBid(String token, int userId, int storeId, int ans, int prodId, int bidId){
+    public Response counterBid(String token, int userId, int storeId, double counterOffer, int prodId, int bidId){
         try{
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.updateProduct, storeId);
-            marketController.counterBid(userId, storeId, ans, prodId, bidId);
+            marketController.counterBid(userController.getUserName(userId), storeId, counterOffer, prodId, bidId);
             return logAndRes(Event.LogStatus.Success, "user answer with counter bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user answer with counter bid", null, null);

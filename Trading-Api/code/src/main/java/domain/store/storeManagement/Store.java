@@ -26,6 +26,7 @@ import utils.messageRelated.Question;
 import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
+import utils.stateRelated.Action;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,6 +70,8 @@ public class Store extends Information{
     @Transient
     private DiscountFactory discountFactory;
 
+    private AtomicInteger bidIds;
+
     public Store(){
     }
     public Store(int id, String description, Member creator){
@@ -90,6 +93,7 @@ public class Store extends Information{
         discounts = new ArrayList<>();
         bids = new ArrayList<>();
         approvedBids = new ArrayList<>();
+        bidIds = new AtomicInteger();
 
     }
 
@@ -112,6 +116,7 @@ public class Store extends Information{
         discounts = new ArrayList<>();
         this.storeName = storeName;
         this.imgUrl = imgUrl;
+        bidIds = new AtomicInteger();
     }
 
     public void changeName(String storeName){
@@ -574,23 +579,45 @@ public class Store extends Information{
             if(bid.getUser().getId() == user.getId() && bid.getProduct().getID() == prodId)
                 throw new Exception("Cannot place a bid on the same item more than once.");
         }
-        bids.add(new Bid(user,inventory.getProduct(prodId),price,quantity));
-
+        bids.add(new Bid(bidIds.getAndIncrement(),user,inventory.getProduct(prodId),price,quantity, (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct)));
     }
 
-    public Bid answerBid(int userId, int prodId, boolean ans) throws Exception {
+    public Bid answerBid(int bidId,String userName, int prodId, boolean ans) throws Exception {
         for(Bid bid : this.bids){
-            if(bid.getUser().getId() == userId && bid.getProduct().getID()== prodId){
+            if(bid.bidId == bidId && bid.isPending()){
                 if(ans){
-                    bid.approveBid();
-                    bids.remove(bid);
-                    approvedBids.add(bid);
-                    return bid;
+                    bid.approveBid(userName);
+                    if(bid.isApproved()){
+                        bids.remove(bid);
+                        approvedBids.add(bid);
+                        return bid;
+                    }
+                    return null;
                 }
                 bid.declineBid();
+                //eli needs to send message to the user that placed the bid
                 return null;
             }
         }
         return null;
+    }
+
+    public void counterBid(int bidId, double counterOffer, String userName) throws Exception {
+        for(Bid bid : this.bids){
+            if(bid.bidId == bidId){
+                bid.counterBid(counterOffer,userName);
+            }
+        }
+        throw new Exception("Bid doesnt exist "+bidId);
+    }
+
+    public Bid editBid(int bidId, double price, int quantity) throws Exception {
+        for(Bid bid: this.bids){
+            if(bid.bidId == bidId){
+                bid.editBid(price,quantity);
+                return bid;
+            }
+        }
+        throw new Exception("Bid doesnt exist "+bidId);
     }
 }

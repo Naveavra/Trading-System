@@ -152,4 +152,7 @@ public abstract class UserState extends Information {
     public void setStoreId(int storeId) {
         this.storeId = storeId;
     }
+    public String getUserName(){
+        return this.userName;
+    }
 }

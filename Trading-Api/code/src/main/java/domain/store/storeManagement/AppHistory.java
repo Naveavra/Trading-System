@@ -201,12 +201,12 @@ public class AppHistory{
         add.add(n.data.getSecond());
     }
 
-    public List<Integer> getStoreWorkersWithPermission(Action permission)
+    public List<String> getStoreWorkersWithPermission(Action permission)
     {
-        List<Integer> lst = new ArrayList<>();
+        List<String> lst = new ArrayList<>();
         for (UserState state : getRoles())
         {
-            if (state.checkPermission(permission)){lst.add(state.getUserId());}
+            if (state.checkPermission(permission)){lst.add(state.getUserName());}
         }
         return lst;
     }

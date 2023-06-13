@@ -620,10 +620,10 @@ public class Server {
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int userId = Integer.parseInt(request.get("userId").toString());
-            int ans = Integer.parseInt(request.get("answer").toString()); //counter Bid
+            double counterOffer = Double.parseDouble(request.get("offer").toString()); //counter Bid
             int prodId = Integer.parseInt(request.get("prodId").toString());
             int bidId = Integer.parseInt(request.get("bidId").toString());
-            toSparkRes(res, api.counterBid(token, storeId, userId, ans, prodId, bidId));
+            toSparkRes(res, api.counterBid(token, storeId, userId, counterOffer, prodId, bidId));
             return res.body();
         });
         post("api/biddings/editBid", (req, res) -> { //editBid, customer changing his bid
@@ -633,9 +633,8 @@ public class Server {
             int userId = Integer.parseInt(request.get("userId").toString());
             int bidId = Integer.parseInt(request.get("bidId").toString());
             double price = Double.parseDouble(request.get("price").toString());
-            int prodId = Integer.parseInt(request.get("storeId").toString());
             int quantity = Integer.parseInt(request.get("quantity").toString());
-            toSparkRes(res, api.editBid(token, storeId, prodId, userId, price,quantity,bidId));
+            toSparkRes(res, api.editBid(token, storeId, userId, price,quantity,bidId));
             return res.body();
         });
 
