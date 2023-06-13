@@ -6,10 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "appointments")
 public class AppointmentDto {
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "storeId", foreignKey = @ForeignKey, referencedColumnName = "storeId")
-    private StoreDto storeDto;
+    private int storeId;
     @Id
     private int fatherId;
     @Id
@@ -18,18 +15,18 @@ public class AppointmentDto {
 
     public AppointmentDto() {
     }
-    public AppointmentDto(StoreDto storeDto, int fatherId, int childId) {
-        this.storeDto = storeDto;
+    public AppointmentDto(int storeId, int fatherId, int childId) {
+        this.storeId = storeId;
         this.fatherId = fatherId;
         this.childId = childId;
     }
 
-    public StoreDto getStoreDto() {
-        return storeDto;
+    public int getStoreId() {
+        return storeId;
     }
 
-    public void setStoreDto(StoreDto storeDto) {
-        this.storeDto = storeDto;
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
     }
 
     public int getFatherId() {

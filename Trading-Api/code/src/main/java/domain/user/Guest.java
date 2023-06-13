@@ -4,6 +4,7 @@ import domain.store.product.Product;
 import org.json.JSONObject;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
+import utils.infoRelated.Receipt;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +57,7 @@ public class Guest implements User{
         return "guest" + id;
     }
 
-    public void purchaseMade(int orderId, double totalPrice){
+    public void purchaseMade(Receipt receipt){
         emptyCart();
     }
 

@@ -1,11 +1,15 @@
 package domain.user;
 
+import database.daos.DaoTemplate;
+import database.dtos.CartDto;
 import database.dtos.MemberDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
+import jakarta.persistence.*;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
+import utils.infoRelated.Receipt;
 import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
@@ -17,19 +21,24 @@ import java.util.*;
 import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
 
 
+@Entity
 public class Member extends Subscriber implements User{
 
-    private transient Guest g;
-    private String birthday;
-
+    @Transient
+    private ShoppingCart cart;
+    @Transient
     private List<UserState> roles; //connection between registered to the shops
+    @Transient
     private PurchaseHistory purchaseHistory;
+
+    public Member(){
+    }
     public Member(int id, String email, String password, String birthday) {
         super(id, email, password);
         this.birthday = birthday;
         roles = new ArrayList<>();
-        purchaseHistory = new PurchaseHistory(this.id);
-        g = new Guest(id);
+        purchaseHistory = new PurchaseHistory(id);
+        cart = new ShoppingCart();
         memberDto.setBirthday(birthday);
     }
     public boolean getIsConnected(){
@@ -51,11 +60,13 @@ public class Member extends Subscriber implements User{
         try {
             state = getRole(storeId);
         }catch (Exception e){
+            DaoTemplate.save(userState);
             roles.add(userState);
             return;
         }
         if (state.getRole() == userState.getRole())
             throw new Exception("the member already has this role in this store");
+        DaoTemplate.save(userState);
         roles.add(userState);
     }
     public String getBirthday(){return birthday;}
@@ -87,10 +98,11 @@ public class Member extends Subscriber implements User{
 
 
     public void addProductToCart(int storeId, ProductInfo product, int quantity) throws Exception{
-            g.addProductToCart(storeId, product, quantity);
+        cart.addProductToCart(storeId, product, quantity);
+        DaoTemplate.save(new CartDto(id, storeId, product.id, quantity));
     }
     public void emptyCart(){
-        g.emptyCart();
+        cart.emptyCart();
     }
 
     @Override
@@ -99,24 +111,34 @@ public class Member extends Subscriber implements User{
     }
 
     public void removeProductFromCart(int storeId, int productId) throws Exception{
-        g.removeProductFromCart(storeId, productId);
+        cart.removeProductFromCart(storeId, productId);
+        String param = String.format("memberId = %d AND storeId = %s AND productId = %d", id, storeId, productId);
+        DaoTemplate.removeIf("CartDto", param);
+//        productsDto.removeIf(cartDto -> cartDto.getStoreId() == storeId && cartDto.getProductId() == productId);
     }
 
     public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
-        g.changeQuantityInCart(storeId, product, change);
+        cart.changeQuantityInCart(storeId, product, change);
+        String sets = String.format("quantity = %d", cart.getBasket(storeId).getProduct(product.id).getQuantity());
+        String conditions = String.format("memberId = %d AND storeId = %d AND productId = %d", id, storeId, product.getId());
+        DaoTemplate.updateFor("CartDto", sets, conditions);
     }
 
     public List<ProductInfo> getCartContent() {
-        return g.getCartContent();
+        return cart.getContent();
     }
 
-    public void purchaseMade(int orderId, double totalPrice){
-        purchaseHistory.addPurchaseMade(orderId, totalPrice, g.getShoppingCart());
-        g.emptyCart();
+    public void purchaseMade(Receipt receipt){
+        purchaseHistory.addPurchaseMade(receipt);
+        String condition = String.format("memberId = %d", id);
+        DaoTemplate.removeIf("CartDto",condition);
+        cart.emptyCart();
     }
 
     public void openStore(Store store) {
+        DaoTemplate.save(store);
         UserState creator = new StoreCreator(id, email, store);
+        DaoTemplate.save(creator);
         roles.add(creator);
     }
 
@@ -209,6 +231,7 @@ public class Member extends Subscriber implements User{
 
     public void removeRoleInStore(int storeId) throws Exception{
         UserState state = getRole(storeId);
+        DaoTemplate.remove(state);
         roles.remove(state);
     }
 
@@ -248,7 +271,7 @@ public class Member extends Subscriber implements User{
     }
 
     public Info getInformation(int storeId){
-        Info info = new Info(id, email, birthday, StringChecks.calculateAge(birthday));
+        Info info = new Info(id, email, birthday, StringChecks.calculateAge(birthday), purchaseHistory);
         try {
             UserState state = getRole(storeId);
             info.addRole(state.getRole());
@@ -274,6 +297,10 @@ public class Member extends Subscriber implements User{
                 ans.put(state.getStore().getStoreId(), state.getRole());
         }
         return ans;
+    }
+
+    public List<UserState> getStates(){
+        return roles;
     }
 
     public HashMap<Integer, String> getStoreNames() {
@@ -309,7 +336,7 @@ public class Member extends Subscriber implements User{
 
     public ShoppingCart getShoppingCart() throws Exception {
         if(isConnected)
-            return g.getShoppingCart();
+            return cart;
         throw new Exception("the member is not connected");
     }
 
@@ -324,11 +351,11 @@ public class Member extends Subscriber implements User{
     public MemberDto getDto() {
         List<Notification> nlist = new ArrayList<>(notifications);
         memberDto.setNotifications(nlist);
-        memberDto.setCartProducts(g.getShoppingCart());
+        memberDto.setCartProducts(cart);
         memberDto.setPurchases(purchaseHistory);
         memberDto.setStores(getStores());
         return memberDto;
     }
     @Override
-    public void setShoppingCart(ShoppingCart cart) {this.g.setShoppingCart(cart);}
+    public void setShoppingCart(ShoppingCart cart) {this.cart = cart;}
 }

@@ -24,7 +24,6 @@ public class API {
         market = new Market(a);
         actionStrings = new HashMap<>();
         getActionStrings();
-
     }
 
     public Pair<Boolean, JSONObject> fromResToPair(Response res){

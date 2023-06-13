@@ -2,6 +2,8 @@ package market;
 
 import database.dtos.AdminDto;
 import domain.user.Subscriber;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 import service.MarketController;
 import service.UserController;
 import utils.infoRelated.LoginInformation;
@@ -12,12 +14,17 @@ import utils.stateRelated.Action;
 import java.util.List;
 import java.util.Set;
 
+@Entity
 public class Admin extends Subscriber {
-
+    @Transient
     private MarketController marketController;
+    @Transient
     private UserController userController;
-
+    @Transient
     private AdminDto adminDto;
+
+    public Admin(){
+    }
     public Admin(int adminId, String email, String password){
         super(adminId, email, password);
         adminDto = new AdminDto(adminId);
@@ -32,7 +39,7 @@ public class Admin extends Subscriber {
         for(int userId : userIds){
             if(creatId != userId) {
                 String notify = "the store: " + storeId + " has been permanently closed";
-                Notification<String> notification = new Notification<>(NotificationOpcode.CLOSE_STORE_PERMANENTLY, notify);
+                Notification notification = new Notification(NotificationOpcode.CLOSE_STORE_PERMANENTLY, notify);
                 userController.addNotification(userId, notification);
                 userController.removeStoreRole(userId, storeId);
             }

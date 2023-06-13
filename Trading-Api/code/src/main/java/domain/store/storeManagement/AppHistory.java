@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import utils.Pair;
 import utils.infoRelated.Info;
 import utils.infoRelated.Information;
-import utils.stateRelated.Role;
 
 import java.util.*;
 

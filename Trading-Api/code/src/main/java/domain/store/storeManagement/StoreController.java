@@ -1,5 +1,6 @@
 package domain.store.storeManagement;
 
+import database.daos.DaoTemplate;
 import domain.store.discount.AbstractDiscount;
 import domain.store.discount.Discount;
 import domain.store.discount.discountDataObjects.DiscountDataObject;
@@ -369,6 +370,7 @@ public class StoreController {
     public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
         Store s = getStore(storeId);
         s.setStoreAttributes(name, description, img);
+        DaoTemplate.update(s);
     }
     public ArrayList<PredicateDataObject> parsePredicateData(ArrayList<String> predData){
         ArrayList<PredicateDataObject> predicates = new ArrayList<>();

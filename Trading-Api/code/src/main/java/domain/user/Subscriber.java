@@ -1,6 +1,8 @@
 package domain.user;
 
+import database.daos.DaoTemplate;
 import database.dtos.MemberDto;
+import jakarta.persistence.*;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -11,15 +13,29 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+
+
+
+@Entity
+@Table(name = "users")
 public abstract class Subscriber {
 
+    @Id
     protected int id;
     protected String email;
     protected String birthday;
     protected String password;
+
+    @Transient
     protected boolean isConnected;
+    @Transient
     protected MemberDto memberDto;
+
+    @Transient
     protected BlockingQueue<Notification> notifications;
+
+    public Subscriber(){
+    }
     public Subscriber(int id, String email, String password){
         this.id = id;
         this.email = email;
@@ -37,6 +53,8 @@ public abstract class Subscriber {
         return email;
     }
     public String getPassword(){return password;}
+
+    public String getBirthday(){return birthday;}
 
     public void connect(){
         isConnected = true;
@@ -60,20 +78,26 @@ public abstract class Subscriber {
     }
 
     public synchronized void addNotification(Notification notification){
-        notifications.offer(notification);
+        notification.setSubId(id);
+        boolean got = notifications.offer(notification);
+        if(got) {
+            DaoTemplate.save(notification);
+        }
+
     }
 
     public List<Notification> displayNotifications(){
-        List<Notification> display = new LinkedList<>();
-        for (Notification notification : notifications)
-            display.add(notification);
+        List<Notification> display = new LinkedList<>(notifications);
+        DaoTemplate.removeIf("Notification", String.format("subId = %d", id));
         notifications.clear();
         return display;
     }
 
     public Notification getNotification() throws InterruptedException {
         synchronized (notifications) {
-            return notifications.take();
+            Notification n = notifications.take();
+            DaoTemplate.remove(n);
+            return n;
         }
     }
 

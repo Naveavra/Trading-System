@@ -44,7 +44,7 @@ public class MarketController {
         order.setStatus(Status.pending);
         Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
         order.setStatus(Status.submitted);
-        Receipt receipt = new Receipt(user.getId(), order.getOrderId(), shoppingCart, order.getTotalPrice());
+        Receipt receipt = new Receipt(order.getOrderId(), shoppingCart, order.getTotalPrice());
         Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);
         return ans;
     }

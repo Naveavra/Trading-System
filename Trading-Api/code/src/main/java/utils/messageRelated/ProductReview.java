@@ -1,8 +1,12 @@
 package utils.messageRelated;
 
 import domain.user.Member;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import org.json.JSONObject;
 
+@Entity
+@Table(name = "productReviews")
 public class ProductReview extends StoreReview{
     private int productId;
 

@@ -1,5 +1,7 @@
 package domain.store.storeManagement;
 
+import database.daos.DaoTemplate;
+import database.dtos.AppointmentDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.discount.Discount;
@@ -12,6 +14,7 @@ import domain.store.purchase.PurchasePolicy;
 import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
+import jakarta.persistence.*;
 import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
@@ -29,48 +32,70 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+
+@Entity
+@Table(name = "stores")
 public class Store extends Information{
-    private final int storeid;
+    @Id
+    private int storeId;
     private String storeName;
     private boolean isActive;
-    private transient Member creator;
+    @Id
+    private int creatorId;//for db, don't remove
+    @Transient
+    private Member creator;
+
     private String storeDescription;
-    private final AppHistory appHistory; //first one is always the store creator //n
-    private final Inventory inventory; //<productID,<product, quantity>>
-    private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
-    private final ConcurrentHashMap<Integer, StoreReview> storeReviews; //<messageid, message>
-    private final ConcurrentHashMap<Integer, Question> questions;
+    @Transient
+    private AppHistory appHistory; //first one is always the store creator //n
+    @Transient
+    private Inventory inventory; //<productID,<product, quantity>>
+    @Transient
+    private ConcurrentHashMap<Integer, Order> storeOrders; //orederid, order
+    @Transient
+    private ConcurrentHashMap<Integer, StoreReview> storeReviews; //<messageid, message>
+    @Transient
+    private ConcurrentHashMap<Integer, Question> questions;
 
     private String imgUrl;
 //    private DiscountPolicy discountPolicy;
 //    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
+    @Transient
     private ArrayList<PurchasePolicy> purchasePolicies;
+    @Transient
     private ArrayList<Discount> discounts;
+    @Transient
     private DiscountFactory discountFactory;
 
+    public Store(){
+    }
     public Store(int id, String description, Member creator){
-        Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
-        this.storeid = id;
-        appHistory = new AppHistory(storeid, creatorNode);
+        StoreCreator sc = new StoreCreator(creator.getId(), creator.getName(), this);
+        Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
+        this.storeId = id;
+        appHistory = new AppHistory(storeId, creatorNode);
         this.storeDescription = description;
         this.creator = creator;
-        this.inventory = new Inventory(storeid);
+        this.creatorId = creator.getId();
+        this.inventory = new Inventory(storeId);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
         this.purchasePolicies = new ArrayList<>();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
-        discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
+        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
     }
 
     public Store(int storeid, String storeName, String description, String imgUrl, Member creator){
-        Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
-        this.storeid = storeid;
+        StoreCreator sc = new StoreCreator(creator.getId(), creator.getName(), this);
+        Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
+        this.storeId = storeid;
         appHistory = new AppHistory(storeid, creatorNode);
         this.storeDescription = description;
         this.creator = creator;
+        this.creatorId = creator.getId();
         this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
@@ -110,6 +135,7 @@ public class Store extends Information{
 
     public int addQuestion(Question q)
     {
+        DaoTemplate.save(q);
         questions.put(q.getMessageId(), q);
         return creator.getId();
     }
@@ -117,8 +143,10 @@ public class Store extends Information{
 
     public void answerQuestion(int messageID, String answer) throws Exception {
         Question msg = questions.get(messageID);
-        if(msg != null)
+        if(msg != null) {
             msg.sendFeedback(answer);
+            DaoTemplate.save(msg);
+        }
         else
             throw new Exception("the id given does not belong to any question that was sent to store");
     }
@@ -149,7 +177,7 @@ public class Store extends Information{
 
     public int getStoreId()
     {
-        return storeid;
+        return storeId;
     }
 
     public int getCreator() {
@@ -191,11 +219,13 @@ public class Store extends Information{
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
         Pair<Member, UserState> node = new Pair<>(newUser, role);
         appHistory.addNode(userinchargeid, node);
+        DaoTemplate.save(new AppointmentDto(storeId, userinchargeid, newUser.getId()));
     }
 
     public int addReview(int orderId, StoreReview review) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
+            DaoTemplate.save(review);
             storeReviews.put(review.getMessageId(), review);
             return creator.getId();
         }
@@ -221,7 +251,9 @@ public class Store extends Information{
      */
     public Set<Integer> fireUser(int joblessuser) throws Exception
     {
-        return new HashSet<>(appHistory.removeChild(joblessuser));
+        Set<Integer> ans = new HashSet<>(appHistory.removeChild(joblessuser));
+        DaoTemplate.removeIf("AppointmentDto", String.format("fatherId = %d OR childId = %d", joblessuser, joblessuser));
+        return ans;
     }
 
     public Inventory getInventory()
@@ -384,7 +416,7 @@ public class Store extends Information{
 
         if (inventory.getProduct(productId) != null)
         {
-            return inventory.getProductInfo(storeid, productId);
+            return inventory.getProductInfo(storeId, productId);
         }
         throw new Exception("cant get product information");
     }
@@ -468,14 +500,14 @@ public class Store extends Information{
     }
 
     public StoreInfo getStoreInformation() {
-        StoreInfo info = new StoreInfo(storeid, storeName, storeDescription, isActive, creator.getId(), getStoreRating(), imgUrl);
+        StoreInfo info = new StoreInfo(storeId, storeName, storeDescription, isActive, creator.getId(), getStoreRating(), imgUrl);
         return info;
     }
 
     public double handleDiscount(Order order) throws Exception {
         double totalAmountToBeSubtracted = 0;
         for(Discount dis: discounts){
-            totalAmountToBeSubtracted += dis.handleDiscount(order.getShoppingCart().getBasket(storeid),order);
+            totalAmountToBeSubtracted += dis.handleDiscount(order.getShoppingCart().getBasket(storeId),order);
         }
         order.setTotalPrice(order.getTotalPrice() - totalAmountToBeSubtracted);
         return order.getTotalPrice();

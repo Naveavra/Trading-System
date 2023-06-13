@@ -1,6 +1,6 @@
 package database.dtos;
 
-import domain.states.Permission;
+import domain.states.Permissions;
 import jakarta.persistence.*;
 import utils.stateRelated.Action;
 
@@ -75,7 +75,7 @@ public class RoleDto {
     public void setPermissions(List<Action> actions) {
         List<PermissionDto> permissionDtos = new ArrayList<>();
         for(Action a : actions)
-            permissionDtos.add(new PermissionDto(this, Permission.getActionsMap().get(a)));
+            permissionDtos.add(new PermissionDto(this, Permissions.getActionsMap().get(a)));
         permissions = permissionDtos;
     }
 }

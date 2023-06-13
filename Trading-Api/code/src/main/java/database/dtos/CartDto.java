@@ -6,9 +6,7 @@ import jakarta.persistence.*;
 public class CartDto {
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "userId", foreignKey = @ForeignKey, referencedColumnName = "id")
-    private MemberDto memberDto;
+    private int memberId;
     @Id
     private int storeId;
     @Id
@@ -18,19 +16,11 @@ public class CartDto {
     public CartDto(){
     }
 
-    public CartDto(MemberDto memberDto, int storeId, int productId, int quantity){
-        this.memberDto = memberDto;
+    public CartDto(int memberId, int storeId, int productId, int quantity){
+        this.memberId = memberId;
         this.storeId = storeId;
         this.productId = productId;
         this.quantity = quantity;
-    }
-
-    public MemberDto getMemberDto() {
-        return memberDto;
-    }
-
-    public void setMemberDto(MemberDto memberDto) {
-        this.memberDto = memberDto;
     }
 
     public int getStoreId() {
@@ -55,5 +45,13 @@ public class CartDto {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(int memberId) {
+        this.memberId = memberId;
     }
 }

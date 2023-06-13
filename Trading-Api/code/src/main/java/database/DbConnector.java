@@ -1,9 +1,6 @@
 package database;
 
-import database.daos.AdminDao;
-import database.daos.ComplaintDao;
-import database.daos.MemberDao;
-import database.daos.StoreDao;
+import database.daos.*;
 import database.dtos.*;
 import domain.store.product.Product;
 import domain.store.storeManagement.Store;
@@ -41,6 +38,10 @@ public class DbConnector {
         storeHashMap = new HashMap<>();
     }
 
+
+    public void checkSaveSubscriber(Subscriber s){
+        DaoTemplate.save(s);
+    }
     public Member getMemberFromDb(int memberId) throws Exception{
         MemberDto memberDto = memberDao.getMemberById(memberId);
         if(memberDto != null)
@@ -81,7 +82,7 @@ public class DbConnector {
                 ProductInfo productInfo = new ProductInfo(receiptDto.getStoreId(), p, receiptDto.getQuantity());
                 cart.changeQuantityInCart(receiptDto.getStoreId(), productInfo, receiptDto.getQuantity());
             }
-            purchaseHistory.addPurchaseMade(userHistoryDto.getReceiptId(), userHistoryDto.getTotalPrice(), cart);
+            //purchaseHistory.addPurchaseMade(userHistoryDto.getReceiptId(), userHistoryDto.getTotalPrice(), cart);
         }
         purchaseHistoryHashMap.put(member.getId(), purchaseHistory);
         member.setPurchaseHistory( purchaseHistory);
@@ -128,7 +129,7 @@ public class DbConnector {
         }
         InventoryDto inventoryDto = storeDao.getStoreProduct(storeId, productId);
         if(inventoryDto != null) {
-            Product product = new Product(inventoryDto.getProductId(), inventoryDto.getName(),
+            Product product = new Product(inventoryDto.getStoreDto().getId(), inventoryDto.getProductId(), inventoryDto.getName(),
                     inventoryDto.getDescription(), inventoryDto.getImg());
             if (!storeExist){
                 storesInventory.put(storeId, new HashMap<>());
