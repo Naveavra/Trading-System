@@ -626,7 +626,7 @@ public class Server {
             toSparkRes(res, api.counterBid(token, storeId, userId, ans, prodId, bidId));
             return res.body();
         });
-        patch("api/biddings/addBid", (req, res) -> { //editBid, customer changing his bid
+        post("api/biddings/editBid", (req, res) -> { //editBid, customer changing his bid
             JSONObject request= new JSONObject(req.body());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
