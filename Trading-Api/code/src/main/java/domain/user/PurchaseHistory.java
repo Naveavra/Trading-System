@@ -1,7 +1,6 @@
 package domain.user;
 
-import database.daos.DaoTemplate;
-import jakarta.persistence.*;
+import database.Dao;
 import utils.infoRelated.Receipt;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class PurchaseHistory{
 
     public void addPurchaseMade(Receipt receipt){
         receipt.setMemberId(userId);
-        DaoTemplate.save(receipt);
+        Dao.save(receipt);
         purchaseHistory.put(receipt.getOrderId(), receipt);
     }
 

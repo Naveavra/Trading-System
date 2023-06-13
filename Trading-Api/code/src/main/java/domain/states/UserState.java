@@ -1,6 +1,6 @@
 package domain.states;
 
-import database.daos.DaoTemplate;
+import database.Dao;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import jakarta.persistence.*;
@@ -119,7 +119,7 @@ public abstract class UserState extends Information {
         checkPermission(Action.closeStore);
         //setIsActive(false);
         Set<Integer> ans = store.closeStoreTemporary(userId);
-        DaoTemplate.update(store);
+        Dao.update(store);
         return ans;
     }
 
@@ -127,7 +127,7 @@ public abstract class UserState extends Information {
         checkPermission(Action.reopenStore);
         //setIsActive(true);
         Set<Integer> ans = store.reopenStore(userId);
-        DaoTemplate.update(store);
+        Dao.update(store);
         return ans;
     }
 

@@ -1,15 +1,14 @@
-package database.daos;
+package database;
 
 import database.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import utils.messageRelated.Notification;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DaoTemplate {
+public class Dao {
 
     public static void save(Object o){
         Transaction transaction = null;

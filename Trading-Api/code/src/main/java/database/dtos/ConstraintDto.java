@@ -8,22 +8,13 @@ public class ConstraintDto {
     @Id
     private int constraintId;
     @Id
-    @ManyToOne
-    @JoinColumn(name = "storeId", foreignKey = @ForeignKey(name = "storeId"), referencedColumnName = "storeId")
-    private StoreDto storeDto;
+    private int storeId;
     private String content;
     public ConstraintDto(){}
-    public ConstraintDto(StoreDto storeDto, int constraintId, String content){
-        this.storeDto = storeDto;
+    public ConstraintDto(int storeId, int constraintId, String content){
+        this.storeId = storeId;
         this.constraintId = constraintId;
         this.content = content;
-    }
-
-    public void setStoreDto(StoreDto storeDto) {
-        this.storeDto = storeDto;
-    }
-    public StoreDto getStoreDto() {
-        return storeDto;
     }
 
     public String getContent() {
@@ -40,5 +31,13 @@ public class ConstraintDto {
 
     public void setDiscountId(int constraintId) {
         this.constraintId = constraintId;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
     }
 }

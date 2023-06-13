@@ -1,8 +1,6 @@
 package market;
 
-import database.daos.DaoTemplate;
-import database.daos.LoggerDao;
-import database.dtos.LoggerDto;
+import database.Dao;
 import domain.states.Permissions;
 import domain.store.storeManagement.AppHistory;
 import domain.user.Member;
@@ -42,9 +40,6 @@ public class Market implements MarketInterface {
 
     private MarketInfo marketInfo;
 
-
-    private LoggerDao loggerDao;
-
     public Market(Admin a) {
 
         logger = Logger.getInstance();
@@ -64,8 +59,6 @@ public class Market implements MarketInterface {
         actionIds = Permissions.getActionIds();
 
         addAdmin(a);
-
-        loggerDao = new LoggerDao();
     }
 
 
@@ -170,7 +163,7 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<List<String>> displayNotifications(int userId, String token) {
+    public Response<List<Notification>> displayNotifications(int userId, String token) {
         try {
             userAuth.checkUser(userId, token);
             List<Notification> notifications = userController.displayNotifications(userId);
@@ -1239,14 +1232,14 @@ public class Market implements MarketInterface {
                               Object value, String errorTi , String errorMsg) {
         Event event = new Event(state, content, time, userName);
         logger.log(event);
-        DaoTemplate.save(event);
+        Dao.save(event);
         return new Response<>(value, errorTi, errorMsg);
     }
 
       
-    public Response<List<String>> getMemberNotifications(int userId, String token) {
+    public Response<List<Notification>> getMemberNotifications(int userId, String token) {
         try {
-            return new Response<List<String>>(displayNotifications(userId, token).getValue(), null, null);
+            return new Response<List<Notification>>(displayNotifications(userId, token).getValue(), null, null);
         }catch (Exception e){
             return new Response<>(null, "get member notifications failed", e.getMessage());
         }
@@ -1260,29 +1253,6 @@ public class Market implements MarketInterface {
                     userController.getNotification(userId), null, null);
         }catch (Exception e){
             return new Response<>(null, "get member notifications failed", e.getMessage());
-        }
-    }
-
-    //database
-    public Response<String> saveState(){
-        try {
-            for (Event e : logger.getEventMap())
-                loggerDao.saveLog(new LoggerDto(e.getStatus().toString(), e.getContent(), e.getTime(), e.getUserName()));
-            userController.saveState();
-            return new Response<>("save state succeeded", null, null);
-        }catch (Exception e){
-            return new Response<>(null, "save state failed", e.getMessage());
-        }
-    }
-
-    public Response<String> updateState() {
-        try {
-            for (Event e : logger.getEventMap())
-                loggerDao.updateLog(new LoggerDto(e.getStatus().toString(), e.getContent(), e.getTime(), e.getUserName()));
-            userController.updateState();
-            return new Response<>("update state succeeded", null, null);
-        }catch (Exception e){
-            return new Response<>(null, "update state failed", e.getMessage());
         }
     }
 

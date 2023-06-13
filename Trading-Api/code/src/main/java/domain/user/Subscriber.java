@@ -1,7 +1,6 @@
 package domain.user;
 
-import database.daos.DaoTemplate;
-import database.dtos.MemberDto;
+import database.Dao;
 import jakarta.persistence.*;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
@@ -10,7 +9,9 @@ import utils.stateRelated.Action;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
@@ -28,8 +29,6 @@ public abstract class Subscriber {
 
     @Transient
     protected boolean isConnected;
-    @Transient
-    protected MemberDto memberDto;
 
     @Transient
     protected BlockingQueue<Notification> notifications;
@@ -43,7 +42,6 @@ public abstract class Subscriber {
         this.birthday = "no input";
         notifications = new LinkedBlockingQueue<>();
         isConnected = false;
-        memberDto = new MemberDto(id, email, password, birthday);
     }
 
     public int getId(){
@@ -80,15 +78,13 @@ public abstract class Subscriber {
     public synchronized void addNotification(Notification notification){
         notification.setSubId(id);
         boolean got = notifications.offer(notification);
-        if(got) {
-            DaoTemplate.save(notification);
-        }
-
+        if(got)
+            Dao.save(notification);
     }
 
     public List<Notification> displayNotifications(){
         List<Notification> display = new LinkedList<>(notifications);
-        DaoTemplate.removeIf("Notification", String.format("subId = %d", id));
+        Dao.removeIf("Notification", String.format("subId = %d", id));
         notifications.clear();
         return display;
     }
@@ -96,19 +92,17 @@ public abstract class Subscriber {
     public Notification getNotification() throws InterruptedException {
         synchronized (notifications) {
             Notification n = notifications.take();
-            DaoTemplate.remove(n);
-            return n;
+            if(isConnected) {
+                Dao.remove(n);
+                return n;
+            }else{
+                notifications.offer(n);
+                return null;
+            }
         }
     }
 
     public abstract LoginInformation getLoginInformation(String token);
     public abstract void checkPermission(Action action, int storeId)  throws Exception;
-
-    //database
-    public MemberDto getDto() {
-        List<Notification> nlist = new ArrayList<>(notifications);
-        memberDto.setNotifications(nlist);
-        return memberDto;
-    }
 
 }

@@ -12,6 +12,7 @@ import java.util.*;
 import org.json.JSONObject;
 import utils.infoRelated.*;
 import utils.Response;
+import utils.messageRelated.Notification;
 import utils.stateRelated.Role;
 
 public class BridgeImplement implements Bridge {
@@ -525,8 +526,8 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public List<String> getNotifications(int userId) {
-        Response<List<String>> res = market.displayNotifications(userId, token);
+    public List<Notification> getNotifications(int userId) {
+        Response<List<Notification>> res = market.displayNotifications(userId, token);
         if(!res.errorOccurred())
         {
             return res.getValue();

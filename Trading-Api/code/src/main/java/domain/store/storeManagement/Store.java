@@ -1,6 +1,6 @@
 package domain.store.storeManagement;
 
-import database.daos.DaoTemplate;
+import database.Dao;
 import database.dtos.AppointmentDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
@@ -145,7 +145,7 @@ public class Store extends Information{
 
     public int addQuestion(Question q)
     {
-        DaoTemplate.save(q);
+        Dao.save(q);
         questions.put(q.getMessageId(), q);
         return creator.getId();
     }
@@ -155,7 +155,7 @@ public class Store extends Information{
         Question msg = questions.get(messageID);
         if(msg != null) {
             msg.sendFeedback(answer);
-            DaoTemplate.save(msg);
+            Dao.save(msg);
         }
         else
             throw new Exception("the id given does not belong to any question that was sent to store");
@@ -229,13 +229,13 @@ public class Store extends Information{
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
         Pair<Member, UserState> node = new Pair<>(newUser, role);
         appHistory.addNode(userinchargeid, node);
-        DaoTemplate.save(new AppointmentDto(storeId, userinchargeid, newUser.getId()));
+        Dao.save(new AppointmentDto(storeId, userinchargeid, newUser.getId()));
     }
 
     public int addReview(int orderId, StoreReview review) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
-            DaoTemplate.save(review);
+            Dao.save(review);
             storeReviews.put(review.getMessageId(), review);
             return creator.getId();
         }
@@ -262,7 +262,7 @@ public class Store extends Information{
     public Set<Integer> fireUser(int joblessuser) throws Exception
     {
         Set<Integer> ans = new HashSet<>(appHistory.removeChild(joblessuser));
-        DaoTemplate.removeIf("AppointmentDto", String.format("fatherId = %d OR childId = %d", joblessuser, joblessuser));
+        Dao.removeIf("AppointmentDto", String.format("fatherId = %d OR childId = %d", joblessuser, joblessuser));
         return ans;
     }
 

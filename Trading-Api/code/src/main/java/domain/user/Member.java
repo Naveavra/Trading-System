@@ -1,8 +1,7 @@
 package domain.user;
 
-import database.daos.DaoTemplate;
+import database.Dao;
 import database.dtos.CartDto;
-import database.dtos.MemberDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
@@ -39,7 +38,6 @@ public class Member extends Subscriber implements User{
         roles = new ArrayList<>();
         purchaseHistory = new PurchaseHistory(id);
         cart = new ShoppingCart();
-        memberDto.setBirthday(birthday);
     }
     public boolean getIsConnected(){
         return isConnected;
@@ -60,13 +58,13 @@ public class Member extends Subscriber implements User{
         try {
             state = getRole(storeId);
         }catch (Exception e){
-            DaoTemplate.save(userState);
+            Dao.save(userState);
             roles.add(userState);
             return;
         }
         if (state.getRole() == userState.getRole())
             throw new Exception("the member already has this role in this store");
-        DaoTemplate.save(userState);
+        Dao.save(userState);
         roles.add(userState);
     }
     public String getBirthday(){return birthday;}
@@ -79,18 +77,18 @@ public class Member extends Subscriber implements User{
     }
     private void setNewEmail(String newEmail){
         email = newEmail;
-        memberDto.setEmail(newEmail);
+        Dao.update(this);
     }
 
     private void setNewBirthday(String newBirthday){
         this.birthday = newBirthday;
-        memberDto.setBirthday(newBirthday);
+        Dao.update(this);
     }
 
     public void setMemberPassword(String oldPassword, String newPassword) throws Exception {
         if(password.equals(oldPassword)){
             password = newPassword;
-            memberDto.setPassword(newPassword);
+            Dao.update(this);
         }
         else
             throw new Exception("wrong password entered, can't change to a new password");
@@ -99,7 +97,7 @@ public class Member extends Subscriber implements User{
 
     public void addProductToCart(int storeId, ProductInfo product, int quantity) throws Exception{
         cart.addProductToCart(storeId, product, quantity);
-        DaoTemplate.save(new CartDto(id, storeId, product.id, quantity));
+        Dao.save(new CartDto(id, storeId, product.id, quantity));
     }
     public void emptyCart(){
         cart.emptyCart();
@@ -113,7 +111,7 @@ public class Member extends Subscriber implements User{
     public void removeProductFromCart(int storeId, int productId) throws Exception{
         cart.removeProductFromCart(storeId, productId);
         String param = String.format("memberId = %d AND storeId = %s AND productId = %d", id, storeId, productId);
-        DaoTemplate.removeIf("CartDto", param);
+        Dao.removeIf("CartDto", param);
 //        productsDto.removeIf(cartDto -> cartDto.getStoreId() == storeId && cartDto.getProductId() == productId);
     }
 
@@ -121,7 +119,7 @@ public class Member extends Subscriber implements User{
         cart.changeQuantityInCart(storeId, product, change);
         String sets = String.format("quantity = %d", cart.getBasket(storeId).getProduct(product.id).getQuantity());
         String conditions = String.format("memberId = %d AND storeId = %d AND productId = %d", id, storeId, product.getId());
-        DaoTemplate.updateFor("CartDto", sets, conditions);
+        Dao.updateFor("CartDto", sets, conditions);
     }
 
     public List<ProductInfo> getCartContent() {
@@ -131,14 +129,14 @@ public class Member extends Subscriber implements User{
     public void purchaseMade(Receipt receipt){
         purchaseHistory.addPurchaseMade(receipt);
         String condition = String.format("memberId = %d", id);
-        DaoTemplate.removeIf("CartDto",condition);
+        Dao.removeIf("CartDto",condition);
         cart.emptyCart();
     }
 
     public void openStore(Store store) {
-        DaoTemplate.save(store);
+        Dao.save(store);
         UserState creator = new StoreCreator(id, email, store);
-        DaoTemplate.save(creator);
+        Dao.save(creator);
         roles.add(creator);
     }
 
@@ -231,7 +229,7 @@ public class Member extends Subscriber implements User{
 
     public void removeRoleInStore(int storeId) throws Exception{
         UserState state = getRole(storeId);
-        DaoTemplate.remove(state);
+        Dao.remove(state);
         roles.remove(state);
     }
 
@@ -342,19 +340,9 @@ public class Member extends Subscriber implements User{
 
 
     @Override
-    public LoginInformation getLoginInformation(String token) {
+    public LoginInformation getLoginInformation(String token){
         return new LoginInformation(token, id, email, false, displayNotifications(),getRoles(),
                 getStoreNames(), getStoreImgs(), getPermissions(), getUserPurchaseHistory(), StringChecks.calculateAge(birthday), birthday);
-    }
-
-    @Override
-    public MemberDto getDto() {
-        List<Notification> nlist = new ArrayList<>(notifications);
-        memberDto.setNotifications(nlist);
-        memberDto.setCartProducts(cart);
-        memberDto.setPurchases(purchaseHistory);
-        memberDto.setStores(getStores());
-        return memberDto;
     }
     @Override
     public void setShoppingCart(ShoppingCart cart) {this.cart = cart;}

@@ -1,22 +1,12 @@
-import database.daos.MemberDao;
-import database.dtos.MemberDto;
-import database.dtos.NotificationDto;
-import database.dtos.ReceiptDto;
-import database.dtos.UserHistoryDto;
 import domain.states.Permissions;
-import domain.store.product.Product;
 import domain.store.storeManagement.Store;
-import domain.user.Member;
 import domain.user.StringChecks;
-import domain.user.User;
 import market.Admin;
 import market.Market;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import service.UserController;
-import service.security.UserAuth;
 import utils.infoRelated.LoginInformation;
-import utils.infoRelated.ProductInfo;
 import utils.infoRelated.Receipt;
 import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
@@ -24,8 +14,6 @@ import utils.stateRelated.Action;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -112,9 +100,6 @@ class UserControllerTest {
             market.writeReviewToProduct(id, token, receipt.getOrderId(), sid, pid, "very good", 4);
             market.sendComplaint(id, token, receipt.getOrderId(), "baaaad?");
             market.sendQuestion(id, token, sid2, "is open at 8?");
-            market.updateState();
-            MemberDao memberDao = new MemberDao();
-            memberDao.getMemberNotifications(id);
             assert true;
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -185,6 +170,22 @@ class UserControllerTest {
             System.out.println(e.getMessage());
             assert false;
         }
+    }
+
+    @Test
+    void checkNotifications(){
+        Admin a = new Admin(1, "elibenshimol6@gmail.com", "123Aaa");
+        Market market = new Market(a);
+        market.register("eli@gmail.com", "123Aaa", "24/02/2002");
+        market.register("chai@gmail.com", "123Aaa", "01/01/2002");
+        int id = market.login("eli@gmail.com", "123Aaa").getValue().getUserId();
+        int id2 = market.login("chai@gmail.com", "123Aaa").getValue().getUserId();
+        market.logout(id2);
+        market.sendNotification(id, market.addTokenForTests(), NotificationOpcode.CHAT_MESSAGE, "chai@gmail.com", "hi");
+        LoginInformation log = market.login("chai@gmail.com", "123Aaa").getValue();
+        for(Notification n : log.getNotifications())
+            System.out.println(n.toString());
+        assertEquals(1, log.getNotifications().size());
     }
 
 

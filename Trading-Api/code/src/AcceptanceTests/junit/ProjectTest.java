@@ -10,6 +10,7 @@ import data.*;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import utils.messageRelated.Notification;
 import utils.stateRelated.Role;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -237,7 +238,7 @@ public abstract class ProjectTest{
         return bridge.closeStore(user, store);
     }
 
-    public List<String> getNotifications(int userId){
+    public List<Notification> getNotifications(int userId){
         return bridge.getNotifications(userId);
     }
 

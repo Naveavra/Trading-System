@@ -1,6 +1,5 @@
 package market;
 
-import database.dtos.AdminDto;
 import domain.user.Subscriber;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
@@ -20,14 +19,11 @@ public class Admin extends Subscriber {
     private MarketController marketController;
     @Transient
     private UserController userController;
-    @Transient
-    private AdminDto adminDto;
 
     public Admin(){
     }
     public Admin(int adminId, String email, String password){
         super(adminId, email, password);
-        adminDto = new AdminDto(adminId);
     }
 
     public void addControllers(UserController userController, MarketController marketController){
@@ -58,10 +54,6 @@ public class Admin extends Subscriber {
             closeStorePermanently(storeId, userToRemove);
     }
 
-    //database
-    public AdminDto getAdminDto() {
-        return adminDto;
-    }
 
     @Override
     public LoginInformation getLoginInformation(String token) {

@@ -1,12 +1,6 @@
 package service;
 
-import database.DbConnector;
-import database.daos.AdminDao;
-import database.daos.ComplaintDao;
-import database.daos.DaoTemplate;
-import database.daos.MemberDao;
-import database.dtos.*;
-import domain.states.UserState;
+import database.Dao;
 import domain.store.storeManagement.Store;
 import domain.user.*;
 
@@ -34,11 +28,7 @@ public class UserController {
     private StringChecks checks;
     private int messageIds;
     private ConcurrentHashMap<Integer, Complaint> complaints; //complaintId,message
-    private MemberDao memberDao;
-    private AdminDao adminDao;
-    private ComplaintDao complaintDao;
 
-    private DbConnector dbConnector;
     public UserController(){
         ids = new AtomicInteger(2);
         guestList = new ConcurrentHashMap<>();
@@ -47,11 +37,6 @@ public class UserController {
         checks = new StringChecks();
         messageIds = 0;
         complaints = new ConcurrentHashMap<>();
-        memberDao = new MemberDao();
-        complaintDao = new ComplaintDao();
-        adminDao = new AdminDao();
-
-        dbConnector = new DbConnector();
     }
 
 
@@ -72,6 +57,11 @@ public class UserController {
     public Member getMember(int id) throws Exception{
         if(memberList.containsKey(id))
                 return memberList.get(id);
+        Member m = (Member) Dao.getById(Member.class, id);
+        if(m != null) {
+            memberList.put(m.getId(), m);
+            return m;
+        }
         throw new Exception("the id given does not belong to any member");
     }
 
@@ -151,7 +141,7 @@ public class UserController {
         if(isEmailTaken(email))
                 throw new Exception("the email is already taken");
         Member m = new Member(id, email, hashedPass, birthday);
-        dbConnector.checkSaveSubscriber(m);
+        Dao.save(m);
         memberList.put(id, m);
     }
 
@@ -240,7 +230,7 @@ public class UserController {
         for(Admin a : admins.values())
             a.addNotification(notification);
         Complaint complaint = m.writeComplaint(tmp, orderId, comment);
-        DaoTemplate.save(complaint);
+        Dao.save(complaint);
         complaints.put(complaint.getMessageId(), complaint);
     }
 
@@ -530,13 +520,13 @@ public class UserController {
             throw new Exception("the email given does not match the email pattern");
         checks.checkPassword(pass);
         Admin a = new Admin(ids.getAndIncrement(), email, hashPass);
-        dbConnector.checkSaveSubscriber(a);
+        Dao.save(a);
         admins.put(a.getId(), a);
         return a;
     }
     public Admin addAdmin(Admin a, String pass) {
         Admin admin = new Admin(a.getId(), a.getName(), pass);
-        dbConnector.checkSaveSubscriber(a);
+        Dao.save(admin);
         admins.put(a.getId(), admin);
         return admin;
     }
@@ -562,10 +552,10 @@ public class UserController {
     }
 
     private void sendFeedback(int messageId, String ans) throws Exception{
-        Complaint m = complaints.get(messageId);
+        Complaint m = getComplaint(messageId);
         if (m != null) {
             m.sendFeedback(ans);
-            DaoTemplate.update(m);
+            Dao.update(m);
         }
         else
             throw new Exception("message does not found");
@@ -593,91 +583,6 @@ public class UserController {
     }
 
     //database
-
-    //complaints
-    public void saveComplaintState(int complaintId) throws Exception{
-        Complaint c = getComplaint(complaintId);
-        complaintDao.saveComplaint(new ComplaintDto(c.getMessageId(), c.getOrderId(), c.getSender().getId(), c.getContent(), c.isGotFeedback(), c.getSeen()));
-    }
-    public void updateComplaintState(int complaintId) throws Exception{
-        Complaint c = getComplaint(complaintId);
-        complaintDao.updateComplaint(new ComplaintDto(c.getMessageId(), c.getOrderId(), c.getSender().getId(), c.getContent(), c.isGotFeedback(), c.getSeen()));
-    }
-
-    public ComplaintDto getComplaintDto(int id){
-        ComplaintDto c = complaintDao.getComplaintById(id);
-        return c;
-    }
-
-    public void checkSaveSubscriber(int id) throws Exception{
-        Subscriber s = getSubscriber(id);
-        dbConnector.checkSaveSubscriber(s);
-    }
-    //users
-    public void saveMemberState(int userId) throws Exception{
-        Member m = getMember(userId);
-        memberDao.saveMember(m.getDto());
-    }
-    public void updateMemberState(int userId) throws Exception{
-        Member m = getMember(userId);
-        memberDao.updateMember(m.getDto());
-    }
-
-    public MemberDto getMemberDto(int id){
-        MemberDto m = memberDao.getMemberById(id);
-        return m;
-    }
-
-    public List<CartDto> getMemberCartDto(int id){
-        List<CartDto> clist = memberDao.getMemberCart(id);
-        return clist;
-    }
-
-    public List<UserHistoryDto> getMemberUserHistoryDto(int id){
-        List<UserHistoryDto> ulist = memberDao.getMemberHistory(id);
-        return ulist;
-    }
-
-    public List<NotificationDto> getSubscriberNotificationsDto(int id){
-        List<NotificationDto> nlist = memberDao.getMemberNotifications(id);
-        return nlist;
-    }
-
-
-
-    //admins
-    public void saveAdminState(int userId) throws Exception{
-        Admin a = getAdmin(userId);
-        adminDao.saveAdmin(a.getAdminDto());
-        memberDao.saveMember(a.getDto());
-    }
-    public void updateAdminState(int userId) throws Exception{
-        Admin a = getAdmin(userId);
-        adminDao.updateAdmin(a.getAdminDto());
-        memberDao.updateMember(a.getDto());
-    }
-
-    public AdminDto getAdminDto(int id){
-        AdminDto a = adminDao.getAdminById(id);
-        return a;
-    }
-
-    public void saveState() throws Exception{
-        for(Member m : memberList.values())
-            saveMemberState(m.getId());
-        for(Admin a : admins.values())
-            saveAdminState(a.getId());
-
-    }
-
-    public void updateState() throws Exception{
-        for(Member m : memberList.values())
-            updateMemberState(m.getId());
-        for(Admin a : admins.values())
-            updateAdminState(a.getId());
-        for(Complaint c : complaints.values())
-            updateComplaintState(c.getMessageId());
-    }
 
     public List<Complaint> getComplaints(int userId) throws Exception{
         getActiveAdmin(userId);

@@ -1,9 +1,8 @@
 package domain.states;
 
 
-import database.daos.DaoTemplate;
+import database.Dao;
 import domain.store.storeManagement.Store;
-import domain.user.Member;
 import jakarta.persistence.Entity;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
@@ -57,7 +56,7 @@ public class StoreManager extends UserState {
             if (checkHasAvailableAction(a)) {
                 Permission p = new Permission(this, a);
                 permissionList.add(p);
-                DaoTemplate.save(p);
+                Dao.save(p);
                 permissions.addAction(a);
             }
             else
@@ -72,7 +71,7 @@ public class StoreManager extends UserState {
         if (checkPermission(a)) {
             permissions.removeAction(a);
             permissionList.removeIf(p -> a == p.getPermission());
-            DaoTemplate.removeIf("Permission", String.format("permission = %s", a.toString()));
+            Dao.removeIf("Permission", String.format("permission = %s", a.toString()));
         }
         else
             throw new Exception("the manager does not have this action");

@@ -16,8 +16,6 @@ public class Server {
     public static API api = new API();
     static ConnectedThread connectedThread;
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
-    private static HashMap< Integer, ArrayBlockingQueue<String>> messageQueue = new HashMap<>();
-    private static HashMap<String, BlockingQueue<String>> userQueues = new HashMap<>();
 
     private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes) {
         if (apiRes.getFirst()) {

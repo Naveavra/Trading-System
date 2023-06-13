@@ -4,27 +4,18 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "discounts")
-public class DicountDto {
+public class DiscountDto {
 
     @Id
     private int discountId;
     @Id
-    @ManyToOne
-    @JoinColumn(name = "storeId", foreignKey = @ForeignKey, referencedColumnName = "storeId")
-    private StoreDto storeDto;
+    private int storeId;
     private String content;
-    public DicountDto(){}
-    public DicountDto(StoreDto storeDto, int discountId, String content){
-        this.storeDto = storeDto;
+    public DiscountDto(){}
+    public DiscountDto(int storeId, int discountId, String content){
+        this.storeId =storeId;
         this.discountId = discountId;
         this.content = content;
-    }
-
-    public void setStoreDto(StoreDto storeDto) {
-        this.storeDto = storeDto;
-    }
-    public StoreDto getStoreDto() {
-        return storeDto;
     }
 
     public String getContent() {
@@ -41,5 +32,13 @@ public class DicountDto {
 
     public void setDiscountId(int discountId) {
         this.discountId = discountId;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
     }
 }

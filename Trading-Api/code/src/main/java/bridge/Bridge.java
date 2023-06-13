@@ -2,6 +2,7 @@ package bridge;
 
 import data.*;
 import org.json.JSONObject;
+import utils.messageRelated.Notification;
 import utils.stateRelated.Role;
 
 import java.util.List;
@@ -504,7 +505,7 @@ public interface Bridge {
      * @return If succeed returns notification list. Otherwise,
      *         return null.
      */
-    List<String> getNotifications(int userId);
+    List<Notification> getNotifications(int userId);
 
     /**
      * Guest/ Member - get store information

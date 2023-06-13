@@ -134,7 +134,7 @@ public class API {
         return fromResToPairInfo(res);
     }
     public Pair<Boolean, JSONObject> getMemberNotifications(int userId, String token) {
-        Response<List<String>> res = market.getMemberNotifications(userId, token);
+        Response<List<Notification>> res = market.getMemberNotifications(userId, token);
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
         {
@@ -147,10 +147,13 @@ public class API {
         }
     }
 
-    public JSONObject NotificationsToJson(List<String> list)
+    public JSONObject NotificationsToJson(List<Notification> list)
     {
+        List<String> ans = new ArrayList<>();
+        for(Notification n : list)
+            ans.add(n.toString());
         JSONObject json = new JSONObject();
-        json.put("notifications", list);
+        json.put("notifications", ans);
         return json;
     }
 

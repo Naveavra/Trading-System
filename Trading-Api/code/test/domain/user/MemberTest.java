@@ -8,6 +8,7 @@ import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.UserController;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.Receipt;

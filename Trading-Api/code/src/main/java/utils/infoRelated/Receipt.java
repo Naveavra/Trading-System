@@ -1,12 +1,11 @@
 package utils.infoRelated;
 
-import database.daos.DaoTemplate;
+import database.Dao;
 import database.dtos.ReceiptDto;
 import domain.user.*;
 import jakarta.persistence.*;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,7 +26,7 @@ public class Receipt extends Information{
         this.products = products;
         this.totalPrice = totalPrice;
         for(ProductInfo productInfo : products.getContent())
-            DaoTemplate.save(new ReceiptDto(orderId, productInfo.storeId, productInfo.id, productInfo.getQuantity()));
+            Dao.save(new ReceiptDto(orderId, productInfo.storeId, productInfo.id, productInfo.getQuantity()));
     }
 
     public void setMemberId(int memberId){
