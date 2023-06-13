@@ -5,52 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/DbConnector.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/AdminDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/ComplaintDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/DaoTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/Dao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/LoggerDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/MemberDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/AdminDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/ComplaintDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/ConstraintDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/ConstraintDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/DicountDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/DiscountDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/InventoryDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/LoggerDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/NotificationDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/PermissionDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/ProductReviewDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/QuestionDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/RoleDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/StoreDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/StoreReviewDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/UserHistoryDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/StoreManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/StoreManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/PurchaseHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/PurchaseHistory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/market/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Admin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Receipt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Receipt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/domain/user/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/MemberTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/NotificationOpcode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/NotificationOpcode.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -301,11 +260,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/server/API.java</url>
           <line>539</line>
           <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java</url>
-          <line>93</line>
-          <option name="timeStamp" value="58" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java</url>

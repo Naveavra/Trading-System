@@ -178,6 +178,19 @@ public class StoreController {
         return storeOwnersIDS;
     }
 
+    public Set<Integer> purchaseProductsBid(ShoppingCart shoppingCart, Order order) throws Exception{
+        Set<Integer> storeOwnersIDS = new HashSet<>();
+        for (Basket b : shoppingCart.getBaskets()) {
+            Store store = storeList.get(b.getStoreId());
+            if (!(store.makeOrder(b))) {
+                return null;
+            }
+            storeOwnersIDS.add(store.getCreator());
+            store.addOrder(order);
+        }
+        return storeOwnersIDS;
+    }
+
     /**
      * adds the product to the store controller to view which products exists in the market and create
      *

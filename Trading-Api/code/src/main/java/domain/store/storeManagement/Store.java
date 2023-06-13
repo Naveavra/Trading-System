@@ -574,12 +574,15 @@ public class Store extends Information{
 //    }
 
 
-    public void placeBid(Member user, int prodId, double price,int quantity) throws Exception {
+    public List<String> placeBid(Member user, int prodId, double price,int quantity) throws Exception {
         for(Bid bid : this.bids){
             if(bid.getUser().getId() == user.getId() && bid.getProduct().getID() == prodId)
                 throw new Exception("Cannot place a bid on the same item more than once.");
         }
-        bids.add(new Bid(bidIds.getAndIncrement(),user,inventory.getProduct(prodId),price,quantity, (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct)));
+        Bid b = new Bid(bidIds.getAndIncrement(),user,inventory.getProduct(prodId),price,quantity,
+                (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct));
+        bids.add(b);
+        return b.approvers;
     }
 
     public Bid answerBid(int bidId,String userName, int prodId, boolean ans) throws Exception {
@@ -602,10 +605,13 @@ public class Store extends Information{
         return null;
     }
 
-    public void counterBid(int bidId, double counterOffer, String userName) throws Exception {
+    public List<String> counterBid(int bidId, double counterOffer, String userName) throws Exception {
         for(Bid bid : this.bids){
             if(bid.bidId == bidId){
                 bid.counterBid(counterOffer,userName);
+                List<String> ans = new ArrayList<>(bid.approvers);
+                ans.add(bid.getUser().getName());
+                return ans;
             }
         }
         throw new Exception("Bid doesnt exist "+bidId);

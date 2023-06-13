@@ -972,8 +972,10 @@ public class Market implements MarketInterface {
             userAuth.checkUser(userId, token);
             // im assuming there is no need to check permission for this action
             Member user = userController.getMember(userId);
-            marketController.placeBid(storeId, user, prodId, price,quantity);
-            //usercontoller send notification to other store owners TODO ELI
+            List<String> workerNames = marketController.placeBid(storeId, user, prodId, price,quantity);
+            for(String name : workerNames)
+                userController.addNotification(name, new Notification(NotificationOpcode.PLACE_BID,
+                        "a new bid was placed in store: " + storeId +" for product: " + prodId));
             return logAndRes(Event.LogStatus.Success, "user placed his successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user placed his bid", null, null);
@@ -987,8 +989,10 @@ public class Market implements MarketInterface {
             userAuth.checkUser(userId, token);
             // im assuming there is no need to check permission for this action
             Member user = userController.getMember(userId);
-            marketController.editBid(storeId, bidId, price,quantity);
-            //usercontoller send notification to other store owners TODO ELI
+            List<String> workerNames = marketController.editBid(storeId, bidId, price,quantity);
+            for(String name : workerNames)
+                userController.addNotification(name, new Notification(NotificationOpcode.PLACE_BID,
+                        "a new bid was placed in store: " + storeId +" for bid: " + bidId));
             return logAndRes(Event.LogStatus.Success, "user placed his successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user placed his bid", null, null);
@@ -999,11 +1003,19 @@ public class Market implements MarketInterface {
 
 
     @Override
-    public Response answerBid(String token, int userId, int storeId, boolean ans, int prodId, int bidId) {
+    public Response answerBid(String token, int userId, int storeId, boolean answer, int prodId, int bidId) {
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.updateProduct, storeId);
-            marketController.answerBid( userController.getUser(userId).getName(), storeId, ans, prodId, bidId);
+            Pair<Receipt, Set<Integer>> ans = marketController.answerBid( userController.getUser(userId).getName(), storeId, answer, prodId, bidId);
+            //            proxyPayment.makePurchase(payment, totalPrice);
+            //            proxySupplier.orderSupplies(supplier, cart);
+            Receipt receipt = ans.getFirst();
+            Set<Integer> creatorIds = ans.getSecond();
+            userController.purchaseMade(userId, receipt);
+            for (int creatorId : creatorIds)
+                addNotification(creatorId, NotificationOpcode.PURCHASE_IN_STORE, "a new purchase was made in your store");
+            marketInfo.addPurchaseCount();
             return logAndRes(Event.LogStatus.Success, "user answer the bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user answer the bid", null, null);
@@ -1017,12 +1029,14 @@ public class Market implements MarketInterface {
         try{
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.updateProduct, storeId);
-            marketController.counterBid(userController.getUserName(userId), storeId, counterOffer, prodId, bidId);
+            List<String> ans = marketController.counterBid(userController.getUserName(userId), storeId, counterOffer, prodId, bidId);
+            for(String name : ans)
+                userController.addNotification(name, new Notification(NotificationOpcode.PLACE_BID,
+                        "a counter bid was placed in store: " + storeId + " for bid: " + bidId));
             return logAndRes(Event.LogStatus.Success, "user answer with counter bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user answer with counter bid", null, null);
-    }
-        catch (Exception ex) {
+    } catch (Exception ex) {
         return new Response<>(null, "could not answer bid", ex.getMessage());
     }
     }
