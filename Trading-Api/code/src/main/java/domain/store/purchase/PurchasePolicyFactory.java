@@ -1,6 +1,7 @@
 package domain.store.purchase;
 
 import org.json.JSONObject;
+import org.mockito.internal.matchers.Null;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -189,6 +190,7 @@ public class PurchasePolicyFactory {
             case "dateTime" ->PurchasePolicy.policyTypes.DateTime;
             case "user"->PurchasePolicy.policyTypes.User;
             case "basket" ->PurchasePolicy.policyTypes.Basket;
+            default -> null; //TODO miki
         };
     }
 
@@ -196,6 +198,7 @@ public class PurchasePolicyFactory {
         return switch (limit){
             case "Min" -> PurchasePolicy.limiters.Min;
             case "Max" -> PurchasePolicy.limiters.Max;
+            default -> null;
         };
     }
 }

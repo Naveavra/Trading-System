@@ -28,6 +28,7 @@ public class Product {
     public int quantity;
     public double rating;
     private String imgUrl;
+    @Transient
     private List<ProductReview> reviews;
 //    public ArrayList<String> categories;
     //private ConcurrentLinkedDeque<String> categories;
@@ -59,6 +60,7 @@ public class Product {
         categories = new ArrayList<>();
         rating = 5;
         this.imgUrl = imgUrl;
+        reviews = new ArrayList<>();
     }
 
     public void changeImg(String imgUrl){

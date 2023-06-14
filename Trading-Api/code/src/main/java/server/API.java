@@ -248,15 +248,15 @@ public class API {
         return fromResToPair(res);
 
     }
-    public Pair<Boolean, JSONObject> changePurchasePolicy(int userId, String token, int storeId, String policy){
-        Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
-        return fromResToPair(res);
-    }
-
-    public Pair<Boolean, JSONObject> changeDiscountPolicy(int userId, String token, int storeId, String policy){
-        Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
-        return fromResToPair(res);
-    }
+//    public Pair<Boolean, JSONObject> changePurchasePolicy(int userId, String token, int storeId, String policy){
+//        Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
+//        return fromResToPair(res);
+//    }
+//
+//    public Pair<Boolean, JSONObject> changeDiscountPolicy(int userId, String token, int storeId, String policy){
+//        Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
+//        return fromResToPair(res);
+//    }
 
     public Pair<Boolean, JSONObject> addPurchaseConstraint(int userId, String token, int storeId, String policy){
         Response<String> res = market.addPurchaseConstraint(userId, token, storeId, policy);

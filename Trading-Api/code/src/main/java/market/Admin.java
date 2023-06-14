@@ -58,7 +58,7 @@ public class Admin extends Subscriber {
     @Override
     public LoginInformation getLoginInformation(String token) {
         return new LoginInformation(token, getId(), getName(), true, displayNotifications(),
-                null, null, null, null, null, -1, null);
+                null, null, null, null, null, -1, null, null);
     }
 
     @Override

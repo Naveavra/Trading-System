@@ -142,18 +142,7 @@ public class MarketController {
         storectrl.setStoreAttributes(storeId, name, description, img);
     }
 
-    public void setStorePurchasePolicy(int storeId,String policy) throws Exception{
-        Store store = storectrl.getActiveStore(storeId);
-        store.setStorePolicy(policy);
-//        Store store = storectrl.getStore(storeId);
-//        if (store != null )
-//        {
-//            store.setStorePolicy(policy);
-//        }
-//        else {
-//            throw new Exception("store does not exist");
-//        }
-    }
+
 
 
 
@@ -309,7 +298,7 @@ public class MarketController {
         //send a message to all shop owners and people who need to approve this bid.
     }
 
-    public void addPurchaseConstraint(int userId, int storeId, String purchasePolicy)throws Exception {
+    public void addPurchaseConstraint(int storeId, String purchasePolicy)throws Exception {
         Store s = storectrl.getActiveStore(storeId);
         s.addPurchasePolicy(purchasePolicy);
     }

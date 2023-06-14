@@ -121,6 +121,8 @@ public class Store extends Information{
         this.storeName = storeName;
         this.imgUrl = imgUrl;
         bidIds = new AtomicInteger();
+        bids = new ArrayList<>();
+        approvedBids = new ArrayList<>();
     }
 
     public void changeName(String storeName){

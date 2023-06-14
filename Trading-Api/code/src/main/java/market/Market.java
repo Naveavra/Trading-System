@@ -602,20 +602,20 @@ public class Market implements MarketInterface {
         return "the store attributes have been changed accordingly";
     }
 
-    @Override
-    public Response<String> changePurchasePolicy(int userId, String token, int storeId, String policy) {
-        try {
-            userAuth.checkUser(userId, token);
-            marketController.setStorePurchasePolicy(storeId, policy);
-            return logAndRes(Event.LogStatus.Success, "user change store purchase policy successfully",
-                    StringChecks.curDayString(), userController.getUserName(userId),
-                    "user change store purchase policy successfully", null, null);
-        } catch (Exception e) {
-            return logAndRes(Event.LogStatus.Fail, "cant change store purchase policy because: " + e.getMessage(),
-                    StringChecks.curDayString(), userController.getUserName(userId),
-                    null, "change store policy purchase failed", e.getMessage());
-        }
-    }
+//    @Override
+//    public Response<String> changePurchasePolicy(int userId, String token, int storeId, String policy) {
+//        try {
+//            userAuth.checkUser(userId, token);
+//            marketController.setStorePurchasePolicy(storeId, policy);
+//            return logAndRes(Event.LogStatus.Success, "user change store purchase policy successfully",
+//                    StringChecks.curDayString(), userController.getUserName(userId),
+//                    "user change store purchase policy successfully", null, null);
+//        } catch (Exception e) {
+//            return logAndRes(Event.LogStatus.Fail, "cant change store purchase policy because: " + e.getMessage(),
+//                    StringChecks.curDayString(), userController.getUserName(userId),
+//                    null, "change store policy purchase failed", e.getMessage());
+//        }
+//    }
 
     //TODO: check what to do with discount policy
 //    @Override
@@ -1274,7 +1274,7 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.addPurchaseConstraint, storeId);
-            marketController.addPurchaseConstraint(userId, storeId, purchasePolicy);
+            marketController.addPurchaseConstraint(storeId, purchasePolicy);
             return logAndRes(Event.LogStatus.Success, "Member added shopping constraint " + userId + " has successfully entered",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     purchasePolicy, null, null);
