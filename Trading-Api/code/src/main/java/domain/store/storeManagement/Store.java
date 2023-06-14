@@ -16,6 +16,7 @@ import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
@@ -461,13 +462,13 @@ public class Store extends Information{
         return inventory.getProducts();
     }
 
-    public synchronized void setStorePolicy(String policy) throws Exception {
-        try {
-            purchasePolicies.add(new PurchasePolicyFactory().createPolicy());
-        } catch (Exception e) {
-            throw new Exception("Couldn't create a new policy");
-        }
-    }
+//    public synchronized void setStorePolicy(String policy) throws Exception {
+//        try {
+//            purchasePolicies.add(new PurchasePolicyFactory().createPolicy());
+//        } catch (Exception e) {
+//            throw new Exception("Couldn't create a new policy");
+//        }
+//    }
 
     public ArrayList<PurchasePolicy> getPurchasePolicies(){
         return purchasePolicies;
@@ -639,67 +640,34 @@ public class Store extends Information{
         throw new Exception("Bid doesnt exist "+bidId);
     }
 
-    public void addPurchasePolicy(String data){
-        PurchasePolicyFactory factory = new PurchasePolicyFactory();
+    public void addPurchasePolicy(String data) throws Exception {
+        PurchasePolicyFactory factory = new PurchasePolicyFactory(policyIds,storeId);
         JSONObject request = new JSONObject(data);
         String description = request.getString("description");
         JSONArray policies = request.getJSONArray("type");
-        PurchasePolicyDataObject actualPolicy;
+        PurchasePolicyDataObject head = null;
         PurchasePolicyDataObject prev = null;
         for(int i = 0 ; i<policies.length() ; i++){
+            PurchasePolicyDataObject actualPolicy = null;
             JSONObject policy = policies.getJSONObject(i);
             String type = policy.getString("type");
             switch (type){
-                case "item" -> actualPolicy = parseItem(policy,prev);
-                case "category" -> actualPolicy = parseCategory(policy,prev);
-                case "dateTime" -> ;
-                case "user" ->;
-                case "basket" ->
+                case "item" -> actualPolicy = factory.parseItem(policy,prev);
+                case "category" -> actualPolicy = factory.parseCategory(policy,prev);
+                case "dateTime" -> actualPolicy = factory.parseDateTime(policy,prev);
+                case "user" -> actualPolicy = factory.parseUser(policy,prev);
+                case "basket" -> actualPolicy = factory.parseBasket(policy,prev);
             }
+            if(i==0 && actualPolicy!=null)
+                head = actualPolicy;
         }
-    }
-
-    private PurchasePolicyDataObject parseCategory(JSONObject policy, PurchasePolicyDataObject prev) {
-
-    }
-
-    private PurchasePolicyDataObject parseItem(JSONObject policy,PurchasePolicyDataObject prev) {
-        int amount = Integer.parseInt(policy.getString("amount"));
-        int productId = Integer.parseInt(policy.getString("productId"));
-        PurchasePolicy.limiters limiter = getLimiter(policy.getString("limiter"));
-        PurchasePolicy.policyTypes type = getPolicyType(policy.getString("item"));
-        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.getString("composore"));
-        int[] nullVal = null;
-        PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyIds.getAndIncrement(),storeId,policy.toString(),limiter,productId,
-                -1,"",amount,nullVal,nullVal,null,compose,type);
-        if (prev != null){
-            prev.next = dataObj;
-            prev = null;
+        if(head!=null){
+            purchasePolicies.add(factory.createPolicy(head));
+            return;
         }
-        if(compose!=null){
-            prev = dataObj;
-        }
-        return dataObj;
+        throw new Exception("Something went wrong when creating the policy, please contact us if the problem persists.\nYours truly, the developers A-team");
 
     }
 
-    private PurchasePolicy.policyComposeTypes getPolicyCompose(String composore) {
-        return switch (composore){
-            case "And" -> PurchasePolicy.policyComposeTypes.PolicyAnd;
-            case "Or" -> PurchasePolicy.policyComposeTypes.PolicyOr;
-            case "Conditional" -> PurchasePolicy.policyComposeTypes.PolicyConditioning;
-            default -> null;
-        };
-    }
 
-    private PurchasePolicy.policyTypes getPolicyType(String item) {
-
-    }
-
-    private PurchasePolicy.limiters getLimiter(String limit){
-        return switch (limit){
-            case "Min" -> PurchasePolicy.limiters.Min;
-            case "Max" -> PurchasePolicy.limiters.Max;
-        };
-    }
 }
