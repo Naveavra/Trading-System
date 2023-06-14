@@ -8,46 +8,48 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * The ConfigParser class is responsible for parsing the config.properties file and initializing various settings.
+ */
 public class ConfigParser {
-    private Properties prop = new Properties();
+    private final Properties prop = new Properties();
     private Properties DBSetting;
+    private ESConfig supplyConfig;
+    private ESConfig paymentConfig;
     private Admin initialAdmin;
     private final int ADMIN_START_ID = 1;
     private FileInputStream input = null;
-    private String configFilePath = "C:\\Users\\chais\\Documents\\BGU\\Year C\\S B\\WorkshopSE\\Git-Repo\\Trading-System\\config.properties";
+    private final String configFilePath;
 
+    /**
+     * Constructs a ConfigParser instance with the default config file path.
+     */
     public ConfigParser() {
-        try {
-            // Load the config.properties file
-            input = new FileInputStream(configFilePath);
-            prop.load(input);
-            initSettings();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        this("config.properties");
     }
 
+    /**
+     * Constructs a ConfigParser instance with a custom config file path.
+     *
+     * @param configFilePath The path to the config.properties file.
+     */
     public ConfigParser(String configFilePath) {
         this.configFilePath = configFilePath;
+        loadProperties();
+        initSettings();
+    }
+
+    /**
+     * Loads the properties from the config file.
+     */
+    private void loadProperties() {
         try {
-            // Load the config.properties file
             input = new FileInputStream(configFilePath);
             prop.load(input);
-            initSettings();
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Config file not found: " + configFilePath, e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to read config file: " + configFilePath, e);
         } finally {
             if (input != null) {
                 try {
@@ -59,16 +61,20 @@ public class ConfigParser {
         }
     }
 
-    public void initSettings()
-    {
+    /**
+     * Initializes all the settings from the loaded properties.
+     */
+    private void initSettings() {
         initDBSettings();
-        initESPaymentSettings();
-        initESSupplySettings();
+        initESConfigSettings("ES_S", supplyConfig);
+        initESConfigSettings("ES_P", paymentConfig);
         initAdminSettings();
     }
 
-    private void  initDBSettings() {
-        DBSetting = null;
+    /**
+     * Initializes the database settings.
+     */
+    private void initDBSettings() {
         String dbDriver = prop.getProperty("DB_DRIVER");
         String dbURL = prop.getProperty("DB_URL");
         String dbUser = prop.getProperty("DB_USER");
@@ -76,49 +82,99 @@ public class ConfigParser {
         String showSQL = prop.getProperty("DB_SHOW_SQL");
         String sessionContextClass = prop.getProperty("DB_CURRENT_SESSION_CONTEXT_CLASS");
         String hbm2ddlAuto = prop.getProperty("DB_HBM2DDL_AUTO");
-        if (dbDriver != null)
-        {
+
+        if (dbDriver != null && dbURL != null && dbUser != null && dbPassword != null) {
             DBSetting = new Properties();
-            DBSetting.put(Environment.DRIVER, prop.getProperty("DB_DRIVER"));
-            DBSetting.put(Environment.URL, prop.getProperty("DB_URL"));
-            DBSetting.put(Environment.USER, prop.getProperty("DB_USER"));
-            DBSetting.put(Environment.PASS, prop.getProperty("DB_PASS"));
-            DBSetting.put(Environment.SHOW_SQL, prop.getProperty("DB_SHOW_SQL"));
-            DBSetting.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, prop.getProperty("DB_CURRENT_SESSION_CONTEXT_CLASS"));
-            DBSetting.put(Environment.HBM2DDL_AUTO, prop.getProperty("DB_HBM2DDL_AUTO"));
+            DBSetting.put(Environment.DRIVER, dbDriver);
+            DBSetting.put(Environment.URL, dbURL);
+            DBSetting.put(Environment.USER, dbUser);
+            DBSetting.put(Environment.PASS, dbPassword);
+            DBSetting.put(Environment.SHOW_SQL, showSQL);
+            DBSetting.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, sessionContextClass);
+            DBSetting.put(Environment.HBM2DDL_AUTO, hbm2ddlAuto);
+        } else {
+            throw new IllegalArgumentException("Missing or incomplete database properties");
         }
     }
 
+    /**
+     * Initializes the external service configuration settings.
+     *
+     * @param prefix The prefix for the properties (e.g., "ES_S" or "ES_P").
+     * @param config The ESConfig object to initialize.
+     */
+    private void initESConfigSettings(String prefix, ESConfig config) {
+        String name = prop.getProperty(prefix + "_NAME");
+        String url = prop.getProperty(prefix + "_URL");
+        String responseTime = prop.getProperty(prefix + "_RESPONSE_TIME");
 
-    void initESPaymentSettings()
-    {
-        String esPName = prop.getProperty("ES_P_NAME");
-        String esPURL = prop.getProperty("ES_P_URL");
-        String esPResponseTime = prop.getProperty("ES_P_RESPONSE_TIME");
+        if (name != null && url != null) {
+            if (responseTime != null) {
+                try {
+                    int time = Integer.parseInt(responseTime);
+                    if (time >= 0) {
+                        config = new ESConfig(name, url, time);
+                    } else {
+                        throw new IllegalArgumentException("Invalid response time value for " + prefix);
+                    }
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid response time format for " + prefix);
+                }
+            } else {
+                config = new ESConfig(name, url);
+            }
+        } else {
+            throw new IllegalArgumentException("Missing properties for " + prefix);
+        }
     }
 
+    /**
+     * Initializes the admin settings.
+     */
     private void initAdminSettings() {
         String adminEmail = prop.getProperty("Admin_EMAIL");
         String adminPassword = prop.getProperty("Admin_PASSWORD");
-        initialAdmin = new Admin(ADMIN_START_ID, adminEmail, adminPassword);
-    }
 
-    private void extracted() {
-        //TODO: Wait for answer from eli
-        String serverIP = prop.getProperty("Server_IP/Domain");
-        String serverPort = prop.getProperty("Server_Port");
-
-        String serverFIP = prop.getProperty("Server_F_IP/Domain");
-        String serverFPort = prop.getProperty("Server_F_Port");
-    }
-
-    private void initESSupplySettings() {
-        String esSName = prop.getProperty("ES_S_NAME");
-        String esSURL = prop.getProperty("ES_S_URL");
-        String esSResponseTime = prop.getProperty("ES_S_RESPONSE_TIME");
-        if (esSName != null && esSURL != null && esSResponseTime != null) {
-
+        if (adminEmail != null && adminPassword != null) {
+            initialAdmin = new Admin(ADMIN_START_ID, adminEmail, adminPassword);
+        } else {
+            throw new IllegalArgumentException("Missing admin properties");
         }
     }
 
+    /**
+     * Retrieves the database settings.
+     *
+     * @return The properties containing the database settings.
+     */
+    public Properties getDBSetting() {
+        return DBSetting;
+    }
+
+    /**
+     * Retrieves the supply settings for the external service.
+     *
+     * @return The supply ESConfig.
+     */
+    public ESConfig getSupplyConfig() {
+        return supplyConfig;
+    }
+
+    /**
+     * Retrieves the payment settings for the external service.
+     *
+     * @return The payment ESConfig.
+     */
+    public ESConfig getPaymentConfig() {
+        return paymentConfig;
+    }
+
+    /**
+     * Retrieves the initial admin settings.
+     *
+     * @return The initial Admin object.
+     */
+    public Admin getInitialAdmin() {
+        return initialAdmin;
+    }
 }
