@@ -109,9 +109,7 @@ public class MarketController {
         return storectrl.getStoreInformation(storeId);
     }
     public Store getStore(int storeId) throws Exception {
-        if(storectrl.storeList.containsKey(storeId))
-            return storectrl.storeList.get(storeId);
-        throw new Exception("the storeId given does not belong to any store");
+        return storectrl.getStore(storeId);
     }
     public List<StoreInfo> getStoresInformation(){
         List<StoreInfo> stores = new ArrayList<>();

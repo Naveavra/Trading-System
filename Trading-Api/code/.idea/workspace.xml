@@ -107,17 +107,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.writeReview" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UserControllerTest.checkImp" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="domain.user.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="domain.user" />
-      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
-      <option name="METHOD_NAME" value="writeReview" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="UserControllerTest" />
+      <option name="METHOD_NAME" value="checkImp" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -154,19 +148,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
+      <item itemvalue="JUnit.UserControllerTest.checkImp" />
       <item itemvalue="JUnit.UserControllerTest.checkNotifications" />
       <item itemvalue="JUnit.AppHistoryTest.getNodeExists" />
-      <item itemvalue="JUnit.MemberTest.writeReview" />
       <item itemvalue="JUnit.UserControllerTest.checkNewImp" />
       <item itemvalue="JUnit.test in work1" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.UserControllerTest.checkNotifications" />
+        <item itemvalue="JUnit.UserControllerTest.checkImp" />
         <item itemvalue="JUnit.UserControllerTest.checkNewImp" />
+        <item itemvalue="JUnit.UserControllerTest.checkNotifications" />
         <item itemvalue="JUnit.test in work1" />
         <item itemvalue="JUnit.AppHistoryTest.getNodeExists" />
-        <item itemvalue="JUnit.MemberTest.writeReview" />
       </list>
     </recent_temporary>
   </component>
@@ -244,7 +238,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/utils/infoRelated/MarketInfo.java</url>
-          <line>50</line>
+          <line>54</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
