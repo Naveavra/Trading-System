@@ -63,13 +63,18 @@ const { reducer: shoppingRuleReducer, actions: shoppingRuleActions } = createSli
             state.currentShoppingRule = emptyShoppingRule;
         },
         addTmpToCurrent: (state) => {
-            state.currentShoppingRule.type.push(state.tmpShopRule);
+            return {
+                ...state,
+                currentShoppingRule: {
+                    ...state.currentShoppingRule,
+                    type: [...state.currentShoppingRule.type, state.tmpShopRule]
+                }
+            }
         },
         setTmpShopRule: (state, { payload }) => {
             state.tmpShopRule = payload;
         },
         setDescritionToCurrent(state, { payload }) {
-            //state.currentShoppingRule.description = payload;
             return {
                 ...state,
                 currentShoppingRule: {

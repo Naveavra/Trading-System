@@ -8,5 +8,4 @@ export const ExternalPersonalRoutes =
         <Route path="order/:id" element={<OrderPage />} />
         <Route path="order/:id/reviewStore" element={<ReviewOnStore />} />
         <Route path="order/:id/reviewProduct/:storeId/:productId" element={<ReviewOnProduct />} />
-
     </Route>;

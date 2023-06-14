@@ -28,7 +28,7 @@ const AddPurchasePolicy = () => {
     const storeId = useAppSelector((state: RootState) => state.store.storeState.watchedStore.storeId);
     const purchasePolicy = useAppSelector((state: RootState) => state.shoppingRule.currentShoppingRule);
     const handleOnClose = useCallback(() => {
-        navigate(-1);
+        navigate('/dashboard/store/superior');
         //dispatch(getStore({ userId: userId, storeId: storeId }));
     }, []);
     const handleMin = () => {
@@ -41,14 +41,12 @@ const AddPurchasePolicy = () => {
     const handleType = (input: string) => {
         setType(input);
     }
-
     const handleDescription = (input: string) => {
         setDescription(input);
         dispatch(setDescritionToCurrent(input));
     }
 
     const handleOnSubmit = () => {
-        debugger;
         switch (type) {
             case 'Category':
                 dispatch(setTmpShopRule({ type: 'category', category: category, amount: amount, limiter: limiter }));
@@ -67,15 +65,17 @@ const AddPurchasePolicy = () => {
                 break;
         }
         dispatch(addTmpToCurrent());
-        //dispatch(setDescritionToCurrent(description));
+        handleFinish();
+
+    };
+    const handleFinish = () => {
         dispatch(addPurchasePolicy({ userId: userId, storeId: storeId, purchasePolicy: purchasePolicy }));
         dispatch(clearTmpShopRule());
         dispatch(clearCurrentShoppingRules());
         handleClean();
         handleOnClose();
-    };
+    }
     const handleAddComposore = (input: string) => {
-        debugger;
         setComposore(input);
         switch (type) {
             case 'Category':
@@ -93,6 +93,10 @@ const AddPurchasePolicy = () => {
             case 'Basket':
                 dispatch(setTmpShopRule({ type: 'basket', productId: productId, amount: amount, composore: input }));
                 break;
+            case 'Null':
+                dispatch(setTmpShopRule({ type: 'null', productId: productId, amount: amount, composore: input }));
+                break;
+
         }
         dispatch(addTmpToCurrent());
         dispatch(clearTmpShopRule());
@@ -413,15 +417,6 @@ const AddPurchasePolicy = () => {
                         >
                             composore predicate
                         </Button>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
-                            onClick={handleOnSubmit}
-                        >
-                            submit
-                        </Button>
                     </Box> : null}
                 {last ?
                     <>
@@ -453,9 +448,28 @@ const AddPurchasePolicy = () => {
                             >
                                 Conditional
                             </Button>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
+                                onClick={() => handleAddComposore('Null')}
+                                color={composore === 'Null' ? 'success' : 'primary'}
+                            >
+                                Null
+                            </Button>
                         </Box>
                     </>
                     : null}
+                {purchasePolicy.type.length > 0 ?
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
+                        onClick={handleOnSubmit}
+                    >
+                        submit
+                    </Button> : null}
             </Box>
         </Dialog >
     )

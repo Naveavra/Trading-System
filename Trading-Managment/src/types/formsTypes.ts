@@ -129,5 +129,6 @@ export type makeBidFormValues = {
     userId: number;
     storeId: number;
     productId: number;
-    price: number;
+    price: Number;
+    quantity: number;
 }

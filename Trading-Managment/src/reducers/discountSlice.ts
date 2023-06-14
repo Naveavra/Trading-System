@@ -230,7 +230,6 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             }
         },
         addRegularDiscountToSource: (state, { payload }) => {
-            debugger;
             state.discountNodes.forEach((node) => {
                 if (node.id === payload.source) {
                     node.data = { ...node.data, type: 'regular', percentage: payload.percentage, discountType: payload.discountType, prodId: payload.prodId, discountedCategory: payload.discountedCategory, predicates: [...payload.predicates], label: `${payload?.source} , precentage : ${payload.percentage} , discountType: ${payload.discountType} , ${payload.prodId == '' ? '' : `product id : ${payload.prodId}`} , ${payload.discountedCategory == '' ? '' : `discountedCategory : ${payload.discountedCategory}`} , ${payload.predicates.lentgh == 0 ? '' : `predicates :\n ${payload.predicates?.map((predicate: { predType: any; }, index: any) => `${index} :\n  predicate type : ${predicate.predType}`)}`}` };
@@ -249,48 +248,6 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             return initialState;
             debugger;
         },
-        isOverLapping: (state, { payload }) => {
-            state.discountNodes.forEach((node1) => {
-                state.discountNodes.forEach((node2) => {
-                    if (node1.id !== node2.id) {
-                        const distanceX = Math.abs(node1.position.x - node2.position.x);
-                        const distanceY = Math.abs(node1.position.y - node2.position.y);
-                        return distanceX <= 10 && distanceY <= 100;
-                    }
-                });
-            });
-        },
-        rearrangeTree: (state) => {
-            const nodes = state.discountNodes;
-            const edges = state.discountEdges;
-            const nodeCount = nodes.length;
-            const horizontalDistance = 100;
-            const verticalDistance = 150;
-            const parentLevels: Map<string, number> = new Map();
-            for (let i = 0; i < nodeCount; i++) {
-                if (i !== state.target) {
-                    const currentNode = nodes[i];
-                    const parentEdge = edges.find(edge => edge.target === currentNode.id);
-                    const parentNode = parentEdge ? nodes.find(node => node.id === parentEdge.source) : null;
-
-                    let parentLevel = 0;
-                    if (parentNode) {
-                        parentLevel = parentLevels.get(parentNode.id) || 0; // Get the level of the parent node from the map
-                        parentLevel += 1; // Increment the level for the current node
-                        parentLevels.set(currentNode.id, parentLevel); // Store the level of the current node in the map
-
-                        const parentPosition = parentNode.position;
-                        const offsetX = ((i - parentLevel) * horizontalDistance) / 2;
-                        const offsetY = (parentLevel - 1) * verticalDistance + (state.level - parentLevel) * verticalDistance;
-                        currentNode.position = {
-                            x: parentPosition.x + offsetX,
-                            y: parentPosition.y + offsetY,
-                        };
-                    }
-                }
-            }
-        },
-
     },
     extraReducers: (builder) => {
         //getDiscounts
@@ -367,8 +324,6 @@ export const {
     addRegularDiscountToSource,
     setSourceForPredicate,
     reset,
-    isOverLapping,
-    rearrangeTree,
 } = discountActions;
 export default discountReducer;
 
