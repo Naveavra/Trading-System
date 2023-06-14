@@ -34,7 +34,6 @@ const CancelMembership = () => {
     const handleOnSubmit = () => {
         form.setValue("userId", userId);
         dispatch(cancelMembership(form.getValues()));
-        dispatch(removeUser(form.getValues('userName')));
         handleOnClose();
     }
     return (

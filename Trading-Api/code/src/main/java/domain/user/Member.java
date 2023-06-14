@@ -19,7 +19,7 @@ import domain.store.storeManagement.Bid;
 
 import java.util.*;
 
-import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
+import static utils.messageRelated.NotificationOpcode.GET_STORE_DATA;
 
 
 @Entity
@@ -148,7 +148,7 @@ public class Member extends Subscriber implements User{
 
     public StoreReview writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
         if (purchaseHistory.checkOrderContainsStore(orderId, storeId)) {
-            return new StoreReview(messageId, NotificationOpcode.STORE_REVIEW, content, this, orderId, storeId, grading);
+            return new StoreReview(messageId, NotificationOpcode.GET_STORE_DATA, content, this, orderId, storeId, grading);
         }
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
@@ -156,7 +156,7 @@ public class Member extends Subscriber implements User{
 
     public ProductReview writeReview(int messageId, int storeId, int productId, int orderId, String content, int grading) throws Exception{
         if(purchaseHistory.checkOrderContainsProduct(orderId, storeId, productId)){
-            return new ProductReview(messageId, PRODUCT_REVIEW, content, this, orderId, storeId, productId, grading);
+            return new ProductReview(messageId, GET_STORE_DATA, content, this, orderId, storeId, productId, grading);
         }
         else
             throw new Exception("the product isn't part of the order so you can't write a review about him");
@@ -164,13 +164,13 @@ public class Member extends Subscriber implements User{
 
     public Complaint writeComplaint(int messageId, int orderId, String comment) throws Exception {
         if(purchaseHistory.checkOrderOccurred(orderId))
-            return new Complaint(messageId, NotificationOpcode.COMPLAINT, comment, this, orderId);
+            return new Complaint(messageId, NotificationOpcode.GET_ADMIN_DATA, comment, this, orderId);
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
     }
 
     public Question sendQuestion(int messageId, int storeId, String question) {
-        return new Question(messageId, NotificationOpcode.QUESTION, question, this, storeId);
+        return new Question(messageId, NotificationOpcode.GET_STORE_DATA, question, this, storeId);
     }
 
     private UserState getActiveRole(int storeId) throws Exception {

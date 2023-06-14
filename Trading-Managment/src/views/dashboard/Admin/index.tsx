@@ -8,13 +8,14 @@ import { Dehaze } from "@mui/icons-material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Bar4 from "../../../components/Bars/Navbar/NavBar4";
-import { adminResign, clearAdminError, clearAdminMsg, getLogger, getMarketStatus } from "../../../reducers/adminSlice";
+import { adminResign, clearAdminError, clearAdminMsg, getComplaints, getLogger, getMarketStatus } from "../../../reducers/adminSlice";
 import PasswordIcon from '@mui/icons-material/Password';
 import { getClientData, getNotifications, resetAuth } from "../../../reducers/authSlice";
 import CancelIcon from '@mui/icons-material/Cancel';
 import { reset } from "../../../reducers/discountSlice";
 import ErrorAlert from "../../../components/Alerts/error";
 import SuccessAlert from "../../../components/Alerts/success";
+import { getStore } from "../../../reducers/storesSlice";
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -35,11 +36,7 @@ const Admin = () => {
 
 
     const handleResign = () => {
-        debugger;
         dispatch(adminResign(userId)).then((res) => {
-            debugger;
-            console.log(res, "response!!!");
-            debugger;
             if (res.payload?.message?.data !== 'the admin cannot be removed because it is the only admin in the system') {
                 dispatch(resetAuth());
                 navigate("/auth/login");
@@ -63,39 +60,31 @@ const Admin = () => {
         // dispatch(setWhatchedCustomer(id as number));
         // navigate(`/dashboard/customers/${id}`);
     };
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-
-    // Send a ping to the server
-    // const sendPing = () => {
-    //     if (userId != 0) {
-    //         axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-    //             .then(response => {
-    //                 // Do something with the response if necessary
-    //             })
-    //             .catch(error => {
-    //                 // Handle the error if necessary
-    //             });
-    //         // dispatch(ping(userId));
-    //     }
-    // }
+    interface NumberToVoidFunctionMap {
+        [key: number]: () => void;
+    }
+    const hashMap: NumberToVoidFunctionMap = {
+        0: () => {
+            dispatch(getClientData({ userId: userId }));
+            fetchNotification();
+        },
+        3: () => {
+            dispatch(getComplaints(userId));
+            fetchNotification();
+        },
+        6: () => {
+            dispatch(getClientData({ userId: userId }));
+            dispatch(getComplaints(userId));
+            fetchNotification();
+        },
+    };
     const fetchNotification = async () => {
         try {
-            console.log("trying get notification")
             if (token != "" && userName != 'guest') {
-
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
-
-                // if (response.payload?.opcode >= 0 && response.payload?.opcode <= 6) {
-                //     dispatch(getStore({ userId: userId, storeId: storeId }));
-                // }
-                // else if (!isAdmin && ((response.payload?.opcode >= 7 && response.payload?.opcode <= 12) || response.payload?.opcode == 14 || response.payload?.opcode == 15)) {
-                //     dispatch(getClientData({ userId: userId }));
-                // }
-                if (isAdmin && (response.payload?.opcode == 14 || response.payload?.opcode == 13)) {
-                    dispatch(getClientData({ userId: userId }));
+                if (response.payload != null) {
+                    hashMap[response.payload?.opcode]();
                 }
-
-                fetchNotification();
             }
         } catch (error) {
             console.error('Error fetching notification:', error);
@@ -277,7 +266,7 @@ const Admin = () => {
                 system log history
             </Typography>
             <Box sx={{
-                height: 550, width: '80%', right: 2, mt: 7, ml: '10%', borderColor: 'divider'
+                height: 550, width: '90%', right: 2, mt: 7, ml: '10%', borderColor: 'divider'
             }}>
                 <DataGrid
                     rows={logs}

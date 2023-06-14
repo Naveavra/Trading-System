@@ -21,6 +21,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SideDrawer from '../../SideDrawer';
 import { Action } from '../../../types/systemTypes/Action';
 import MessageIcon from '@mui/icons-material/Message';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 
@@ -41,7 +42,7 @@ const Bar4: React.FC<Props> = ({ headLine }) => {
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
 
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-    const adminActions: Action[] = [Action.addAdmin, Action.closeStorePerminently, Action.seeComplaints, Action.cancelMembership, Action.watchMarketStatus, Action.updateServices];
+    const adminActions: Action[] = [Action.addAdmin, Action.closeStorePerminently, Action.seeComplaints, Action.cancelMembership, Action.updateServices];
 
     const handleLogout = () => {
         dispatch(logout(userId));
@@ -77,7 +78,9 @@ const Bar4: React.FC<Props> = ({ headLine }) => {
                         >
                             <MenuIcon />
                         </IconButton>
-
+                        <IconButton color='inherit' onClick={() => navigate(-1)}>
+                            <ArrowBackIcon />
+                        </IconButton>
                         <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
                             {headLine}
                         </Typography>

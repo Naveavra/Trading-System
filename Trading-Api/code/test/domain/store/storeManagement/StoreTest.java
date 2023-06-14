@@ -62,9 +62,9 @@ class StoreTest {
     }
     @Test
     void getStoreRating() throws Exception {
-        StoreReview review = new StoreReview(0, NotificationOpcode.STORE_REVIEW, "great store", member, orderA_Id,
+        StoreReview review = new StoreReview(0, NotificationOpcode.GET_STORE_DATA, "great store", member, orderA_Id,
                 store.getStoreId(), 4);
-        StoreReview reviewB = new StoreReview(1, NotificationOpcode.STORE_REVIEW, "shitty store", member, orderB_Id,
+        StoreReview reviewB = new StoreReview(1, NotificationOpcode.GET_STORE_DATA, "shitty store", member, orderB_Id,
                 store.getStoreId(), 2);
         store.addReview(orderA_Id, review);
         store.addReview(orderB_Id, reviewB);
@@ -77,7 +77,7 @@ class StoreTest {
     void invalidAddReview() throws Exception {
         Exception exception = assertThrows(Exception.class, () -> {
             int invalidOrderId = 3;
-            StoreReview review = new StoreReview(0, NotificationOpcode.STORE_REVIEW, "great store", member, invalidOrderId,
+            StoreReview review = new StoreReview(0, NotificationOpcode.GET_STORE_DATA, "great store", member, invalidOrderId,
                     store.getStoreId(), 5);
             store.addReview(invalidOrderId, review);
         });
@@ -172,9 +172,9 @@ class StoreTest {
 
     @Test
     void getMessages() throws Exception {
-        StoreReview review = new StoreReview(0, NotificationOpcode.STORE_REVIEW, "great store", member, orderA_Id,
+        StoreReview review = new StoreReview(0, NotificationOpcode.GET_STORE_DATA, "great store", member, orderA_Id,
                 store.getStoreId(), 5);
-        StoreReview reviewB = new StoreReview(1, NotificationOpcode.STORE_REVIEW, "shitty store", member,
+        StoreReview reviewB = new StoreReview(1, NotificationOpcode.GET_STORE_DATA, "shitty store", member,
                 orderB_Id, store.getStoreId(), 0);
         store.addReview(orderA_Id, review);
         store.addReview(orderB_Id, reviewB);

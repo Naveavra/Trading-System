@@ -226,7 +226,7 @@ public class UserController {
         int tmp = messageIds;
         messageIds++;
         String notify = "a complaint has been submitted";
-        Notification notification = new Notification(NotificationOpcode.COMPLAINT, notify);
+        Notification notification = new Notification(NotificationOpcode.GET_ADMIN_DATA, notify);
         for(Admin a : admins.values())
             a.addNotification(notification);
         Complaint complaint = m.writeComplaint(tmp, orderId, comment);
@@ -294,7 +294,7 @@ public class UserController {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
         owner.appointToOwner(appointed, storeId);
-        Notification notify = new Notification(NotificationOpcode.APPOINT_OWNER, "you have been appointed to owner in store: " + storeId);
+        Notification notify = new Notification(NotificationOpcode.GET_STORE_DATA, "you have been appointed to owner in store: " + storeId);
         appointed.addNotification(notify);
     }
 
@@ -305,9 +305,9 @@ public class UserController {
             Member fired = getMember(firedId);
             Notification notify;
             if (fired.getRole(storeId).getRole() == Role.Owner)
-               notify = new Notification(NotificationOpcode.FIRE_OWNER, "you have been fired from owner in store: " + storeId);
+               notify = new Notification(NotificationOpcode.GET_STORE_DATA, "you have been fired from owner in store: " + storeId);
              else
-                notify = new Notification(NotificationOpcode.FIRE_MANAGER, "you have been fired from manager in store: " + storeId);
+                notify = new Notification(NotificationOpcode.GET_STORE_DATA, "you have been fired from manager in store: " + storeId);
             fired.addNotification(notify);
             fired.removeRoleInStore(storeId);
         }
@@ -323,7 +323,7 @@ public class UserController {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
         owner.appointToManager(appointed, storeId);
-        Notification notify = new Notification(NotificationOpcode.APPOINT_MANAGER, "you have been appointed to manager in store: " + storeId);
+        Notification notify = new Notification(NotificationOpcode.GET_STORE_DATA, "you have been appointed to manager in store: " + storeId);
         appointed.addNotification(notify);
     }
 
@@ -340,7 +340,7 @@ public class UserController {
         Member manager = getMember(managerId);
         for(Action a : actions) {
             manager.addAction(a, storeId);
-            Notification notify = new Notification(NotificationOpcode.ADD_MANGER_PERMISSTION, "the following action: " + a.toString() + "\n" +
+            Notification notify = new Notification(NotificationOpcode.GET_STORE_DATA, "the following action: " + a.toString() + "\n" +
                     "has been added for you for store: " + storeId);
             manager.addNotification(notify);
         }
@@ -352,7 +352,7 @@ public class UserController {
         Member manager = getMember(managerId);
         for(Action a : actions) {
             manager.removeAction(a, storeId);
-            Notification notify = new Notification(NotificationOpcode.REMOVE_MANGER_PERMISSTION, "the following action: " + a.toString() + "\n" +
+            Notification notify = new Notification(NotificationOpcode.GET_STORE_DATA, "the following action: " + a.toString() + "\n" +
                     "has been removed from you for store: " + storeId);
             manager.addNotification(notify);
         }
@@ -376,7 +376,7 @@ public class UserController {
             Member worker = getMember(workerId);
             worker.changeToInActive(storeId);
             String notify = "the store: " + storeId + " has been temporarily closed";
-            Notification notification = new Notification(NotificationOpcode.CLOSE_STORE, notify);
+            Notification notification = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, notify);
             addNotification(workerId, notification);
         }
     }
@@ -389,7 +389,7 @@ public class UserController {
             Member worker = getMember(workerId);
             worker.changeToActive(storeId);
             String notify = "the store: " + storeId + " has been reOpened";
-            Notification notification = new Notification(NotificationOpcode.OPEN_STORE,  notify);
+            Notification notification = new Notification(NotificationOpcode.GET_CLIENT_DATA,  notify);
             addNotification(workerId, notification);
         }
     }

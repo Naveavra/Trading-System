@@ -25,7 +25,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import GavelIcon from '@mui/icons-material/Gavel';
 import SideDrawer from '../../SideDrawer';
 import { Action } from '../../../types/systemTypes/Action';
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 import './NavBar2.css';
@@ -120,7 +120,9 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                             <MenuIcon />
                         </IconButton>
 
-
+                        <IconButton color='inherit' onClick={() => navigate(-1)}>
+                            <ArrowBackIcon />
+                        </IconButton>
                         <Typography variant="h6" component="div" sx={{ display: 'flex', justifyContent: 'center', flexGrow: 2, ml: 73 }}>
                             {headLine} {store.storeName}
                         </Typography>
@@ -139,7 +141,7 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                                 <IconButton className="icon" color="inherit" onClick={handleLogout}>
                                     <LogoutIcon />
                                 </IconButton>
-                                <IconButton color="inherit" onClick={() => navigate('biddingCenter')}>
+                                <IconButton color="inherit" onClick={() => navigate('bids')}>
                                     <GavelIcon />
                                 </IconButton>
                                 <IconButton className="icon" color="inherit" onClick={() => setStoreOpen(true)}>

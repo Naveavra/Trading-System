@@ -32,7 +32,6 @@ export enum Action {
     quit = 'quit',
     seeComplaints = 'see complaints',
     cancelMembership = 'cancel membership',
-    watchMarketStatus = 'watch market status',
     updateServices = 'update services',
 }
 export const actionOrder = {

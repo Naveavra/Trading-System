@@ -279,7 +279,7 @@ public class Market implements MarketInterface {
             Set<Integer> creatorIds = ans.getSecond();
             userController.purchaseMade(userId, receipt);
             for (int creatorId : creatorIds)
-                addNotification(creatorId, NotificationOpcode.PURCHASE_IN_STORE, "a new purchase was made in your store");
+                addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
             marketInfo.addPurchaseCount();
             return logAndRes(Event.LogStatus.Success, "user made purchase",
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -364,7 +364,7 @@ public class Market implements MarketInterface {
             int storeId = marketController.getStoreId(storeName);
             StoreReview m = userController.writeReviewForStore(orderId, storeId, content, grading, userId);
             int creatorId = marketController.addReviewToStore(m);
-            addNotification(creatorId, NotificationOpcode.STORE_REVIEW, "a review of has been added for store: " + storeId);
+            addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a review of has been added for store: " + storeId);
             return logAndRes(Event.LogStatus.Success, "user wrote review on store successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user write review on store successfully", null, null);
@@ -382,7 +382,7 @@ public class Market implements MarketInterface {
             userAuth.checkUser(userId, token);
             ProductReview p = userController.writeReviewForProduct(orderId, storeId, productId, content, grading, userId);
             int creatorId = marketController.writeReviewForProduct(p);
-            addNotification(creatorId, NotificationOpcode.PRODUCT_REVIEW, "a review of has been added for product: " + productId + " in store: " + storeId);
+            addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a review of has been added for product: " + productId + " in store: " + storeId);
             return logAndRes(Event.LogStatus.Success, "user wrote review on product successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user write review successfully", null, null);
@@ -484,7 +484,7 @@ public class Market implements MarketInterface {
             userAuth.checkUser(userId, token);
             Question q = userController.sendQuestionToStore(userId, storeId, msg);
             int creatorId = marketController.addQuestion(q);
-            addNotification(creatorId, NotificationOpcode.QUESTION, "a question of has been added for store: " + storeId);
+            addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a question of has been added for store: " + storeId);
             return logAndRes(Event.LogStatus.Success, "user sent question to store " + storeId + " successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "question added successfully", null, null);
@@ -974,7 +974,7 @@ public class Market implements MarketInterface {
             Member user = userController.getMember(userId);
             List<String> workerNames = marketController.placeBid(storeId, user, prodId, price,quantity);
             for(String name : workerNames)
-                userController.addNotification(name, new Notification(NotificationOpcode.PLACE_BID,
+                userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a new bid was placed in store: " + storeId +" for product: " + prodId));
             return logAndRes(Event.LogStatus.Success, "user placed his successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -991,7 +991,7 @@ public class Market implements MarketInterface {
             Member user = userController.getMember(userId);
             List<String> workerNames = marketController.editBid(storeId, bidId, price,quantity);
             for(String name : workerNames)
-                userController.addNotification(name, new Notification(NotificationOpcode.PLACE_BID,
+                userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a new bid was placed in store: " + storeId +" for bid: " + bidId));
             return logAndRes(Event.LogStatus.Success, "user placed his successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -1014,7 +1014,7 @@ public class Market implements MarketInterface {
             Set<Integer> creatorIds = ans.getSecond();
             userController.purchaseMade(userId, receipt);
             for (int creatorId : creatorIds)
-                addNotification(creatorId, NotificationOpcode.PURCHASE_IN_STORE, "a new purchase was made in your store");
+                addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
             marketInfo.addPurchaseCount();
             return logAndRes(Event.LogStatus.Success, "user answer the bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -1031,7 +1031,7 @@ public class Market implements MarketInterface {
             userController.checkPermission(userId, Action.updateProduct, storeId);
             List<String> ans = marketController.counterBid(userController.getUserName(userId), storeId, counterOffer, prodId, bidId);
             for(String name : ans)
-                userController.addNotification(name, new Notification(NotificationOpcode.PLACE_BID,
+                userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a counter bid was placed in store: " + storeId + " for bid: " + bidId));
             return logAndRes(Event.LogStatus.Success, "user answer with counter bid",
                     StringChecks.curDayString(), userController.getUserName(userId),

@@ -418,7 +418,7 @@ public class API {
     }
 
     public Pair<Boolean, JSONObject> sendNotification(int userId, String token, String username, String notification) {
-        Response<String> res = market.sendNotification(userId, token, NotificationOpcode.CHAT_MESSAGE, username, notification);
+        Response<String> res = market.sendNotification(userId, token, NotificationOpcode.GET_CLIENT_DATA, username, notification);
         return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> changeRegularDiscount(int userId, String token, int storeId, int prodId,
