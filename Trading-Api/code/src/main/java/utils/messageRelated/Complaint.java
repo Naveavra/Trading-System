@@ -6,6 +6,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.json.JSONObject;
 
+import static utils.messageRelated.NotificationOpcode.COMPLAINT;
+import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
+
 @Entity
 @Table(name = "complaints")
 public class Complaint extends Message{
@@ -13,17 +16,22 @@ public class Complaint extends Message{
     private int orderId;
     private boolean gotFeedback;
 
-    public Complaint(int messageId, NotificationOpcode opcode, String content, Member reviewer, int orderId){
-        super(messageId, opcode, content, reviewer);
+    public Complaint(){
+        this.opcode = COMPLAINT;
+    }
+
+    public Complaint(int messageId, String content, Member reviewer, int orderId){
+        super(messageId, NotificationOpcode.COMPLAINT, content, reviewer);
         this.orderId = orderId;
         this.gotFeedback = false;
     }
 
-        public void sendFeedback(String feedback) throws Exception{
-            if(!gotFeedback) {
-                Notification notification = new Notification(NotificationOpcode.REVIEW_FEEDBACK, feedback);
-                sender.addNotification(notification);
-                gotFeedback = true;
+    public void sendFeedback(String feedback) throws Exception{
+        setSenderDb();
+        if(!gotFeedback) {
+            Notification notification = new Notification(NotificationOpcode.REVIEW_FEEDBACK, feedback);
+            sender.addNotification(notification);
+            gotFeedback = true;
         }
         else throw new Exception("the complaint already got an answer");
 

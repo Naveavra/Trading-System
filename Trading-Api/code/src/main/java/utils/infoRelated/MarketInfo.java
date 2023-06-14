@@ -8,7 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MarketInfo extends Information{
     private transient LocalTime startTime;
-    private transient AtomicInteger countUserIn;
+    private transient AtomicInteger countGuestIn;
+    private transient AtomicInteger countMemberIn;
     private transient AtomicInteger countUserOut;
     private transient AtomicInteger purchaseCount;
     private transient AtomicInteger countRegister;
@@ -20,7 +21,8 @@ public class MarketInfo extends Information{
 
     public MarketInfo(){
         startTime = LocalTime.now();
-        countUserIn = new AtomicInteger(0);
+        countGuestIn = new AtomicInteger(0);
+        countMemberIn = new AtomicInteger(0);
         countUserOut = new AtomicInteger(0);
         purchaseCount = new AtomicInteger(0);
         countRegister = new AtomicInteger(0);
@@ -30,11 +32,13 @@ public class MarketInfo extends Information{
         averagePurchase = 0;
     }
 
-
-    public void addUserCount(){
-        countUserIn.incrementAndGet();
+    public void addGuestIn(){
+        countGuestIn.incrementAndGet();
     }
 
+    public void addMemberIn(){
+        countMemberIn.incrementAndGet();
+    }
     public void reduceUserCount(){
         countUserOut.incrementAndGet();
     }
@@ -63,7 +67,7 @@ public class MarketInfo extends Information{
         averagePurchase = purchaseCount.get() / calcMinutes;
         averageRegistered = countRegister.get() / calcMinutes;
         averageUserOut =countUserOut.get() / calcMinutes;
-        averageUserIn = countUserIn.get() / calcMinutes;
+        averageUserIn = (countGuestIn.get() + countMemberIn.get()) / calcMinutes;
     }
 
     public double getAverageUserIn(){
@@ -87,7 +91,8 @@ public class MarketInfo extends Information{
         calculateAverages();
         DecimalFormat df=new DecimalFormat("0.000");
         JSONObject json = new JSONObject();
-        json.put("userCount", countUserIn);
+        json.put("guestCount", countGuestIn);
+        json.put("memberCount", countMemberIn);
         json.put("averageUserIn", df.format(averageUserIn));
         json.put("averageUserOut", df.format(averageUserOut));
         json.put("registeredCount", countRegister);

@@ -8,6 +8,7 @@ import domain.store.discount.predicates.DiscountPredicate;
 import domain.user.Basket;
 import domain.user.Member;
 import domain.user.ShoppingCart;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.json.JSONObject;
 import utils.infoRelated.ProductInfo;
 import utils.Filter.ProductFilter;
@@ -167,7 +168,7 @@ public class StoreController {
         Set<Integer> storeOwnersIDS = new HashSet<>();
         //should apply discounts here
         for (Basket b : shoppingCart.getBaskets()) {
-            Store store = storeList.get(b.getStoreId());
+            Store store = getStore(b.getStoreId());
             store.handleDiscount(order);
             if (!(store.makeOrder(b))) {
                 return null;
@@ -181,7 +182,7 @@ public class StoreController {
     public Set<Integer> purchaseProductsBid(ShoppingCart shoppingCart, Order order) throws Exception{
         Set<Integer> storeOwnersIDS = new HashSet<>();
         for (Basket b : shoppingCart.getBaskets()) {
-            Store store = storeList.get(b.getStoreId());
+            Store store = getStore(b.getStoreId());
             if (!(store.makeOrder(b))) {
                 return null;
             }
@@ -208,6 +209,11 @@ public class StoreController {
     public Store getStore(int storeId) throws Exception{
         if(storeList.containsKey(storeId))
             return storeList.get(storeId);
+        Store s = (Store) Dao.getById(Store.class, storeId);
+        if(s != null) {
+            storeList.put(s.getStoreId(), s);
+            return s;
+        }
         throw new Exception("the storeId given does not belong to any store in the system");
     }
 
@@ -290,6 +296,7 @@ public class StoreController {
         Store store = getStore(storeId);
         if(store != null){
             storeList.remove(storeId);
+            Dao.removeIf("Store", String.format("storeId = %d", storeId));
             return store.getUsersInStore();
         }
         else
@@ -298,7 +305,7 @@ public class StoreController {
 
     public void removeProduct(int storeId, int productId) throws Exception  {
         Store st;
-        if((st = storeList.get(storeId))!=null){
+        if((st = getStore(storeId))!=null){
             st.removeProduct(productId);
         }
         else{
@@ -309,7 +316,7 @@ public class StoreController {
     public void updateProduct(int storeId, int productId, List<String> categories, String name, String description,
                               int price, int quantity, String img) throws Exception {
         Store st;
-        if((st = storeList.get(storeId))!=null){
+        if((st = getStore(storeId))!=null){
             st.updateProduct(productId, categories, name,  description, price, quantity, img);
         }
         else{
@@ -327,6 +334,7 @@ public class StoreController {
     }
 
     public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) {
+        getStoresFromDb();
         ArrayList<ProductInfo> result = new ArrayList<>();
         for(Store st : storeList.values()){
             result.addAll(st.filterBy(filterOptions));
@@ -366,6 +374,7 @@ public class StoreController {
     }
 
     public List<ProductInfo> getAllProducts() {
+        getStoresFromDb();
         List<ProductInfo> products = new ArrayList<>();
         for(Store s : storeList.values()){
             if(s.isActive())
@@ -411,6 +420,21 @@ public class StoreController {
         for(Store s : storeList.values())
             if(s.getName().equals(storeName))
                 return s.getStoreId();
+        Store s = (Store) Dao.getByParam(Store.class, "Store", String.format("storeName = %s", storeName));
+        if(s != null) {
+            storeList.put(s.getStoreId(), s);
+            return s.getStoreId();
+        }
         throw new Exception("the name does not belong to any store");
+    }
+
+
+    //database
+    public void getStoresFromDb(){
+        List<Store> stores = (List<Store>) Dao.getAllInTable("Store");
+        for(Store s : stores) {
+            if(!storeList.containsKey(s.getStoreId()))
+                storeList.put(s.getStoreId(), s);
+        }
     }
 }

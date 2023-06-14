@@ -19,6 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Entity
 @Table(name = "users")
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public abstract class Subscriber {
 
     @Id
@@ -76,6 +77,7 @@ public abstract class Subscriber {
     }
 
     public synchronized void addNotification(Notification notification){
+        setNotificationsFromDb();
         notification.setSubId(id);
         boolean got = notifications.offer(notification);
         if(got)
@@ -83,6 +85,7 @@ public abstract class Subscriber {
     }
 
     public List<Notification> displayNotifications(){
+        setNotificationsFromDb();
         List<Notification> display = new LinkedList<>(notifications);
         Dao.removeIf("Notification", String.format("subId = %d", id));
         notifications.clear();
@@ -102,7 +105,14 @@ public abstract class Subscriber {
         }
     }
 
+    public void setNotificationsFromDb(){
+        if(notifications == null) {
+            notifications = new LinkedBlockingQueue<>();
+            for (Notification n : (List<Notification>) Dao.getListById(Notification.class, id, "Notification", "subId"))
+                addNotification(n);
+        }
+    }
+
     public abstract LoginInformation getLoginInformation(String token);
     public abstract void checkPermission(Action action, int storeId)  throws Exception;
-
 }

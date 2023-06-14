@@ -59,7 +59,7 @@ public abstract class UserState extends Information {
     public List<Action> getPossibleActions(){return permissions.getAddedActions();}
 
 
-    public Store getStore(){return store;}
+    public Store getStore(){return getStoreFromDb();}
 
     public int getUserId(){return userId;}
     public void setIsActive(boolean isActive){
@@ -89,60 +89,51 @@ public abstract class UserState extends Information {
 
     public void appointManager(Member appointed) throws Exception{
         checkPermission(Action.appointManager);
-        StoreManager m = new StoreManager(appointed.getId(), appointed.getName(), store);
-        store.appointUser(userId, appointed, m);
-        appointed.changeRoleInStore(m, store);
+        StoreManager m = new StoreManager(appointed.getId(), appointed.getName(), getStoreFromDb());
+        getStoreFromDb().appointUser(userId, appointed, m);
+        appointed.changeRoleInStore(m, getStoreFromDb());
     }
 
     public Set<Integer> fireManager(int appointedId) throws Exception{
         if(userId == appointedId)
-            return store.fireUser(appointedId);
+            return getStoreFromDb().fireUser(appointedId);
         checkPermission(Action.fireManager);
-        return store.fireUser(appointedId);
+        return getStoreFromDb().fireUser(appointedId);
     }
 
     public void appointOwner(Member appointed) throws Exception{
         checkPermission(Action.appointOwner);
-        StoreOwner s = new StoreOwner(appointed.getId(), appointed.getName(), store);
-        store.appointUser(userId, appointed, s);
-        appointed.changeRoleInStore(s, store);
+        StoreOwner s = new StoreOwner(appointed.getId(), appointed.getName(), getStoreFromDb());
+        getStoreFromDb().appointUser(userId, appointed, s);
+        appointed.changeRoleInStore(s, getStoreFromDb());
     }
 
     public Set<Integer> fireOwner(int appointedId) throws Exception{
         if(userId == appointedId)
-            return store.fireUser(appointedId);
+            return getStoreFromDb().fireUser(appointedId);
         checkPermission(Action.fireOwner);
-        return store.fireUser(appointedId);
+        return getStoreFromDb().fireUser(appointedId);
     }
 
     public Set<Integer> closeStore() throws Exception{
         checkPermission(Action.closeStore);
         //setIsActive(false);
-        Set<Integer> ans = store.closeStoreTemporary(userId);
-        Dao.update(store);
+        Set<Integer> ans = getStoreFromDb().closeStoreTemporary(userId);
+        Dao.update(getStoreFromDb());
         return ans;
     }
 
     public Set<Integer> reOpenStore() throws Exception{
         checkPermission(Action.reopenStore);
         //setIsActive(true);
-        Set<Integer> ans = store.reopenStore(userId);
-        Dao.update(store);
+        Set<Integer> ans = getStoreFromDb().reopenStore(userId);
+        Dao.update(getStoreFromDb());
         return ans;
     }
 
     public Set<Integer> getWorkerIds() throws Exception{
         checkPermission(Action.checkWorkersStatus);
-        return store.getUsersInStore();
-    }
-
-    public JSONObject toJson(){
-        JSONObject json = new JSONObject();
-        json.put("userId", userId);
-        json.put("userName", userName);
-        json.put("storeRole", role.toString());
-        json.put("actions", fromActionToString(getActions()));
-        return json;
+        return getStoreFromDb().getUsersInStore();
     }
 
     public int getStoreId() {
@@ -154,5 +145,22 @@ public abstract class UserState extends Information {
     }
     public String getUserName(){
         return this.userName;
+    }
+
+    public JSONObject toJson(){
+        JSONObject json = new JSONObject();
+        json.put("userId", userId);
+        json.put("userName", userName);
+        json.put("storeRole", role.toString());
+        json.put("actions", fromActionToString(getActions()));
+        return json;
+    }
+
+    //database
+    public Store getStoreFromDb(){
+        if(store == null){
+            store = (Store) Dao.getById(Store.class, storeId);
+        }
+        return store;
     }
 }
