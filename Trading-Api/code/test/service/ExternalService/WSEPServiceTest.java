@@ -18,11 +18,11 @@ class WSEPServiceTest {
     {
         JSONObject payment = new JSONObject();
         payment.put("payment_service", "WSEP");
-        payment.put("cardNumber", "123456789");
+        payment.put("cardNumber", "000000000");
         payment.put("month", "01");
         payment.put("year", "30");
         payment.put("holder", "Israel Visceral");
-        payment.put("ccv", "000");
+        payment.put("ccv", "999");//984
         payment.put("id", "123456789");
         return payment;
     }
@@ -35,7 +35,7 @@ class WSEPServiceTest {
         supplier.put("address", "Reger 17");
         supplier.put("city", "Beer Sheva");
         supplier.put("country", "Israel");
-        supplier.put("zip", "700000");
+        supplier.put("zip", "984");
         return supplier;
     }
 
@@ -44,7 +44,7 @@ class WSEPServiceTest {
         try {
             wsepService = new WSEPService();
         } catch (Exception e) {
-
+            System.out.println("Cant connect to external service");
         }
         paymentContent = createPaymentJson();
         supplierContent = createSupplierJson();
@@ -59,9 +59,10 @@ class WSEPServiceTest {
         try {
             wsepService.makePurchase(paymentContent, 50);
         } catch (Exception e) {
-            assertTrue(false);
+            System.out.println(e.getMessage());
+            assert false;
         }
-        assertTrue(true);
+        assert true;
     }
 
     @Test

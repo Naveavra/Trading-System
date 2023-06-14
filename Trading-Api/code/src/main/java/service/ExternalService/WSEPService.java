@@ -14,10 +14,16 @@ public class WSEPService extends ExternalService implements PaymentAdapter, Supp
     private final int FAILED =  -1;
     private boolean available;
 
+    public WSEPService(int timeout) throws Exception {
+        super("https://php-server-try.000webhostapp.com/", timeout);
+        available = false;
+    }
+
     public WSEPService() throws Exception {
         super("https://php-server-try.000webhostapp.com/");
         available = false;
     }
+
 
     @Override
     public void makePurchase(String accountNumber, double amount) throws Exception {
@@ -34,8 +40,13 @@ public class WSEPService extends ExternalService implements PaymentAdapter, Supp
         String ccv = userDetails.get("ccv").toString();
         String id = userDetails.get("id").toString();
         Request paymentRequest = new PaymentRequest(cardNumber, month, year, holder, ccv, id);
-        handshake();
-        result = sendRequest(paymentRequest);
+        try {
+            result = sendRequest(paymentRequest);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Payment: " + e.getMessage());
+        }
         if (!(MIN_TRANSACTION_ID <= result && result <= MAX_TRANSACTION_ID))
         {
             throw new Exception("The payment transaction failed!");
@@ -47,7 +58,13 @@ public class WSEPService extends ExternalService implements PaymentAdapter, Supp
     public void cancelPurchase(String transactionId) throws Exception {
         int result = 0;
         Request cancelPayRequest = new CancelRequest("cancel_pay", transactionId);
-        result = sendRequest(cancelPayRequest);
+        try {
+            result = sendRequest(cancelPayRequest);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Payment: " + e.getMessage());
+        }
         if (result == FAILED)
         {
             throw new Exception("Failed to cancel the payment transaction!");
@@ -79,7 +96,13 @@ public class WSEPService extends ExternalService implements PaymentAdapter, Supp
         String country = supplyContent.get("country").toString();
         String zip = supplyContent.get("zip").toString();
         Request supplyRequest = new SupplyRequest(name, address, city, country, zip);
-        result = sendRequest(supplyRequest);
+        try {
+            result = sendRequest(supplyRequest);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Supply: " + e.getMessage());
+        }
         if (!(MIN_TRANSACTION_ID <= result && result <= MAX_TRANSACTION_ID))
         {
             throw new Exception("The payment transaction failed!");
@@ -96,7 +119,13 @@ public class WSEPService extends ExternalService implements PaymentAdapter, Supp
     public void cancelSupply(String transactionId) throws Exception {
         int result = 0;
         Request cancelSupRequest = new CancelRequest("cancel_supply", transactionId);
-        result = sendRequest(cancelSupRequest);
+        try {
+            result = sendRequest(cancelSupRequest);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Supply: " + e.getMessage());
+        }
         if (result == FAILED)
         {
             throw new Exception("Failed to cancel the payment transaction!");
