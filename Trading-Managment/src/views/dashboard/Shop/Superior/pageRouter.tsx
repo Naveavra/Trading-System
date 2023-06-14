@@ -7,6 +7,8 @@ import RegularDiscount from "../../../../components/Forms/Discounts/RegularDisco
 import StoreMessages from "../../../../components/storePages/StoreMessages";
 import AnswerQuestion from "../../../../components/Forms/AnswerQuestion";
 import BiddingCenter from "../../BiddingCenter/intex";
+import StoreHistory from "../../../../components/storePages/StoreHistory";
+import WorkersStatus from "../../../../components/storePages/WorkersStatus";
 
 export const SuperiorPagesShopRoutes =
     <Route key="routes" path="superior">
@@ -19,5 +21,7 @@ export const SuperiorPagesShopRoutes =
         <Route path="conditionalDiscount/leafs/addNewComposite" element={<CompositeDiscount first={false} />} />
         <Route path="conditionalDiscount/leafs/addNewRegular" element={<RegularDiscount tree={true} />} />
         <Route path="biddingCenter" element={<BiddingCenter />} />
+        <Route path="seestorehistory" element={<StoreHistory />} />
+        <Route path="checkworkersstatus" element={<WorkersStatus />} />
     </Route>
     ;
