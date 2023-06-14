@@ -10,6 +10,8 @@ import RegularDiscount from "../../../../components/Forms/Discounts/RegularDisco
 import SendComplain from "../../../../components/Forms/SendComplaint";
 import AddPurchasePolicy from "../../../../components/Forms/SuppingRules/AddPurchasePolicy";
 import MakeBid from "../../../../components/Forms/Bids/MakeBid";
+import CounterBid from "../../../../components/Forms/Bids/CounterBid";
+import AnswerBid from "../../../../components/Forms/Bids/AnswerBid";
 
 export const SuperiorShopRoutes =
     <Route key="routes" path="superior" element={<Superior />}>
@@ -28,6 +30,7 @@ export const SuperiorShopRoutes =
         <Route path="sendComplaint" element={<SendComplain />} />
         <Route path="addpurchaseconstraint" element={<AddPurchasePolicy />} />
         <Route path=":storeId/:productId/makeBid" element={<MakeBid opcode={2} />} />
+
 
     </Route>
     ;

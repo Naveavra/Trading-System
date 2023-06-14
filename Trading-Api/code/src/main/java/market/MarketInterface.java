@@ -65,7 +65,7 @@ public interface MarketInterface {
     public Response changeStoreInfo(int userId, String token, int storeId, String name, String description, String img,
                                     String isActive);
     public String changeStoreAttributes(int userId, int storeId, String name, String description, String img) throws Exception;
-    public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
+//    public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
     //public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
     public Response addPurchaseConstraint(int userId, String token, int storeId, String constraint);
     public Response fireManager(int userId, String token, int managerToFire, int storeId);

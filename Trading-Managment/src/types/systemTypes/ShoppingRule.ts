@@ -19,25 +19,26 @@ export interface CategoryRule extends rule {
     limiter: 'Min' | 'Max';
     ComposeRule?: ComposeRule;
 };
-export interface ItemRule {
+export interface ItemRule extends rule {
     productId: number;
     amount: number;
     limiter: 'Min' | 'Max';
     ComposeRule?: ComposeRule;
 };
-export interface DateTimeRule {
+export interface DateTimeRule extends rule {
+    category: string;
     timeType: 'Time Limit' | 'Date Limit';
     timeLimit: string;
     limiter: 'Min' | 'Max';
     ComposeRule?: ComposeRule;
 };
-export interface UserRule {
+export interface UserRule extends rule {
     ageLimit: number;
     productId: number;
     limiter: 'Min' | 'Max';
     ComposeRule?: ComposeRule;
 };
-export interface BasketRule {
+export interface BasketRule extends rule {
     productId: number;
     amount: number;
     ComposeRule?: ComposeRule;

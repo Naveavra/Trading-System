@@ -29,9 +29,9 @@ public class Complaint extends Message{
     public void sendFeedback(String feedback) throws Exception{
         setSenderDb();
         if(!gotFeedback) {
-            Notification notification = new Notification(NotificationOpcode.REVIEW_FEEDBACK, feedback);
-            sender.addNotification(notification);
-            gotFeedback = true;
+                Notification notification = new Notification(NotificationOpcode.GET_STORE_DATA_AND_COMPLAINS, feedback);
+                sender.addNotification(notification);
+                gotFeedback = true;
         }
         else throw new Exception("the complaint already got an answer");
 

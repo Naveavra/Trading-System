@@ -38,7 +38,7 @@ public class Admin extends Subscriber {
         for(int userId : userIds){
             if(creatId != userId) {
                 String notify = "the store: " + storeId + " has been permanently closed";
-                Notification notification = new Notification(NotificationOpcode.CLOSE_STORE_PERMANENTLY, notify);
+                Notification notification = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, notify);
                 userController.addNotification(userId, notification);
                 userController.removeStoreRole(userId, storeId);
             }
@@ -67,7 +67,7 @@ public class Admin extends Subscriber {
     @Override
     public LoginInformation getLoginInformation(String token) {
         return new LoginInformation(token, getId(), getName(), true, displayNotifications(),
-                null, null, null, null, null, -1, null);
+                null, null, null, null, null, -1, null, null);
     }
 
     @Override

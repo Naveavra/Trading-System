@@ -11,10 +11,13 @@ import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
 
 import domain.store.purchase.PurchasePolicy;
+import domain.store.purchase.PurchasePolicyDataObject;
 import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
@@ -72,6 +75,9 @@ public class Store extends Information{
     @Transient
     private DiscountFactory discountFactory;
 
+    private AtomicInteger bidIds;
+    private AtomicInteger policyIds;
+
     public Store(){
     }
     public Store(int id, String description, Member creator){
@@ -117,6 +123,8 @@ public class Store extends Information{
         this.storeName = storeName;
         this.imgUrl = imgUrl;
         bidIds = new AtomicInteger();
+        bids = new ArrayList<>();
+        approvedBids = new ArrayList<>();
     }
 
     public void changeName(String storeName){
@@ -148,6 +156,12 @@ public class Store extends Information{
         Dao.save(q);
         questions.put(q.getMessageId(), q);
         return getCreatorFromDb().getId();
+    }
+
+
+    public List<Bid> getBids()
+    {
+        return bids;
     }
     public ArrayList<Discount> getDiscounts(){return this.discounts;}
 
@@ -196,7 +210,7 @@ public class Store extends Information{
 
     public List<StoreReview> getStoreReviews() {
         List<StoreReview> ans = new ArrayList<>(storeReviews.values());
-        ans.addAll(inventory.getProductReviews().values());
+        ans.addAll(inventory.getProductReviews());
         return ans;
     }
     public List<OrderInfo> getOrdersHistory() {
@@ -452,13 +466,13 @@ public class Store extends Information{
         return inventory.getProducts();
     }
 
-    public synchronized void setStorePolicy(String policy) throws Exception {
-        try {
-            purchasePolicies.add(new PurchasePolicyFactory().createPolicy());
-        } catch (Exception e) {
-            throw new Exception("Couldn't create a new policy");
-        }
-    }
+//    public synchronized void setStorePolicy(String policy) throws Exception {
+//        try {
+//            purchasePolicies.add(new PurchasePolicyFactory().createPolicy());
+//        } catch (Exception e) {
+//            throw new Exception("Couldn't create a new policy");
+//        }
+//    }
 
     public ArrayList<PurchasePolicy> getPurchasePolicies(){
         return purchasePolicies;
@@ -510,8 +524,8 @@ public class Store extends Information{
     }
 
     public StoreInfo getStoreInformation() {
-        StoreInfo info = new StoreInfo(storeId, storeName, storeDescription, isActive,
-                getCreatorFromDb().getId(), getStoreRating(), imgUrl);
+        StoreInfo info = new StoreInfo(storeId, storeName, storeDescription, isActive, creator.getId(), getStoreRating(),
+                imgUrl, bids);
         return info;
     }
 
@@ -557,6 +571,7 @@ public class Store extends Information{
         json.put("questions", infosToJson(getQuestions()));
         json.put("img", getImgUrl());
         json.put("roles", infosToJson(getRoles()));
+        json.put("bids", infosToJson(getBids()));
         return json;
     }
 
@@ -583,6 +598,7 @@ public class Store extends Information{
         Bid b = new Bid(bidIds.getAndIncrement(),user,inventory.getProduct(prodId),price,quantity,
                 (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct));
         bids.add(b);
+        user.addBid(b);
         return b.approvers;
     }
 
@@ -628,6 +644,34 @@ public class Store extends Information{
         throw new Exception("Bid doesnt exist "+bidId);
     }
 
+    public void addPurchasePolicy(String data) throws Exception {
+        PurchasePolicyFactory factory = new PurchasePolicyFactory(policyIds,storeId);
+        JSONObject request = new JSONObject(data);
+        String description = request.getString("description");
+        JSONArray policies = request.getJSONArray("type");
+        PurchasePolicyDataObject head = null;
+        PurchasePolicyDataObject prev = null;
+        for(int i = 0 ; i<policies.length() ; i++){
+            PurchasePolicyDataObject actualPolicy = null;
+            JSONObject policy = policies.getJSONObject(i);
+            String type = policy.getString("type");
+            switch (type){
+                case "item" -> actualPolicy = factory.parseItem(policy,prev);
+                case "category" -> actualPolicy = factory.parseCategory(policy,prev);
+                case "dateTime" -> actualPolicy = factory.parseDateTime(policy,prev);
+                case "user" -> actualPolicy = factory.parseUser(policy,prev);
+                case "basket" -> actualPolicy = factory.parseBasket(policy,prev);
+            }
+            if(i==0 && actualPolicy!=null)
+                head = actualPolicy;
+        }
+        if(head!=null){
+            purchasePolicies.add(factory.createPolicy(head));
+            return;
+        }
+        throw new Exception("Something went wrong when creating the policy, please contact us if the problem persists.\nYours truly, the developers A-team");
+
+    }
     //database
     public Member getCreatorFromDb(){
         if(creator == null){

@@ -14,11 +14,13 @@ import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
+import domain.store.storeManagement.Bid;
+
 
 
 import java.util.*;
 
-import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
+import static utils.messageRelated.NotificationOpcode.GET_STORE_DATA;
 
 
 @Entity
@@ -29,6 +31,9 @@ public class Member extends Subscriber implements User{
     private ShoppingCart cart;
     @Transient
     private List<UserState> roles; //connection between registered to the shops
+
+    @Transient
+    private List<Bid> bids;
     @Transient
     private PurchaseHistory purchaseHistory;
 
@@ -43,6 +48,7 @@ public class Member extends Subscriber implements User{
         roles = new ArrayList<>();
         purchaseHistory = new PurchaseHistory(id);
         cart = new ShoppingCart();
+        bids = new ArrayList<>();
     }
     public boolean getIsConnected(){
         return isConnected;
@@ -341,10 +347,17 @@ public class Member extends Subscriber implements User{
     @Override
     public LoginInformation getLoginInformation(String token){
         return new LoginInformation(token, id, email, false, displayNotifications(),getRoles(),
-                getStoreNames(), getStoreImgs(), getPermissions(), getUserPurchaseHistory(), StringChecks.calculateAge(birthday), birthday);
+                getStoreNames(), getStoreImgs(), getPermissions(), getUserPurchaseHistory(), StringChecks.calculateAge(birthday), birthday,getBids());
     }
     @Override
     public void setShoppingCart(ShoppingCart cart) {this.cart = cart;}
+
+
+    public void addBid(Bid bid)
+    {
+        bids.add(bid);
+    }
+    public List<Bid> getBids(){return this.bids;}
 
     public ShoppingCart getCartFromDb(){
         if(cart == null) {

@@ -22,7 +22,9 @@ public class PurchasePolicyDataObject {
     public policyComposeTypes composure;
     public policyTypes type;
 
-    public PurchasePolicyDataObject(int policyID, int storeID, String content, limiters limiter, int productID, int ageLimit, String category, int amount, int[] dateLimit, int[] timeLimit, PurchasePolicyDataObject next, policyComposeTypes composure, policyTypes type) {
+    public PurchasePolicyDataObject(int policyID, int storeID, String content, limiters limiter, int productID,
+                                    int ageLimit, String category, int amount, int[] dateLimit, int[] timeLimit,
+                                    PurchasePolicyDataObject next, policyComposeTypes composure, policyTypes type) {
         this.policyID = policyID;
         this.storeID = storeID;
         this.content = content;
@@ -37,4 +39,5 @@ public class PurchasePolicyDataObject {
         this.composure = composure;
         this.type = type;
     }
+
 }

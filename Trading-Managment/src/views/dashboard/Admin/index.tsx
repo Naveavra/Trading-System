@@ -8,13 +8,14 @@ import { Dehaze } from "@mui/icons-material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Bar4 from "../../../components/Bars/Navbar/NavBar4";
-import { adminResign, clearAdminError, clearAdminMsg, getLogger, getMarketStatus } from "../../../reducers/adminSlice";
+import { adminResign, clearAdminError, clearAdminMsg, getComplaints, getLogger, getMarketStatus } from "../../../reducers/adminSlice";
 import PasswordIcon from '@mui/icons-material/Password';
 import { getClientData, getNotifications, resetAuth } from "../../../reducers/authSlice";
 import CancelIcon from '@mui/icons-material/Cancel';
 import { reset } from "../../../reducers/discountSlice";
 import ErrorAlert from "../../../components/Alerts/error";
 import SuccessAlert from "../../../components/Alerts/success";
+import { getStore } from "../../../reducers/storesSlice";
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -35,11 +36,7 @@ const Admin = () => {
 
 
     const handleResign = () => {
-        debugger;
         dispatch(adminResign(userId)).then((res) => {
-            debugger;
-            console.log(res, "response!!!");
-            debugger;
             if (res.payload?.message?.data !== 'the admin cannot be removed because it is the only admin in the system') {
                 dispatch(resetAuth());
                 navigate("/auth/login");
@@ -63,39 +60,31 @@ const Admin = () => {
         // dispatch(setWhatchedCustomer(id as number));
         // navigate(`/dashboard/customers/${id}`);
     };
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-
-    // Send a ping to the server
-    // const sendPing = () => {
-    //     if (userId != 0) {
-    //         axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-    //             .then(response => {
-    //                 // Do something with the response if necessary
-    //             })
-    //             .catch(error => {
-    //                 // Handle the error if necessary
-    //             });
-    //         // dispatch(ping(userId));
-    //     }
-    // }
+    interface NumberToVoidFunctionMap {
+        [key: number]: () => void;
+    }
+    const hashMap: NumberToVoidFunctionMap = {
+        0: () => {
+            dispatch(getClientData({ userId: userId }));
+            fetchNotification();
+        },
+        3: () => {
+            dispatch(getComplaints(userId));
+            fetchNotification();
+        },
+        6: () => {
+            dispatch(getClientData({ userId: userId }));
+            dispatch(getComplaints(userId));
+            fetchNotification();
+        },
+    };
     const fetchNotification = async () => {
         try {
-            console.log("trying get notification")
             if (token != "" && userName != 'guest') {
-
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
-
-                // if (response.payload?.opcode >= 0 && response.payload?.opcode <= 6) {
-                //     dispatch(getStore({ userId: userId, storeId: storeId }));
-                // }
-                // else if (!isAdmin && ((response.payload?.opcode >= 7 && response.payload?.opcode <= 12) || response.payload?.opcode == 14 || response.payload?.opcode == 15)) {
-                //     dispatch(getClientData({ userId: userId }));
-                // }
-                if (isAdmin && (response.payload?.opcode == 14 || response.payload?.opcode == 13)) {
-                    dispatch(getClientData({ userId: userId }));
+                if (response.payload != null) {
+                    hashMap[response.payload?.opcode]();
                 }
-
-                fetchNotification();
             }
         } catch (error) {
             console.error('Error fetching notification:', error);
@@ -180,7 +169,7 @@ const Admin = () => {
             <Box sx={{ width: '100%', display: 'flex' }}>
                 <Box sx={{ width: '80%' }}>
                     <Box sx={{ width: '100%', display: 'flex' }}>
-                        <Typography sx={{ fontSize: 25, mt: 3, ml: '10%' }} gutterBottom>
+                        <Typography sx={{ fontSize: 25, mt: 3, ml: '13%' }} gutterBottom>
                             your personal data
                         </Typography>
                     </Box>
@@ -211,26 +200,61 @@ const Admin = () => {
                 </Box>
                 <Box sx={{ width: '70%' }}>
                     <Box sx={{ width: '100%', display: 'flex' }}>
-                        <Typography sx={{ fontSize: 25, mt: 3, ml: '10%' }} gutterBottom>
+                        <Typography sx={{ fontSize: 25, mt: 3, ml: '33%' }} gutterBottom>
                             system state
                         </Typography>
                     </Box>
                     <Box sx={{ width: '100%', display: 'flex' }}>
-                        <Card sx={{ minWidth: 275, width: '50%', mt: 3, ml: 3 }}>
+                        <Card sx={{ minWidth: 275, width: '80%', mt: 4, ml: 3 }}>
                             <CardContent sx={{ padding: 2 }}>
-                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5" gutterBottom>
-                                    average purchase : {systemStatus.averagePurchase}
-                                </Typography>
-                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
-                                    acerage registered : {systemStatus.averageRegistered}
-                                </Typography>
-                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
-                                    average user in system : {systemStatus.averageUserIn}
-                                </Typography>
-                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
-                                    average user out : {systemStatus.averageUserOut}
-                                </Typography>
-
+                                <Box display={'flex'}>
+                                    <Box sx={{ width: '85%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2, mr: 2 }} variant="h5" gutterBottom>
+                                            average purchase : {systemStatus.averagePurchase}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ width: '50%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                            member count : {systemStatus.memberCount}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Box display={'flex'}>
+                                    <Box sx={{ width: '85%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2, mr: 2 }} variant="h5">
+                                            average user in system : {systemStatus.averageUserIn}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ width: '50%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                            guest count : {systemStatus.guestCount}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Box display={'flex'}>
+                                    <Box sx={{ width: '85%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2, mr: 2 }} variant="h5">
+                                            average registered : {systemStatus.averageRegistered}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ width: '50%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                            register count : {systemStatus.registeredCount}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Box display={'flex'}>
+                                    <Box sx={{ width: '85%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2, mr: 2 }} variant="h5">
+                                            average user out : {systemStatus.averageUserOut}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ width: '50%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                            purchase count : {systemStatus.purchaseCount}
+                                        </Typography>
+                                    </Box>
+                                </Box>
                             </CardContent>
                         </Card>
                     </Box >
@@ -242,7 +266,7 @@ const Admin = () => {
                 system log history
             </Typography>
             <Box sx={{
-                height: 550, width: '80%', right: 2, mt: 7, ml: '10%', borderColor: 'divider'
+                height: 550, width: '90%', right: 2, mt: 7, ml: '10%', borderColor: 'divider'
             }}>
                 <DataGrid
                     rows={logs}

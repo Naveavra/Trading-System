@@ -94,7 +94,7 @@ public class ProductInfo extends Information{
         json.put("quantity", getQuantity());
         json.put("categories", getCategories());
         json.put("rating", getRating());
-        json.put("reviews", infosToJson(getReviews()));
+        //json.put("reviews", infosToJson(getReviews()));
         json.put("img", getImg());
         return json;
     }

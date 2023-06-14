@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
-import { Card, CardContent, Typography, CardActions, Divider, Box } from "@mui/material";
+import { Card, CardContent, Typography, CardActions, Divider, Box, Alert } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import { Outlet, useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import SuccessAlert from "../../../components/Alerts/success";
 import ErrorAlert from "../../../components/Alerts/error";
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import InfoIcon from '@mui/icons-material/Info';
+import { status } from '../../../types/systemTypes/Bid'
 const Personal = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -21,7 +22,7 @@ const Personal = () => {
     const userMessage = useAppSelector((state) => state.auth.message);
     const userError = useAppSelector((state) => state.auth.error);
     const orders = useAppSelector((state) => state.auth.purchaseHistory);
-
+    const bids = useAppSelector((state) => state.auth.bids);
     const handleClickOrder = (orderId: number) => {
         dispatch(setWatchedOrder(orderId));
         navigate(`order/${orderId}`)
@@ -80,7 +81,7 @@ const Personal = () => {
                                         price:  {order.totalPrice}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        quntity:  {order.products.length}
+                                        quntity:  {order.productsInStores.length}
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
@@ -90,6 +91,52 @@ const Personal = () => {
                                     <IconButton onClick={() => navigate(`${order.orderId}/sendComplaint`)}>
                                         <RateReviewIcon />
                                     </IconButton>
+                                </CardActions>
+                            </Card>
+                        )
+                    })
+                }
+            </Box>
+            <Typography sx={{ fontSize: 25, mt: 3, display: 'flex', justifyContent: 'center' }} gutterBottom>
+                your bids
+            </Typography>
+            <Box sx={{ display: "flex", width: '100%', mb: 2 }}>
+                {
+                    bids?.map((bid, index) => {
+                        return (
+                            <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index}>
+                                <CardContent>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        bidId:  {bid.bidId}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        storeId:  {bid.storeId}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        product: {bid.product.name}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        current offer: {String(bid.offer)}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        product price: {bid.product.price}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        time: {bid.time}
+                                    </Typography>
+                                    {bid.state === status.Approved ?
+                                        <Alert severity="success">approved</Alert> :
+                                        bid.state === status.Pending ?
+                                            <Alert severity="info">pending</Alert> :
+                                            <Alert severity="error">reject</Alert>
+                                    }                                </CardContent>
+                                <CardActions>
+                                    {/* <IconButton onClick={() => handleClickOrder(order.orderId)}>
+                                        <InfoIcon />
+                                    </IconButton>
+                                    <IconButton onClick={() => navigate(`${order.orderId}/sendComplaint`)}>
+                                        <RateReviewIcon />
+                                    </IconButton> */}
                                 </CardActions>
                             </Card>
                         )

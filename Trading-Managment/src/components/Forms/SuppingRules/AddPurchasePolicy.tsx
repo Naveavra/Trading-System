@@ -5,7 +5,12 @@ import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../../redux/store";
 import { addPurchasePolicy, addTmpToCurrent, clearCurrentShoppingRules, clearTmpShopRule, setDescritionToCurrent, setTmpShopRule } from "../../../reducers/ShoppingRules";
-
+import { TimeClock } from "@mui/x-date-pickers";
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import dayjs, { Dayjs } from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers';
 
 const AddPurchasePolicy = () => {
     const dispatch = useAppDispatch();
@@ -24,11 +29,15 @@ const AddPurchasePolicy = () => {
     const [age, setAge] = useState(-1);
     const [composore, setComposore] = useState('');
 
+    const [timeValue, settimeValue] = useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
+
     const userId = useAppSelector((state: RootState) => state.auth.userId);
     const storeId = useAppSelector((state: RootState) => state.store.storeState.watchedStore.storeId);
     const purchasePolicy = useAppSelector((state: RootState) => state.shoppingRule.currentShoppingRule);
     const handleOnClose = useCallback(() => {
         navigate('/dashboard/store/superior');
+        dispatch(clearTmpShopRule());
+        dispatch(clearCurrentShoppingRules());
         //dispatch(getStore({ userId: userId, storeId: storeId }));
     }, []);
     const handleMin = () => {
@@ -55,7 +64,7 @@ const AddPurchasePolicy = () => {
                 dispatch(setTmpShopRule({ type: 'item', productId: productId, amount: amount, limiter: limiter }));
                 break;
             case 'Date Time':
-                dispatch(setTmpShopRule({ type: 'dateTime', timeLimit: timeLimit, timeType: timeType, limiter: limiter }));
+                dispatch(setTmpShopRule({ type: 'dateTime', category: category, timeLimit: timeLimit, timeType: timeType, limiter: limiter }));
                 break;
             case 'User':
                 dispatch(setTmpShopRule({ type: 'user', ageLimite: age, productId: productId, limiter: limiter }));
@@ -85,7 +94,7 @@ const AddPurchasePolicy = () => {
                 dispatch(setTmpShopRule({ type: 'item', productId: productId, amount: amount, limiter: limiter, composore: input }));
                 break;
             case 'Date Time':
-                dispatch(setTmpShopRule({ type: 'dateTime', timeLimit: timeLimit, timeType: timeType, limiter: limiter, composore: input }));
+                dispatch(setTmpShopRule({ type: 'dateTime', category: category, timeLimit: timeLimit, timeType: timeType, limiter: limiter, composore: input }));
                 break;
             case 'User':
                 dispatch(setTmpShopRule({ type: 'user', ageLimite: age, productId: productId, limiter: limiter, composore: input }));
@@ -115,6 +124,43 @@ const AddPurchasePolicy = () => {
         setAge(-1);
         setComposore('');
     }
+    const monthToInt = new Map<string, string>([
+        ['Jan', '01'],
+        ['Feb', '02'],
+        ['Mar', '03'],
+        ['Apr', '04'],
+        ['May', '05'],
+        ['Jun', '06'],
+        ['Jul', '07'],
+        ['Aug', '08'],
+        ['Sep', '09'],
+        ['Oct', '10'],
+        ['Nov', '11'],
+        ['Dec', '12'],
+    ]);
+    // Form Buttons
+
+
+    const getDtae = (day: string, month: string, year: string): string => {
+        return `${day}/${monthToInt.get(month)}/${year}`;
+    }
+
+    const handleDate = (date: React.SetStateAction<Date | null>) => {
+        if (date) {
+            const arr = date.toString().split(' ');
+            setTimeLimit(getDtae(arr[2], arr[1], arr[3]));
+        }
+    }
+    const handleTime = (time: dayjs.Dayjs | null) => {
+        if (time) {
+            console.log(time);
+            const realTime = time.toString().split(' ')[4];
+            console.log(realTime);
+            settimeValue(time);
+            setTimeLimit(realTime);
+        }
+    }
+
 
     return (
         <Dialog onClose={handleOnClose} open={true}>
@@ -287,6 +333,7 @@ const AddPurchasePolicy = () => {
                         >
                             Time Limit
                         </Button>
+
                         <Button
                             fullWidth
                             variant="contained"
@@ -311,7 +358,26 @@ const AddPurchasePolicy = () => {
                                 onChange={(e) => { setCategory(e.target.value) }}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        {timeType === 'Time Limit' ?
+                            <Box sx={{ width: 300, height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DemoContainer components={['TimeClock', 'TimeClock']}>
+                                        <DemoItem label="enter the hour and the minute">
+                                            <TimeClock value={timeValue} onChange={(newValue) => {
+                                                handleTime(newValue);
+                                            }
+                                            } />
+                                        </DemoItem>
+                                    </DemoContainer>
+                                </LocalizationProvider>
+                            </Box>
+                            : timeType === 'Date Limit' ?
+                                <Grid item xs={12}>
+                                    <DatePicker label={'birthday'} onChange={handleDate} sx={{ width: '100%' }} />
+                                </Grid>
+                                : null
+                        }
+                        {/* <Grid item xs={12}>
                             <TextField
                                 required
                                 sx={{ mt: 2, mb: 2 }}
@@ -319,7 +385,7 @@ const AddPurchasePolicy = () => {
                                 label={timeType === 'Time Limit' ? "enter time limit" : "enter date limit"}
                                 onChange={(e) => { setTimeLimit(e.target.value) }}
                             />
-                        </Grid>
+                        </Grid> */}
                         <Button
                             fullWidth
                             variant="contained"
