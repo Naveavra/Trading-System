@@ -15,7 +15,7 @@ import java.util.*;
 @Table(name = "products")
 public class Product {
     @Id
-    public final int productId;
+    public int productId;
 
     @Id
     private int storeId;
@@ -34,6 +34,8 @@ public class Product {
     //private ConcurrentLinkedDeque<String> categories;
     //private double discount;  no need for discount here, the discount is calculated by the policy
 
+    public Product(){
+    }
     /**
      * Quantity, Price and Categories are set manually.
      * @param prod_id Unique

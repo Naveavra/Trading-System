@@ -18,6 +18,8 @@ public class Notification extends Information {
     private NotificationOpcode opcode;
 
 
+    public Notification(){
+    }
     public Notification(NotificationOpcode opcode, String notification){
         this.opcode =  opcode;
         this.notification =  notification;

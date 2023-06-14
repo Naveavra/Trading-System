@@ -1,5 +1,6 @@
 package utils.messageRelated;
 
+import database.Dao;
 import domain.user.Member;
 import jakarta.persistence.*;
 import org.json.JSONObject;
@@ -12,7 +13,7 @@ public abstract class Message extends Information {
     @Id
     protected int messageId;
 
-    @Enumerated(EnumType.STRING)
+    @Transient
     protected NotificationOpcode opcode;
     protected String content;
 
@@ -64,5 +65,10 @@ public abstract class Message extends Information {
         json.put("userId", sender.getId());
         json.put("seen", getSeen());
         return json;
+    }
+
+    protected void setSenderDb(){
+        if(sender == null)
+            sender = (Member) Dao.getById(Member.class, senderId);
     }
 }

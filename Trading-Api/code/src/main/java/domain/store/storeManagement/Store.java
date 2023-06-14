@@ -44,8 +44,8 @@ public class Store extends Information{
     private int storeId;
     private String storeName;
     private boolean isActive;
-    @Id
-    private int creatorId;//for db, don't remove
+
+    private int creatorId;
     @Transient
     private Member creator;
 
@@ -60,6 +60,8 @@ public class Store extends Information{
     private ConcurrentHashMap<Integer, StoreReview> storeReviews; //<messageid, message>
     @Transient
     private ConcurrentHashMap<Integer, Question> questions;
+    @Transient
+    private AtomicInteger bidIds;
     @Transient
     private ArrayList<Bid> bids;
     @Transient
@@ -153,7 +155,7 @@ public class Store extends Information{
     {
         Dao.save(q);
         questions.put(q.getMessageId(), q);
-        return creator.getId();
+        return getCreatorFromDb().getId();
     }
 
 
@@ -191,7 +193,7 @@ public class Store extends Information{
         if (storeOrders.containsKey(m.getOrderId()))
         {
             inventory.addProductReview(m);
-            return creator.getId();
+            return getCreatorFromDb().getId();
         }
         else
             throw new Exception("cant add review for this product");
@@ -203,7 +205,7 @@ public class Store extends Information{
     }
 
     public int getCreator() {
-        return creator.getId();
+        return getCreatorFromDb().getId();
     }
 
     public List<StoreReview> getStoreReviews() {
@@ -249,7 +251,7 @@ public class Store extends Information{
         {
             Dao.save(review);
             storeReviews.put(review.getMessageId(), review);
-            return creator.getId();
+            return getCreatorFromDb().getId();
         }
         throw new Exception("order doesnt exist");
     }
@@ -347,7 +349,7 @@ public class Store extends Information{
      * @throws Exception if the user isn't the store creator
      */
     public Set<Integer> closeStoreTemporary(int userID) throws Exception {
-        if (creator.getId() == userID){
+        if (getCreatorFromDb().getId() == userID){
             isActive = false;
             return appHistory.getUsers();
         }
@@ -355,7 +357,7 @@ public class Store extends Information{
     }
 
     public Set<Integer> reopenStore(int userID) throws Exception{
-        if (creator.getId() == userID){
+        if (getCreatorFromDb().getId() == userID){
             isActive = true;
             return appHistory.getUsers();
         }
@@ -670,6 +672,33 @@ public class Store extends Information{
         throw new Exception("Something went wrong when creating the policy, please contact us if the problem persists.\nYours truly, the developers A-team");
 
     }
+    //database
+    public Member getCreatorFromDb(){
+        if(creator == null){
+            creator = (Member) Dao.getById(Member.class, creatorId);
+        }
+        return creator;
+    }
 
+    public AppHistory getAppHistoryFromDb() throws Exception{
+        if(appHistory == null){
+            Member m = getCreatorFromDb();
+            appHistory = new AppHistory(storeId, new Pair<>(m, m.getRole(storeId)));
+            List<Integer> fathers = new ArrayList<>();
+            fathers.add(creatorId);
+            while(fathers.size() > 0){
+                int id = fathers.remove(0);
+                List<AppointmentDto> appointmentDtos = (List<AppointmentDto>) Dao.getListByCompositeKey(AppointmentDto.class, storeId
+                        , id,  "AppointmentDto", "storeId", "fatherId");
+                for(AppointmentDto app : appointmentDtos){
+                    Member worker = (Member) Dao.getById(Member.class, app.getChildId());
+                    appHistory.addNode(id, new Pair<>(worker, worker.getRole(storeId)));
+                    fathers.add(worker.getId());
+                }
 
+            }
+
+        }
+        return appHistory;
+    }
 }

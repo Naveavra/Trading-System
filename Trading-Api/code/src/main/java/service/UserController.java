@@ -43,8 +43,9 @@ public class UserController {
     public User getUser(int id) throws Exception{
         if(guestList.containsKey(id))
             return guestList.get(id);
-        else if(memberList.containsKey(id))
-            return memberList.get(id);
+        Member m = getMember(id);
+        if(m != null)
+            return m;
         throw new Exception("the id given does not belong to any user");
     }
 
@@ -69,11 +70,18 @@ public class UserController {
         for(Member m : memberList.values())
             if(m.getName().equals(email))
                 return m;
+        Member m = (Member) Dao.getByParam(Member.class,"Member", String.format("email = '%s' ", email));
+        if(m != null) {
+            memberList.put(m.getId(), m);
+            return m;
+        }
         throw new Exception("no member has this email");
     }
     public boolean isEmailTaken(String email){
+        if(checkIsAdmin(email))
+            return true;
         try {
-            return getMember(email) != null || checkIsAdmin(email);
+            return getMember(email) != null;
         }catch (Exception e){
             return false;
         }
@@ -89,19 +97,37 @@ public class UserController {
     }
 
     public Subscriber getSubscriber(int id) throws Exception{
-        if(admins.containsKey(id))
-            return admins.get(id);
-        else if(memberList.containsKey(id))
-            return memberList.get(id);
+        Admin a = null;
+        Member m = null;
+        try {
+            a = getAdmin(id);
+            if(a != null)
+                return a;
+        }catch (Exception ignored){
+        }
+        try{
+            m = getMember(id);
+            if(m != null)
+                return m;
+        }catch (Exception e){
+        }
         throw new Exception("the id given does not belong to any user");
     }
     public Subscriber getSubscriber(String email) throws Exception{
-        for(Member m : memberList.values())
-            if(m.getName().equals(email))
+        Member m = null;
+        Admin a = null;
+        try {
+            m = getMember(email);
+            if (m != null)
                 return m;
-        for(Admin a : admins.values())
-            if(a.getName().equals(email))
+        }catch (Exception ignored){
+        }
+        try{
+            a = getAdmin(email);
+            if(a != null)
                 return a;
+        }catch (Exception ignored){
+        }
         throw new Exception("no user has this email");
     }
 
@@ -227,7 +253,7 @@ public class UserController {
         messageIds++;
         String notify = "a complaint has been submitted";
         Notification notification = new Notification(NotificationOpcode.GET_ADMIN_DATA, notify);
-        for(Admin a : admins.values())
+        for(Admin a : getAdmins())
             a.addNotification(notification);
         Complaint complaint = m.writeComplaint(tmp, orderId, comment);
         Dao.save(complaint);
@@ -464,7 +490,7 @@ public class UserController {
 
     public List<PurchaseHistory> getUsersInformation() {
         List<PurchaseHistory> membersInformation = new LinkedList<>();
-        for(Member m : memberList.values()) {
+        for(Member m : (List<Member>) Dao.getAllInTable("Member")){
             PurchaseHistory history = m.getUserPurchaseHistory();
             membersInformation.add(history);
         }
@@ -480,7 +506,23 @@ public class UserController {
     public Admin getAdmin(int adminId) throws Exception {
         if(admins.containsKey(adminId))
                 return admins.get(adminId);
+        Admin a = (Admin) Dao.getById(Admin.class, adminId);
+        if(a != null) {
+            admins.put(a.getId(), a);
+            return a;
+        }
         throw new Exception("the id given does not belong to any admin");
+    }
+    public Admin getAdmin(String email) throws Exception{
+        for(Admin a : admins.values())
+            if(a.getName().equals(email))
+                return a;
+        Admin a = (Admin) Dao.getByParam(Member.class,"Admin", String.format("email = '%s' ", email));
+        if(a != null) {
+            admins.put(a.getId(), a);
+            return a;
+        }
+        throw new Exception("no admin has this name");
     }
     public Admin getActiveAdmin(int adminId) throws Exception {
         if(admins.containsKey(adminId)) {
@@ -493,25 +535,24 @@ public class UserController {
 
     //check if admin
     public boolean checkIsAdmin(int adminId){
-        return admins.containsKey(adminId);
+        Admin a = (Admin) Dao.getById(Admin.class, adminId);
+        return a != null;
     }
 
     public boolean checkIsAdmin(String email){
-        for(Admin a : admins.values())
-            if(a.checkEmail(email))
-                return true;
-        return false;
+        Admin a = (Admin) Dao.getByParam(Admin.class, "Admin", String.format("email = '%s'", email));
+        return a != null;
     }
 
     private void checkRemoveAdmin() throws Exception{
-        if(admins.size() == 1)
+        if(getAdminSize() == 1)
             throw new Exception("the admin cannot be removed because it is the only admin in the system");
     }
     public void closeStorePermanently(int adminId, int storeId) throws Exception{
         Admin admin = getActiveAdmin(adminId);
         admin.closeStorePermanently(storeId, -1);
     }
-    public synchronized Admin addAdmin(int userId, String email, String hashPass ,String pass)throws Exception {
+    public synchronized void addAdmin(int userId, String email, String hashPass ,String pass)throws Exception {
         if(isEmailTaken(email))
             throw new Exception("the email is already taken");
         if (userId != 0)
@@ -522,26 +563,34 @@ public class UserController {
         Admin a = new Admin(ids.getAndIncrement(), email, hashPass);
         Dao.save(a);
         admins.put(a.getId(), a);
-        return a;
     }
-    public Admin addAdmin(Admin a, String pass) {
+    public void addAdmin(Admin a, String pass) {
         Admin admin = new Admin(a.getId(), a.getName(), pass);
         Dao.save(admin);
         admins.put(a.getId(), admin);
-        return admin;
     }
 
     public void removeAdmin(int adminId) throws Exception{
         getActiveAdmin(adminId);
         checkRemoveAdmin();
         admins.remove(adminId);
+        Dao.removeIf("Admin", String.format("id = %d", adminId));
+    }
+
+    private List<Admin> getAdmins(){
+        List<Admin> list = new ArrayList<>();
+        for (Admin a : (List<Admin>)Dao.getAllInTable("Admin")) {
+            list.add(a);
+        }
+        return list;
     }
 
     public HashMap<Integer, Admin> getAdmins(int adminId) throws Exception{
         getActiveAdmin(adminId);
         HashMap<Integer, Admin> list = new HashMap<>();
-        for (int key : admins.keySet())
-            list.put(key, admins.get(key));
+        for (Admin a : (List<Admin>) Dao.getAllInTable("Admin")) {
+            list.put(a.getId(), a);
+        }
         return list;
     }
 
@@ -574,24 +623,29 @@ public class UserController {
     }
 
     public void removeUser(String userName) throws Exception{
-        int userId = getMember(userName).getId();
-        memberList.remove(userId);
+        Member m = getMember(userName);
+        memberList.remove(m.getId());
+        Dao.removeIf("Member", String.format("email = %s", userName));
     }
 
     public int getAdminSize() {
-        return admins.size();
+        return Dao.getAllInTable("Admin").size();
     }
 
     //database
 
     public List<Complaint> getComplaints(int userId) throws Exception{
         getActiveAdmin(userId);
-        return new ArrayList<>(complaints.values());
+
+        return new ArrayList<>((List<Complaint>)Dao.getAllInTable("Complaint"));
     }
 
     private Complaint getComplaint(int complaintId) throws Exception{
         if(complaints.containsKey(complaintId))
             return complaints.get(complaintId);
+        Complaint complaint = (Complaint) Dao.getById(Complaint.class, complaintId);
+        if(complaint != null)
+            return complaint;
         throw new Exception("the id does not belong to any complaint");
     }
 

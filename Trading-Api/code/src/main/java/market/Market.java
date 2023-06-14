@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 
 
 public class Market implements MarketInterface {
-    private final UserController userController;
-    private final MarketController marketController;
+    private static UserController userController;
+    private static MarketController marketController;
     //services
     private ProxyPayment proxyPayment;
     private ProxySupplier proxySupplier;
@@ -65,7 +65,7 @@ public class Market implements MarketInterface {
     @Override
     public Response<Integer> enterGuest() {
         int guestId = userController.enterGuest();
-        marketInfo.addUserCount();
+        marketInfo.addGuestIn();
         return logAndRes(Event.LogStatus.Success, "guest has successfully entered",
                 StringChecks.curDayString(), userController.getUserName(guestId),
                 guestId, null, null);
@@ -107,7 +107,7 @@ public class Market implements MarketInterface {
         try {
             String hashedPass = userAuth.hashPassword(email, pass);
             int memberId = userController.login(email, hashedPass);
-            marketInfo.addUserCount();
+            marketInfo.addMemberIn();
             String token = userAuth.generateToken(memberId);
             LoginInformation loginInformation = userController.getLoginInformation(memberId, token);
             return logAndRes(Event.LogStatus.Success, "logged in successfully",
@@ -858,8 +858,7 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             String hashedPass = userAuth.hashPassword(email, pass);
-            Admin admin = userController.addAdmin(userId, email, hashedPass, pass);
-            admin.addControllers(userController, marketController);
+            userController.addAdmin(userId, email, hashedPass, pass);
             return logAndRes(Event.LogStatus.Success, "admin added new admin successfully",
                     StringChecks.curDayString(), "admin" + userId,
                     "admin added new admin successfully", null, null);
@@ -872,8 +871,7 @@ public class Market implements MarketInterface {
 
     private void addAdmin(Admin a) {
         String hashedPass = userAuth.hashPassword(a.getName(), a.getPassword());
-        Admin admin = userController.addAdmin(a, hashedPass);
-        admin.addControllers(userController, marketController);
+        userController.addAdmin(a, hashedPass);
     }
 
     @Override
@@ -1298,6 +1296,15 @@ public class Market implements MarketInterface {
                     StringChecks.curDayString(), "user"+userId,
                     null, "delete shopping rule failed", e.getMessage());
         }
+    }
+
+    public static Pair<UserController, MarketController> getControllers(){
+        if(userController == null)
+            userController = new UserController();
+        if(marketController ==null)
+            marketController = new MarketController();
+        return new Pair<>(userController, marketController);
+
     }
 
 }

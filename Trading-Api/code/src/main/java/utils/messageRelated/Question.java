@@ -5,6 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import org.json.JSONObject;
 
+import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
+import static utils.messageRelated.NotificationOpcode.QUESTION;
+
 @Entity
 @Table(name = "questions")
 public class Question extends Message{
@@ -12,13 +15,17 @@ public class Question extends Message{
     private int storeId;
     private boolean gotFeedback;
 
-    public Question(int messageId, NotificationOpcode opcode, String content, Member reviewer, int storeId){
-        super(messageId, opcode, content, reviewer);
+    public Question(){
+        this.opcode = QUESTION;
+    }
+    public Question(int messageId, String content, Member reviewer, int storeId){
+        super(messageId, NotificationOpcode.QUESTION, content, reviewer);
         this.storeId = storeId;
         this.gotFeedback = false;
     }
 
     public void sendFeedback(String feedback) throws Exception{
+        setSenderDb();
         if(!gotFeedback) {
             Notification notification = new Notification(NotificationOpcode.GET_STORE_DATA_AND_COMPLAINS, feedback);
             sender.addNotification(notification);
