@@ -107,7 +107,7 @@ const Personal = () => {
                             <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index}>
                                 <CardContent>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        bidId:  {bid.id}
+                                        bidId:  {bid.bidId}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                         storeId:  {bid.storeId}
@@ -122,13 +122,13 @@ const Personal = () => {
                                         product price: {bid.product.price}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        time: {bid.bidTime}
+                                        time: {bid.time}
                                     </Typography>
-                                    {bid.approved === status.Approved ?
-                                        <Alert severity="success"></Alert> :
-                                        bid.approved === status.Pending ?
-                                            <Alert severity="info"></Alert> :
-                                            <Alert severity="error"></Alert>
+                                    {bid.state === status.Approved ?
+                                        <Alert severity="success">approved</Alert> :
+                                        bid.state === status.Pending ?
+                                            <Alert severity="info">pending</Alert> :
+                                            <Alert severity="error">reject</Alert>
                                     }                                </CardContent>
                                 <CardActions>
                                     {/* <IconButton onClick={() => handleClickOrder(order.orderId)}>

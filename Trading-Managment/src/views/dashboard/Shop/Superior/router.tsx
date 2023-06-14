@@ -30,8 +30,8 @@ export const SuperiorShopRoutes =
         <Route path="sendComplaint" element={<SendComplain />} />
         <Route path="addpurchaseconstraint" element={<AddPurchasePolicy />} />
         <Route path=":storeId/:productId/makeBid" element={<MakeBid opcode={2} />} />
-        <Route path=":storeId/:productId/:bidId/CounterBid" element={<CounterBid />} />
-        <Route path=":storeId/:productId/:bidId/AnswerBid" element={<AnswerBid />} />
+        <Route path=":storeId/:productId/:bidId/counterBid" element={<CounterBid />} />
+        <Route path=":storeId/:productId/:bidId/answerBid" element={<AnswerBid />} />
 
     </Route>
     ;
