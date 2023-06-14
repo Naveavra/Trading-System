@@ -13,7 +13,7 @@ import { sendMessage } from "../../../reducers/authSlice";
 
 import { Dialog, Box, Grid, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { addBid } from "../../../reducers/bidSlice";
+import { addBid, clearBidError } from "../../../reducers/bidSlice";
 
 interface MakeBidProps {
     opcode: number;
@@ -81,7 +81,7 @@ const MakeBid: React.FC<MakeBidProps> = ({ opcode }) => {
                     >
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                enter your price
+                                enter your bid details
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
@@ -139,7 +139,7 @@ const MakeBid: React.FC<MakeBidProps> = ({ opcode }) => {
                 </Box>
             </Dialog >
             {!!error ?
-                <AlertDialog open={!!error} onClose={() => { dispatch(clearStoreError({})); }} text={error} sevirity={"error"} />
+                <AlertDialog open={!!error} onClose={() => { dispatch(clearBidError()); }} text={error} sevirity={"error"} />
                 : null}
         </>
     );

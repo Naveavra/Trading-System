@@ -95,9 +95,6 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                                     <IconButton onClick={() => setStoreOpen(true)}>
                                         <StorefrontIcon />
                                     </IconButton>
-                                    <IconButton onClick={() => navigate('biddingCenter')}>
-                                        <GavelIcon />
-                                    </IconButton>
 
                                     <IconButton onClick={handleNotification}>
                                         <div className="cartIcon">

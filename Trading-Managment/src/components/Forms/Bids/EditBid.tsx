@@ -7,18 +7,18 @@ import { useAppDispatch, useAppSelector } from "../../../redux/store";
 
 
 import AlertDialog from "../../Dialog/AlertDialog";
-import { answerBidFormValues } from "../../../types/formsTypes";
+import { answerBidFormValues, counterBidFormValues, editBidFormValues } from "../../../types/formsTypes";
 import { clearStoreError } from "../../../reducers/storesSlice";
 
 import { Dialog, Box, Grid, TextField, Typography, Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { answerBid, clearBidError } from "../../../reducers/bidSlice";
+import { answerBid, clearBidError, counterBid, editBid } from "../../../reducers/bidSlice";
 
 
-const AnswerBid = () => {
+const EditBid = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const form = useForm<answerBidFormValues>();
+    const form = useForm<editBidFormValues>();
     const params = useParams();
 
     const userId = useAppSelector((state) => state.auth.userId)
@@ -31,14 +31,13 @@ const AnswerBid = () => {
 
     //maybe take it from params
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard/store/superior');
+        navigate('/dashboard/personal');
     }, []);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
         form.setValue('storeId', storeId);
         form.setValue('bidId', bidId);
-        form.setValue('productId', productId);
-        dispatch(answerBid(form.getValues()));
+        dispatch(editBid(form.getValues()));
         handleOnClose();
     }
     return (
@@ -68,31 +67,49 @@ const AnswerBid = () => {
                     >
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                answer
+                                enter your bid details
                             </Typography>
                         </Grid>
-                        <Box display={'flex'}>
-                            <Button
+                        <Grid item xs={12}>
+                            <TextField
+                                name="price"
+                                type="text"
                                 fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
-                                onClick={() => form.setValue('answer', true)}
-                                color={form.getValues().answer ? 'success' : 'primary'}
-                            >
-                                accept
-                            </Button>
-                            <Button
+                                label="price"
+                                sx={{ mt: 1, mb: 1 }}
+                                inputProps={{
+                                    ...form.register('price', {
+                                        required: {
+                                            value: true,
+                                            message: "price is required"
+                                        }
+                                    })
+                                }}
+                                error={!!form.formState.errors['price'] ?? false}
+                                helperText={form.formState.errors['price']?.message ?? undefined}
+
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                name="quantity"
+                                type="text"
                                 fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
-                                onClick={() => form.setValue('answer', false)}
-                                color={form.getValues().answer ? 'primary' : 'success'}
+                                label="quantity"
+                                sx={{ mt: 1, mb: 1 }}
+                                inputProps={{
+                                    ...form.register('quantity', {
+                                        required: {
+                                            value: true,
+                                            message: "quantity is required"
+                                        }
+                                    })
+                                }}
+                                error={!!form.formState.errors['quantity'] ?? false}
+                                helperText={form.formState.errors['quantity']?.message ?? undefined}
 
-                            >
-                                decline
-                            </Button>
-                        </Box>
-
+                            />
+                        </Grid>
                         <Grid item xs={12}>
                             <LoadingButton
                                 type="submit"
@@ -114,4 +131,4 @@ const AnswerBid = () => {
     );
 
 }
-export default AnswerBid;
+export default EditBid;

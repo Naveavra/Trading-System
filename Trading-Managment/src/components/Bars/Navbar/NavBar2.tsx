@@ -22,6 +22,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
+import GavelIcon from '@mui/icons-material/Gavel';
 import SideDrawer from '../../SideDrawer';
 import { Action } from '../../../types/systemTypes/Action';
 
@@ -137,6 +138,9 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                                     : null}
                                 <IconButton className="icon" color="inherit" onClick={handleLogout}>
                                     <LogoutIcon />
+                                </IconButton>
+                                <IconButton color="inherit" onClick={() => navigate('biddingCenter')}>
+                                    <GavelIcon />
                                 </IconButton>
                                 <IconButton className="icon" color="inherit" onClick={() => setStoreOpen(true)}>
                                     <StorefrontIcon />
