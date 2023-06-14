@@ -2,7 +2,7 @@ import { Dialog, Box, Grid, Typography, Button, TextField } from "@mui/material"
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../../redux/store";
-import { addFirstComposite, addSecondComposite, rearrangeTree, setpercentageToRegularDiscount } from "../../../reducers/discountSlice";
+import { addFirstComposite, addSecondComposite, setpercentageToRegularDiscount } from "../../../reducers/discountSlice";
 
 interface CompositeDiscountProps {
     first: boolean;
@@ -69,7 +69,6 @@ const CompositeDiscount: React.FC<CompositeDiscountProps> = ({ first }) => {
                 numericType: numericType,
                 xorRule: xorRule,
             }));
-            //dispatch(rearrangeTree());
         }
         navigate("/dashboard/store/superior/conditionalDiscount/leafs");
     };

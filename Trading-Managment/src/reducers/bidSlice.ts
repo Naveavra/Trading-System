@@ -1,0 +1,126 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { bidApi } from "../api/bidApi";
+import { ApiError } from "../types/apiTypes";
+import { addBidParams, answerBidParams, counterBidParams, editBidParams } from "../types/requestTypes/bidTypes";
+
+interface BidState {
+    isLoading: boolean;
+    error: string;
+    message: string;
+}
+const reducerName = 'bidSlice';
+const initialState: BidState = {
+    isLoading: false,
+    error: '',
+    message: '',
+}
+
+export const addBid = createAsyncThunk<
+    string,
+    addBidParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/getLogger`,
+    async (params, thunkAPI) => {
+        return bidApi.postBid(params)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
+
+export const answerBid = createAsyncThunk<
+    string,
+    answerBidParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/getLogger`,
+    async (params, thunkAPI) => {
+        return bidApi.postAnswerBid(params)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
+export const counterBid = createAsyncThunk<
+    string,
+    counterBidParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/getLogger`,
+    async (params, thunkAPI) => {
+        return bidApi.postCounterBid(params)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
+export const editBid = createAsyncThunk<
+    string,
+    editBidParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/getLogger`,
+    async (params, thunkAPI) => {
+        return bidApi.editBid(params)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
+
+
+const { reducer: bidReducer, actions: bidActions } = createSlice({
+    name: reducerName,
+    initialState,
+    reducers: {
+        clearBidMsg: (state) => {
+            state.message = '';
+        },
+        clearBidError: (state) => {
+            state.error = '';
+        }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(addBid.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(addBid.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(addBid.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during add bid";
+        });
+        builder.addCase(answerBid.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(answerBid.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(answerBid.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during answer bid";
+        });
+        builder.addCase(counterBid.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(counterBid.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(counterBid.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during counter bid";
+        });
+        builder.addCase(editBid.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(editBid.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(editBid.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during edit bid";
+        });
+
+
+    }
+});
+export const { clearBidMsg, clearBidError } = bidActions;
+export default bidReducer;

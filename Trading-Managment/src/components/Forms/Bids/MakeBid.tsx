@@ -3,18 +3,22 @@
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../../redux/store";
 
 
-import AlertDialog from "../Dialog/AlertDialog";
-import { makeBidFormValues } from "../../types/formsTypes";
-import { clearStoreError } from "../../reducers/storesSlice";
-import { sendMessage } from "../../reducers/authSlice";
+import AlertDialog from "../../Dialog/AlertDialog";
+import { makeBidFormValues } from "../../../types/formsTypes";
+import { clearStoreError } from "../../../reducers/storesSlice";
+import { sendMessage } from "../../../reducers/authSlice";
 
 import { Dialog, Box, Grid, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { addBid } from "../../../reducers/bidSlice";
 
-const MakeBid = () => {
+interface MakeBidProps {
+    opcode: number;
+}
+const MakeBid: React.FC<MakeBidProps> = ({ opcode }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const form = useForm<makeBidFormValues>();
@@ -29,14 +33,25 @@ const MakeBid = () => {
 
     //maybe take it from params
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard');
+        switch (opcode) {
+            case 0:
+                navigate('/dashboard');
+                break;
+            case 1:
+                navigate(`/dashboard/store/${storeId}/visitor`);
+                break;
+            case 2:
+                navigate('/dashboard/store/superior');
+                break;
+            default:
+                break;
+        }
     }, []);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
         form.setValue('storeId', storeId);
         form.setValue('productId', productId);
-
-        //dispatch(sendMessage(form.getValues()));
+        dispatch(addBid(form.getValues()));
         handleOnClose();
     }
     return (
@@ -86,6 +101,26 @@ const MakeBid = () => {
                                 }}
                                 error={!!form.formState.errors['price'] ?? false}
                                 helperText={form.formState.errors['price']?.message ?? undefined}
+
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                name="quantity"
+                                type="text"
+                                fullWidth
+                                label="quantity"
+                                sx={{ mt: 1, mb: 1 }}
+                                inputProps={{
+                                    ...form.register('quantity', {
+                                        required: {
+                                            value: true,
+                                            message: "quantity is required"
+                                        }
+                                    })
+                                }}
+                                error={!!form.formState.errors['quantity'] ?? false}
+                                helperText={form.formState.errors['quantity']?.message ?? undefined}
 
                             />
                         </Grid>
