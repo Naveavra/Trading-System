@@ -2,6 +2,7 @@ package service;
 
 
 import domain.store.storeManagement.AppHistory;
+import domain.store.storeManagement.Bid;
 import domain.user.Member;
 import domain.user.ShoppingCart;
 import domain.user.User;
@@ -44,7 +45,7 @@ public class MarketController {
         order.setStatus(Status.pending);
         Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
         order.setStatus(Status.submitted);
-        Receipt receipt = new Receipt(user.getId(), order.getOrderId(), shoppingCart, order.getTotalPrice());
+        Receipt receipt = new Receipt(order.getOrderId(), shoppingCart, order.getTotalPrice());
         Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);
         return ans;
     }
@@ -264,5 +265,47 @@ public class MarketController {
 
     public int getStoreId(String storeName) throws Exception{
         return storectrl.getStoreId(storeName);
+    }
+
+//    public void createBidOnProduct(int storeId,int prodId) throws Exception {
+//        Store s = storectrl.getActiveStore(storeId);
+//        s.createBid(prodId);
+//    }
+    
+    public List<String> placeBid(int storeId, Member user, int prodId, double price,int quantity) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        return s.placeBid(user,prodId,price,quantity);
+
+    }
+
+    public Pair<Receipt,Set<Integer>> answerBid(String userName, int storeId, boolean ans, int prodId, int bidId) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        Bid bid = s.answerBid(bidId,userName,prodId,ans);
+        if(bid != null){
+            ShoppingCart sc = new ShoppingCart();
+            sc.addProductToCart(storeId,getProductInformation(storeId,prodId),bid.quantity);
+            Order or = orderctrl.createNewOrder(bid.getUser(),sc,bid.getOffer());
+            or.setStatus(Status.pending);
+            Set<Integer> creatorIds = storectrl.purchaseProductsBid(sc,or);
+            or.setStatus(Status.submitted);
+            Receipt receipt = new Receipt(or.getOrderId(),sc,or.getTotalPrice());
+            Pair<Receipt,Set<Integer>> res = new Pair<>(receipt,creatorIds);
+            return res;
+        }
+        return null;
+    }
+
+    public List<String> counterBid(String userName, int storeId, double counterOffer, int prodId, int bidId) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        return s.counterBid(bidId,counterOffer,userName);
+        //eli send a message to the user that placed this bid in the first place that he got a counter offer.
+        //send a message to all shop owners and people who need to approve this bid.
+    }
+
+    public List<String> editBid(int storeId, int bidId, double price, int quantity) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        Bid bid = s.editBid(bidId,price,quantity);
+        return bid.approvers;
+        //send a message to all shop owners and people who need to approve this bid.
     }
 }

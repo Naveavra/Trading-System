@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import utils.Pair;
 import utils.infoRelated.Info;
 import utils.infoRelated.Information;
-import utils.stateRelated.Role;
+import utils.stateRelated.Action;
 
 import java.util.*;
 
@@ -199,6 +199,16 @@ public class AppHistory{
             getChildrenRoles(child, add);
         }
         add.add(n.data.getSecond());
+    }
+
+    public List<String> getStoreWorkersWithPermission(Action permission)
+    {
+        List<String> lst = new ArrayList<>();
+        for (UserState state : getRoles())
+        {
+            if (state.checkPermission(permission)){lst.add(state.getUserName());}
+        }
+        return lst;
     }
 
     public List<JSONObject> toJson(){

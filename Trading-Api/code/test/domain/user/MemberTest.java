@@ -8,8 +8,10 @@ import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.UserController;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
+import utils.infoRelated.Receipt;
 import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
@@ -109,13 +111,13 @@ class MemberTest {
         try{
             m.login("ziv1234");
             m.addProductToCart(0,p,100);
-            m.purchaseMade(0,100);
+            m.purchaseMade(new Receipt( 0, new ShoppingCart(m.getShoppingCart()), 100));
             ShoppingCart cart = m.getShoppingCart();
             assertEquals(0, cart.getContent().size());
             PurchaseHistory history = m.getUserPurchaseHistory();
             assertEquals(history.getHisSize(), 1);
-            for(int orderId : history.getPurchaseHistory().keySet()) {
-                ShoppingCart his = history.getPurchaseHistory().get(orderId).getCart();
+            for(Receipt receipt : history.getPurchaseHistory().values()) {
+                ShoppingCart his = history.getPurchaseHistory().get(receipt.getOrderId()).getCart();
                 for (ProductInfo product : his.getContent())
                     assertTrue(p.id == product.id && product.quantity == 100);
         }
@@ -141,14 +143,14 @@ class MemberTest {
         try{
             m.login("ziv1234" );
             m.addProductToCart(0,p,100);
-            m.purchaseMade(0,100);
+            m.purchaseMade(new Receipt(0, new ShoppingCart(m.getShoppingCart()), 100));
             StoreReview message =  m.writeReview(0,0,0,"good review",2);
             assertEquals(0, message.getOrderId());
             assertEquals(2, message.getRating());
             assertEquals("good review",message.getContent());
          }catch (Exception e) {
         System.out.println(e.getMessage());
-        assertTrue(false);
+        assert false;
         }
     }
     @Test
@@ -156,7 +158,7 @@ class MemberTest {
         try{
             m.login("ziv1234" );
             m.addProductToCart(0,p,100);
-            m.purchaseMade(0,100);
+            m.purchaseMade(new Receipt(0, new ShoppingCart(m.getShoppingCart()), 100));
             Message message =  m.writeReview(0,0,1,"good review",2);
         }catch (Exception e) {
             assert true;
@@ -168,7 +170,7 @@ class MemberTest {
         try {
             m.login("ziv1234");
             m.addProductToCart(0, p, 100);
-            m.purchaseMade(0, 100);
+            m.purchaseMade(new Receipt( 0, new ShoppingCart(m.getShoppingCart()), 100));
             Complaint message = m.writeComplaint(0,0,"u sacks!!");
             assertEquals(0, message.getOrderId());
             assertEquals("u sacks!!",message.getContent());
@@ -182,7 +184,7 @@ class MemberTest {
         try{
             m.login("ziv1234" );
             m.addProductToCart(0,p,100);
-            m.purchaseMade(0,100);
+            m.purchaseMade(new Receipt( 0, new ShoppingCart(m.getShoppingCart()), 100));
             Message message =  m.writeComplaint(0,0,"u sacks!!");
         }catch (Exception e) {
             assertEquals("can't write a review because the store wasn't part of the order",e.getMessage());
@@ -203,7 +205,7 @@ class MemberTest {
     @Test
     void displayNotifications() {
         try {
-            Notification<String> n = new Notification<>(NotificationOpcode.CLOSE_STORE, "u have a new message");
+            Notification n = new Notification(NotificationOpcode.CLOSE_STORE, "u have a new message");
             m.login("ziv1234");
             m.addNotification(n);
            List<Notification> notifiy =  m.displayNotifications();

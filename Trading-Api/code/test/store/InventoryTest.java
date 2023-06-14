@@ -61,8 +61,8 @@ public class InventoryTest {
     void testAddToCategory()throws Exception{
         Product p = inventory.addProduct("Milk","Something to calm your baby face down.",ids,10, 5);
         ArrayList<String> categories = new ArrayList<>(Arrays.asList("Dairy","Momma's"));
-        inventory.addToCategory(categories.get(0), p.id);
-        inventory.addToCategory(categories.get(1), p.id);
+        inventory.addToCategory(categories.get(0), p.productId);
+        inventory.addToCategory(categories.get(1), p.productId);
         for(String real:inventory.getProductCategories(p.getID())){
             assertTrue(categories.contains(real));
         }
@@ -72,8 +72,8 @@ public class InventoryTest {
     void testRemoveProduct_Valid() throws Exception{
         Product p = inventory.addProduct("Cocaine","Snowy white powder that gives you magical powers.",ids,10, 5);
         ArrayList<String> categories = new ArrayList<>(Arrays.asList("Dairy","Momma's"));
-        inventory.addToCategory(categories.get(0), p.id);
-        inventory.addToCategory(categories.get(1), p.id);
+        inventory.addToCategory(categories.get(0), p.productId);
+        inventory.addToCategory(categories.get(1), p.productId);
         assertNotNull(inventory.getProduct(p.getID())); //item added
         assertTrue(inventory.getProductCategories(0).size()>=2); //categories aware of item
         assertEquals(0,inventory.removeProduct(0)); //remove product here
@@ -292,7 +292,7 @@ public class InventoryTest {
         ArrayList<ProductInfo> filtered = inventory.filterBy(filter,0); //should hold p1,p2 info
         assertEquals(2, filtered.size());
         for(ProductInfo pf: filtered){
-            assertTrue(pf.id == p1.id || pf.id == p2.id);
+            assertTrue(pf.id == p1.productId || pf.id == p2.productId);
         }
 
         //Low Rating
@@ -302,7 +302,7 @@ public class InventoryTest {
         filtered = inventory.filterBy(filter,0); //should hold p1,p2,p3 info
         assertEquals(3, filtered.size());
         for(ProductInfo pf: filtered){
-            assertTrue(pf.id == p1.id || pf.id == p2.id || pf.id ==p3.id);
+            assertTrue(pf.id == p1.productId || pf.id == p2.productId || pf.id ==p3.productId);
         }
     }
 
@@ -326,7 +326,7 @@ public class InventoryTest {
         ArrayList<ProductInfo> filtered = inventory.filterBy(filter,0); //p1,p2,p3,p4
         assertEquals(4, filtered.size());
         for(ProductInfo pf: filtered){
-            assertTrue(pf.id == p1.id || pf.id == p2.id || pf.id == p3.id || pf.id == p4.id);
+            assertTrue(pf.id == p1.productId || pf.id == p2.productId || pf.id == p3.productId || pf.id == p4.productId);
         }
 
         //Only Min >= 4 p2,p3,p4,p5  Size == 4
@@ -336,7 +336,7 @@ public class InventoryTest {
         filtered = inventory.filterBy(filter,0); //p2,p3,p4,p5
         assertEquals(4, filtered.size());
         for(ProductInfo pf: filtered){
-            assertTrue(pf.id == p5.id || pf.id == p2.id || pf.id == p3.id || pf.id == p4.id);
+            assertTrue(pf.id == p5.productId || pf.id == p2.productId || pf.id == p3.productId || pf.id == p4.productId);
         }
 
         //Min&Max 4 <= x <= 8  p2,p3,4   Size == 3
@@ -345,7 +345,7 @@ public class InventoryTest {
         filtered = inventory.filterBy(filter,0);
         assertEquals(3,filtered.size());
         for(ProductInfo pf: filtered){
-            assertTrue(pf.id == p2.id || pf.id == p3.id || pf.id == p4.id);
+            assertTrue(pf.id == p2.productId || pf.id == p3.productId || pf.id == p4.productId);
         }
     }
 
@@ -389,7 +389,7 @@ public class InventoryTest {
         ArrayList<ProductInfo> filtered = inventory.filterBy(filter,0); //p1,p4,p5
         assertEquals(3,filtered.size());
         for(ProductInfo pf: filtered){
-            assertTrue(pf.id == p1.id || pf.id == p4.id || pf.id == p5.id);
+            assertTrue(pf.id == p1.productId || pf.id == p4.productId || pf.id == p5.productId);
         }
     }
 

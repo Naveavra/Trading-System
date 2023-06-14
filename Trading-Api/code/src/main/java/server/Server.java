@@ -3,10 +3,7 @@ package server;
 import org.json.JSONObject;
 import utils.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -19,8 +16,6 @@ public class Server {
     public static API api = new API();
     static ConnectedThread connectedThread;
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
-    private static HashMap< Integer, ArrayBlockingQueue<String>> messageQueue = new HashMap<>();
-    private static HashMap<String, BlockingQueue<String>> userQueues = new HashMap<>();
 
     private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes) {
         if (apiRes.getFirst()) {
@@ -177,11 +172,11 @@ public class Server {
             return res.body();
         });
 
-        post("api/stores/:storeId/products/filter/options", (req, res) -> {
+        post("api/stores/products/filter/options", (req, res) -> {
             toSparkRes(res, api.getFilterOptions());
             return res.body();
         });
-        post("api/stores/:storeId/products/filter", (req, res) -> {
+        post("api/stores/products/filter", (req, res) -> {
             //check all filter options and put them in front, then if needed put a value else put "null"
             List<String> options = api.getFilterOptionsString();
             HashMap<String, String> filters = new HashMap<>();
@@ -522,8 +517,8 @@ public class Server {
 
         post("api/removeUser", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            int userId = Integer.parseInt(request.get("userId").toString());
-            toSparkRes(res, api.removeUser(userId));
+            String userName = request.get("userName").toString();
+            toSparkRes(res, api.removeUser(userName));
             return res.body();
         });
 
@@ -548,6 +543,31 @@ public class Server {
                     discountedCategory, predicatesLst));
             return res.body();
         });
+        post("api/discounts/composite", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            System.out.println(request);
+            System.out.println(req.body());
+//            int storeId = Integer.parseInt(request.get("storeId").toString());
+//            int userId = Integer.parseInt(request.get("userId").toString());
+//            int percentage =  Integer.parseInt(request.get("percentage").toString());
+//            String discountType = request.get("discountType").toString();
+//            int prodId = Integer.parseInt(request.get("prodId").toString());
+//            String discountedCategory = request.get("discountedCategory").toString();
+//            String predicates = request.get("predicates").toString();
+//            JSONObject predicatesJson = new JSONObject(request.get("predicates"));
+//            List<String> predicatesLst =null;
+//            if (!predicates.equals("null")) {
+//                String[] arr = predicates.substring(1, predicates.length() - 1).split(",");
+//                predicatesLst =new ArrayList<>(Arrays.asList(arr));
+//            }
+//            String token = req.headers("Authorization");
+//            toSparkRes(res, api.changeRegularDiscount(userId, token, storeId, prodId, percentage, discountType,
+//                    discountedCategory, predicatesLst));
+            return res.body();
+        });
+
+
+        // ------------------------Discount-------------------------------
 
         post("api/admin/closeStorePermanently", (req, res)-> {
             JSONObject request = new JSONObject(req.body());
@@ -565,5 +585,56 @@ public class Server {
             toSparkRes(res, api.watchMarketStatus(adminId, token));
             return res.body();
         });
+
+        // ------------------------Bid-------------------------------
+
+        //TODO get bid
+        post("api/biddings/regular/addBid", (req, res)->{ //customer places his bid
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            double price = Double.parseDouble(request.get("price").toString());
+            int prodId = Integer.parseInt(request.get("storeId").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.placeBid(token, storeId, prodId, userId, price,quantity));
+            return res.body();
+        });
+
+        post("api/biddings/answerBid", (req, res) -> {
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String answer = request.get("answer").toString();
+            boolean ans = Objects.equals(answer, "true");
+            int prodId = Integer.parseInt(request.get("prodId").toString());
+            int bidId = Integer.parseInt(request.get("bidId").toString());
+            toSparkRes(res, api.answerBid(token, storeId, userId, ans, prodId, bidId));
+            return res.body();
+        });
+        post("api/biddings/counterBid", (req, res) -> {
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            double counterOffer = Double.parseDouble(request.get("offer").toString()); //counter Bid
+            int prodId = Integer.parseInt(request.get("prodId").toString());
+            int bidId = Integer.parseInt(request.get("bidId").toString());
+            toSparkRes(res, api.counterBid(token, storeId, userId, counterOffer, prodId, bidId));
+            return res.body();
+        });
+        post("api/biddings/editBid", (req, res) -> { //editBid, customer changing his bid
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            int bidId = Integer.parseInt(request.get("bidId").toString());
+            double price = Double.parseDouble(request.get("price").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.editBid(token, storeId, userId, price,quantity,bidId));
+            return res.body();
+        });
+
     }
 }

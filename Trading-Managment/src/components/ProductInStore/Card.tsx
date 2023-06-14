@@ -2,11 +2,12 @@ import React from "react";
 import "./Card.css";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../types/systemTypes/Product";
-import { Card, CardMedia, CardContent, Typography, Box, CardActions } from "@mui/material";
+import { Card, CardMedia, CardContent, Typography, Box, CardActions, Rating } from "@mui/material";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import RemoveIcon from '@mui/icons-material/Remove';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -26,14 +27,16 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
 
     const userId = useAppSelector((state) => state.auth.userId);
 
-    const discountPercentage = 0.2;
-    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
+    const storeId = item.storeId;
 
     const handleAddToCart = () => {
         dispatch(addToCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: quantity }));
         dispatch(getCart({ userId: userId }));
         setQuantity(0);
         dispatch(getCart({ userId: userId }));
+    }
+    const handleMakeBid = () => {
+        navigate(`${storeId}/${item.productId}/makeBid`);
     }
     const addProdut = () => {
         setQuantity(quantity + 1);
@@ -95,20 +98,29 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
                 <Typography gutterBottom variant="h6" component="div" sx={{ ml: 3, mt: 1 }}>
                     {quantity}
                 </Typography>
-                <Box>
-                    <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10 }}>
+                <Box display={'flex'}>
+                    <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10, mr: 10 }}>
                         {(item.price * (quantity)).toFixed(2)}$
                     </Typography>
+                    <Rating name="read-only" value={item.rating} readOnly />
                 </Box>
             </CardActions>
             <CardContent sx={{ height: 55 }} >
                 <CardActions>
-                    <IconButton onClick={handleAddToCart} sx={{ ml: 10 }}>
-                        <AddShoppingCartIcon />
-                        <Typography gutterBottom variant="h5" component="div" sx={{ ml: 2, mt: 1 }}>
-                            add to cart
-                        </Typography>
-                    </IconButton>
+                    <Box display={'flex'} sx={{ width: '100%' }}>
+                        <IconButton onClick={handleAddToCart}>
+                            <AddShoppingCartIcon />
+                            <Typography gutterBottom variant="h5" component="div" sx={{ mt: 1, ml: 1 }}>
+                                add to cart
+                            </Typography>
+                        </IconButton>
+                        <IconButton onClick={handleMakeBid} sx={{ ml: 10 }}>
+                            <LocalOfferIcon />
+                            <Typography gutterBottom variant="h5" component="div" sx={{ mt: 1, ml: 1 }}>
+                                make a bid
+                            </Typography>
+                        </IconButton>
+                    </Box>
                 </CardActions>
             </CardContent>
         </Card>

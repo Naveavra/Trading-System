@@ -9,7 +9,7 @@ const Categories2 = () => {
     const navigate = useNavigate();
     return (
         <>
-            <Box>
+            <Box display={'flex'}>
                 <div className="categories">
                     <Typography variant="h5" component="h5" className="logo" color={"black"} onClick={() => navigate('/dashboard/categories')} sx={{ marginLeft: 2, width: 320, fontStyle: 'italic', overscrollBehavior: 'contain' }}>
                         Explore Popular Categories

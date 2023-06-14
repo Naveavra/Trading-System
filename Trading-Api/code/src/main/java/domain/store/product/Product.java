@@ -1,9 +1,23 @@
 package domain.store.product;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
 import java.util.*;
 
+
+@Entity
+@Table(name = "products")
 public class Product {
-    public final int id;
+    @Id
+    public final int productId;
+
+    @Id
+    private int storeId;
+
+    @Transient
     private ArrayList<String> categories;
     public String name;
     public String description;
@@ -21,8 +35,9 @@ public class Product {
      * @param _name String
      * @param desc String
      */
-    public Product(int prod_id, String _name, String desc){
-        id = prod_id;
+    public Product(int storeId, int prod_id, String _name, String desc){
+        this.storeId = storeId;
+        productId = prod_id;
         name = _name;
         description = desc;
         price = 0;
@@ -30,8 +45,9 @@ public class Product {
         rating = 5;
     }
 
-    public Product(int prod_id, String _name, String desc, String imgUrl){
-        id = prod_id;
+    public Product(int storeId, int prod_id, String _name, String desc, String imgUrl){
+        this.storeId = storeId;
+        productId = prod_id;
         name = _name;
         description = desc;
         price = 0;
@@ -85,7 +101,7 @@ public class Product {
      * @return new deep copy of the product.
      */
     public synchronized Product clone() {
-        Product clone = new Product(id,name,description);
+        Product clone = new Product(storeId, productId,name,description);
         try {
             clone.setPrice(price);
         }catch (Exception e){
@@ -96,7 +112,7 @@ public class Product {
     }
 
     public int getID(){
-        return this.id;
+        return this.productId;
     }
 
     public String getDescription() { return description;
@@ -130,4 +146,6 @@ public class Product {
     public boolean belongsToCategory(String discountedCategory) {
         return getCategories().contains(discountedCategory);
     }
+
+
 }

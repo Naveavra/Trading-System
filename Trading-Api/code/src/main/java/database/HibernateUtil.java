@@ -1,11 +1,23 @@
 package database;
 
-import database.dtos.*;
+import database.dtos.AppointmentDto;
+import database.dtos.CartDto;
+import database.dtos.CategoryDto;
+import database.dtos.ReceiptDto;
+import domain.states.*;
+import domain.store.product.Product;
+import domain.store.storeManagement.Store;
+import domain.user.Member;
+import market.Admin;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
+import utils.Event;
+import utils.infoRelated.Receipt;
+import utils.messageRelated.*;
 
 import java.util.Properties;
 
@@ -28,32 +40,31 @@ public class HibernateUtil {
 
                 configuration.setProperties(settings);
                 //TODO: add all tables needed to here
-                configuration.addAnnotatedClass(MemberDto.class);
-                configuration.addAnnotatedClass(AdminDto.class);
-                configuration.addAnnotatedClass(NotificationDto.class);
+                configuration.addAnnotatedClass(Member.class);
+                configuration.addAnnotatedClass(Notification.class);
                 configuration.addAnnotatedClass(CartDto.class);
-                configuration.addAnnotatedClass(UserHistoryDto.class);
+                configuration.addAnnotatedClass(Receipt.class);
                 configuration.addAnnotatedClass(ReceiptDto.class);
-                configuration.addAnnotatedClass(StoreDto.class);
-                configuration.addAnnotatedClass(InventoryDto.class);
 
-                configuration.addAnnotatedClass(RoleDto.class);
-                configuration.addAnnotatedClass(PermissionDto.class);
+                configuration.addAnnotatedClass(Admin.class);
+
+                configuration.addAnnotatedClass(Complaint.class);
+                configuration.addAnnotatedClass(StoreReview.class);
+                configuration.addAnnotatedClass(ProductReview.class);
+                configuration.addAnnotatedClass(Question.class);
+
+                configuration.addAnnotatedClass(UserState.class);
+                configuration.addAnnotatedClass(StoreManager.class);
+                configuration.addAnnotatedClass(StoreCreator.class);
+                configuration.addAnnotatedClass(StoreOwner.class);
+                configuration.addAnnotatedClass(Permission.class);
                 configuration.addAnnotatedClass(AppointmentDto.class);
-                configuration.addAnnotatedClass(LoggerDto.class);
 
+                configuration.addAnnotatedClass(Store.class);
+                configuration.addAnnotatedClass(Product.class);
                 configuration.addAnnotatedClass(CategoryDto.class);
-                configuration.addAnnotatedClass(StoreReviewDto.class);
-                configuration.addAnnotatedClass(QuestionDto.class);
-                configuration.addAnnotatedClass(ProductReviewDto.class);
-                configuration.addAnnotatedClass(ConstraintDto.class);
-                configuration.addAnnotatedClass(DicountDto.class);
 
-                configuration.addAnnotatedClass(ComplaintDto.class);
-
-
-
-
+                configuration.addAnnotatedClass(Event.class);
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties()).build();
@@ -63,5 +74,16 @@ public class HibernateUtil {
             }
         }
         return sessionFactory;
+    }
+
+    public static boolean checkDbConnected(){
+        if(sessionFactory == null)
+            return false;
+        boolean isConnected = false;
+        Session session = sessionFactory.openSession();
+        isConnected = session.isConnected();
+        session.close();
+        return isConnected;
+
     }
 }

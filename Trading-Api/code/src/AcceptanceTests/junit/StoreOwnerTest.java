@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.messageRelated.Notification;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,9 +90,9 @@ public class StoreOwnerTest extends ProjectTest{
 
     private void except2Notification(UserInfo ui, String notificationMsg)
     {
-        List<String> notifications = this.getNotifications(ui.getUserId());
+        List<Notification> notifications = this.getNotifications(ui.getUserId());
         assertEquals(1, notifications.size());
-        assertTrue(notifications.get(0).contains(notificationMsg));
+        assertTrue(notifications.get(0).toString().contains(notificationMsg));
     }
 
     @Test

@@ -2,6 +2,7 @@ package bridge;
 
 import data.*;
 import org.json.JSONObject;
+import utils.messageRelated.Notification;
 import utils.stateRelated.Role;
 
 import java.util.List;
@@ -360,7 +361,7 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public List<String> getNotifications(int userId) {
+    public List<Notification> getNotifications(int userId) {
         if(real != null)
             return real.getNotifications(userId);
         return null;

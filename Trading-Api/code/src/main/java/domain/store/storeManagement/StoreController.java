@@ -1,7 +1,7 @@
 package domain.store.storeManagement;
 
+import database.Dao;
 import domain.store.discount.AbstractDiscount;
-import domain.store.discount.Discount;
 import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.discount.discountDataObjects.PredicateDataObject;
 import domain.store.discount.predicates.DiscountPredicate;
@@ -169,6 +169,19 @@ public class StoreController {
         for (Basket b : shoppingCart.getBaskets()) {
             Store store = storeList.get(b.getStoreId());
             store.handleDiscount(order);
+            if (!(store.makeOrder(b))) {
+                return null;
+            }
+            storeOwnersIDS.add(store.getCreator());
+            store.addOrder(order);
+        }
+        return storeOwnersIDS;
+    }
+
+    public Set<Integer> purchaseProductsBid(ShoppingCart shoppingCart, Order order) throws Exception{
+        Set<Integer> storeOwnersIDS = new HashSet<>();
+        for (Basket b : shoppingCart.getBaskets()) {
+            Store store = storeList.get(b.getStoreId());
             if (!(store.makeOrder(b))) {
                 return null;
             }
@@ -369,6 +382,7 @@ public class StoreController {
     public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
         Store s = getStore(storeId);
         s.setStoreAttributes(name, description, img);
+        Dao.update(s);
     }
     public ArrayList<PredicateDataObject> parsePredicateData(ArrayList<String> predData){
         ArrayList<PredicateDataObject> predicates = new ArrayList<>();

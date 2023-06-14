@@ -23,7 +23,7 @@ public class OrderController {
         orderID = new AtomicInteger();
     }
     
-    public synchronized Order createNewOrder(User user, ShoppingCart products, int totalPrice) throws Exception {
+    public synchronized Order createNewOrder(User user, ShoppingCart products, double totalPrice) throws Exception {
         int id = orderID.getAndIncrement();
         Order or =  new Order(id,user,products);
         orders.put(id, or);

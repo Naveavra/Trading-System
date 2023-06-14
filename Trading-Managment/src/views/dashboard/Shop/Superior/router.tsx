@@ -7,8 +7,8 @@ import AddEditStore from "../../../../components/Forms/AddEditStore";
 import OpenCloseStore from "../../../../components/Forms/OpenCloseStore";
 import UpdatePermissions from "../../../../components/Forms/UpdatePermissions";
 import RegularDiscount from "../../../../components/Forms/Discounts/RegularDiscount";
-import AddPredicate from "../../../../components/Forms/Discounts/AddPredicate";
 import SendComplain from "../../../../components/Forms/SendComplaint";
+import AddPurchasePolicy from "../../../../components/Forms/SuppingRoles/AddPurchasePolicy";
 
 export const SuperiorShopRoutes =
     <Route key="routes" path="superior" element={<Superior />}>
@@ -24,7 +24,8 @@ export const SuperiorShopRoutes =
         <Route path="changemanagerpermission" element={<UpdatePermissions />} />
         <Route path="regularDiscount" element={<RegularDiscount tree={false} />} />
 
-        <Route path="regularDiscount/addPredicate" element={<AddPredicate tree={false} />} />
         <Route path="sendComplaint" element={<SendComplain />} />
+        <Route path="addpurchaseconstraint" element={<AddPurchasePolicy />} />
+
     </Route>
     ;

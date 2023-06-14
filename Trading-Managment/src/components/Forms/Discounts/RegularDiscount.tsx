@@ -29,8 +29,9 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
     const discountedCategory = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.discountedCategory);
     const predicates = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.predicates);
     const tmpPredicate = useAppSelector((state) => state.discount.tmpPredicate);
-    const [sorce, setSorce] = useState('');
 
+    const [sorce, setSorce] = useState('');
+    const [description, setDescription] = useState('');
     const handleOnClose = useCallback(() => {
         navigate(-1);
         //dispatch(getStore({ userId: userId, storeId: storeId }));
@@ -90,6 +91,7 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
             dispatch(addRegularDiscount({
                 storeId: userId,
                 userId: storeId,
+                description: description,
                 percentage: percentage,
                 discountType: discountType,
                 prodId: prodId,
@@ -193,7 +195,21 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
                             />
                         </Grid>
                     </>
-                    : null
+                    : <>
+                        <Grid item xs={12} sx={{ mt: 2 }}>
+                            <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
+                                enter description
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                required
+                                id="outlined-required"
+                                label="description"
+                                onChange={(e) => { setDescription(e.target.value) }}
+                            />
+                        </Grid>
+                    </>
                 }
                 <Grid item xs={12} sx={{ mt: 2 }}>
                     <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >

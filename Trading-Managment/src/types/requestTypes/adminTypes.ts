@@ -16,3 +16,9 @@ export interface cancelMembershipParams {
     userId: number;
     userName: string;
 };
+export interface updateServiceParams {
+    userId: number;
+    service: string;
+    action: string;
+    content: string;
+};

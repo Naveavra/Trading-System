@@ -48,6 +48,8 @@ export enum XorDecidingRules {
     MinDiscountValue = "MinDiscountValue"
 }
 export const emptyRegularDiscount: RegularDiscountNode = {
+    type: 'regular',
+    description: "",
     label: "",
     percentage: 0,
     discountType: DiscountType.Product,
@@ -56,6 +58,8 @@ export const emptyRegularDiscount: RegularDiscountNode = {
     predicates: [],
 }
 export const emptyCompositeDiscount: CompositeDiscountNode = {
+    type: 'composite',
+    description: "",
     label: "",
     percentage: 0,
     numericType: Numeric.Max,

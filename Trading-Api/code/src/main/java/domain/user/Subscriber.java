@@ -1,6 +1,7 @@
 package domain.user;
 
-import database.dtos.MemberDto;
+import database.Dao;
+import jakarta.persistence.*;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -8,18 +9,32 @@ import utils.stateRelated.Action;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
+
+
+
+@Entity
+@Table(name = "users")
 public abstract class Subscriber {
 
+    @Id
     protected int id;
     protected String email;
     protected String birthday;
     protected String password;
+
+    @Transient
     protected boolean isConnected;
-    protected MemberDto memberDto;
+
+    @Transient
     protected BlockingQueue<Notification> notifications;
+
+    public Subscriber(){
+    }
     public Subscriber(int id, String email, String password){
         this.id = id;
         this.email = email;
@@ -27,7 +42,6 @@ public abstract class Subscriber {
         this.birthday = "no input";
         notifications = new LinkedBlockingQueue<>();
         isConnected = false;
-        memberDto = new MemberDto(id, email, password, birthday);
     }
 
     public int getId(){
@@ -37,6 +51,8 @@ public abstract class Subscriber {
         return email;
     }
     public String getPassword(){return password;}
+
+    public String getBirthday(){return birthday;}
 
     public void connect(){
         isConnected = true;
@@ -60,31 +76,33 @@ public abstract class Subscriber {
     }
 
     public synchronized void addNotification(Notification notification){
-        notifications.offer(notification);
+        notification.setSubId(id);
+        boolean got = notifications.offer(notification);
+        if(got)
+            Dao.save(notification);
     }
 
     public List<Notification> displayNotifications(){
-        List<Notification> display = new LinkedList<>();
-        for (Notification notification : notifications)
-            display.add(notification);
+        List<Notification> display = new LinkedList<>(notifications);
+        Dao.removeIf("Notification", String.format("subId = %d", id));
         notifications.clear();
         return display;
     }
 
     public Notification getNotification() throws InterruptedException {
         synchronized (notifications) {
-            return notifications.take();
+            Notification n = notifications.take();
+            if(isConnected) {
+                Dao.remove(n);
+                return n;
+            }else{
+                notifications.offer(n);
+                return null;
+            }
         }
     }
 
     public abstract LoginInformation getLoginInformation(String token);
     public abstract void checkPermission(Action action, int storeId)  throws Exception;
-
-    //database
-    public MemberDto getDto() {
-        List<Notification> nlist = new ArrayList<>(notifications);
-        memberDto.setNotifications(nlist);
-        return memberDto;
-    }
 
 }

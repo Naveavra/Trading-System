@@ -1,17 +1,23 @@
 package domain.states;
 
 
+import database.Dao;
 import domain.store.storeManagement.Store;
+import jakarta.persistence.Entity;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@Entity
 public class StoreManager extends UserState {
 
-    public  StoreManager(int userId, String name, Store store){
-        super(userId, name, store);
+    public StoreManager(){
+    }
+
+    public  StoreManager(int memberId, String name, Store store){
+        super(memberId, name, store);
         role = Role.Manager;
         List<Action> actions = new LinkedList<>();
         List<Action> addedActions = new LinkedList<>();
@@ -22,7 +28,10 @@ public class StoreManager extends UserState {
         actions.add(Action.seeStoreHistory);
         actions.add(Action.seeStoreOrders);
         actions.add(Action.checkWorkersStatus);
-        permission.addActions(actions);
+
+        for(Action a : actions)
+            permissionList.add(new Permission(this, a));
+        permissions.addActions(actions);
 
 
         addedActions.add(Action.viewMessages);
@@ -38,14 +47,17 @@ public class StoreManager extends UserState {
         addedActions.add(Action.addProduct);
         addedActions.add(Action.removeProduct);
         addedActions.add(Action.updateProduct);
-        permission.addPossibleActions(addedActions);
+        permissions.addPossibleActions(addedActions);
     }
 
     @Override
     public void addAction(Action a) throws Exception{
         if (!checkPermission(a)) {
             if (checkHasAvailableAction(a)) {
-                permission.addAction(a);
+                Permission p = new Permission(this, a);
+                permissionList.add(p);
+                Dao.save(p);
+                permissions.addAction(a);
             }
             else
                 throw new Exception("manager can't have this action");
@@ -56,8 +68,11 @@ public class StoreManager extends UserState {
 
     @Override
     public void removeAction(Action a) throws Exception{
-        if (checkPermission(a))
-            permission.removeAction(a);
+        if (checkPermission(a)) {
+            permissions.removeAction(a);
+            permissionList.removeIf(p -> a == p.getPermission());
+            Dao.removeIf("Permission", String.format("permission = %s", a.toString()));
+        }
         else
             throw new Exception("the manager does not have this action");
     }

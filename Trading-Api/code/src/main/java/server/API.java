@@ -24,7 +24,6 @@ public class API {
         market = new Market(a);
         actionStrings = new HashMap<>();
         getActionStrings();
-
     }
 
     public Pair<Boolean, JSONObject> fromResToPair(Response res){
@@ -135,7 +134,7 @@ public class API {
         return fromResToPairInfo(res);
     }
     public Pair<Boolean, JSONObject> getMemberNotifications(int userId, String token) {
-        Response<List<String>> res = market.getMemberNotifications(userId, token);
+        Response<List<Notification>> res = market.getMemberNotifications(userId, token);
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
         {
@@ -148,10 +147,13 @@ public class API {
         }
     }
 
-    public JSONObject NotificationsToJson(List<String> list)
+    public JSONObject NotificationsToJson(List<Notification> list)
     {
+        List<String> ans = new ArrayList<>();
+        for(Notification n : list)
+            ans.add(n.toString());
         JSONObject json = new JSONObject();
-        json.put("notifications", list);
+        json.put("notifications", ans);
         return json;
     }
 
@@ -380,8 +382,8 @@ public class API {
         return fromResToPair(res);
     }
 
-    public Pair<Boolean, JSONObject> removeUser(int userId) {
-        Response<String> res = market.removeUser(userId);
+    public Pair<Boolean, JSONObject> removeUser(String userName) {
+        Response<String> res = market.removeUser(userName);
         return fromResToPair(res);
     }
 
@@ -439,6 +441,22 @@ public class API {
         Response<List<Object>> res = market.getPaymentServiceAvailable();
         return fromResToPairListPre(res);
     }
+    public Pair<Boolean, JSONObject> placeBid(String token, int storeId, int prodId, int userId, double price,int quantity) {
+        Response<String> res = market.placeBid(token, userId, storeId, prodId, price,quantity);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> answerBid(String token, int storeId, int userId, boolean ans, int prodId, int bidId) {
+        Response<String> res = market.answerBid(token, userId, storeId, ans, prodId, bidId);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> counterBid(String token, int storeId, int userId, double counterOffer, int prodId, int bidId) {
+        Response<String> res = market.counterBid(token, userId, storeId, counterOffer, prodId, bidId);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> editBid(String token, int storeId , int userId, double price, int quantity, int bidId) {
+        Response<String> res = market.editBid(token, userId, storeId, price,quantity, bidId);
+        return fromResToPair(res);
+    }
 
     //for actions to actionString
     private void getActionStrings(){
@@ -467,7 +485,8 @@ public class API {
     private JSONObject createPaymentJson()
     {
         JSONObject payment = new JSONObject();
-        payment.put("payment_service", "WSEP");
+        payment.put("payment_service", "Mock");
+        payment.put("Mock", "on");
         payment.put("cardNumber", "123456789");
         payment.put("month", "01");
         payment.put("year", "30");
@@ -480,7 +499,8 @@ public class API {
     private static JSONObject createSupplierJson()
     {
         JSONObject supplier = new JSONObject();
-        supplier.put("supply_service", "WSEP");
+        supplier.put("supply_service", "Mock");
+        supplier.put("Mock", "on");
         supplier.put("name", "Israel Visceral");
         supplier.put("address", "Reger 17");
         supplier.put("city", "Beer Sheva");
@@ -528,4 +548,7 @@ public class API {
         market.logout(id1);
         market.logout(id2);
     }
+
+
+
 }

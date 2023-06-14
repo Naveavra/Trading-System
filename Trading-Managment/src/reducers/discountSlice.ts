@@ -3,9 +3,8 @@ import { discountApi } from "../api/discountApi";
 import { ApiError } from "../types/apiTypes";
 import { Discount, PredicateDataObject, emptyCompositeDiscount, emptyPredicate, emptyRegularDiscount } from "../types/systemTypes/Discount";
 import { deleteDiscountParams, postCompositeDicountParams, postRegularDicountParams } from "../types/requestTypes/discountTypes";
-import { CompositeDiscountNode, DiscountNodes, RegularDiscountNode } from "../types/systemTypes/DiscountNodes";
+import { DiscountNodes, RegularDiscountNode } from "../types/systemTypes/DiscountNodes";
 import { Edge, Node } from "reactflow";
-import { stat } from "fs";
 
 const reducerName = 'discounts';
 
@@ -19,9 +18,7 @@ interface DiscountState {
     responseData: Discount[];
     error: string | null;
     currentRegularDiscount: RegularDiscountNode;
-    currentCompositeDiscount: CompositeDiscountNode;
     tmpPredicate: PredicateDataObject;
-    first: boolean;
     discountNodes: Node<DiscountNodes>[];
     discountEdges: Edge[];
     target: number;
@@ -40,9 +37,7 @@ const initialState: DiscountState = {
     responseData: [],
     error: null,
     currentRegularDiscount: emptyRegularDiscount,
-    currentCompositeDiscount: emptyCompositeDiscount,
     tmpPredicate: emptyPredicate,
-    first: true,
     discountNodes: [],
     discountEdges: [],
     target: 0,
@@ -201,18 +196,16 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
         cleanRegularDiscount: (state) => {
             state.currentRegularDiscount = emptyRegularDiscount;
         },
-        cleanCompositeDiscount: (state) => {
-            state.currentCompositeDiscount = emptyCompositeDiscount;
-        },
         addFirstComposite: (state, { payload }) => {
             debugger;
-            state.discountNodes.push({ id: '0', position: { x: 500, y: 100 }, data: { label: `Id : 0 , precentage : ${payload.percentage} , type: ${payload.numericType + payload.composoreType}`, percentage: payload.percentage, numericType: payload.numericType, logicalType: payload.composoreType, xorDecidingRule: payload.xorRule } });
+            console.log(payload);
+            state.discountNodes.push({ id: '0', position: { x: 500, y: 100 }, data: { type: 'composite', label: `Id : 0 , precentage : ${payload.percentage} ,${payload.numericType == '' ? '' : `numericType: ${payload.numericType}`} , ${payload.composoreType == '' ? '' : `composoreType:${payload.composoreType}`} , ${payload.xorRule == '' ? '' : `xorDecidingRule: ${payload.xorRule}`} ,${payload.description == '' ? '' : `description: ${payload.description}`}`, description: payload.description, percentage: payload.percentage, numericType: payload.numericType, logicalType: payload.composoreType, xorDecidingRule: payload.xorRule } });
             state.level = 1;
             debugger;
             console.log(state.discountNodes);
             console.log(state.discountNodes.find((node) => node.id === '0')?.position?.x);
-            state.discountNodes.push({ id: '1', position: { x: (state.discountNodes.find((node) => node.id === '0')?.position?.x ?? 0) - ((200 * Math.pow(2, state.level - 1)) / 2), y: 100 * (state.level + 1) }, data: { ...emptyCompositeDiscount, label: '1' } });
-            state.discountNodes.push({ id: '2', position: { x: (state.discountNodes.find((node) => node.id === '0')?.position?.x ?? 0) + ((200 * Math.pow(2, state.level - 1)) / 2), y: 100 * (state.level + 1) }, data: { ...emptyCompositeDiscount, label: '2' } });
+            state.discountNodes.push({ id: '1', position: { x: (state.discountNodes.find((node) => node.id === '0')?.position?.x ?? 0) - ((200 * Math.pow(2, state.level - 1)) / 2), y: 150 * (state.level + 1) }, data: { ...emptyCompositeDiscount, label: '1' } });
+            state.discountNodes.push({ id: '2', position: { x: (state.discountNodes.find((node) => node.id === '0')?.position?.x ?? 0) + ((200 * Math.pow(2, state.level - 1)) / 2), y: 150 * (state.level + 1) }, data: { ...emptyCompositeDiscount, label: '2' } });
             state.level = 2;
             state.discountEdges.push({ id: 'e0-1', source: '0', target: '1' });
             state.discountEdges.push({ id: 'e0-2', source: '0', target: '2' });
@@ -223,7 +216,7 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             //change the father to be a composite
             state.discountNodes.forEach((node) => {
                 if (node.id === payload?.rootSource) {
-                    node.data = { ...node.data, percentage: payload.percentage, numericType: payload.numericType, logicalType: payload.composoreType, xorDecidingRule: payload.xorRule, label: `${payload?.rootSource} , precentage : ${payload.percentage} , type: ${payload.numericType + payload.composoreType} , xorDecidingRule :${payload.xorRule} ` };
+                    node.data = { ...node.data, type: 'composite', percentage: payload.percentage, numericType: payload.numericType, logicalType: payload.composoreType, xorDecidingRule: payload.xorRule, label: `${payload?.rootSource} , precentage : ${payload.percentage} , ${payload.numericType == '' ? '' : `numericType: ${payload.numericType}`} , ${payload.composoreType == '' ? '' : `composoreType: ${payload.composoreType}`} ,${payload.xorRule == '' ? '' : `xorDecidingRule: ${payload.xorRule}`}` };
                 }
             });
             state.discountNodes.push({ id: String(state.target), position: { x: (state.discountNodes.find((node) => node.id === payload?.rootSource)?.position?.x ?? 0) - ((200 * Math.pow(2, state.level - 1)) / 2), y: (state.discountNodes.find((node) => node.id === payload?.rootSource)?.position?.y ?? 0) + 100 }, data: { ...emptyCompositeDiscount, label: `${state.target}` } });
@@ -240,18 +233,62 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             debugger;
             state.discountNodes.forEach((node) => {
                 if (node.id === payload.source) {
-                    node.data = { ...node.data, percentage: payload.percentage, discountType: payload.discountType, prodId: payload.prodId, discountedCategory: payload.discountedCategory, predicates: [...payload.predicates], label: `${payload?.source} , precentage : ${payload.percentage} , discountType: ${payload.discountType}` };
+                    node.data = { ...node.data, type: 'regular', percentage: payload.percentage, discountType: payload.discountType, prodId: payload.prodId, discountedCategory: payload.discountedCategory, predicates: [...payload.predicates], label: `${payload?.source} , precentage : ${payload.percentage} , discountType: ${payload.discountType} , ${payload.prodId == '' ? '' : `product id : ${payload.prodId}`} , ${payload.discountedCategory == '' ? '' : `discountedCategory : ${payload.discountedCategory}`} , ${payload.predicates.lentgh == 0 ? '' : `predicates :\n ${payload.predicates?.map((predicate: { predType: any; }, index: any) => `${index} :\n  predicate type : ${predicate.predType}`)}`}` };
                     //node.data.predicates = { ...node.data.predicates, ...payload.predicates };
                 }
             });
-            state.discountNodes.filter((node) => node.id === payload.source)[0].data = { ...state.discountNodes.filter((node) => node.id === payload.source)[0].data, percentage: payload.percentage, discountType: payload.discountType, prodId: payload.prodId, discountedCategory: payload.discountedCategory, predicates: [...payload.predicates], label: `${payload?.source} , precentage : ${payload.percentage} , discountType: ${payload.discountType}` };
+            state.discountNodes.filter((node) => node.id === payload.source)[0].data = { ...state.discountNodes.filter((node) => node.id === payload.source)[0].data, type: 'regular', percentage: payload.percentage, discountType: payload.discountType, prodId: payload.prodId, discountedCategory: payload.discountedCategory, predicates: [...payload.predicates], label: `${payload?.source} , precentage : ${payload.percentage} , discountType: ${payload.discountType}` };
 
         },
         reset: (state) => {
-            state.discountNodes = [];
-            state.discountEdges = [];
-            state.level = 0;
-            state.target = 0;
+            // state.discountNodes = [];
+            // state.discountEdges = [];
+            // state.level = 0;
+            // state.target = 0;
+            debugger;
+            return initialState;
+            debugger;
+        },
+        isOverLapping: (state, { payload }) => {
+            state.discountNodes.forEach((node1) => {
+                state.discountNodes.forEach((node2) => {
+                    if (node1.id !== node2.id) {
+                        const distanceX = Math.abs(node1.position.x - node2.position.x);
+                        const distanceY = Math.abs(node1.position.y - node2.position.y);
+                        return distanceX <= 10 && distanceY <= 100;
+                    }
+                });
+            });
+        },
+        rearrangeTree: (state) => {
+            const nodes = state.discountNodes;
+            const edges = state.discountEdges;
+            const nodeCount = nodes.length;
+            const horizontalDistance = 100;
+            const verticalDistance = 150;
+            const parentLevels: Map<string, number> = new Map();
+            for (let i = 0; i < nodeCount; i++) {
+                if (i !== state.target) {
+                    const currentNode = nodes[i];
+                    const parentEdge = edges.find(edge => edge.target === currentNode.id);
+                    const parentNode = parentEdge ? nodes.find(node => node.id === parentEdge.source) : null;
+
+                    let parentLevel = 0;
+                    if (parentNode) {
+                        parentLevel = parentLevels.get(parentNode.id) || 0; // Get the level of the parent node from the map
+                        parentLevel += 1; // Increment the level for the current node
+                        parentLevels.set(currentNode.id, parentLevel); // Store the level of the current node in the map
+
+                        const parentPosition = parentNode.position;
+                        const offsetX = ((i - parentLevel) * horizontalDistance) / 2;
+                        const offsetY = (parentLevel - 1) * verticalDistance + (state.level - parentLevel) * verticalDistance;
+                        currentNode.position = {
+                            x: parentPosition.x + offsetX,
+                            y: parentPosition.y + offsetY,
+                        };
+                    }
+                }
+            }
         },
 
     },
@@ -330,6 +367,8 @@ export const {
     addRegularDiscountToSource,
     setSourceForPredicate,
     reset,
+    isOverLapping,
+    rearrangeTree,
 } = discountActions;
 export default discountReducer;
 

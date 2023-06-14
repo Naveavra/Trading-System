@@ -10,6 +10,9 @@ import SendComplain from "../../components/Forms/SendComplaint";
 import { ExternalAdminRoutes } from "./Admin/pageRouter";
 import BuyCart from "../../components/Forms/BuyCartForm";
 import { ExternalPersonalRoutes } from "./Personal/pageRouter";
+import MakeBid from "../../components/Forms/makeBid";
+import BiddingSenter from "./BiddingCenter/intex";
+import { BiddingRoutes } from "./BiddingCenter/router";
 
 
 export const dashboardRoutes = [
@@ -20,10 +23,13 @@ export const dashboardRoutes = [
         <Route path="store/new" element={<AddEditStore mode={"add"} />} />
         <Route path="sendMsg" element={<SendMsg />} />
         <Route path="sendComplaint" element={<SendComplain />} />
+        <Route path=":storeId/:productId/makeBid" element={<MakeBid />} />
+        {/* <Route path="biddingSenter" element={<BiddingSenter />} /> */}
 
 
         {/*todo : add routes here*/}
         {AdminRoutes}
+        {BiddingRoutes}
         {PersonalRoutes}
         {ShopRoutes}
         {ExternalAdminRoutes}

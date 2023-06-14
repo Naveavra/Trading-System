@@ -1,16 +1,22 @@
 package domain.states;
 
 import domain.store.storeManagement.Store;
+import domain.user.Member;
+import jakarta.persistence.Entity;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@Entity
 public class StoreCreator extends UserState {
 
-    public StoreCreator(int userId, String name, Store store){
-        super(userId, name, store);
+    public StoreCreator(){
+    }
+
+    public StoreCreator(int memberId, String name, Store store){
+        super(memberId, name, store);
         role = Role.Creator;
         List<Action> actions = new LinkedList<>();
 
@@ -38,7 +44,8 @@ public class StoreCreator extends UserState {
         actions.add(Action.closeStore);
         actions.add(Action.reopenStore);
 
-
-        permission.addActions(actions);
+        for(Action a : actions)
+            permissionList.add(new Permission(this, a));
+        permissions.addActions(actions);
     }
 }

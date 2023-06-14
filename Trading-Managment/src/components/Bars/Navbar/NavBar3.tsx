@@ -89,7 +89,7 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                     <Toolbar>
 
 
-                        <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
+                        <Typography variant="h6" component="div" sx={{ display: 'flex', justifyContent: 'center', flexGrow: 2, ml: 30 }}>
                             {headLine}
                         </Typography>
                         <IconButton className="icon" color="inherit" onClick={() => navigate(`/dashboard`)}>

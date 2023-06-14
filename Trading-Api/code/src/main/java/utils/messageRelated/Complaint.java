@@ -1,8 +1,13 @@
 package utils.messageRelated;
 
 import domain.user.Member;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.json.JSONObject;
 
+@Entity
+@Table(name = "complaints")
 public class Complaint extends Message{
 
     private int orderId;
@@ -16,7 +21,7 @@ public class Complaint extends Message{
 
         public void sendFeedback(String feedback) throws Exception{
             if(!gotFeedback) {
-                Notification<String> notification = new Notification<>(NotificationOpcode.REVIEW_FEEDBACK, feedback);
+                Notification notification = new Notification(NotificationOpcode.REVIEW_FEEDBACK, feedback);
                 sender.addNotification(notification);
                 gotFeedback = true;
         }
