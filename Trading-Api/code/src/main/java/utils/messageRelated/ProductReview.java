@@ -6,20 +6,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import org.json.JSONObject;
 
-import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
-
 @Entity
 @Table(name = "productReviews")
 public class ProductReview extends StoreReview{
     private int productId;
 
     public ProductReview(){
-        this.opcode = PRODUCT_REVIEW;
+        this.opcode = NotificationOpcode.GET_STORE_DATA;
     }
     public ProductReview(int messageId, String content, Member reviewer, int orderId, int storeId,
                          int productId, int rating){
         super(messageId, content, reviewer, orderId, storeId, rating);
-        this.opcode = PRODUCT_REVIEW;
+        this.opcode = NotificationOpcode.GET_STORE_DATA;
         this.productId = productId;
 
     }

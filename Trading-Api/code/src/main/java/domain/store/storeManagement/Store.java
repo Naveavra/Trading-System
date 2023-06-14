@@ -75,7 +75,7 @@ public class Store extends Information{
     @Transient
     private DiscountFactory discountFactory;
 
-    private AtomicInteger bidIds;
+    @Transient
     private AtomicInteger policyIds;
 
     public Store(){

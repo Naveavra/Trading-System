@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import org.json.JSONObject;
 
-import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
-import static utils.messageRelated.NotificationOpcode.QUESTION;
 
 @Entity
 @Table(name = "questions")
@@ -16,10 +14,10 @@ public class Question extends Message{
     private boolean gotFeedback;
 
     public Question(){
-        this.opcode = QUESTION;
+        this.opcode = NotificationOpcode.GET_STORE_DATA;
     }
     public Question(int messageId, String content, Member reviewer, int storeId){
-        super(messageId, NotificationOpcode.QUESTION, content, reviewer);
+        super(messageId, NotificationOpcode.GET_STORE_DATA, content, reviewer);
         this.storeId = storeId;
         this.gotFeedback = false;
     }

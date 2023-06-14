@@ -7,8 +7,6 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import org.json.JSONObject;
 
-import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
-import static utils.messageRelated.NotificationOpcode.STORE_REVIEW;
 
 @Entity
 @Table(name = "storeReviews")
@@ -19,12 +17,12 @@ public class StoreReview extends Message{
     protected int rating;
 
     public StoreReview(){
-        this.opcode = STORE_REVIEW;
+        this.opcode = NotificationOpcode.GET_STORE_DATA;
     }
 
     public StoreReview(int messageId, String content, Member reviewer, int orderId, int storeId,
                        int rating){
-        super(messageId, NotificationOpcode.STORE_REVIEW, content, reviewer);
+        super(messageId, NotificationOpcode.GET_STORE_DATA, content, reviewer);
         this.orderId = orderId;
         this.storeId = storeId;
         this.rating = rating;

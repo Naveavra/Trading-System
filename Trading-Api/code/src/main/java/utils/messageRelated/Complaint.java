@@ -6,8 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.json.JSONObject;
 
-import static utils.messageRelated.NotificationOpcode.COMPLAINT;
-import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
 
 @Entity
 @Table(name = "complaints")
@@ -17,11 +15,11 @@ public class Complaint extends Message{
     private boolean gotFeedback;
 
     public Complaint(){
-        this.opcode = COMPLAINT;
+        this.opcode = NotificationOpcode.GET_ADMIN_DATA;
     }
 
     public Complaint(int messageId, String content, Member reviewer, int orderId){
-        super(messageId, NotificationOpcode.COMPLAINT, content, reviewer);
+        super(messageId, NotificationOpcode.GET_ADMIN_DATA, content, reviewer);
         this.orderId = orderId;
         this.gotFeedback = false;
     }
