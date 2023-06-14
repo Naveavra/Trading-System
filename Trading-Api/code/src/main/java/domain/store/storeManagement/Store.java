@@ -11,10 +11,12 @@ import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
 
 import domain.store.purchase.PurchasePolicy;
+import domain.store.purchase.PurchasePolicyDataObject;
 import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
 import jakarta.persistence.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
@@ -71,6 +73,7 @@ public class Store extends Information{
     private DiscountFactory discountFactory;
 
     private AtomicInteger bidIds;
+    private AtomicInteger policyIds;
 
     public Store(){
     }
@@ -634,5 +637,69 @@ public class Store extends Information{
             }
         }
         throw new Exception("Bid doesnt exist "+bidId);
+    }
+
+    public void addPurchasePolicy(String data){
+        PurchasePolicyFactory factory = new PurchasePolicyFactory();
+        JSONObject request = new JSONObject(data);
+        String description = request.getString("description");
+        JSONArray policies = request.getJSONArray("type");
+        PurchasePolicyDataObject actualPolicy;
+        PurchasePolicyDataObject prev = null;
+        for(int i = 0 ; i<policies.length() ; i++){
+            JSONObject policy = policies.getJSONObject(i);
+            String type = policy.getString("type");
+            switch (type){
+                case "item" -> actualPolicy = parseItem(policy,prev);
+                case "category" -> actualPolicy = parseCategory(policy,prev);
+                case "dateTime" -> ;
+                case "user" ->;
+                case "basket" ->
+            }
+        }
+    }
+
+    private PurchasePolicyDataObject parseCategory(JSONObject policy, PurchasePolicyDataObject prev) {
+
+    }
+
+    private PurchasePolicyDataObject parseItem(JSONObject policy,PurchasePolicyDataObject prev) {
+        int amount = Integer.parseInt(policy.getString("amount"));
+        int productId = Integer.parseInt(policy.getString("productId"));
+        PurchasePolicy.limiters limiter = getLimiter(policy.getString("limiter"));
+        PurchasePolicy.policyTypes type = getPolicyType(policy.getString("item"));
+        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.getString("composore"));
+        int[] nullVal = null;
+        PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyIds.getAndIncrement(),storeId,policy.toString(),limiter,productId,
+                -1,"",amount,nullVal,nullVal,null,compose,type);
+        if (prev != null){
+            prev.next = dataObj;
+            prev = null;
+        }
+        if(compose!=null){
+            prev = dataObj;
+        }
+        return dataObj;
+
+    }
+
+    private PurchasePolicy.policyComposeTypes getPolicyCompose(String composore) {
+        return switch (composore){
+            case "And" -> PurchasePolicy.policyComposeTypes.PolicyAnd;
+            case "Or" -> PurchasePolicy.policyComposeTypes.PolicyOr;
+            case "Conditional" -> PurchasePolicy.policyComposeTypes.PolicyConditioning;
+            default -> null;
+        };
+    }
+
+    private PurchasePolicy.policyTypes getPolicyType(String item) {
+
+    }
+
+    private PurchasePolicy.limiters getLimiter(String limit){
+        return switch (limit){
+            case "Min" -> PurchasePolicy.limiters.Min;
+            case "Max" -> PurchasePolicy.limiters.Max;
+        };
     }
 }

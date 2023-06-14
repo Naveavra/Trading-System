@@ -35,6 +35,7 @@ public class ProductInfo {
         this.img = product.img;
     }
 
+
     public int getProductId() {
         return productId;
     }

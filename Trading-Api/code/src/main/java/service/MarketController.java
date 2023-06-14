@@ -309,8 +309,9 @@ public class MarketController {
         //send a message to all shop owners and people who need to approve this bid.
     }
 
-    public void addPurchaseConstraint(int userId, int storeId, String purchasePolicy) {
-        //todo miki
+    public void addPurchaseConstraint(int userId, int storeId, String purchasePolicy)throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        s.addPurchasePolicy(purchasePolicy);
     }
 
     public void deletePurchaseConstraint(int userId, int storeId, int purchasePolicyId) {
