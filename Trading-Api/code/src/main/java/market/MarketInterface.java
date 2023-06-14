@@ -7,6 +7,7 @@ import utils.infoRelated.Information;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
 import utils.infoRelated.Receipt;
+import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 
 import java.util.HashMap;
@@ -139,4 +140,11 @@ public interface MarketInterface {
     public Response counterBid(String token, int userId, int storeId, double counterOffer, int prodId, int bidId);
 
     public Response editBid(String token, int userId, int storeId, double price, int quantity, int bidId);
+
+    Response<String> addShoppingRule(int userId, String token, int storeId, String purchasePolicy);
+
+    Response<String> deletePurchasePolicy(String token, int userId, int storeId, int purchasePolicyId);
 }
+
+
+

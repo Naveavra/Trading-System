@@ -457,6 +457,14 @@ public class API {
         Response<String> res = market.editBid(token, userId, storeId, price,quantity, bidId);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> addShoppingRule(String token, int storeId, int userId, String purchasePolicy) {
+        Response<String> res =  market.addShoppingRule(userId, token, storeId, purchasePolicy);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> deletePurchasePolicy(String token, int userId, int storeId, int purchasePolicyId) {
+        Response<String> res = market.deletePurchasePolicy(token, userId, storeId, purchasePolicyId);
+        return fromResToPair(res);
+    }
 
     //for actions to actionString
     private void getActionStrings(){
