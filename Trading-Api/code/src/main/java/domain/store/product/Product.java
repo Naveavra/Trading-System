@@ -1,9 +1,12 @@
 package domain.store.product;
 
+import database.Dao;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import utils.infoRelated.ProductInfo;
+import utils.messageRelated.ProductReview;
 
 import java.util.*;
 
@@ -18,13 +21,14 @@ public class Product {
     private int storeId;
 
     @Transient
-    private ArrayList<String> categories;
+    private List<String> categories;
     public String name;
     public String description;
     public int price; //for one product
     public int quantity;
     public double rating;
     private String imgUrl;
+    private List<ProductReview> reviews;
 //    public ArrayList<String> categories;
     //private ConcurrentLinkedDeque<String> categories;
     //private double discount;  no need for discount here, the discount is calculated by the policy
@@ -43,6 +47,7 @@ public class Product {
         price = 0;
         categories = new ArrayList<>();
         rating = 5;
+        reviews = new ArrayList<>();
     }
 
     public Product(int storeId, int prod_id, String _name, String desc, String imgUrl){
@@ -126,7 +131,7 @@ public class Product {
     }
 
 
-    public ArrayList<String> getCategories(){
+    public List<String> getCategories(){
         return categories;
     }
 
@@ -147,5 +152,15 @@ public class Product {
         return getCategories().contains(discountedCategory);
     }
 
+    public ProductInfo getProductInfo(){
+        return new ProductInfo(storeId, productId, categories, name, description,price
+        ,quantity, rating, reviews, imgUrl);
+    }
 
+    public void addReview(ProductReview m) {
+        reviews.add(m);
+        Dao.save(m);
+    }
+
+    public List<ProductReview> getReviews(){return reviews;}
 }

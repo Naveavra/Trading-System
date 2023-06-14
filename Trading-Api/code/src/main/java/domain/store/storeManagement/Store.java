@@ -149,6 +149,12 @@ public class Store extends Information{
         questions.put(q.getMessageId(), q);
         return creator.getId();
     }
+
+
+    public List<Bid> getBids()
+    {
+        return bids;
+    }
     public ArrayList<Discount> getDiscounts(){return this.discounts;}
 
     public void answerQuestion(int messageID, String answer) throws Exception {
@@ -196,7 +202,7 @@ public class Store extends Information{
 
     public List<StoreReview> getStoreReviews() {
         List<StoreReview> ans = new ArrayList<>(storeReviews.values());
-        ans.addAll(inventory.getProductReviews().values());
+        ans.addAll(inventory.getProductReviews());
         return ans;
     }
     public List<OrderInfo> getOrdersHistory() {
@@ -510,7 +516,8 @@ public class Store extends Information{
     }
 
     public StoreInfo getStoreInformation() {
-        StoreInfo info = new StoreInfo(storeId, storeName, storeDescription, isActive, creator.getId(), getStoreRating(), imgUrl);
+        StoreInfo info = new StoreInfo(storeId, storeName, storeDescription, isActive, creator.getId(), getStoreRating(),
+                imgUrl, bids);
         return info;
     }
 
@@ -556,6 +563,7 @@ public class Store extends Information{
         json.put("questions", infosToJson(getQuestions()));
         json.put("img", getImgUrl());
         json.put("roles", infosToJson(getRoles()));
+        json.put("bids", infosToJson(getBids()));
         return json;
     }
 
@@ -582,6 +590,7 @@ public class Store extends Information{
         Bid b = new Bid(bidIds.getAndIncrement(),user,inventory.getProduct(prodId),price,quantity,
                 (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct));
         bids.add(b);
+        user.addBid(b);
         return b.approvers;
     }
 

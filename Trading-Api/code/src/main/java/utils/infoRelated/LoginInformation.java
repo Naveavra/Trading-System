@@ -1,5 +1,6 @@
 package utils.infoRelated;
 
+import domain.store.storeManagement.Bid;
 import domain.user.PurchaseHistory;
 import org.json.JSONObject;
 import utils.messageRelated.Notification;
@@ -22,10 +23,12 @@ public class LoginInformation extends Information{
     private int age;
     private String birthday;
 
+    private List<Bid> openBids;
+
     public LoginInformation(String t, int ui, String un, boolean isAdmin, List<Notification> notifications, HashMap<Integer, Role> storeRoles,
                             HashMap<Integer, String> storeName, HashMap<Integer, String> storeImg,
                             HashMap<Integer, List<Action>> permissions, PurchaseHistory purchaseHistory,
-                            int age, String birthday){
+                            int age, String birthday, List<Bid> bids){
         token=t;
         userId = ui;
         userName=un;
@@ -38,6 +41,7 @@ public class LoginInformation extends Information{
         this.purchaseHistory = purchaseHistory;
         this.age = age;
         this.birthday = birthday;
+        this.openBids = bids;
     }
     public int getUserId(){
         return userId;
@@ -59,6 +63,9 @@ public class LoginInformation extends Information{
             return permissions;
     }
 
+    public List<Bid> getOpenBids(){return openBids;}
+
+
     public JSONObject toJson()
     {
         JSONObject json = new JSONObject();
@@ -75,6 +82,7 @@ public class LoginInformation extends Information{
             json.put("storeRoles", getStoreRole(getStoreRoles(), "storeId", "storeRole"));
             json.put("storeImgs", toJsonHM(getStoreImg(), "storeId", "storeImg"));
             json.put("permissions", getStorePermissions(getPermissions(), "storeId", "actions"));
+            json.put("bids", infosToJson(getOpenBids()));
         }
         return json;
     }

@@ -21,7 +21,6 @@ public class Inventory {
     // ConcurrentHashMap<Product, ArrayList<String>> categories;
     private ConcurrentHashMap<String,ArrayList<Integer>> categories; // <Category String,<List<ProductID>>
     private ConcurrentHashMap<Product, CopyOnWriteArrayList<Integer>> productgrading;
-    private ConcurrentHashMap<Integer, ProductReview> productReviews;
 
 
     // AtomicInteger prod_id = new AtomicInteger();
@@ -30,7 +29,6 @@ public class Inventory {
         productList = new ConcurrentHashMap<>();
         categories = new ConcurrentHashMap<>();
         productgrading = new ConcurrentHashMap<>();
-        productReviews = new ConcurrentHashMap<>();
     }
 
     /**
@@ -101,8 +99,9 @@ public class Inventory {
 
     public void addProductReview(ProductReview m) throws Exception{
         if(productList.containsKey(m.getProductId())){
-            Dao.save(m);
-            productReviews.put(m.getMessageId(), m);
+            Product p = productList.get(m.getProductId());
+            p.addReview(m);
+
         }
         else{
             throw new Exception("the review given contains an illegal id");
@@ -120,9 +119,7 @@ public class Inventory {
             p = null;
         }
         if (p != null){
-           for(ProductReview m : productReviews.values())
-                if(m.getProductId() == productID)
-                    ans.add(m);
+           ans.addAll(p.getReviews());
         }
         return ans;
     }
@@ -328,7 +325,12 @@ public class Inventory {
         return info;
     }
 
-    public ConcurrentHashMap<Integer, ProductReview> getProductReviews(){
-        return productReviews;
+    public List<ProductReview> getProductReviews(){
+       List<ProductReview> ans = new ArrayList<>();
+       for (Product p : productList.values())
+       {
+           ans.addAll(p.getReviews());
+       }
+       return ans;
     }
 }
