@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import Bar3 from "../../../components/Bars/Navbar/NavBar3";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,8 +19,10 @@ const BiddingCenter = () => {
                     <Tab label="Auctions" onClick={() => navigate(`Auctions`)} />
                     <Tab label="Lottery" onClick={() => navigate(`Lottery`)} />
                 </Tabs>
-
             </Box>
+            <Typography variant="h6" component="div" sx={{ display: 'flex', justifyContent: 'center', flexGrow: 2 }}>
+                the is the bids in the store
+            </Typography>
         </>
     )
 }

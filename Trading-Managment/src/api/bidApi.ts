@@ -4,6 +4,7 @@ import { getApiClient } from "./apiClient";
 import { apiErrorHandlerWrapper } from "./util";
 
 export const bidApi = {
+
     postBid: (params: addBidParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/biddings/addBid', params)),
 

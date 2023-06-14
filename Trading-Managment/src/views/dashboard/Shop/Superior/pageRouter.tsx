@@ -6,6 +6,7 @@ import CompositeDiscount from "../../../../components/Forms/Discounts/CompositeD
 import RegularDiscount from "../../../../components/Forms/Discounts/RegularDiscount";
 import StoreMessages from "../../../../components/storePages/StoreMessages";
 import AnswerQuestion from "../../../../components/Forms/AnswerQuestion";
+import BiddingCenter from "../../BiddingCenter/intex";
 
 export const SuperiorPagesShopRoutes =
     <Route key="routes" path="superior">
@@ -17,5 +18,6 @@ export const SuperiorPagesShopRoutes =
         <Route path="conditionalDiscount/leafs" element={<CompositeScreen />} />
         <Route path="conditionalDiscount/leafs/addNewComposite" element={<CompositeDiscount first={false} />} />
         <Route path="conditionalDiscount/leafs/addNewRegular" element={<RegularDiscount tree={true} />} />
+        <Route path="biddingCenter" element={<BiddingCenter />} />
     </Route>
     ;

@@ -180,7 +180,7 @@ const Admin = () => {
             <Box sx={{ width: '100%', display: 'flex' }}>
                 <Box sx={{ width: '80%' }}>
                     <Box sx={{ width: '100%', display: 'flex' }}>
-                        <Typography sx={{ fontSize: 25, mt: 3, ml: '10%' }} gutterBottom>
+                        <Typography sx={{ fontSize: 25, mt: 3, ml: '13%' }} gutterBottom>
                             your personal data
                         </Typography>
                     </Box>
@@ -211,26 +211,61 @@ const Admin = () => {
                 </Box>
                 <Box sx={{ width: '70%' }}>
                     <Box sx={{ width: '100%', display: 'flex' }}>
-                        <Typography sx={{ fontSize: 25, mt: 3, ml: '10%' }} gutterBottom>
+                        <Typography sx={{ fontSize: 25, mt: 3, ml: '33%' }} gutterBottom>
                             system state
                         </Typography>
                     </Box>
                     <Box sx={{ width: '100%', display: 'flex' }}>
-                        <Card sx={{ minWidth: 275, width: '50%', mt: 3, ml: 3 }}>
+                        <Card sx={{ minWidth: 275, width: '80%', mt: 4, ml: 3 }}>
                             <CardContent sx={{ padding: 2 }}>
-                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5" gutterBottom>
-                                    average purchase : {systemStatus.averagePurchase}
-                                </Typography>
-                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
-                                    acerage registered : {systemStatus.averageRegistered}
-                                </Typography>
-                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
-                                    average user in system : {systemStatus.averageUserIn}
-                                </Typography>
-                                <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
-                                    average user out : {systemStatus.averageUserOut}
-                                </Typography>
-
+                                <Box display={'flex'}>
+                                    <Box sx={{ width: '85%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2, mr: 2 }} variant="h5" gutterBottom>
+                                            average purchase : {systemStatus.averagePurchase}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ width: '50%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                            member count : {systemStatus.memberCount}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Box display={'flex'}>
+                                    <Box sx={{ width: '85%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2, mr: 2 }} variant="h5">
+                                            average user in system : {systemStatus.averageUserIn}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ width: '50%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                            guest count : {systemStatus.guestCount}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Box display={'flex'}>
+                                    <Box sx={{ width: '85%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2, mr: 2 }} variant="h5">
+                                            average registered : {systemStatus.averageRegistered}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ width: '50%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                            register count : {systemStatus.registeredCount}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Box display={'flex'}>
+                                    <Box sx={{ width: '85%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2, mr: 2 }} variant="h5">
+                                            average user out : {systemStatus.averageUserOut}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ width: '50%' }}>
+                                        <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5">
+                                            purchase count : {systemStatus.purchaseCount}
+                                        </Typography>
+                                    </Box>
+                                </Box>
                             </CardContent>
                         </Card>
                     </Box >

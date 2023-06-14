@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, CancelToken } from 'axios';
+import axios, { } from 'axios';
 import { backendUrl } from '..//config';
 import { store } from '../redux/store';
 

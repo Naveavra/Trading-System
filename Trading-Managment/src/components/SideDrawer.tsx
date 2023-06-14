@@ -43,6 +43,10 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ onDrawerClose, drawerWidth, ope
     const theme = useTheme();
     const navigate = useNavigate();
     actions = actions.filter((action) => action != Action.answerMessage);
+    actions.filter((action) => action === Action.updateProduct).length > 0 ? actions.push(Action.answerBid) : null;
+    actions.filter((action) => action === Action.updateProduct).length > 0 ? actions.push(Action.counterBid) : null;
+
+
     // const store = useAppSelector((state) => state.store.storeState.watchedStore);
     // const permissions = useAppSelector((state: RootState) => state.auth.permissions);
     // const actions = permissions?.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
