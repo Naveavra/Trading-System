@@ -81,7 +81,7 @@ const Personal = () => {
                                         price:  {order.totalPrice}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        quntity:  {order.products.length}
+                                        quntity:  {order.productsInStores.length}
                                     </Typography>
                                 </CardContent>
                                 <CardActions>

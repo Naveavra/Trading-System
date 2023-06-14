@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/api/apiClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/api/apiClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/types/formsTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/types/formsTypes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/types/systemTypes/Bid.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/types/systemTypes/Bid.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/BiddingCenter/intex.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/BiddingCenter/intex.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,7 +202,7 @@
       <workItem from="1686496555706" duration="596000" />
       <workItem from="1686502875320" duration="3871000" />
       <workItem from="1686672929981" duration="4348000" />
-      <workItem from="1686728074274" duration="1326000" />
+      <workItem from="1686728074274" duration="2595000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
