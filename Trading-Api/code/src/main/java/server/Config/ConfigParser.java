@@ -2,6 +2,8 @@ package server.Config;
 
 import market.Admin;
 import org.hibernate.cfg.Environment;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,31 +15,30 @@ import java.util.Properties;
  */
 public class ConfigParser {
     private static ConfigParser instance;
-    private final Properties prop = new Properties();
+    private final JSONObject jsonConfig;
     private Properties DBSetting;
     private ESConfig supplyConfig;
     private ESConfig paymentConfig;
     private Admin initialAdmin;
     private final int ADMIN_START_ID = 1;
-    private FileInputStream input = null;
     private final String configFilePath;
     private ConnectionDetails connectionDetails;
 
     /**
      * Private constructor to prevent direct instantiation.
      *
-     * @param configFilePath The path to the config.properties file.
+     * @param configFilePath The path to the config.json file.
      */
     private ConfigParser(String configFilePath) {
         this.configFilePath = configFilePath;
-        loadProperties();
+        jsonConfig = loadJsonConfig();
         initSettings();
     }
 
     /**
      * Returns the singleton instance of ConfigParser.
      *
-     * @param configFilePath The path to the config.properties file (optional if instance already exists).
+     * @param configFilePath The path to the config.json file (optional if instance already exists).
      * @return The ConfigParser instance.
      */
     public static ConfigParser getInstance(String configFilePath) {
@@ -62,141 +63,104 @@ public class ConfigParser {
     }
 
     /**
-     * Loads the properties from the config file.
+     * Loads the JSON config from the file.
+     *
+     * @return The loaded JSON config.
      */
-    private void loadProperties() {
+    private JSONObject loadJsonConfig() {
         try {
-            input = new FileInputStream(configFilePath);
-            prop.load(input);
+            FileInputStream inputStream = new FileInputStream(configFilePath);
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);
+            inputStream.close();
+            String jsonString = new String(buffer, "UTF-8");
+            return new JSONObject(jsonString);
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Config file not found: " + configFilePath, e);
         } catch (IOException e) {
             throw new RuntimeException("Failed to read config file: " + configFilePath, e);
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
     /**
-     * Initializes all the settings from the loaded properties.
+     * Initializes all the settings from the loaded JSON config.
      */
     private void initSettings() {
         initAdminSettings();
         initServerSettings();
         initDBSettings();
-        supplyConfig = initESConfigSettings("ES_S");
-        paymentConfig = initESConfigSettings("ES_P");
+        supplyConfig = initESConfigSettings("Supply");
+        paymentConfig = initESConfigSettings("Payment");
     }
-
 
     /**
      * Initializes the server settings based on the configuration file.
      * Reads the IP address and port number from the configuration file.
      * Throws an error if the IP address or port is invalid.
      */
-    private void initServerSettings() throws IllegalArgumentException {
-        String ipAddressKey = "Server_B_IP";
-        String portKey = "Server_B_Port";
-
-        // Read the IP address from the configuration file
-        String ipAddress = prop.getProperty(ipAddressKey);
-        if (ipAddress == null || ipAddress.isEmpty()) {
-            throw new IllegalArgumentException("Invalid IP address configuration: " + ipAddressKey);
-        }
-
-        // Read the port number from the configuration file
-        String portValue = prop.getProperty(portKey);
-        if (portValue == null || portValue.isEmpty()) {
-            throw new IllegalArgumentException("Invalid port configuration: " + portKey);
-        }
-
+    private void initServerSettings() {
+        JSONObject serverConfig = jsonConfig.getJSONObject("Server_Back");
+        String ipAddress = serverConfig.getString("IP");
         int port;
         try {
-            port = Integer.parseInt(portValue);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid port number: " + portValue);
+            port = serverConfig.getInt("Port");
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("Invalid value for port: " + serverConfig.get("Port"), e);
         }
         connectionDetails = new ConnectionDetails(ipAddress, port);
     }
-
-
-
 
     /**
      * Initializes the database settings.
      */
     private void initDBSettings() {
-        String dbDriver = prop.getProperty("DB_DRIVER");
-        String dbURL = prop.getProperty("DB_URL");
-        String dbUser = prop.getProperty("DB_USER");
-        String dbPassword = prop.getProperty("DB_PASS");
-        String showSQL = prop.getProperty("DB_SHOW_SQL");
-        String sessionContextClass = prop.getProperty("DB_CURRENT_SESSION_CONTEXT_CLASS");
-        String hbm2ddlAuto = prop.getProperty("DB_HBM2DDL_AUTO");
+        JSONObject dbConfig = jsonConfig.getJSONObject("Database");
+        String dbDriver = dbConfig.getString("DB_DRIVER");
+        String dbURL = dbConfig.getString("DB_URL");
+        String dbUser = dbConfig.getString("DB_USER");
+        String dbPassword = dbConfig.getString("DB_PASS");
+        String showSQL = dbConfig.getString("DB_SHOW_SQL");
+        String sessionContextClass = dbConfig.getString("DB_CURRENT_SESSION_CONTEXT_CLASS");
+        String hbm2ddlAuto = dbConfig.getString("DB_HBM2DDL_AUTO");
 
-        if (dbDriver != null && dbURL != null && dbUser != null && dbPassword != null) {
-            DBSetting = new Properties();
-            DBSetting.put(Environment.DRIVER, dbDriver);
-            DBSetting.put(Environment.URL, dbURL);
-            DBSetting.put(Environment.USER, dbUser);
-            DBSetting.put(Environment.PASS, dbPassword);
-            DBSetting.put(Environment.SHOW_SQL, showSQL);
-            DBSetting.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, sessionContextClass);
-            DBSetting.put(Environment.HBM2DDL_AUTO, hbm2ddlAuto);
-        } else {
-            throw new IllegalArgumentException("Missing or incomplete database properties");
-        }
+        DBSetting = new Properties();
+        DBSetting.put(Environment.DRIVER, dbDriver);
+        DBSetting.put(Environment.URL, dbURL);
+        DBSetting.put(Environment.USER, dbUser);
+        DBSetting.put(Environment.PASS, dbPassword);
+        DBSetting.put(Environment.SHOW_SQL, showSQL);
+        DBSetting.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, sessionContextClass);
+        DBSetting.put(Environment.HBM2DDL_AUTO, hbm2ddlAuto);
     }
 
     /**
      * Initializes the external service configuration settings.
      *
-     * @param prefix The prefix for the properties (e.g., "ES_S" or "ES_P").
-     * @return
+     * @param esType The external service for the properties (e.g., "Supply" or "Payment").
+     * @return The initialized ESConfig object.
      */
-    private ESConfig initESConfigSettings(String prefix) {
-        String name = prop.getProperty(prefix + "_NAME");
-        String url = prop.getProperty(prefix + "_URL");
-        String responseTime = prop.getProperty(prefix + "_RESPONSE_TIME");
-
-        if (name != null && url != null) {
-            if (responseTime != null) {
-                try {
-                    int time = Integer.parseInt(responseTime);
-                    if (time >= 0) {
-                        return new ESConfig(name, url, time);
-                    } else {
-                        throw new IllegalArgumentException("Invalid response time value for " + prefix);
-                    }
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid response time format for " + prefix);
-                }
-            } else {
-                return new ESConfig(name, url);
-            }
-        } else {
-            throw new IllegalArgumentException("Missing properties for " + prefix);
+    private ESConfig initESConfigSettings(String esType) {
+        JSONObject es = jsonConfig.getJSONObject("ExternalService");
+        JSONObject esConfig = es.getJSONObject(esType);
+        String name = esConfig.getString("NAME");
+        String url = esConfig.getString("URL");
+        int responseTime;
+        try {
+            responseTime = esConfig.getInt("RESPONSE_TIME");
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("Invalid value for response time: " + esConfig.get("RESPONSE_TIME"), e);
         }
+        return new ESConfig(name, url, responseTime);
     }
 
     /**
      * Initializes the admin settings.
      */
     private void initAdminSettings() {
-        String adminEmail = prop.getProperty("Admin_EMAIL");
-        String adminPassword = prop.getProperty("Admin_PASSWORD");
-
-        if (adminEmail != null && adminPassword != null) {
-            initialAdmin = new Admin(ADMIN_START_ID, adminEmail, adminPassword);
-        } else {
-            throw new IllegalArgumentException("Missing admin properties");
-        }
+        JSONObject adminConfig = jsonConfig.getJSONObject("Admin");
+        String adminEmail = adminConfig.getString("EMAIL");
+        String adminPassword = adminConfig.getString("PASSWORD");
+        initialAdmin = new Admin(ADMIN_START_ID, adminEmail, adminPassword);
     }
 
     /**
