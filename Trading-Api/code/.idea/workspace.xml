@@ -4,44 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="adding jdk">
+    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="Change to json.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/Dao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/Dao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Filter/FilterProductByRating.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Filter/FilterProductByRating.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/AppHistoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/AppHistoryTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/OrderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/OrderTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/ProductTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/ProductTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/UserAuthTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserAuthTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/domain/user/BasketTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/BasketTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/domain/user/GuestTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/GuestTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/domain/user/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/MemberTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/domain/user/ShoppingCartTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/ShoppingCartTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/java/market/AdminTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/java/market/AdminTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/server/APITest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/service/ExternalService/WSEPServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/service/ExternalService/WSEPServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/store/DiscountTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/DiscountTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/store/InventoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/InventoryTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../configuration.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/../.." value="bids" />
+        <entry key="$PROJECT_DIR$/../.." value="AcceptanceTest" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
@@ -88,17 +52,16 @@
     &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
     &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
     &quot;last_directory_selection&quot;: &quot;C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test/server&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/bench/Desktop/Trading-System-4f96a7d11f4ce29371d700fa1b6b75534401166a/Trading-Api/code&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2022.1.3\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -113,26 +76,11 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.AcceptanceTests in work1">
+  <component name="RunManager" selected="Application.runServer">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="APITest.getCart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="server.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="server" />
-      <option name="MAIN_CLASS_NAME" value="server.APITest" />
-      <option name="METHOD_NAME" value="getCart" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;C:\Users\chais\Documents\BGU\Year C\S B\WorkshopSE\Git-Repo\Trading-System\config.json&quot;" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -145,58 +93,82 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="InventoryTest.testFilterByCategories" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="MemberTest.testPurchaseCart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="store.*" />
+          <option name="PATTERN" value="junit.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="store" />
-      <option name="MAIN_CLASS_NAME" value="store.InventoryTest" />
-      <option name="METHOD_NAME" value="testFilterByCategories" />
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.MemberTest" />
+      <option name="METHOD_NAME" value="testPurchaseCart" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="InventoryTest.testRemoveProduct_Invalid" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="StoreManagerTests.RemoveProductWithoutPermission" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="store.*" />
+          <option name="PATTERN" value="junit.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="store" />
-      <option name="MAIN_CLASS_NAME" value="store.InventoryTest" />
-      <option name="METHOD_NAME" value="testRemoveProduct_Invalid" />
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.StoreManagerTests" />
+      <option name="METHOD_NAME" value="RemoveProductWithoutPermission" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StoreTest.createOrderFailProductNotExist" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="domain.store.storeManagement.*" />
+          <option name="PATTERN" value="junit.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="domain.store.storeManagement" />
-      <option name="MAIN_CLASS_NAME" value="domain.store.storeManagement.StoreTest" />
-      <option name="METHOD_NAME" value="createOrderFailProductNotExist" />
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.StoreOwnerTest" />
+      <option name="METHOD_NAME" value="testAlertAppointmentLogoutManagerInStore" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="WSEPServiceTest.makePurchase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
-      <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="service.ExternalService.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="service.ExternalService" />
+      <option name="MAIN_CLASS_NAME" value="service.ExternalService.WSEPServiceTest" />
+      <option name="METHOD_NAME" value="makePurchase" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WSEPServiceTest.orderSupplies" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="service.ExternalService.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="service.ExternalService" />
+      <option name="MAIN_CLASS_NAME" value="service.ExternalService.WSEPServiceTest" />
+      <option name="METHOD_NAME" value="orderSupplies" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -204,19 +176,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
-      <item itemvalue="JUnit.APITest.getCart" />
-      <item itemvalue="JUnit.InventoryTest.testFilterByCategories" />
-      <item itemvalue="JUnit.InventoryTest.testRemoveProduct_Invalid" />
-      <item itemvalue="JUnit.StoreTest.createOrderFailProductNotExist" />
-      <item itemvalue="JUnit.test in work1" />
+      <item itemvalue="JUnit.WSEPServiceTest.orderSupplies" />
+      <item itemvalue="JUnit.MemberTest.testPurchaseCart" />
+      <item itemvalue="JUnit.StoreManagerTests.RemoveProductWithoutPermission" />
+      <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" />
+      <item itemvalue="JUnit.WSEPServiceTest.makePurchase" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.test in work1" />
-        <item itemvalue="JUnit.StoreTest.createOrderFailProductNotExist" />
-        <item itemvalue="JUnit.InventoryTest.testRemoveProduct_Invalid" />
-        <item itemvalue="JUnit.APITest.getCart" />
-        <item itemvalue="JUnit.InventoryTest.testFilterByCategories" />
+        <item itemvalue="JUnit.WSEPServiceTest.orderSupplies" />
+        <item itemvalue="JUnit.WSEPServiceTest.makePurchase" />
+        <item itemvalue="JUnit.MemberTest.testPurchaseCart" />
+        <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" />
+        <item itemvalue="JUnit.StoreManagerTests.RemoveProductWithoutPermission" />
       </list>
     </recent_temporary>
   </component>
@@ -243,20 +215,9 @@
       <workItem from="1685997722228" duration="9154000" />
       <workItem from="1686037390759" duration="1761000" />
       <workItem from="1686041070720" duration="3009000" />
-      <workItem from="1686082884489" duration="4587000" />
-      <workItem from="1686117494291" duration="890000" />
-      <workItem from="1686120611928" duration="135000" />
-      <workItem from="1686120792531" duration="379000" />
-      <workItem from="1686128694925" duration="4309000" />
-      <workItem from="1686138494081" duration="1905000" />
-      <workItem from="1686230462599" duration="635000" />
-      <workItem from="1686303545535" duration="2942000" />
-      <workItem from="1686493932569" duration="1325000" />
-      <workItem from="1686496555706" duration="596000" />
-      <workItem from="1686502875320" duration="3871000" />
-      <workItem from="1686672929981" duration="4348000" />
-      <workItem from="1686728074274" duration="3250000" />
-      <workItem from="1686760806497" duration="7848000" />
+      <workItem from="1686046203450" duration="2330000" />
+      <workItem from="1686467473046" duration="5984000" />
+      <workItem from="1686668079953" duration="985000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -265,7 +226,21 @@
       <option name="project" value="LOCAL" />
       <updated>1685879507188</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="End config file.">
+      <created>1686827755082</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1686827755082</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Change to json.">
+      <created>1686830995546</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1686830995546</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -284,80 +259,42 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="adding jdk" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding jdk" />
+    <MESSAGE value="End config file." />
+    <MESSAGE value="Change to json." />
+    <option name="LAST_COMMIT_MESSAGE" value="Change to json." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint type="java-line">
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/java/market/AdminTest.java</url>
+          <line>27</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/store/DiscountTest.java</url>
-          <line>269</line>
+          <line>268</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/utils/infoRelated/MarketInfo.java</url>
-          <line>54</line>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/test/domain/user/MemberTest.java</url>
-          <line>147</line>
-          <option name="timeStamp" value="42" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java</url>
-          <line>78</line>
-          <option name="timeStamp" value="59" />
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java</url>
+          <line>216</line>
+          <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java</url>
-          <line>298</line>
-          <option name="timeStamp" value="99" />
+          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/MemberTest.java</url>
+          <line>114</line>
+          <option name="timeStamp" value="24" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/store/InventoryTest.java</url>
+          <url>file://$PROJECT_DIR$/test/service/ExternalService/WSEPServiceTest.java</url>
           <line>44</line>
-          <option name="timeStamp" value="105" />
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/store/InventoryTest.java</url>
-          <line>54</line>
-          <option name="timeStamp" value="106" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/AdminTest.java</url>
-          <line>143</line>
-          <option name="timeStamp" value="107" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/AdminTest.java</url>
-          <line>44</line>
-          <option name="timeStamp" value="111" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java</url>
-          <line>557</line>
-          <option name="timeStamp" value="112" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java</url>
-          <line>92</line>
-          <option name="timeStamp" value="113" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/AdminTest.java</url>
-          <line>104</line>
-          <option name="timeStamp" value="114" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreTest.java</url>
-          <line>196</line>
-          <option name="timeStamp" value="115" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/service/UserController.java</url>
-          <line>495</line>
-          <option name="timeStamp" value="116" />
+          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
+          <line>66</line>
+          <option name="timeStamp" value="67" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

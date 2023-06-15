@@ -1,6 +1,8 @@
 package server;
 
 import org.json.JSONObject;
+import server.Config.ConfigParser;
+import server.Config.ConnectionDetails;
 import utils.Pair;
 
 import java.util.*;
@@ -13,9 +15,10 @@ import java.util.concurrent.BlockingQueue;
 import static spark.Spark.*;
 
 public class Server {
-    public static API api = new API();
+    public static API api;
     static ConnectedThread connectedThread;
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
+    private static ConfigParser configs;
 
     private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes) {
         if (apiRes.getFirst()) {
@@ -54,6 +57,29 @@ public class Server {
 
 
     public static void main(String[] args) {
+        if (args.length == 0){
+            System.out.println("Start the system default settings...");
+            //TODO: api = new API();
+        }
+        else if (args.length == 1)
+        {
+            String configPath = args[0];
+            System.out.println("Start the system with config file...");
+            configs = ConfigParser.getInstance(configPath);
+            initServer();
+            api = new API(configs);
+        }
+        else if (args.length == 2){
+            //TODO: Get also state file
+        }
+        else{
+            System.out.println("""
+                    The program must be run with parameters in one of the following ways:
+                        1. default - without any param.
+                        2. <path_configFile>
+                        3. <path_configFile> <path_stateFile>
+                    """);
+        }
         init();
         api.mockData();
         connectedThread = new ConnectedThread(connected);
@@ -656,5 +682,19 @@ public class Server {
             return res.body();
         });
 
+    }
+
+    private static void initServer() {
+        ConnectionDetails cd = configs.getServerConnectionDetails();
+        try {
+            String ipAddress = cd.getAddress();
+            int port = cd.getPort();
+            ipAddress(ipAddress);
+            port(port);
+        } catch (Exception e) {
+            // Handle the exception appropriately (e.g., log the error, terminate the program)
+            System.err.println("Error initializing server: " + e.getMessage());
+            System.exit(1); // Terminate the program
+        }
     }
 }

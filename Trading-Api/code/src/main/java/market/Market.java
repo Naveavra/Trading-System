@@ -8,6 +8,7 @@ import domain.user.StringChecks;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
 import org.json.JSONObject;
+import server.Config.ESConfig;
 import service.security.UserAuth;
 import service.ExternalService.Supplier.ProxySupplier;
 import service.UserController;
@@ -36,22 +37,45 @@ public class Market implements MarketInterface {
     private UserAuth userAuth;
     private final Logger logger;
 
-    private HashMap<Integer, Action> actionIds;
-
+    private HashMap<Integer, Action> ctionIds;
     private MarketInfo marketInfo;
 
-    public Market(Admin a){
+    public Market(Admin admin, ESConfig payment, ESConfig supply) {
 
         logger = Logger.getInstance();
         userController = new UserController();
         marketController = new MarketController();
 
         userAuth = new UserAuth();
+        try {
+            proxyPayment = new ProxyPayment(payment);
+            proxySupplier = new ProxySupplier(supply);
+        } catch (Exception e) {
+            // Handle the exception appropriately (e.g., log the error, terminate the program)
+            System.err.println("Error with the connection to the external service: " + e.getMessage());
+            System.exit(1); // Terminate the program
+        }
+
+        marketInfo = new MarketInfo();
+
+        actionIds = Permissions.getActionIds();
+
+        addAdmin(admin);
+    }
+
+    public Market(Admin admin) {
+
+        logger = Logger.getInstance();
+        userController = new UserController();
+        marketController = new MarketController();
+
+        userAuth = new UserAuth();
+//        TODO
 //        try {
-//            proxyPayment = new ProxyPayment();
-//            proxySupplier = new ProxySupplier();
+//            proxyPayment = new ProxyPayment(payment);
+//            proxySupplier = new ProxySupplier(supply);
 //        } catch (Exception e) {
-//            System.out.println(e.getMessage());
+//            throw new RuntimeException(e);
 //        }
 
         marketInfo = new MarketInfo();
