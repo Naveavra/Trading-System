@@ -21,13 +21,13 @@ public class BridgeImplement implements Bridge {
     private String token;
 
     public BridgeImplement() {
-        mainAdmin = new Admin(1, "admin@gmail.com", "admin");
+        mainAdmin = new Admin(1, "admin@gmail.com", "admin1A");
         market = new Market(mainAdmin);
     }
 
     @Override
     public boolean initTradingSystem() {
-        mainAdmin = new Admin(1, "admin@gmail.com", "admin");
+        //mainAdmin = new Admin(1, "admin@gmail.com", "admin1A");
         this.market = new Market(mainAdmin);
         token = market.addTokenForTests();
         return true;

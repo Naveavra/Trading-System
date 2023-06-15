@@ -119,7 +119,7 @@ public abstract class UserState extends Information {
         checkPermission(Action.closeStore);
         //setIsActive(false);
         Set<Integer> ans = getStoreFromDb().closeStoreTemporary(userId);
-        Dao.update(getStoreFromDb());
+        Dao.save(getStoreFromDb());
         return ans;
     }
 
@@ -127,7 +127,7 @@ public abstract class UserState extends Information {
         checkPermission(Action.reopenStore);
         //setIsActive(true);
         Set<Integer> ans = getStoreFromDb().reopenStore(userId);
-        Dao.update(getStoreFromDb());
+        Dao.save(getStoreFromDb());
         return ans;
     }
 

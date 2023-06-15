@@ -8,31 +8,29 @@ import jakarta.persistence.Transient;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.ProductReview;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 
 @Entity
 @Table(name = "products")
 public class Product {
+
     @Id
     public int productId;
 
     @Id
     private int storeId;
 
-    @Transient
-    private List<String> categories;
     public String name;
     public String description;
     public int price; //for one product
     public int quantity;
-    public double rating;
     private String imgUrl;
     @Transient
     private List<ProductReview> reviews;
-//    public ArrayList<String> categories;
-    //private ConcurrentLinkedDeque<String> categories;
-    //private double discount;  no need for discount here, the discount is calculated by the policy
+    @Transient
+    private List<String> categories;
 
     public Product(){
     }
@@ -49,7 +47,6 @@ public class Product {
         description = desc;
         price = 0;
         categories = new ArrayList<>();
-        rating = 5;
         reviews = new ArrayList<>();
     }
 
@@ -60,7 +57,6 @@ public class Product {
         description = desc;
         price = 0;
         categories = new ArrayList<>();
-        rating = 5;
         this.imgUrl = imgUrl;
         reviews = new ArrayList<>();
     }
@@ -139,12 +135,18 @@ public class Product {
         return categories;
     }
 
-    public void setRating(double v) {
-        rating = v;
-    }
-
     public double getRating() {
-        return rating;
+        if(reviews == null || reviews.size() == 0)
+            return 5;
+        else{
+            double sum = 0;
+            for(ProductReview review : reviews)
+                sum+=review.getRating();
+            double avg = sum / reviews.size();
+            DecimalFormat df = new DecimalFormat("#.#");
+            avg = Double.parseDouble(df.format(avg));
+            return avg;
+        }
     }
 
     public void addCategory(String category) {
@@ -158,7 +160,7 @@ public class Product {
 
     public ProductInfo getProductInfo(){
         return new ProductInfo(storeId, productId, categories, name, description,price
-        ,quantity, rating, reviews, imgUrl);
+        ,quantity, getRating(), reviews, imgUrl);
     }
 
     public void addReview(ProductReview m) {

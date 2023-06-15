@@ -18,7 +18,7 @@ public class FilterProductByRating extends FilterStrategy{
     @Override
     public ArrayList<Product> filter(ArrayList<Product> products) {
         products= products.stream()
-                .filter(product -> product.rating > rating)
+                .filter(product -> product.getRating() > rating)
                 .collect(Collectors.toCollection(ArrayList::new));
         FilterStrategy nextOne = getNext();
         if(nextOne!=null){

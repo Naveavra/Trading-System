@@ -233,6 +233,8 @@ public class UserController {
 
     public synchronized StoreReview writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
         Member m = getActiveMember(userId);
+        if(grading > 5 || grading < 0)
+            throw new Exception("the rating given is not between 0 and 5");
         int tmp = messageIds;
         messageIds++;
         return m.writeReview(tmp, storeId, orderId, content, grading);
@@ -241,6 +243,8 @@ public class UserController {
 
     public synchronized ProductReview writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId) throws Exception {
         Member m = getActiveMember(userId);
+        if(grading > 5 || grading < 0)
+            throw new Exception("the rating given is not between 0 and 5");
         int tmp = messageIds;
         messageIds ++;
         return m.writeReview(tmp, storeId, productId, orderId, comment, grading);
@@ -564,8 +568,11 @@ public class UserController {
         Dao.save(a);
         admins.put(a.getId(), a);
     }
-    public void addAdmin(Admin a, String pass) {
-        Admin admin = new Admin(a.getId(), a.getName(), pass);
+    public void addAdmin(Admin a, String hashedPass, String pass) throws Exception{
+        checks.checkPassword(pass);
+        if(!checks.checkEmail(a.getName()))
+            throw new Exception("admin email given was not valid");
+        Admin admin = new Admin(a.getId(), a.getName(), hashedPass);
         Dao.save(admin);
         admins.put(a.getId(), admin);
     }
@@ -588,7 +595,7 @@ public class UserController {
     public HashMap<Integer, Admin> getAdmins(int adminId) throws Exception{
         getActiveAdmin(adminId);
         HashMap<Integer, Admin> list = new HashMap<>();
-        for (Admin a : (List<Admin>) Dao.getAllInTable("Admin")) {
+        for (Admin a : getAdminsFromDb()) {
             list.put(a.getId(), a);
         }
         return list;
@@ -604,7 +611,7 @@ public class UserController {
         Complaint m = getComplaint(messageId);
         if (m != null) {
             m.sendFeedback(ans);
-            Dao.update(m);
+            Dao.save(m);
         }
         else
             throw new Exception("message does not found");
@@ -629,7 +636,7 @@ public class UserController {
     }
 
     public int getAdminSize() {
-        return Dao.getAllInTable("Admin").size();
+        return getAdminsFromDb().size();
     }
 
     //database
@@ -647,6 +654,14 @@ public class UserController {
         if(complaint != null)
             return complaint;
         throw new Exception("the id does not belong to any complaint");
+    }
+
+    private List<Admin> getAdminsFromDb() {
+        List<Admin> adminsDto = (List<Admin>) Dao.getAllInTable("Admin");
+        for(Admin a : adminsDto)
+            if(!admins.containsKey(a.getId()))
+                admins.put(a.getId(), a);
+        return new ArrayList<>(admins.values());
     }
 
 }

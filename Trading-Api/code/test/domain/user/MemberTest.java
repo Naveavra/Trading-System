@@ -1,5 +1,6 @@
 package domain.user;
 
+import database.Dao;
 import domain.states.StoreCreator;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
@@ -16,6 +17,7 @@ import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,13 +40,15 @@ class MemberTest {
         m = new Member(1, "ziv@gmail.com", "ziv1234", "22/04/2002");
         s = new Store(0, "", m);
         try {
-            s.addNewProduct("apple", "pink apple", new AtomicInteger(1), 5, 3);
+            List<String> categories = new ArrayList<>();
+            s.addNewProduct("apple", "pink apple", new AtomicInteger(1), 5, 3, categories);
             apple = s.getInventory().getProduct(1);
             p =  new ProductInfo(0, apple, 10);
         }catch (Exception e){
             assert false;
         }
         answers = new LinkedList<>();
+        Dao.setForTests(true);
     }
     @Test
     void connect() {

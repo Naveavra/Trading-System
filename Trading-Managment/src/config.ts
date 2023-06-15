@@ -1,6 +1,6 @@
 
-export const frontPort = 5173;
 
+export const frontPort = 5173;
 export const backendUrl = 'http://localhost:4567/';
 export interface LocalStorageEntry<T> {
     name: string;
