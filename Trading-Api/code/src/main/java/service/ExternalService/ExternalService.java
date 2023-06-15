@@ -1,5 +1,7 @@
 package service.ExternalService;
 
+import utils.Exceptions.ExternalServiceException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,46 +11,49 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 
 public class ExternalService {
-    private int second2Timeout;
+    private String name;
+    private int timeoutSeconds;
     private HttpURLConnection connection;
     private URL url;
-    private String UNEXPECTED_OUTPUT = "unexpected-output";
-    private int DEFAULT_TIMEOUT = 15;
+    private static final String UNEXPECTED_OUTPUT = "unexpected-output";
+    private static final int DEFAULT_TIMEOUT = 15;
+    private boolean available;
 
-    public ExternalService(String url) throws Exception {
+    public ExternalService(String name, String url) throws IOException, ExternalServiceException {
+        this.name = name;
         this.url = new URL(url);
-        second2Timeout = DEFAULT_TIMEOUT;
-        handshake();
+        timeoutSeconds = DEFAULT_TIMEOUT;
+        available = false;
     }
 
-    public ExternalService(String url, int timeout) throws Exception {
+    public ExternalService(String name, String url, int timeoutSeconds) throws IOException, ExternalServiceException {
+        this.name = name;
         this.url = new URL(url);
-        second2Timeout = timeout;
-        handshake();
+        this.timeoutSeconds = timeoutSeconds;
     }
 
-    public void handshake() throws Exception {
+    protected void handshake() throws IOException, ExternalServiceException {
         Request handshakeRequest = new Request("handshake");
         sendRequest(handshakeRequest);
     }
 
-    public void openConnection() throws IOException {
+    private void openConnection() throws IOException {
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         connection.setDoOutput(true);
-        connection.setConnectTimeout(second2Timeout * 1000); // Set the connection timeout
-        connection.setReadTimeout(second2Timeout * 1000); // Set the read timeout
+        connection.setConnectTimeout(timeoutSeconds * 1000); // Set the connection timeout
+        connection.setReadTimeout(timeoutSeconds * 1000); // Set the read timeout
     }
 
-    public void closeConnection() {
+    private void closeConnection() {
         if (connection != null) {
             connection.disconnect();
             connection = null;
         }
     }
 
-    public int sendRequest(Request request) throws Exception {
+    public int sendRequest(Request request) throws IOException, ExternalServiceException {
         openConnection();
 
         try {
@@ -58,31 +63,46 @@ public class ExternalService {
             outputStream.close();
 
             int responseCode = connection.getResponseCode();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String response;
-            while ((response = reader.readLine()) != null) {
-                sb.append(response);
-            }
-            reader.close();
-
             if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String response;
+                while ((response = reader.readLine()) != null) {
+                    sb.append(response);
+                }
+                reader.close();
+
                 String responseString = sb.toString();
                 if (responseString.equals(UNEXPECTED_OUTPUT)) {
-                    throw new Exception("External service returned an unexpected output!");
+                    throw new ExternalServiceException("External service returned an unexpected output!");
                 } else if (request.isHandshake()) {
                     return 1;
+                } else {
+                    try {
+                        return Integer.parseInt(responseString);
+                    } catch (NumberFormatException e) {
+                        throw new ExternalServiceException("Failed to parse response as an integer: " + responseString, e);
+                    }
                 }
-                return Integer.parseInt(responseString);
             } else {
-                throw new Exception("Error: " + responseCode);
+                throw new ExternalServiceException("Error: " + responseCode);
             }
         } catch (SocketTimeoutException e) {
-            throw new Exception("Response timeout occurred.", e);
-        } catch (Exception e){
-            throw e;
-        }finally {
+            throw new ExternalServiceException("Response timeout occurred.", e);
+        } finally {
             closeConnection();
         }
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -1,9 +1,9 @@
 package server;
 
 import domain.store.storeManagement.Store;
-import market.Admin;
 import market.Market;
 import org.json.JSONObject;
+import server.Config.ConfigParser;
 import utils.*;
 
 import java.util.*;
@@ -11,7 +11,6 @@ import java.util.*;
 import utils.infoRelated.*;
 import utils.Response;
 import utils.infoRelated.Receipt;
-import utils.messageRelated.Complaint;
 import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 import utils.stateRelated.Action;
@@ -19,9 +18,9 @@ import utils.stateRelated.Action;
 public class API {
     public Market market;
     private HashMap<String, Integer> actionStrings;
-    public API(){
-        Admin a = new Admin(1, "elibenshimol6@gmail.com", "123Aaa");
-        market = new Market(a);
+
+    public API(ConfigParser configs){
+        market = new Market(configs.getInitialAdmin(), configs.getPaymentConfig(), configs.getSupplyConfig());
         actionStrings = new HashMap<>();
         getActionStrings();
     }
