@@ -320,7 +320,7 @@ public class UserController {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
         owner.appointToOwner(appointed, storeId);
-        Notification notify = new Notification(NotificationOpcode.GET_STORE_DATA, "you have been appointed to owner in store: " + storeId);
+        Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "you have been appointed to owner in store: " + storeId);
         appointed.addNotification(notify);
     }
 
@@ -331,9 +331,9 @@ public class UserController {
             Member fired = getMember(firedId);
             Notification notify;
             if (fired.getRole(storeId).getRole() == Role.Owner)
-               notify = new Notification(NotificationOpcode.GET_STORE_DATA, "you have been fired from owner in store: " + storeId);
+               notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "you have been fired from owner in store: " + storeId);
              else
-                notify = new Notification(NotificationOpcode.GET_STORE_DATA, "you have been fired from manager in store: " + storeId);
+                notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "you have been fired from manager in store: " + storeId);
             fired.addNotification(notify);
             fired.removeRoleInStore(storeId);
         }
@@ -349,7 +349,7 @@ public class UserController {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
         owner.appointToManager(appointed, storeId);
-        Notification notify = new Notification(NotificationOpcode.GET_STORE_DATA, "you have been appointed to manager in store: " + storeId);
+        Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "you have been appointed to manager in store: " + storeId);
         appointed.addNotification(notify);
     }
 
