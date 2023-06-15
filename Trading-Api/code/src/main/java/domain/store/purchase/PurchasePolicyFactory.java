@@ -155,11 +155,11 @@ public class PurchasePolicyFactory {
     }
 
     public PurchasePolicyDataObject parseItem(JSONObject policy,PurchasePolicyDataObject prev) {
-        int amount = Integer.parseInt(policy.getString("amount"));
-        int productId = Integer.parseInt(policy.getString("productId"));
-        PurchasePolicy.limiters limiter = getLimiter(policy.getString("limiter"));
-        PurchasePolicy.policyTypes type = getPolicyType(policy.getString("type"));
-        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.getString("composore"));
+        int amount = Integer.parseInt(policy.get("amount").toString());;
+        int productId = Integer.parseInt(policy.get("productId").toString());
+        PurchasePolicy.limiters limiter = getLimiter(policy.get("limiter").toString());
+        PurchasePolicy.policyTypes type = getPolicyType(policy.get("type").toString());
+        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.get("composore").toString());
         int[] nullVal = null;
         PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyIds.getAndIncrement(),storeId,policy.toString(),limiter,productId,
                 -1,"",amount,nullVal,nullVal,null,compose,type);

@@ -100,6 +100,7 @@ public class Store extends Information{
         bids = new ArrayList<>();
         approvedBids = new ArrayList<>();
         bidIds = new AtomicInteger();
+        policyIds = new AtomicInteger();
 
     }
 
@@ -125,6 +126,8 @@ public class Store extends Information{
         bidIds = new AtomicInteger();
         bids = new ArrayList<>();
         approvedBids = new ArrayList<>();
+        policyIds = new AtomicInteger();
+
     }
 
     public void changeName(String storeName){
