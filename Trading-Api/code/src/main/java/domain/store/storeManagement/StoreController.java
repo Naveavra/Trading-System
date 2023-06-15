@@ -42,12 +42,12 @@ public class StoreController {
     /**
      * adds a new product to a store.
      */
-    public synchronized int addProduct(int storeid, String name, String desc, int price, int quantity) throws Exception {
+    public synchronized int addProduct(int storeId, String name, String desc, int price, int quantity,
+                                       List<String> categories) throws Exception {
         Store st;
-        //Product prod;
         int id = -1;
-        if ((st = getStore(storeid)) != null) {
-            Product p = st.addNewProduct(name, desc, productIDs,price,quantity);
+        if ((st = getStore(storeId)) != null) {
+            Product p = st.addNewProduct(name, desc, productIDs,price,quantity, categories);
             p.replaceQuantity(quantity);
             addToProducts(p.clone());
             id = p.getID();
@@ -55,23 +55,17 @@ public class StoreController {
         return id;
     }
 
-    public synchronized int addProduct(int storeid, String name, String desc, int price, int quantity, String img) throws Exception {
+    public synchronized int addProduct(int storeid, String name, String desc, int price, int quantity,
+                                       String img, List<String> categories) throws Exception {
         Store st;
-        //Product prod;
         int id = -1;
         if ((st = getStore(storeid)) != null) {
-            Product p = st.addNewProduct(name, desc, productIDs,price,quantity, img);
+            Product p = st.addNewProduct(name, desc, productIDs,price,quantity, img, categories);
             p.replaceQuantity(quantity);
             addToProducts(p.clone());
             id = p.getID();
         }
         return id;
-    }
-    public void addToCategory(int storeId, int productId, List<String> categories) throws Exception{
-        Store st;
-        if((st = getStore(storeId))!= null){
-            st.addToCategories(productId,categories);
-        }
     }
 
     private Product getExistingProductByName(String prodName) {
@@ -333,7 +327,7 @@ public class StoreController {
         return new ProductFilter().getNames();
     }
 
-    public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) {
+    public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) throws Exception{
         getStoresFromDb();
         ArrayList<ProductInfo> result = new ArrayList<>();
         for(Store st : storeList.values()){
@@ -391,7 +385,7 @@ public class StoreController {
     public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
         Store s = getStore(storeId);
         s.setStoreAttributes(name, description, img);
-        Dao.update(s);
+        Dao.save(s);
     }
     public ArrayList<PredicateDataObject> parsePredicateData(ArrayList<String> predData){
         ArrayList<PredicateDataObject> predicates = new ArrayList<>();

@@ -3,6 +3,7 @@ package domain.store.product;
 
 import database.Dao;
 import database.dtos.CategoryDto;
+import domain.user.Member;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.ProductReview;
@@ -14,13 +15,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Inventory {
-
-    private static final int MAXRATING = 5;
     private int storeId;
     private ConcurrentHashMap<Integer, Product> productList; // <id, product>
-    // ConcurrentHashMap<Product, ArrayList<String>> categories;
     private ConcurrentHashMap<String,ArrayList<Integer>> categories; // <Category String,<List<ProductID>>
-    private ConcurrentHashMap<Product, CopyOnWriteArrayList<Integer>> productgrading;
 
 
     // AtomicInteger prod_id = new AtomicInteger();
@@ -28,7 +25,6 @@ public class Inventory {
         this.storeId = storeId;
         productList = new ConcurrentHashMap<>();
         categories = new ConcurrentHashMap<>();
-        productgrading = new ConcurrentHashMap<>();
     }
 
     /**
@@ -38,47 +34,48 @@ public class Inventory {
      * @param price int
      * @param quantity
      */
-    public synchronized Product addProduct(String name, String description, AtomicInteger prod_id, int price, int quantity) throws Exception {
+    public synchronized Product addProduct(String name, String description, AtomicInteger prod_id, int price,
+                                           int quantity, List<String> categories) throws Exception {
         Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
             p = new Product(storeId, id,name,description, "");
             p.setPrice(price);
             p.replaceQuantity(quantity);
-            for(Product product : productList.values())
-                if(p.getName().equals(product.getName()) && p.getDescription().equals(product.getDescription())) {
-                    prod_id.getAndDecrement();
-                    throw new Exception("the product already exists in the system, aborting add");
-                }
             productList.put(id,p);
             Dao.save(p);
+            addToCategories(id, categories);
         }
+        else
+            throw new Exception("the product already exists in the system, aborting add");
         return p;
     }
 
     public synchronized Product addProduct(String name, String description, AtomicInteger prod_id,
-                                           int price, int quantity, String img) throws Exception {
+                                           int price, int quantity, String img, List<String> categories) throws Exception {
         Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
             p = new Product(storeId,id,name,description, img);
             p.setPrice(price);
             p.replaceQuantity(quantity);
-            for(Product product : productList.values())
-                if(p.getName().equals(product.getName()) && p.getDescription().equals(product.getDescription())) {
-                    prod_id.getAndDecrement();
-                    throw new Exception("the product already exists in the system, aborting add");
-                }
             productList.put(id,p);
             Dao.save(p);
+            addToCategories(id, categories);
         }
+        else
+            throw new Exception("the product already exists in the system, aborting add");
         return p;
     }
+
     public synchronized Product addProduct(Product p) throws Exception{
         if(getProductByName(p.name) == null) {
             productList.put(p.getID(), p);
             Dao.save(p);
+            addToCategories(p.getID(), p.getCategories());
         }
+        else
+            throw new Exception("the product already exists in the system, aborting add");
         return p;
     }
 
@@ -89,8 +86,8 @@ public class Inventory {
      */
     public synchronized ArrayList<String> getProductCategories(int productId){
         ArrayList<String> relatedCategories = new ArrayList<>();
-        for(String category : categories.keySet()){
-            if(categories.get(category).contains(productId)){
+        for(String category : getCategoriesFromDb().keySet()){
+            if(getCategoriesFromDb().get(category).contains(productId)){
                 relatedCategories.add(category);
             }
         }
@@ -98,14 +95,8 @@ public class Inventory {
     }
 
     public void addProductReview(ProductReview m) throws Exception{
-        if(productList.containsKey(m.getProductId())){
-            Product p = productList.get(m.getProductId());
-            p.addReview(m);
-
-        }
-        else{
-            throw new Exception("the review given contains an illegal id");
-        }
+        Product p = getProduct(m.getProductId());
+        p.addReview(m);
     }
     /**
      * gets product id and return list of the grading the product got by buyers
@@ -146,15 +137,21 @@ public class Inventory {
         p.setQuantity(quantity);
     }
 
-    public Product getProduct(Integer productID) throws Exception{
-        if(productList.containsKey(productID)){
-            return productList.get(productID);
+    public Product getProduct(int productId) throws Exception{
+        if(productList.containsKey(productId)){
+            return productList.get(productId);
         }
-        throw new Exception("Product not found, ID: " + productID);
+        Product p = (Product) Dao.getByParam(Product.class,
+                "Product", String.format("storeId = %d AND productId = %d", storeId, productId));
+        if(p != null) {
+            productList.put(p.productId, p);
+            return p;
+        }
+        throw new Exception("Product not found, Id: " + productId);
     }
 
     public ArrayList<String> getAllCategories(){
-        return new ArrayList<>(categories.keySet());
+        return new ArrayList<>(getCategoriesFromDb().keySet());
     }
 
 
@@ -176,12 +173,18 @@ public class Inventory {
                 return p;
             }
         }
+        Product p = (Product) Dao.getByParam(Product.class,
+                "Product", String.format("storeId = %d AND name = '%s'", storeId, name));
+        if(p != null){
+            productList.put(p.productId, p);
+            return p;
+        }
         return null;
     }
 
     public synchronized HashMap<Integer, Integer> getPrices() {
         HashMap<Integer,Integer> prices = new HashMap<>();
-        for(Product p : this.productList.values()){
+        for(Product p : getProductsFromDb().values()){
             prices.put(p.getID(),p.getPrice());
         }
         return prices;
@@ -189,7 +192,7 @@ public class Inventory {
 
     public List<ProductInfo> getProducts(){
         List<ProductInfo> productInfos = new LinkedList<>();
-        for (Product p : productList.values()){
+        for (Product p : getProductsFromDb().values()){
             ProductInfo info = new ProductInfo(storeId, p.getID(), p.getCategories(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
                     p.getRating(), getProductReviews(p.getID()), p.getImgUrl());
             info.setCategories(getProductCategories(p.getID()));
@@ -199,58 +202,58 @@ public class Inventory {
     }
     public synchronized void addToCategory(String category, int productId) throws Exception {
         Product p = getProduct(productId);
-        p.addCategory(category);
-//        category =category.toLowerCase();
-        if(categories.containsKey(category)){
-            if(!categories.get(category).contains(productId)){
-                categories.get(category).add(productId);
+        if(getCategoriesFromDb().containsKey(category)){
+            if(!getCategoriesFromDb().get(category).contains(productId)){
+                getCategoriesFromDb().get(category).add(productId);
+                p.addCategory(category);
+                Dao.save(new CategoryDto(storeId, productId, category));
             }
         }else{
-            categories.put(category,new ArrayList<>());
-            categories.get(category).add(productId);
+            getCategoriesFromDb().put(category,new ArrayList<>());
+            getCategoriesFromDb().get(category).add(productId);
+            p.addCategory(category);
             Dao.save(new CategoryDto(storeId, productId, category));
         }
     }
 
-    public synchronized int removeProduct(int productId) {
-        if(productList.containsKey(productId)){
-            Dao.remove(productList.get(productId));
-            productList.remove(productId);
-            for(ArrayList<Integer> prodIds : categories.values()){
-                if(prodIds.contains(productId)){
-                    prodIds.remove(Integer.valueOf(productId));
-                }
+    private void addToCategories(int productId, List<String> categories) throws Exception {
+        for(String category : categories)
+            addToCategory(category, productId);
+    }
+
+    public synchronized void removeProduct(int productId) throws Exception{
+        Product p = getProduct(productId);
+        productList.remove(productId);
+        Dao.remove(p);
+        for(List<Integer> prodIds : getCategoriesFromDb().values()){
+            if(prodIds.contains(productId)){
+                prodIds.removeIf(id -> id == productId);
             }
-            Dao.removeIf("CategoryDto", String.format("productId = %d", productId));
-            return 0;
         }
-        return -1;
+        Dao.removeIf("CategoryDto", String.format("productId = %d", productId));
     }
 
     public void updateProduct(int productId, List<String> categories,String name, String description,
                               int price, int quantity, String img) throws Exception{
-        if(productList.containsKey(productId)){
-            if(categories!=null){
-                replaceCategories(productId,categories);
-            }
-            if(!name.equals("null")){
-                setName(productId,name);
-            }
-            if(!description.equals("null")){
-                setDescription(productId,description);
-            }
-            if(price > 0){
-                setPrice(productId,price);
-            }
-            if(quantity > 0){
-                replaceQuantity(productId,quantity);
-            }
-            if(img != null && !img.equals("null"))
-                changeImg(productId, img);
-            Dao.save(productList.get(productId));
+        Product p = getProduct(productId);
+        if(categories!=null){
+            replaceCategories(productId,categories);
         }
-        else
-            throw new Exception("the product does not exist in the store");
+        if(!name.equals("null")){
+            setName(productId,name);
+        }
+        if(!description.equals("null")){
+            setDescription(productId,description);
+        }
+        if(price > 0){
+            setPrice(productId,price);
+        }
+        if(quantity > 0){
+            replaceQuantity(productId,quantity);
+        }
+        if(img != null && !img.equals("null"))
+            changeImg(productId, img);
+        Dao.save(p);
     }
 
     private void changeImg(int productId, String img) throws Exception{
@@ -269,7 +272,7 @@ public class Inventory {
     }
 
     private void replaceCategories(int productId, List<String> categories) throws Exception {
-        for(ArrayList<Integer> category: this.categories.values()){
+        for(ArrayList<Integer> category: getCategoriesFromDb().values()){
             if(category.contains(productId)){
                 category.remove(Integer.valueOf(productId));
             }
@@ -280,35 +283,20 @@ public class Inventory {
         }
     }
 
-    public synchronized void setProductsRatings(){
-        for(Product p : productgrading.keySet()){
-            double sum = 0;
-            for(int rating : productgrading.get(p)){
-                sum += rating;
-            }
-            double avg = sum/productgrading.get(p).size();
-            DecimalFormat df = new DecimalFormat("#.#");
-            avg = Double.parseDouble(df.format(avg));
-            p.setRating(avg);
-        }
-    }
+    //for tests
     public synchronized void rateProduct(int productID, int rating) throws Exception{
-        if(rating > MAXRATING)
-            throw new Exception("Product rating is out of bounds, expected 0 to 5 but got: "+rating);
+        if(rating < 0 || rating > 5)
+            throw new Exception("the rating given is not between 0 and 5");
         Product p = getProduct(productID);
-        if(productgrading.containsKey(p))
-            productgrading.get(p).add(rating);
-        else
-            productgrading.put(p,new CopyOnWriteArrayList<>(List.of(rating)));
+        p.addReview(new ProductReview(-1, "not important", new Member(-1, "ni", "ni", "ni"), -1, storeId, productID, rating));
 
     }
-    public ArrayList<ProductInfo> filterBy(ProductFilter filter,double storeRating) {
+    public ArrayList<ProductInfo> filterBy(ProductFilter filter,double storeRating) throws Exception{
 //        filter.setOp(this::getProduct);
-        filter.setCategories(categories);
+        filter.setCategories(getCategoriesFromDb());
         filter.setStoreRating(storeRating);
-        setProductsRatings();
         //need to set more relevant things here as soon as all filters are implemented.
-        ArrayList<Product> filtered = filter.filter(new ArrayList<>(productList.values()));
+        ArrayList<Product> filtered = filter.filter(new ArrayList<>(getProductsFromDb().values()));
         ArrayList<ProductInfo> result = new ArrayList<>();
         for(Product p: filtered){
             ProductInfo info = getProductInfo(storeId, p.getID());
@@ -318,8 +306,8 @@ public class Inventory {
         return result;
     }
 
-    public ProductInfo getProductInfo(int storeId, int productId){
-        Product p = productList.get(productId);
+    public ProductInfo getProductInfo(int storeId, int productId) throws Exception{
+        Product p = getProduct(productId);
         ProductInfo info = new ProductInfo(storeId, p.getID(), p.getCategories(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
                 p.getRating(), getProductReviews(p.getID()), p.getImgUrl());
         return info;
@@ -332,5 +320,27 @@ public class Inventory {
            ans.addAll(p.getReviews());
        }
        return ans;
+    }
+
+    //database
+    public ConcurrentHashMap<String,ArrayList<Integer>> getCategoriesFromDb(){
+        if(categories == null){
+            categories = new ConcurrentHashMap<>();
+            List<CategoryDto> cats = (List<CategoryDto>) Dao.getListById(CategoryDto.class, storeId, "CategoryDto", "storeId");
+            for(CategoryDto cat : cats){
+                if(!categories.containsKey(cat.getCategoryName()))
+                    categories.put(cat.getCategoryName(), new ArrayList<>());
+                categories.get(cat.getCategoryName()).add(cat.getProductId());
+            }
+        }
+        return categories;
+    }
+
+    public ConcurrentHashMap<Integer, Product> getProductsFromDb(){
+        List<Product> products = (List<Product>) Dao.getListById(Product.class, storeId, "Product", "storeId");
+        for(Product p : products)
+            if(!productList.containsKey(p.productId))
+                productList.put(p.productId, p);
+        return productList;
     }
 }

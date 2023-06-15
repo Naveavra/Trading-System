@@ -1,3 +1,4 @@
+import database.Dao;
 import org.junit.jupiter.api.Test;
 import service.security.UserAuth;
 

@@ -1,5 +1,6 @@
 package service.ExternalService;
 
+import database.Dao;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +49,7 @@ class WSEPServiceTest {
         }
         paymentContent = createPaymentJson();
         supplierContent = createSupplierJson();
+        Dao.setForTests(true);
     }
 
     @AfterEach

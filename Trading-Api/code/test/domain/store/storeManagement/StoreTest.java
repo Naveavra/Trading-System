@@ -1,4 +1,5 @@
 package domain.store.storeManagement;
+import database.Dao;
 import domain.states.StoreManager;
 import domain.user.Basket;
 import domain.user.Member;
@@ -38,10 +39,12 @@ class StoreTest {
 
     @BeforeEach
     void setUp() throws Exception {
+        Dao.setForTests(true);
         store = new Store(1, "candy shop", creator);
-        store.addNewProduct("gum", "gumigun", new AtomicInteger(0), 10, 3);
+        List<String> categories = new ArrayList<>();
+        store.addNewProduct("gum", "gumigun", new AtomicInteger(0), 10, 3, categories);
         store.getInventory().getProduct(0).replaceQuantity(10);
-        store.addNewProduct("coke", "diet", new AtomicInteger(1), 10, 3);
+        store.addNewProduct("coke", "diet", new AtomicInteger(1), 10, 3, categories);
         store.getInventory().getProduct(1).replaceQuantity(10);
         store.appointUser(0, worker, new StoreManager(worker.getId(), worker.getName(), null));
         store.appointUser(1, worker2, new StoreManager(worker2.getId(), worker2.getName(), null));
@@ -165,7 +168,7 @@ class StoreTest {
         Exception exception = assertThrows(Exception.class, () -> {
             store.makeOrder(basket);
         });
-        String expectedMessage = "Product not found, ID: 2";
+        String expectedMessage = "Product not found, Id: 2";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }

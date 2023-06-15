@@ -58,11 +58,12 @@ public class DiscountTest {
         s1 = storeCtrl.getStore(0);
         inv1 = s1.getInventory();
         //Products
-        inv1.addProduct("Banana","",inventoryIds1,10,5);
+        List<String> categories = new ArrayList<>();
+        inv1.addProduct("Banana","",inventoryIds1,10,5, categories);
         s1Product1ID = inventoryIds1.get()-1;
-        inv1.addProduct("Apple","",inventoryIds1,20,3);
+        inv1.addProduct("Apple","",inventoryIds1,20,3, categories);
         s1Product2ID = inventoryIds1.get()-1;
-        inv1.addProduct("Laptop","Computers and stuff",inventoryIds1,100,10);
+        inv1.addProduct("Laptop","Computers and stuff",inventoryIds1,100,10, categories);
         s1Product3ID = inventoryIds1.get()-1;
         inv1.addToCategory(Bananas,s1Product1ID);
         inv1.addToCategory(Fruits,s1Product1ID);
@@ -76,9 +77,9 @@ public class DiscountTest {
         storeCtrl.createNewStore(worker,"Slippers and stuff");
         s2 = storeCtrl.getStore(1);
         inv2 = s2.getInventory();
-        inv2.addProduct("Banana","",inventoryIds2,10,5);
+        inv2.addProduct("Banana","",inventoryIds2,10,5, categories);
         s2Product1ID = inventoryIds2.get()-1;
-        inv2.addProduct("Apple","",inventoryIds2,20,3);
+        inv2.addProduct("Apple","",inventoryIds2,20,3, categories);
         s2Product2ID = inventoryIds2.get()-1;
         inv2.addToCategory(Bananas,s2Product1ID);
         inv2.addToCategory(Fruits,s2Product1ID);

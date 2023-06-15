@@ -92,7 +92,8 @@ public class StoreOwnerTest extends ProjectTest{
     {
         List<Notification> notifications = this.getNotifications(ui.getUserId());
         assertEquals(1, notifications.size());
-        assertTrue(notifications.get(0).toString().contains(notificationMsg));
+        String n1 = notifications.get(0).toString();
+        assertTrue(n1.contains(notificationMsg));
     }
 
     @Test
@@ -526,7 +527,7 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(0);
         permissions.add(1);
         permissions.add(2);
-        assertTrue(this.addStoreManagerPermissions(notOwnerId, storeId, uIdManager, permissions));
+        assertFalse(this.addStoreManagerPermissions(notOwnerId, storeId, uIdManager, permissions));
     }
 
     //Appointment Store Manager:
