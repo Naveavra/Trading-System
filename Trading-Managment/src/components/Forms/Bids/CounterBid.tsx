@@ -1,39 +1,44 @@
 
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+
 import { useCallback } from "react";
-
-import AlertDialog from "../Dialog/AlertDialog";
-import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
-import { cancelMembership, clearAdminError, removeUser } from "../../reducers/adminSlice";
-import { cancelMembershipFormValues } from "../../types/formsTypes";
+import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../redux/store";
 
 
+import AlertDialog from "../../Dialog/AlertDialog";
+import { answerBidFormValues, counterBidFormValues } from "../../../types/formsTypes";
+import { clearStoreError } from "../../../reducers/storesSlice";
+
+import { Dialog, Box, Grid, TextField, Typography, Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { Dialog, Box, Grid, Typography, TextField } from "@mui/material";
-import { getClientData } from "../../reducers/authSlice";
+import { answerBid, clearBidError, counterBid } from "../../../reducers/bidSlice";
 
 
-const CancelMembership = () => {
-    const dispatch = useAppDispatch();
+const CounterBid = () => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const form = useForm<counterBidFormValues>();
+    const params = useParams();
 
-    const form = useForm<cancelMembershipFormValues>();
+    const userId = useAppSelector((state) => state.auth.userId)
+    const isLoading = useAppSelector((state) => state.auth.isLoading);
+    const error = useAppSelector((state) => state.auth.error);
 
-    const userId = useAppSelector((state: RootState) => state.auth.userId);
-    const isLoading = useAppSelector((state: RootState) => state.store.isLoading);
-    const error = useAppSelector((state: RootState) => state.store.error);
+    const storeId = parseInt(params.storeId ?? '0');
+    const productId = parseInt(params.productId ?? '0');
+    const bidId = parseInt(params.bidId ?? '0');
 
-
-
+    //maybe take it from params
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard/admin');
-        dispatch(getClientData({ userId: userId }));
+        navigate('/dashboard/store/superior');
     }, []);
-
     const handleOnSubmit = () => {
-        form.setValue("userId", userId);
-        dispatch(cancelMembership(form.getValues()));
+        form.setValue('userId', userId);
+        form.setValue('storeId', storeId);
+        form.setValue('bidId', bidId);
+        form.setValue('productId', productId);
+        dispatch(counterBid(form.getValues()));
         handleOnClose();
     }
     return (
@@ -44,7 +49,7 @@ const CancelMembership = () => {
                         marginTop: 4,
                         top: '50%',
                         left: '50%',
-                        height: 250,
+                        height: 330,
                         width: '80%',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -52,6 +57,7 @@ const CancelMembership = () => {
                         marginRight: 'auto',
                         marginBottom: -2,
                         bgcolor: 'background.paper',
+
                     }}
                 >
                     <Grid
@@ -62,26 +68,28 @@ const CancelMembership = () => {
                     >
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                please enter the user name
+                                counter offer
                             </Typography>
                         </Grid>
+
                         <Grid item xs={12}>
                             <TextField
-                                name="user name "
+                                name="offer"
                                 type="text"
                                 fullWidth
-                                label="user name "
+                                label="offer"
                                 sx={{ mt: 1, mb: 1 }}
                                 inputProps={{
-                                    ...form.register('userName', {
+                                    ...form.register('offer', {
                                         required: {
                                             value: true,
-                                            message: "user name  is required"
+                                            message: "offer is required"
                                         }
                                     })
                                 }}
-                                error={!!form.formState.errors['userName'] ?? false}
-                                helperText={form.formState.errors['userName']?.message ?? undefined}
+                                error={!!form.formState.errors['offer'] ?? false}
+                                helperText={form.formState.errors['offer']?.message ?? undefined}
+
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -92,17 +100,17 @@ const CancelMembership = () => {
                                 sx={{ mt: 3, mb: 2 }}
                                 loading={isLoading}
                             >
-                                cancel membership
+                                send
                             </LoadingButton>
                         </Grid>
                     </Grid >
                 </Box>
-
             </Dialog >
             {!!error ?
-                <AlertDialog open={!!error} onClose={() => { dispatch(clearAdminError()); }} text={error} sevirity={"error"} />
+                <AlertDialog open={!!error} onClose={() => { dispatch(clearBidError()); }} text={error} sevirity={"error"} />
                 : null}
         </>
     );
+
 }
-export default CancelMembership;
+export default CounterBid;

@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.json.JSONObject;
 
+
 @Entity
 @Table(name = "complaints")
 public class Complaint extends Message{
@@ -13,15 +14,20 @@ public class Complaint extends Message{
     private int orderId;
     private boolean gotFeedback;
 
-    public Complaint(int messageId, NotificationOpcode opcode, String content, Member reviewer, int orderId){
-        super(messageId, opcode, content, reviewer);
+    public Complaint(){
+        this.opcode = NotificationOpcode.GET_ADMIN_DATA;
+    }
+
+    public Complaint(int messageId, String content, Member reviewer, int orderId){
+        super(messageId, NotificationOpcode.GET_ADMIN_DATA, content, reviewer);
         this.orderId = orderId;
         this.gotFeedback = false;
     }
 
-        public void sendFeedback(String feedback) throws Exception{
-            if(!gotFeedback) {
-                Notification notification = new Notification(NotificationOpcode.REVIEW_FEEDBACK, feedback);
+    public void sendFeedback(String feedback) throws Exception{
+        setSenderDb();
+        if(!gotFeedback) {
+                Notification notification = new Notification(NotificationOpcode.GET_STORE_DATA_AND_COMPLAINS, feedback);
                 sender.addNotification(notification);
                 gotFeedback = true;
         }

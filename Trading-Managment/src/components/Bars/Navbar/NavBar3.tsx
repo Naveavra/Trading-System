@@ -21,6 +21,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import HomeIcon from '@mui/icons-material/Home';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 interface Props {
@@ -88,7 +89,9 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
                 <AppBar position="static">
                     <Toolbar>
 
-
+                        <IconButton color='inherit' onClick={() => navigate(-1)}>
+                            <ArrowBackIcon />
+                        </IconButton>
                         <Typography variant="h6" component="div" sx={{ display: 'flex', justifyContent: 'center', flexGrow: 2, ml: 30 }}>
                             {headLine}
                         </Typography>

@@ -1,3 +1,4 @@
+
 export type ProductFormValues = {
     id: number;
     storeId: number;
@@ -129,5 +130,27 @@ export type makeBidFormValues = {
     userId: number;
     storeId: number;
     productId: number;
-    price: number;
+    price: Number;
+    quantity: number;
 }
+export type answerBidFormValues = {
+    userId: number;
+    storeId: number;
+    answer: boolean;
+    productId: number;
+    bidId: number;
+}
+export type counterBidFormValues = {
+    userId: number;
+    storeId: number;
+    offer: Number;
+    productId: number;
+    bidId: number;
+};
+export type editBidFormValues = {
+    userId: number;
+    storeId: number;
+    bidId: number;
+    price: Number;
+    quantity: number;
+};

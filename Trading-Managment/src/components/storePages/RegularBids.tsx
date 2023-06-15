@@ -1,33 +1,30 @@
-import { Alert, Box, Card, CardActions, CardContent, IconButton, Tab, Tabs, Typography } from "@mui/material";
-import Bar3 from "../../../components/Bars/Navbar/NavBar3";
-import { useState } from "react";
+import { Box, Tabs, Tab, Typography, Card, CardContent, Alert, CardActions, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../../redux/store";
-import { status } from '../../../types/systemTypes/Bid'
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { Action } from "../../types/systemTypes/Action";
+import Bar3 from "../Bars/Navbar/NavBar3";
+import { status } from '../../types/systemTypes/Bid';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import WalletIcon from '@mui/icons-material/Wallet';
-import { Action } from "../../../types/systemTypes/Action";
-const BiddingCenter = () => {
-    const [value, setValue] = useState(-1);
+import { useEffect } from "react";
+import { getStore } from "../../reducers/storesSlice";
+const RegularBids = () => {
+    const dispatch = useAppDispatch();
+    const userId = useAppSelector((state) => state.auth.userId);
     const store = useAppSelector((state) => state.store.storeState.watchedStore);
     const permissions = useAppSelector((state) => state.auth.permissions);
     const actions = permissions?.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
     const navigate = useNavigate();
     const bids = useAppSelector((state) => state.store.storeState.watchedStore.bids);
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
-    };
+    useEffect(() => {
+        dispatch(getStore({ userId: userId, storeId: store.storeId }));
+    }, [dispatch, bids]);
+
     return (
         <>
             <Bar3 headLine={"wellcome to bidding senter"} />
-            <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                <Tabs value={value} centered onChange={handleChange}>
-                    <Tab label="Auctions" onClick={() => navigate(`Auctions`)} />
-                    <Tab label="Lottery" onClick={() => navigate(`Lottery`)} />
-                </Tabs>
-            </Box>
             <Typography variant="h6" component="div" sx={{ display: 'flex', justifyContent: 'center', flexGrow: 2 }}>
-                the is the bids in the store
+                the is the regular bids in the store
             </Typography>
             <Box sx={{ display: "flex", width: '100%', mb: 2 }}>
                 {
@@ -77,6 +74,6 @@ const BiddingCenter = () => {
                 }
             </Box>
         </>
-    )
+    );
 }
-export default BiddingCenter;
+export default RegularBids;

@@ -21,6 +21,9 @@ public class Receipt extends Information{
 
     private double totalPrice;
 
+    public Receipt(){
+    }
+
     public Receipt(int orderId, ShoppingCart products, double totalPrice){
         this.orderId = orderId;
         this.products = products;

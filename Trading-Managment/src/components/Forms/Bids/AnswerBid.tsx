@@ -1,23 +1,24 @@
 
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../../redux/store";
 
 
-import AlertDialog from "../Dialog/AlertDialog";
-import { makeBidFormValues } from "../../types/formsTypes";
-import { clearStoreError } from "../../reducers/storesSlice";
-import { sendMessage } from "../../reducers/authSlice";
+import AlertDialog from "../../Dialog/AlertDialog";
+import { answerBidFormValues } from "../../../types/formsTypes";
+import { clearStoreError } from "../../../reducers/storesSlice";
 
-import { Dialog, Box, Grid, TextField, Typography } from "@mui/material";
+import { Dialog, Box, Grid, TextField, Typography, Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { answerBid, clearBidError } from "../../../reducers/bidSlice";
 
-const MakeBid = () => {
+
+const AnswerBid = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const form = useForm<makeBidFormValues>();
+    const form = useForm<answerBidFormValues>();
     const params = useParams();
 
     const userId = useAppSelector((state) => state.auth.userId)
@@ -26,17 +27,18 @@ const MakeBid = () => {
 
     const storeId = parseInt(params.storeId ?? '0');
     const productId = parseInt(params.productId ?? '0');
+    const bidId = parseInt(params.bidId ?? '0');
 
     //maybe take it from params
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard');
+        navigate('/dashboard/store/superior');
     }, []);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
         form.setValue('storeId', storeId);
+        form.setValue('bidId', bidId);
         form.setValue('productId', productId);
-
-        //dispatch(sendMessage(form.getValues()));
+        dispatch(answerBid(form.getValues()));
         handleOnClose();
     }
     return (
@@ -66,29 +68,31 @@ const MakeBid = () => {
                     >
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                enter your price
+                                answer
                             </Typography>
                         </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                name="price"
-                                type="text"
+                        <Box display={'flex'}>
+                            <Button
                                 fullWidth
-                                label="price"
-                                sx={{ mt: 1, mb: 1 }}
-                                inputProps={{
-                                    ...form.register('price', {
-                                        required: {
-                                            value: true,
-                                            message: "price is required"
-                                        }
-                                    })
-                                }}
-                                error={!!form.formState.errors['price'] ?? false}
-                                helperText={form.formState.errors['price']?.message ?? undefined}
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
+                                onClick={() => form.setValue('answer', true)}
+                                color={form.getValues().answer ? 'success' : 'primary'}
+                            >
+                                accept
+                            </Button>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
+                                onClick={() => form.setValue('answer', false)}
+                                color={form.getValues().answer ? 'primary' : 'success'}
 
-                            />
-                        </Grid>
+                            >
+                                decline
+                            </Button>
+                        </Box>
+
                         <Grid item xs={12}>
                             <LoadingButton
                                 type="submit"
@@ -104,10 +108,10 @@ const MakeBid = () => {
                 </Box>
             </Dialog >
             {!!error ?
-                <AlertDialog open={!!error} onClose={() => { dispatch(clearStoreError({})); }} text={error} sevirity={"error"} />
+                <AlertDialog open={!!error} onClose={() => { dispatch(clearBidError()); }} text={error} sevirity={"error"} />
                 : null}
         </>
     );
 
 }
-export default MakeBid;
+export default AnswerBid;

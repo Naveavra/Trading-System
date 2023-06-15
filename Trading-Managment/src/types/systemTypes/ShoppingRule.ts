@@ -10,36 +10,35 @@ export interface ShoppingRule {
 }
 export type ShopRuleType = CategoryRule | ItemRule | DateTimeRule | UserRule | BasketRule;
 
-export interface CategoryRule {
-    type: 'category';
+export interface rule {
+    type: 'category' | 'item' | 'dateTime' | 'user' | 'basket' | 'null';
+}
+export interface CategoryRule extends rule {
     category: string;
     amount: number;
     limiter: 'Min' | 'Max';
     ComposeRule?: ComposeRule;
 };
-export interface ItemRule {
-    type: 'item';
+export interface ItemRule extends rule {
     productId: number;
     amount: number;
     limiter: 'Min' | 'Max';
     ComposeRule?: ComposeRule;
 };
-export interface DateTimeRule {
-    type: 'dateTime';
+export interface DateTimeRule extends rule {
+    category: string;
     timeType: 'Time Limit' | 'Date Limit';
     timeLimit: string;
     limiter: 'Min' | 'Max';
     ComposeRule?: ComposeRule;
 };
-export interface UserRule {
-    type: 'user';
+export interface UserRule extends rule {
     ageLimit: number;
     productId: number;
     limiter: 'Min' | 'Max';
     ComposeRule?: ComposeRule;
 };
-export interface BasketRule {
-    type: 'basket';
+export interface BasketRule extends rule {
     productId: number;
     amount: number;
     ComposeRule?: ComposeRule;

@@ -1,11 +1,16 @@
 import domain.states.Permissions;
+import domain.states.UserState;
+import domain.store.storeManagement.AppHistory;
 import domain.store.storeManagement.Store;
+import domain.user.Member;
 import domain.user.StringChecks;
 import market.Admin;
 import market.Market;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import service.MarketController;
 import service.UserController;
+import utils.Pair;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.Receipt;
 import utils.messageRelated.Notification;
@@ -77,7 +82,7 @@ class UserControllerTest {
             loginInformation = market.login("eli2@gmail.com", "123Aaa").getValue();
             int id2 = loginInformation.getUserId();
             String token2 = loginInformation.getToken();
-            market.addNotification(id, NotificationOpcode.CHAT_MESSAGE, "test");
+            market.addNotification(id, NotificationOpcode.GET_CLIENT_DATA, "test");
 
             int sid = market.openStore(id,token, "nike", "good store", "da;nen").getValue();
             int sid2 = market.openStore(id2,token2, "adidas", "bad store", "dkndn").getValue();
@@ -138,8 +143,8 @@ class UserControllerTest {
             market.addProductToCart(log.getUserId(), sid, pid, 6);
             market.changeQuantityInCart(log.getUserId(), sid, pid, 2);
 
-            market.addNotification(log.getUserId(), NotificationOpcode.CHAT_MESSAGE, "test");
-            market.addNotification(log2.getUserId(), NotificationOpcode.CHAT_MESSAGE, "test");
+            market.addNotification(log.getUserId(), NotificationOpcode.GET_CLIENT_DATA, "test");
+            market.addNotification(log2.getUserId(), NotificationOpcode.GET_CLIENT_DATA, "test");
             market.displayNotifications(log.getUserId(), log.getToken());
 
             market.appointOwner(log.getUserId(), log.getToken(), "chai@gmail.com", sid);
@@ -158,7 +163,7 @@ class UserControllerTest {
                 addIds.add(Permissions.actionsMap.get(action));
             market.removeManagerPermissions(log.getUserId(), log.getToken(), log4.getUserId(), sid, addIds);
 
-            market.answerComplaint(log2.getUserId(), log2.getToken(), 0, "sent new products");
+//            market.answerComplaint(log2.getUserId(), log2.getToken(), 0, "sent new products");
             market.answerQuestion(log.getUserId(), log.getToken(), sid, 1, "yes");
 
             //market.fireOwner(log.getUserId(), log.getToken(), log4.getUserId(), sid);
@@ -173,6 +178,25 @@ class UserControllerTest {
     }
 
     @Test
+    void checkImp(){
+       UserController userController = new UserController();
+        MarketController marketController = new MarketController();
+       try {
+           Member m = userController.getMember(3);
+           assertEquals(m.getId(), 3);
+           Admin a = userController.getAdmin("elibenshimol6@gmail.com");
+           userController.login("elibenshimol6@gmail.com", a.getPassword());
+           //userController.answerComplaint(a.getId(), 0, "sent new products");
+           Store s = marketController.getStore(0);
+           AppHistory appHistory = s.getAppHistoryFromDb();
+           assertEquals(appHistory.getRoles().size(), 3);
+       }catch (Exception e){
+           System.out.println(e.getMessage());
+           assert false;
+       }
+    }
+
+    @Test
     void checkNotifications(){
         Admin a = new Admin(1, "elibenshimol6@gmail.com", "123Aaa");
         Market market = new Market(a);
@@ -181,7 +205,7 @@ class UserControllerTest {
         int id = market.login("eli@gmail.com", "123Aaa").getValue().getUserId();
         int id2 = market.login("chai@gmail.com", "123Aaa").getValue().getUserId();
         market.logout(id2);
-        market.sendNotification(id, market.addTokenForTests(), NotificationOpcode.CHAT_MESSAGE, "chai@gmail.com", "hi");
+        market.sendNotification(id, market.addTokenForTests(), NotificationOpcode.GET_CLIENT_DATA, "chai@gmail.com", "hi");
         LoginInformation log = market.login("chai@gmail.com", "123Aaa").getValue();
         for(Notification n : log.getNotifications())
             System.out.println(n.toString());

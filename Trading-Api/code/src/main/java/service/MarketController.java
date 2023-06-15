@@ -109,9 +109,7 @@ public class MarketController {
         return storectrl.getStoreInformation(storeId);
     }
     public Store getStore(int storeId) throws Exception {
-        if(storectrl.storeList.containsKey(storeId))
-            return storectrl.storeList.get(storeId);
-        throw new Exception("the storeId given does not belong to any store");
+        return storectrl.getStore(storeId);
     }
     public List<StoreInfo> getStoresInformation(){
         List<StoreInfo> stores = new ArrayList<>();
@@ -142,18 +140,7 @@ public class MarketController {
         storectrl.setStoreAttributes(storeId, name, description, img);
     }
 
-    public void setStorePurchasePolicy(int storeId,String policy) throws Exception{
-        Store store = storectrl.getActiveStore(storeId);
-        store.setStorePolicy(policy);
-//        Store store = storectrl.getStore(storeId);
-//        if (store != null )
-//        {
-//            store.setStorePolicy(policy);
-//        }
-//        else {
-//            throw new Exception("store does not exist");
-//        }
-    }
+
 
 
 
@@ -307,5 +294,14 @@ public class MarketController {
         Bid bid = s.editBid(bidId,price,quantity);
         return bid.approvers;
         //send a message to all shop owners and people who need to approve this bid.
+    }
+
+    public void addPurchaseConstraint(int storeId, String purchasePolicy)throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        s.addPurchasePolicy(purchasePolicy);
+    }
+
+    public void deletePurchaseConstraint(int userId, int storeId, int purchasePolicyId) {
+        //todo miki
     }
 }

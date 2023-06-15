@@ -49,7 +49,6 @@ export const RegisterForm: React.FC = () => {
             const arr = date.toString().split(' ');
             form.setValue('birthday', getDtae(arr[2], arr[1], arr[3]));
         }
-
     }
 
     return (

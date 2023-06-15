@@ -1,5 +1,6 @@
 package utils.messageRelated;
 
+import domain.store.product.Product;
 import domain.user.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -10,9 +11,13 @@ import org.json.JSONObject;
 public class ProductReview extends StoreReview{
     private int productId;
 
-    public ProductReview(int messageId, NotificationOpcode opcode, String content, Member reviewer, int orderId, int storeId,
+    public ProductReview(){
+        this.opcode = NotificationOpcode.GET_STORE_DATA;
+    }
+    public ProductReview(int messageId, String content, Member reviewer, int orderId, int storeId,
                          int productId, int rating){
-        super(messageId, opcode, content, reviewer, orderId, storeId, rating);
+        super(messageId, content, reviewer, orderId, storeId, rating);
+        this.opcode = NotificationOpcode.GET_STORE_DATA;
         this.productId = productId;
 
     }

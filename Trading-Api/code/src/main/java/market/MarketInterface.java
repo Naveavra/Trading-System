@@ -7,6 +7,7 @@ import utils.infoRelated.Information;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
 import utils.infoRelated.Receipt;
+import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 
 import java.util.HashMap;
@@ -64,7 +65,7 @@ public interface MarketInterface {
     public Response changeStoreInfo(int userId, String token, int storeId, String name, String description, String img,
                                     String isActive);
     public String changeStoreAttributes(int userId, int storeId, String name, String description, String img) throws Exception;
-    public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
+//    public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
     //public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
     public Response addPurchaseConstraint(int userId, String token, int storeId, String constraint);
     public Response fireManager(int userId, String token, int managerToFire, int storeId);
@@ -139,4 +140,11 @@ public interface MarketInterface {
     public Response counterBid(String token, int userId, int storeId, double counterOffer, int prodId, int bidId);
 
     public Response editBid(String token, int userId, int storeId, double price, int quantity, int bidId);
+
+    Response<String> addShoppingRule(int userId, String token, int storeId, String purchasePolicy);
+
+    Response<String> deletePurchasePolicy(String token, int userId, int storeId, int purchasePolicyId);
 }
+
+
+

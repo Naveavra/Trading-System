@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import Bar2 from "../Bars/Navbar/NavBar2";
 import { Action } from "../../types/systemTypes/Action";
 import SuccessAlert from "../Alerts/success";
-import { clearStoresResponse } from "../../reducers/storesSlice";
+import { clearStoresResponse, getStore } from "../../reducers/storesSlice";
 import { clearAuthError } from "../../reducers/authSlice";
 import ErrorAlert from "../Alerts/error";
 
@@ -72,7 +72,7 @@ const StoreMessages = () => {
     };
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-
+        dispatch(getStore({ userId: user, storeId: storeId }));
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)

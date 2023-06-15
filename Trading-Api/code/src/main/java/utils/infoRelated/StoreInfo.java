@@ -1,6 +1,9 @@
 package utils.infoRelated;
 
+import domain.store.storeManagement.Bid;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class StoreInfo extends Information{
 
@@ -11,7 +14,10 @@ public class StoreInfo extends Information{
     private int creatorId;
     private double rating;
     private String imgUrl;
-    public StoreInfo(int storeId, String name, String description, boolean isActive, int creatorId, double rating, String url) {
+
+    private List<Bid> bids; // only open bids
+    public StoreInfo(int storeId, String name, String description, boolean isActive, int creatorId, double rating, String url,
+                        List<Bid> bids) {
         this.storeId = storeId;
         storeName = name;
         this.description = description;
@@ -19,6 +25,7 @@ public class StoreInfo extends Information{
         this.creatorId = creatorId;
         this.rating = rating;
         imgUrl = url;
+        this.bids = bids;
     }
 
     public int getStoreId(){
@@ -43,6 +50,9 @@ public class StoreInfo extends Information{
     }
     public String getUrl(){return imgUrl;}
 
+    public List<Bid> getBids(){return bids;}
+
+
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
@@ -53,6 +63,7 @@ public class StoreInfo extends Information{
         json.put("creatorId", getCreatorId());
         json.put("rating", getRating());
         json.put("img", getUrl());
+        json.put("bids", infosToJson(bids));
         return json;
     }
 }

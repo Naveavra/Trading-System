@@ -247,15 +247,15 @@ public class API {
         return fromResToPair(res);
 
     }
-    public Pair<Boolean, JSONObject> changePurchasePolicy(int userId, String token, int storeId, String policy){
-        Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
-        return fromResToPair(res);
-    }
-
-    public Pair<Boolean, JSONObject> changeDiscountPolicy(int userId, String token, int storeId, String policy){
-        Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
-        return fromResToPair(res);
-    }
+//    public Pair<Boolean, JSONObject> changePurchasePolicy(int userId, String token, int storeId, String policy){
+//        Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
+//        return fromResToPair(res);
+//    }
+//
+//    public Pair<Boolean, JSONObject> changeDiscountPolicy(int userId, String token, int storeId, String policy){
+//        Response<String> res = market.changePurchasePolicy(userId, token, storeId, policy);
+//        return fromResToPair(res);
+//    }
 
     public Pair<Boolean, JSONObject> addPurchaseConstraint(int userId, String token, int storeId, String policy){
         Response<String> res = market.addPurchaseConstraint(userId, token, storeId, policy);
@@ -417,7 +417,7 @@ public class API {
     }
 
     public Pair<Boolean, JSONObject> sendNotification(int userId, String token, String username, String notification) {
-        Response<String> res = market.sendNotification(userId, token, NotificationOpcode.CHAT_MESSAGE, username, notification);
+        Response<String> res = market.sendNotification(userId, token, NotificationOpcode.GET_CLIENT_DATA, username, notification);
         return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> changeRegularDiscount(int userId, String token, int storeId, int prodId,
@@ -454,6 +454,14 @@ public class API {
     }
     public Pair<Boolean, JSONObject> editBid(String token, int storeId , int userId, double price, int quantity, int bidId) {
         Response<String> res = market.editBid(token, userId, storeId, price,quantity, bidId);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> addShoppingRule(String token, int storeId, int userId, String purchasePolicy) {
+        Response<String> res =  market.addShoppingRule(userId, token, storeId, purchasePolicy);
+        return fromResToPair(res);
+    }
+    public Pair<Boolean, JSONObject> deletePurchasePolicy(String token, int userId, int storeId, int purchasePolicyId) {
+        Response<String> res = market.deletePurchasePolicy(token, userId, storeId, purchasePolicyId);
         return fromResToPair(res);
     }
 

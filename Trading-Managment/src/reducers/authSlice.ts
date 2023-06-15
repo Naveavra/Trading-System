@@ -9,6 +9,7 @@ import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
 import { MyNotification } from "../types/systemTypes/Notification";
 import { Order, emptyOrder } from "../types/systemTypes/Order";
+import { Bid } from "../types/systemTypes/Bid";
 
 interface AuthState {
     token: string;
@@ -32,6 +33,7 @@ interface AuthState {
     opcode: number;
     purchaseHistory: Order[];
     whatchedOrder: Order;
+    bids: Bid[];
 }
 const reducrName = 'auth';
 const initialState: AuthState = {
@@ -62,6 +64,7 @@ const initialState: AuthState = {
     opcode: 0,
     purchaseHistory: [],
     whatchedOrder: emptyOrder,
+    bids: []
 };
 const cleanState: AuthState = {
     token: '',
@@ -85,6 +88,7 @@ const cleanState: AuthState = {
     opcode: 0,
     purchaseHistory: [],
     whatchedOrder: emptyOrder,
+    bids: []
 };
 
 export const login = createAsyncThunk<
@@ -355,7 +359,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             const arr: MyNotification[] = [payload];
             //state.opcode = arr[0].opcode;
             state.notifications = state.notifications.concat(arr);
-
         });
         builder.addCase(getNotifications.rejected, (state, { payload }) => {
             state.isLoading = false;
@@ -380,6 +383,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.age = payload.age;
             state.birthday = payload.birthday;
             state.purchaseHistory = payload.purchaseHistory;
+            state.bids = payload.bids;
         });
         builder.addCase(getClientData.rejected, (state, { payload }) => {
             state.isLoading = false;

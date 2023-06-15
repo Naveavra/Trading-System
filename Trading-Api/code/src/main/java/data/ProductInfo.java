@@ -1,5 +1,7 @@
 package data;
 
+import utils.messageRelated.ProductReview;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class ProductInfo {
         this.categories.addAll(product.getCategories());
         this.img = product.img;
     }
+
 
     public int getProductId() {
         return productId;

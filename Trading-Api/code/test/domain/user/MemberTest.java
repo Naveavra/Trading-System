@@ -205,7 +205,7 @@ class MemberTest {
     @Test
     void displayNotifications() {
         try {
-            Notification n = new Notification(NotificationOpcode.CLOSE_STORE, "u have a new message");
+            Notification n = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "u have a new message");
             m.login("ziv1234");
             m.addNotification(n);
            List<Notification> notifiy =  m.displayNotifications();

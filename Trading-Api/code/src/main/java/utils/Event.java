@@ -23,6 +23,9 @@ public class Event extends Information {
     private String time;
     private String userName;
 
+    public Event(){
+    }
+
     public Event(LogStatus status, String content, String time, String userName){
         this.status = status;
         this.content = content;

@@ -18,7 +18,6 @@ public class AppHistory{
         private Pair<Member, UserState> data; //userid and role
         private ArrayList<Node> children; //list of all the users this user appoint in this store
         private Set<Integer> dismissed;
-
         private Node father;
         public Node(Pair<Member, UserState> appointment){
             //Assign data to the new node, set left and right children to null

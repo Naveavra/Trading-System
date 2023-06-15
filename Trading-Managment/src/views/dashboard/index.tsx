@@ -17,6 +17,7 @@ import Categories2 from '../../components/Categories/category2';
 import Products from '../../components/Product/Products';
 import { getCart } from '../../reducers/cartSlice';
 import SuccessAlert from '../../components/Alerts/success';
+import { getComplaints, getLogger, getMarketStatus, removeUser } from '../../reducers/adminSlice';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -29,9 +30,7 @@ const DashboardPage: React.FC = () => {
     const userId = useAppSelector((state) => state.auth.userId);
     const token = useAppSelector((state) => state.auth.token) ?? "";
     const userName = useAppSelector((state) => state.auth.userName);
-    const isAdmin = useAppSelector((state) => state.auth.isAdmin);
     const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
-    //const opcode = useAppSelector((state) => state.auth.opcode);
     const error = useAppSelector((state) => state.auth.error);
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
@@ -56,7 +55,11 @@ const DashboardPage: React.FC = () => {
 
     //success alerts
     const openStoreAlert = useAppSelector((state) => state.store.storeState.responseData);
-
+    const handleAdmin = () => {
+        dispatch(getLogger(userId));
+        dispatch(getComplaints(userId));
+        dispatch(getMarketStatus(userId));
+    }
 
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
@@ -73,30 +76,57 @@ const DashboardPage: React.FC = () => {
             // dispatch(ping(userId));
         }
     }
+    interface NumberToVoidFunctionMap {
+        [key: number]: () => void;
+    }
+
+    const hashMap: NumberToVoidFunctionMap = {
+        0: () => {
+            dispatch(getClientData({ userId: userId }));
+            fetchNotification();
+        },
+        1: () => {
+            debugger;
+            dispatch(getStore({ userId: userId, storeId: storeId }));
+            fetchNotification();
+        },
+        2: () => {
+            handleAdmin();
+            fetchNotification();
+        },
+        3: () => {
+            dispatch(getComplaints(userId));
+            fetchNotification();
+        },
+        4: () => {
+            setLeft(true);
+            dispatch(removeUser(userName));
+            dispatch(resetAuth());
+            navigate('/auth/login');
+        },
+        5: () => {
+            dispatch(getClientData({ userId: userId }));
+            dispatch(getStore({ userId: userId, storeId: storeId }));
+            fetchNotification();
+        },
+        6: () => {
+            dispatch(getClientData({ userId: userId }));
+            dispatch(getComplaints(userId));
+            fetchNotification();
+        },
+        7: () => {
+            dispatch(getStore({ userId: userId, storeId: storeId }));
+            dispatch(getComplaints(userId));
+            fetchNotification();
+        },
+    };
     const fetchNotification = async () => {
         try {
-            console.log("trying get notification")
-            debugger;
             if (token != "" && userName != 'guest' && !left) {
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
-                if (response.payload?.opcode >= 0 && response.payload?.opcode <= 6) {
-                    dispatch(getClientData({ userId: userId }));
-                    dispatch(getStore({ userId: userId, storeId: storeId }));
-                }
-                else if (!isAdmin && ((response.payload?.opcode >= 7 && response.payload?.opcode <= 12) || response.payload?.opcode == 14 || response.payload?.opcode == 15)) {
-                    dispatch(getClientData({ userId: userId }));
-                }
-                if (isAdmin && (response.payload?.opcode == 14 || response.payload?.opcode == 13)) {
-                    //dispatch(getAdminData());
-                }
                 debugger;
-                if (response.payload?.opcode == 16) {
-                    setLeft(true);
-                    dispatch(resetAuth());
-                    navigate('/auth/login')
-                }
-                if (response.payload?.opcode !== 16) {
-                    fetchNotification();
+                if (response.payload != null) {
+                    hashMap[response.payload?.opcode ?? 0]();
                 }
             }
         } catch (error) {
