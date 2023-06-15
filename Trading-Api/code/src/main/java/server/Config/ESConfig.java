@@ -17,4 +17,16 @@ public class ESConfig {
         this.URL = URL;
         this.responseTime = responseTime;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public int getResponseTime() {
+        return responseTime;
+    }
 }

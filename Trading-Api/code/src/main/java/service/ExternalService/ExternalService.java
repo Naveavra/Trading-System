@@ -11,25 +11,28 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 
 public class ExternalService {
+    private String name;
     private int timeoutSeconds;
     private HttpURLConnection connection;
     private URL url;
     private static final String UNEXPECTED_OUTPUT = "unexpected-output";
     private static final int DEFAULT_TIMEOUT = 15;
+    private boolean available;
 
-    public ExternalService(String url) throws IOException, ExternalServiceException {
+    public ExternalService(String name, String url) throws IOException, ExternalServiceException {
+        this.name = name;
         this.url = new URL(url);
         timeoutSeconds = DEFAULT_TIMEOUT;
-        handshake();
+        available = false;
     }
 
-    public ExternalService(String url, int timeoutSeconds) throws IOException, ExternalServiceException {
+    public ExternalService(String name, String url, int timeoutSeconds) throws IOException, ExternalServiceException {
+        this.name = name;
         this.url = new URL(url);
         this.timeoutSeconds = timeoutSeconds;
-        handshake();
     }
 
-    private void handshake() throws IOException, ExternalServiceException {
+    protected void handshake() throws IOException, ExternalServiceException {
         Request handshakeRequest = new Request("handshake");
         sendRequest(handshakeRequest);
     }
@@ -89,5 +92,17 @@ public class ExternalService {
         } finally {
             closeConnection();
         }
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public String getName() {
+        return name;
     }
 }

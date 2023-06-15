@@ -1,6 +1,0 @@
-db:
-supplier:
-payment:
-backendUrl:http://localhost:4567
-port:3157
-

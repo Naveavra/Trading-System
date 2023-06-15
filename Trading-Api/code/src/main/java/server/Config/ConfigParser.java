@@ -12,6 +12,7 @@ import java.util.Properties;
  * The ConfigParser class is responsible for parsing the config.properties file and initializing various settings.
  */
 public class ConfigParser {
+    private static ConfigParser instance;
     private final Properties prop = new Properties();
     private Properties DBSetting;
     private ESConfig supplyConfig;
@@ -20,23 +21,44 @@ public class ConfigParser {
     private final int ADMIN_START_ID = 1;
     private FileInputStream input = null;
     private final String configFilePath;
+    private ConnectionDetails connectionDetails;
 
     /**
-     * Constructs a ConfigParser instance with the default config file path.
-     */
-    public ConfigParser() {
-        this("config.properties");
-    }
-
-    /**
-     * Constructs a ConfigParser instance with a custom config file path.
+     * Private constructor to prevent direct instantiation.
      *
      * @param configFilePath The path to the config.properties file.
      */
-    public ConfigParser(String configFilePath) {
+    private ConfigParser(String configFilePath) {
         this.configFilePath = configFilePath;
         loadProperties();
         initSettings();
+    }
+
+    /**
+     * Returns the singleton instance of ConfigParser.
+     *
+     * @param configFilePath The path to the config.properties file (optional if instance already exists).
+     * @return The ConfigParser instance.
+     */
+    public static ConfigParser getInstance(String configFilePath) {
+        if (instance == null) {
+            instance = new ConfigParser(configFilePath);
+        }
+        return instance;
+    }
+
+    /**
+     * Returns the singleton instance of ConfigParser.
+     * Uses the previously provided config file path.
+     *
+     * @return The ConfigParser instance.
+     * @throws IllegalStateException If the config file path was not provided during the first instantiation.
+     */
+    public static ConfigParser getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("ConfigParser instance has not been initialized with a config file path.");
+        }
+        return instance;
     }
 
     /**
@@ -65,11 +87,46 @@ public class ConfigParser {
      * Initializes all the settings from the loaded properties.
      */
     private void initSettings() {
-        initDBSettings();
-        initESConfigSettings("ES_S", supplyConfig);
-        initESConfigSettings("ES_P", paymentConfig);
         initAdminSettings();
+        initServerSettings();
+        initDBSettings();
+        supplyConfig = initESConfigSettings("ES_S");
+        paymentConfig = initESConfigSettings("ES_P");
     }
+
+
+    /**
+     * Initializes the server settings based on the configuration file.
+     * Reads the IP address and port number from the configuration file.
+     * Throws an error if the IP address or port is invalid.
+     */
+    private void initServerSettings() throws IllegalArgumentException {
+        String ipAddressKey = "Server_B_IP";
+        String portKey = "Server_B_Port";
+
+        // Read the IP address from the configuration file
+        String ipAddress = prop.getProperty(ipAddressKey);
+        if (ipAddress == null || ipAddress.isEmpty()) {
+            throw new IllegalArgumentException("Invalid IP address configuration: " + ipAddressKey);
+        }
+
+        // Read the port number from the configuration file
+        String portValue = prop.getProperty(portKey);
+        if (portValue == null || portValue.isEmpty()) {
+            throw new IllegalArgumentException("Invalid port configuration: " + portKey);
+        }
+
+        int port;
+        try {
+            port = Integer.parseInt(portValue);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid port number: " + portValue);
+        }
+        connectionDetails = new ConnectionDetails(ipAddress, port);
+    }
+
+
+
 
     /**
      * Initializes the database settings.
@@ -101,9 +158,9 @@ public class ConfigParser {
      * Initializes the external service configuration settings.
      *
      * @param prefix The prefix for the properties (e.g., "ES_S" or "ES_P").
-     * @param config The ESConfig object to initialize.
+     * @return
      */
-    private void initESConfigSettings(String prefix, ESConfig config) {
+    private ESConfig initESConfigSettings(String prefix) {
         String name = prop.getProperty(prefix + "_NAME");
         String url = prop.getProperty(prefix + "_URL");
         String responseTime = prop.getProperty(prefix + "_RESPONSE_TIME");
@@ -113,7 +170,7 @@ public class ConfigParser {
                 try {
                     int time = Integer.parseInt(responseTime);
                     if (time >= 0) {
-                        config = new ESConfig(name, url, time);
+                        return new ESConfig(name, url, time);
                     } else {
                         throw new IllegalArgumentException("Invalid response time value for " + prefix);
                     }
@@ -121,7 +178,7 @@ public class ConfigParser {
                     throw new IllegalArgumentException("Invalid response time format for " + prefix);
                 }
             } else {
-                config = new ESConfig(name, url);
+                return new ESConfig(name, url);
             }
         } else {
             throw new IllegalArgumentException("Missing properties for " + prefix);
@@ -176,5 +233,14 @@ public class ConfigParser {
      */
     public Admin getInitialAdmin() {
         return initialAdmin;
+    }
+
+    /**
+     * Retrieves the server settings.
+     *
+     * @return The server ConnectionDetails object.
+     */
+    public ConnectionDetails getServerConnectionDetails() {
+        return connectionDetails;
     }
 }
