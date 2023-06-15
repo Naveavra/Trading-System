@@ -37,7 +37,7 @@ public class Market implements MarketInterface {
     private UserAuth userAuth;
     private final Logger logger;
 
-    private HashMap<Integer, Action> ctionIds;
+    private HashMap<Integer, Action> actionIds;
     private MarketInfo marketInfo;
 
     public Market(Admin admin, ESConfig payment, ESConfig supply) {
@@ -82,7 +82,7 @@ public class Market implements MarketInterface {
 
         actionIds = Permissions.getActionIds();
 
-        Response<String> res = addAdmin(a);
+        Response<String> res = addAdmin(admin);
         if(res.errorOccurred()) {
             //TODO: what to throw here
             //throw new Exception(res.getErrorMessage());
