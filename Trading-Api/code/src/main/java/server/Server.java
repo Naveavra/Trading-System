@@ -63,9 +63,9 @@ public class Server {
         }
         else if (args.length == 1)
         {
-            String path = args[0];
+            String configPath = args[0];
             System.out.println("Start the system with config file...");
-            configs = ConfigParser.getInstance(path);
+            configs = ConfigParser.getInstance(configPath);
             initServer();
             api = new API(configs);
         }
