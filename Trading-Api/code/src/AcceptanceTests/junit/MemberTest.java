@@ -27,7 +27,7 @@ public class MemberTest extends ProjectTest{
         payment.put("month", "01");
         payment.put("year", "30");
         payment.put("holder", "Israel Visceral");
-        payment.put("ccv", "000");
+        payment.put("ccv", "123");
         payment.put("id", "123456789");
         return payment;
     }
