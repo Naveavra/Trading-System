@@ -653,18 +653,18 @@ public class Store extends Information{
         PurchasePolicyDataObject head = null;
         PurchasePolicyDataObject prev = null;
         for(int i = 0 ; i<policies.length() ; i++){
-            PurchasePolicyDataObject actualPolicy = null;
+//            PurchasePolicyDataObject actualPolicy = null;
             JSONObject policy = policies.getJSONObject(i);
             String type = policy.getString("type");
             switch (type){
-                case "item" -> actualPolicy = factory.parseItem(policy,prev);
-                case "category" -> actualPolicy = factory.parseCategory(policy,prev);
-                case "dateTime" -> actualPolicy = factory.parseDateTime(policy,prev);
-                case "user" -> actualPolicy = factory.parseUser(policy,prev);
-                case "basket" -> actualPolicy = factory.parseBasket(policy,prev);
+                case "item" -> prev = factory.parseItem(policy,prev);
+                case "category" -> prev = factory.parseCategory(policy,prev);
+                case "dateTime" -> prev = factory.parseDateTime(policy,prev);
+                case "user" -> prev = factory.parseUser(policy,prev);
+                case "basket" -> prev = factory.parseBasket(policy,prev);
             }
-            if(i==0 && actualPolicy!=null)
-                head = actualPolicy;
+            if(i==0 && prev!=null)
+                head = prev;
         }
         if(head!=null){
             purchasePolicies.add(factory.createPolicy(head));
