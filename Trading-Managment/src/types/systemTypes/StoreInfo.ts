@@ -7,6 +7,8 @@ export interface StoreInfo {
     isActive: boolean;
     creatorId: number;
     img: string;
+    discounts: string[];
+    shoppingRules: string[];
 }
 export const emptyStoreInfo: StoreInfo = {
     storeId: 0,
@@ -16,4 +18,6 @@ export const emptyStoreInfo: StoreInfo = {
     isActive: false,
     creatorId: 0,
     img: '',
+    discounts: [],
+    shoppingRules: []
 };

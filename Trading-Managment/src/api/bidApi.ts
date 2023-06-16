@@ -1,5 +1,5 @@
 import { ApiResponse } from "../types/apiTypes";
-import { addBidParams, answerBidParams, counterBidParams, editBidParams } from "../types/requestTypes/bidTypes";
+import { addBidParams, answerBidParams, buyProductInBidParams, counterBidParams, editBidParams } from "../types/requestTypes/bidTypes";
 import { getApiClient } from "./apiClient";
 import { apiErrorHandlerWrapper } from "./util";
 
@@ -16,4 +16,7 @@ export const bidApi = {
 
     editBid: (params: editBidParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/biddings/editBid', params)),
+
+    buyProductInBid: (params: buyProductInBidParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post('api/biddings/bidPayment', params)),
 }

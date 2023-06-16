@@ -39,6 +39,7 @@
     "rive-react": "^3.0.50",
     "signalr-no-jquery": "^0.2.0",
     "socket.io-client": "^4.6.1",
+    "vite-plugin-optimizer": "^1.4.2",
     "web-vitals": "^1.0.1",
     "websocket": "^1.0.34",
     "ws": "^8.13.0"

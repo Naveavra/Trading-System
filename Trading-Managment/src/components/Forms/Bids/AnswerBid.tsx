@@ -1,6 +1,6 @@
 
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
@@ -25,10 +25,20 @@ const AnswerBid = () => {
     const isLoading = useAppSelector((state) => state.auth.isLoading);
     const error = useAppSelector((state) => state.auth.error);
 
+    const [answer, setAnswer] = useState(0);
     const storeId = parseInt(params.storeId ?? '0');
     const productId = parseInt(params.productId ?? '0');
     const bidId = parseInt(params.bidId ?? '0');
 
+    const hadleAnswer = (answer: boolean) => {
+        form.setValue('answer', answer);
+        if (answer) {
+            setAnswer(1);
+        }
+        else {
+            setAnswer(2);
+        }
+    }
     //maybe take it from params
     const handleOnClose = useCallback(() => {
         navigate('/dashboard/store/superior');
@@ -75,18 +85,18 @@ const AnswerBid = () => {
                             <Button
                                 fullWidth
                                 variant="contained"
-                                sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
-                                onClick={() => form.setValue('answer', true)}
-                                color={form.getValues().answer ? 'success' : 'primary'}
+                                sx={{ mt: 3, mb: 2, ml: 10 }}
+                                onClick={() => hadleAnswer(true)}
+                                color={answer === 1 ? 'success' : 'primary'}
                             >
                                 accept
                             </Button>
                             <Button
                                 fullWidth
                                 variant="contained"
-                                sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
-                                onClick={() => form.setValue('answer', false)}
-                                color={form.getValues().answer ? 'primary' : 'success'}
+                                sx={{ mt: 3, mb: 2, ml: 2 }}
+                                onClick={() => hadleAnswer(false)}
+                                color={answer === 2 ? 'success' : 'primary'}
 
                             >
                                 decline
@@ -105,7 +115,7 @@ const AnswerBid = () => {
                             </LoadingButton>
                         </Grid>
                     </Grid >
-                </Box>
+                </Box >
             </Dialog >
             {!!error ?
                 <AlertDialog open={!!error} onClose={() => { dispatch(clearBidError()); }} text={error} sevirity={"error"} />

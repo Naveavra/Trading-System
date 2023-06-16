@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
-import { Card, CardContent, Typography, CardActions, Divider, Box, Alert } from "@mui/material";
+import { Card, CardContent, Typography, CardActions, Divider, Box, Alert, Button } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import { Outlet, useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import ErrorAlert from "../../../components/Alerts/error";
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import InfoIcon from '@mui/icons-material/Info';
 import { status } from '../../../types/systemTypes/Bid'
+import { clearBidMsg, clearBidError } from "../../../reducers/bidSlice";
 const Personal = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -19,10 +20,17 @@ const Personal = () => {
     const age = useAppSelector((state) => state.auth.age);
     const name = email.split('@')[0];
     const birthday = useAppSelector((state) => state.auth.birthday);
-    const userMessage = useAppSelector((state) => state.auth.message);
-    const userError = useAppSelector((state) => state.auth.error);
+
     const orders = useAppSelector((state) => state.auth.purchaseHistory);
     const bids = useAppSelector((state) => state.auth.bids);
+
+    const userMessage = useAppSelector((state) => state.auth.message);
+    const userError = useAppSelector((state) => state.auth.error);
+
+    const bidMessage = useAppSelector((state) => state.bid.message);
+    const bidError = useAppSelector((state) => state.bid.error);
+
+
     const handleClickOrder = (orderId: number) => {
         dispatch(setWatchedOrder(orderId));
         navigate(`order/${orderId}`)
@@ -33,6 +41,8 @@ const Personal = () => {
             <Bar3 headLine={"this is your personal data"} />
             {userMessage ? <SuccessAlert message={userMessage} onClose={() => { dispatch(clearAuthMsg()) }} /> : null}
             {userError ? <ErrorAlert message={userError} onClose={() => { dispatch(clearAuthError()) }} /> : null}
+            {bidMessage ? <SuccessAlert message={bidMessage} onClose={() => { dispatch(clearBidMsg()) }} /> : null}
+            {bidError ? <ErrorAlert message={bidError} onClose={() => { dispatch(clearBidError()) }} /> : null}
             <Box sx={{ width: '100%', display: 'flex' }}>
                 <Typography sx={{ fontSize: 25, mt: 3, ml: '10%' }} gutterBottom>
                     your personal data
@@ -125,18 +135,15 @@ const Personal = () => {
                                         time: {bid.time}
                                     </Typography>
                                     {bid.state === status.Approved ?
-                                        <Alert severity="success">approved</Alert> :
+                                        <>
+                                            <Alert severity="success">approved</Alert>
+                                            <Button onClick={() => navigate(`${bid.bidId}/makePurchase`)}>enter details and meake purchase</Button>
+                                        </> :
                                         bid.state === status.Pending ?
                                             <Alert severity="info">pending</Alert> :
                                             <Alert severity="error">reject</Alert>
                                     }                                </CardContent>
                                 <CardActions>
-                                    {/* <IconButton onClick={() => handleClickOrder(order.orderId)}>
-                                        <InfoIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => navigate(`${order.orderId}/sendComplaint`)}>
-                                        <RateReviewIcon />
-                                    </IconButton> */}
                                 </CardActions>
                             </Card>
                         )

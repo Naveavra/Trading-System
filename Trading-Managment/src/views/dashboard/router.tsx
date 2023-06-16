@@ -19,7 +19,7 @@ export const dashboardRoutes = [
     <Route key="routes" path="dashboard" >
         <Route path="" element={<DashboardPage />} />
         <Route path="cart" element={<Cart />} />
-        <Route path="cart/payment" element={<BuyCart />} />
+        <Route path="cart/payment" element={<BuyCart personal={true} />} />
         <Route path="store/new" element={<AddEditStore mode={"add"} />} />
         <Route path="sendMsg" element={<SendMsg />} />
         <Route path="sendComplaint" element={<SendComplain />} />

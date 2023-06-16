@@ -1,7 +1,7 @@
 import { LoadingButton } from "@mui/lab";
 import { Dialog, Box, Grid, Typography, TextField, SelectChangeEvent } from "@mui/material";
 import AlertDialog from "../Dialog/AlertDialog";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
 import { useCallback, useEffect, useState } from "react";
 import { clearAuthError, getClientData } from "../../reducers/authSlice";
@@ -10,11 +10,17 @@ import { paymentFormValues } from "../../types/formsTypes";
 import { buyCart, getCart } from "../../reducers/cartSlice";
 import { getSuppliers, getPaymentsService } from "../../reducers/paymentSlice";
 import SelectAutoWidth from "../Selectors/AutoWidth";
+import { buyProductInBid } from "../../reducers/bidSlice";
+import { EmptyBid } from "../../types/systemTypes/Bid";
 
+interface props {
+    personal: boolean;
+}
 
-const BuyCart = () => {
+const BuyCart: React.FC<props> = ({ personal }) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const params = useParams();
     const form = useForm<paymentFormValues>();
 
     const [payment, setPayment] = useState('');
@@ -27,6 +33,9 @@ const BuyCart = () => {
     const suppliers = useAppSelector((state) => state.payment.suppliers);
     const payments = useAppSelector((state) => state.payment.paymentServices);
 
+    //for bid
+    const bidId = params.bidId ?? '-1';
+    const bid = useAppSelector((state) => state.auth.bids)?.filter((bid) => bid.bidId === parseInt(bidId))[0] ?? EmptyBid;
 
     const handleChangeSupplier = (event: SelectChangeEvent) => {
         setSupplier(event.target.value as string);
@@ -37,15 +46,21 @@ const BuyCart = () => {
 
     const handleOnClose = useCallback(() => {
         navigate('/dashboard');
-        dispatch(getCart({userId:userId}));
-        dispatch(getClientData({userId:userId}));
+        dispatch(getCart({ userId: userId }));
+        dispatch(getClientData({ userId: userId }));
         //dispatch(getStore({ userId: userId, storeId: storeId }));
     }, []);
+    //storeid, userid, price, quantity
     const handleOnSubmit = () => {
         form.setValue('userId', userId);
-        form.setValue('supply_service',supplier);
-        form.setValue('payment_service',payment);
-        dispatch(buyCart(form.getValues()));
+        form.setValue('supply_service', supplier);
+        form.setValue('payment_service', payment);
+        if (personal) {
+            dispatch(buyProductInBid({ userId: userId, storeId: bid.storeId, productId: bid.product.productId, price: bid.offer, quantity: bid.quantity, details: form.getValues() }))
+        }
+        else {
+            dispatch(buyCart(form.getValues()));
+        }
         handleOnClose();
     }
 
