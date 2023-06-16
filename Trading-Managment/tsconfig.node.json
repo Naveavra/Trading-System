@@ -4,10 +4,15 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "rootDir": "../",
   },
   "include": [
     "vite.config.ts",
-    "./src/config.ts"
-  ]
+    "./src/config.ts",
+    "../config.json"
+  ],
+  // "files": [ // by whitelisting the files to include, you avoid the default TS behavior, which
+  //   "C:/Users/Owner/BGU/Sadna/Trading-System/config.json" // will include everything, resulting in `src` being included in both projects (bad)
+  // ]
 }

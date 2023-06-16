@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { bidApi } from "../api/bidApi";
 import { ApiError } from "../types/apiTypes";
-import { addBidParams, answerBidParams, counterBidParams, editBidParams } from "../types/requestTypes/bidTypes";
+import { addBidParams, answerBidParams, buyProductInBidParams, counterBidParams, editBidParams } from "../types/requestTypes/bidTypes";
 
 interface BidState {
     isLoading: boolean;
-    error: string;
-    message: string;
+    error: string | null;
+    message: string | null;
 }
 const reducerName = 'bidSlice';
 const initialState: BidState = {
@@ -20,7 +20,7 @@ export const addBid = createAsyncThunk<
     addBidParams,
     { rejectValue: ApiError }
 >(
-    `${reducerName}/getLogger`,
+    `${reducerName}/addBid`,
     async (params, thunkAPI) => {
         return bidApi.postBid(params)
             .then((res) => thunkAPI.fulfillWithValue(res as string))
@@ -32,7 +32,7 @@ export const answerBid = createAsyncThunk<
     answerBidParams,
     { rejectValue: ApiError }
 >(
-    `${reducerName}/getLogger`,
+    `${reducerName}/answerBid`,
     async (params, thunkAPI) => {
         return bidApi.postAnswerBid(params)
             .then((res) => thunkAPI.fulfillWithValue(res as string))
@@ -43,7 +43,7 @@ export const counterBid = createAsyncThunk<
     counterBidParams,
     { rejectValue: ApiError }
 >(
-    `${reducerName}/getLogger`,
+    `${reducerName}/counterBid`,
     async (params, thunkAPI) => {
         return bidApi.postCounterBid(params)
             .then((res) => thunkAPI.fulfillWithValue(res as string))
@@ -54,9 +54,20 @@ export const editBid = createAsyncThunk<
     editBidParams,
     { rejectValue: ApiError }
 >(
-    `${reducerName}/getLogger`,
+    `${reducerName}/editBid`,
     async (params, thunkAPI) => {
         return bidApi.editBid(params)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
+export const buyProductInBid = createAsyncThunk<
+    string,
+    buyProductInBidParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/buyProductInBid`,
+    async (params, thunkAPI) => {
+        return bidApi.buyProductInBid(params)
             .then((res) => thunkAPI.fulfillWithValue(res as string))
             .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
     });
@@ -67,10 +78,10 @@ const { reducer: bidReducer, actions: bidActions } = createSlice({
     initialState,
     reducers: {
         clearBidMsg: (state) => {
-            state.message = '';
+            state.message = null;
         },
         clearBidError: (state) => {
-            state.error = '';
+            state.error = null;
         }
     },
     extraReducers: (builder) => {
@@ -118,8 +129,17 @@ const { reducer: bidReducer, actions: bidActions } = createSlice({
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during edit bid";
         });
-
-
+        builder.addCase(buyProductInBid.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(buyProductInBid.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(buyProductInBid.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during edit bid";
+        });
     }
 });
 export const { clearBidMsg, clearBidError } = bidActions;

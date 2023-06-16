@@ -9,9 +9,9 @@
 // public ArrayList<String> approveCount;
 // public ArrayList<String> approvers;
 
-import { Product } from "./Product";
+import { EmptyProduct, Product } from "./Product";
 
-export enum status { Declined = "Declined", Approved= "Approved", Pending="Pending" };
+export enum status { Declined = "Declined", Approved = "Approved", Pending = "Pending" };
 // public String counter;
 export interface Bid {
     bidId: number;
@@ -21,9 +21,22 @@ export interface Bid {
     quantity: number;
     state: status;
     time: string;
-    user: number;
+    userId: number;
     userName: string;
     approvers: string[];
     count: string;
+}
+export const EmptyBid: Bid = {
+    bidId: -1,
+    storeId: -1,
+    product: EmptyProduct,
+    offer: -1,
+    quantity: -1,
+    state: status.Pending,
+    time: '',
+    userId: -1,
+    userName: '',
+    approvers: [],
+    count: '',
 }
 

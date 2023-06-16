@@ -8,13 +8,16 @@ import Bar2 from "../../../../components/Bars/Navbar/NavBar2";
 import { Box, CardContent, Typography, Card, Divider } from "@mui/material";
 import ProductCard from "../../../../components/ProductInStore/Card";
 import axios from "axios";
-import { getProducts } from "../../../../reducers/productsSlice";
+import { clearProductError, clearProductMsg, getProducts } from "../../../../reducers/productsSlice";
 import { clearStoreError, clearStoresResponse, getStoresInfo } from "../../../../reducers/storesSlice";
 import { Action } from "../../../../types/systemTypes/Action";
 
 import React from "react";
 import SuccessAlert from "../../../../components/Alerts/success";
 import ErrorAlert from "../../../../components/Alerts/error";
+import { clearBidError, clearBidMsg } from "../../../../reducers/bidSlice";
+import { clearDiscountError, clearDiscountMsg } from "../../../../reducers/discountSlice";
+import { clearShopRuleError, clearShopRuleMessage } from "../../../../reducers/ShoppingRules";
 
 
 const Superior: React.FC = () => {
@@ -34,84 +37,23 @@ const Superior: React.FC = () => {
     const Actions = permmisions[0]?.actions ?? [];
     const canRemove = Actions?.includes(Action.removeProduct);
     const canEdit = Actions?.includes(Action.updateProduct);
-
+    debugger;
     const storeError = useAppSelector((state) => state.store.storeState.error);
     const storeMessage = useAppSelector((state) => state.store.storeState.responseData);
 
+    const bidMessage = useAppSelector((state) => state.bid.message);
+    const bidError = useAppSelector((state) => state.bid.error);
+
+    const discountMessage = useAppSelector((state) => state.discount.discountState.responseData);
+    const discountError = useAppSelector((state) => state.discount.discountState.error);
+
+    const productMessage = useAppSelector((state) => state.product.productState.responseData);
+    const productError = useAppSelector((state) => state.product.productState.error);
+
+    const shopRuleMessage = useAppSelector((state) => state.shoppingRule.message);
+    const shopRuleError = useAppSelector((state) => state.shoppingRule.error);
+
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    //const PING_INTERVAL2 = 5000; // 10 seconds in milliseconds
-
-
-    //bids
-    // const store = useAppSelector((state) => state.store.storeState.watchedStore);
-    // const permissions = useAppSelector((state) => state.auth.permissions);
-    // const actions = permissions?.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
-    // const navigate = useNavigate();
-    // const bids = useAppSelector((state) => state.store.storeState.watchedStore.bids);
-    // const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    //     setValue(newValue);
-    // };
-    // return (
-    //     <>
-    //         <Bar3 headLine={"wellcome to bidding senter"} />
-    //         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
-    //             <Tabs value={value} centered onChange={handleChange}>
-    //                 <Tab label="Auctions" onClick={() => navigate(`Auctions`)} />
-    //                 <Tab label="Lottery" onClick={() => navigate(`Lottery`)} />
-    //             </Tabs>
-    //         </Box>
-    //         <Typography variant="h6" component="div" sx={{ display: 'flex', justifyContent: 'center', flexGrow: 2 }}>
-    //             the is the bids in the store
-    //         </Typography>
-    //         <Box sx={{ display: "flex", width: '100%', mb: 2 }}>
-    //             {
-    //                 bids?.map((bid, index) => {
-    //                     return (
-    //                         <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index}>
-    //                             <CardContent>
-    //                                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-    //                                     bidId:  {bid.bidId}
-    //                                 </Typography>
-    //                                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-    //                                     storeId:  {bid.storeId}
-    //                                 </Typography>
-    //                                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-    //                                     product: {bid.product.name}
-    //                                 </Typography>
-    //                                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-    //                                     current offer: {String(bid.offer)}
-    //                                 </Typography>
-    //                                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-    //                                     product price: {bid.product.price}
-    //                                 </Typography>
-    //                                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-    //                                     time: {bid.time}
-    //                                 </Typography>
-    //                                 {bid.state === status.Approved ?
-    //                                     <Alert severity="success">approved</Alert> :
-    //                                     bid.state === status.Pending ?
-    //                                         <Alert severity="info">pending</Alert> :
-    //                                         <Alert severity="error">rejected</Alert>
-    //                                 }                                </CardContent>
-    //                             <CardActions>
-    //                                 {actions.filter((action) => action === Action.updateProduct).length > 0 ?
-    //                                     <>
-    //                                         <IconButton onClick={() => navigate(`${store.storeId}/${bid.product.productId}/${bid.bidId}/answerBid`)}>
-    //                                             <QuestionAnswerIcon />
-    //                                         </IconButton>
-    //                                         <IconButton onClick={() => navigate(`${store.storeId}/${bid.product.productId}/${bid.bidId}/counterBid`)}>
-    //                                             <WalletIcon />
-    //                                         </IconButton>
-    //                                     </>
-    //                                     : null}
-    //                             </CardActions>
-    //                         </Card>
-    //                     )
-    //                 })
-    //             }
-    //         </Box>
-    //     </>
-    // )
 
     const sendPing = () => {
         if (userId != 0) {
@@ -126,23 +68,14 @@ const Superior: React.FC = () => {
         }
     }
 
-
-    // const getC = () => {
-    //     if (token) {
-    //         dispatch(getNotifications({ userId: userId, token: token }));
-    //     }
-    // }
-
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        //const pingInterval2 = setInterval(getC, PING_INTERVAL2);
 
         dispatch(getStoresInfo());
         dispatch(getProducts());
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
-            //clearInterval(pingInterval2)
         };
     }, []);
 
@@ -162,12 +95,19 @@ const Superior: React.FC = () => {
                             {store.description}
                         </Typography >
                     </Box>
-
                 </CardContent>
             </Card>
         </Box >
         {storeMessage ? <SuccessAlert message={storeMessage} onClose={() => { dispatch(clearStoresResponse({})) }} /> : null}
         {storeError ? <ErrorAlert message={storeError} onClose={() => { dispatch(clearStoreError({})) }} /> : null}
+        {bidMessage ? <SuccessAlert message={bidMessage} onClose={() => { dispatch(clearBidMsg()) }} /> : null}
+        {bidError ? <ErrorAlert message={bidError} onClose={() => { dispatch(clearBidError()) }} /> : null}
+        {discountMessage ? <SuccessAlert message={discountMessage} onClose={() => { dispatch(clearDiscountMsg()) }} /> : null}
+        {discountError ? <ErrorAlert message={discountError} onClose={() => { dispatch(clearDiscountError()) }} /> : null}
+        {productMessage ? <SuccessAlert message={productMessage} onClose={() => { dispatch(clearProductMsg()) }} /> : null}
+        {productError ? <ErrorAlert message={productError} onClose={() => { dispatch(clearProductError()) }} /> : null}
+        {shopRuleMessage ? <SuccessAlert message={shopRuleMessage} onClose={() => { dispatch(clearShopRuleMessage()) }} /> : null}
+        {shopRuleError ? <ErrorAlert message={shopRuleError} onClose={() => { dispatch(clearShopRuleError()) }} /> : null}
 
         <Divider />
         <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >

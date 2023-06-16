@@ -1,3 +1,5 @@
+import { buyCartParams } from "./cartTypes";
+
 export interface addBidParams {
     userId: number;
     storeId: number;
@@ -26,3 +28,11 @@ export interface editBidParams {
     price: Number;
     quantity: number;
 };
+export interface buyProductInBidParams {
+    userId: number;
+    storeId: number;
+    productId: number;
+    price: Number;
+    quantity: number;
+    details: buyCartParams;
+}

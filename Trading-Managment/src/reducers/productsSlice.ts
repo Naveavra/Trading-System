@@ -96,6 +96,9 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
         setWatchedProductInfo: (state, action) => {
             state.productState.watchedProduct = state.responseData?.find((product) => product.productId === action.payload) ?? EmptyProduct;
         },
+        clearProductMsg: (state) => {
+            state.productState.responseData = null;
+        }
     },
     extraReducers: (builder) => {
         //getproducts
@@ -157,7 +160,7 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
     }
 });
 
-export const { clearProductError, clearProductsError, setWatchedProductInfo } = productsActions;
+export const { clearProductMsg, clearProductError, clearProductsError, setWatchedProductInfo } = productsActions;
 export default productsReducer;
 
 

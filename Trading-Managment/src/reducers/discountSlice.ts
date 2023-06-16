@@ -11,7 +11,7 @@ const reducerName = 'discounts';
 interface DiscountState {
     discountState: {
         isLoading: boolean;
-        responseData?: string | null;
+        responseData: string | null;
         error: string | null;
     },
     isLoading: boolean;
@@ -100,7 +100,9 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
     name: reducerName,
     initialState,
     reducers: {
-
+        clearDiscountMsg: (state) => {
+            state.discountState.responseData = null;
+        },
         setSourceToRegularDiscount: (state, { payload }) => {
             //state.discountEdges.push({ id: `e${payload}-${state.target}`, source: `${payload}`, target: `${state.target}` });
             state.target = state.target + 1;
@@ -324,6 +326,7 @@ export const {
     addRegularDiscountToSource,
     setSourceForPredicate,
     reset,
+    clearDiscountMsg,
 } = discountActions;
 export default discountReducer;
 
