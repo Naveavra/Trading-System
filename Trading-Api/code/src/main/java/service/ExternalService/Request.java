@@ -4,7 +4,7 @@ public class Request {
     private final String action_type;
     private String additional_parameters;
 
-    protected Request(String actionType) {
+    public Request(String actionType) {
         action_type = actionType;
         additional_parameters = null;
     }

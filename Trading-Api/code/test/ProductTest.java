@@ -1,5 +1,6 @@
 package store;
 
+import database.Dao;
 import domain.store.product.Product;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ProductTest {
     @BeforeAll
     public static void startUp(){
-
+        Dao.setForTests(true);
     }
 
     @Test

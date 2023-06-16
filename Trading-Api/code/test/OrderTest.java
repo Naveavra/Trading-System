@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import database.Dao;
 import domain.store.product.Product;
 import domain.user.Basket;
 import domain.user.Guest;
@@ -41,6 +42,7 @@ public class OrderTest {
         HashMap<Integer, List<ProductInfo>> expected = new HashMap<>();
         expected.put(storeID, products.getContent());
         assertEquals(expected.get(storeID).size(), order.getProductsInStores().size());
+        Dao.setForTests(true);
     }
 
     @Test

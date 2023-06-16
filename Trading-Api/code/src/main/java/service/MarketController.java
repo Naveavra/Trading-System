@@ -81,21 +81,19 @@ public class MarketController {
     }
 
     public int addProduct(int storeId, String name, String description, int price, int quantity, List<String> categories) throws Exception{
-        int id = storectrl.addProduct(storeId,name,description,price,quantity);
+        int id = storectrl.addProduct(storeId,name,description,price,quantity, categories);
         if(id == -1){
             throw new Exception("Something went wrong in adding product");
         }
-        storectrl.addToCategory(storeId,id,categories);
         return id;
     }
 
     public int addProduct(int storeId, String name, String description, int price, int quantity,
                           List<String> categories, String img) throws Exception{
-        int id = storectrl.addProduct(storeId,name,description,price,quantity, img);
+        int id = storectrl.addProduct(storeId,name,description,price,quantity, img, categories);
         if(id == -1){
             throw new Exception("Something went wrong in adding product");
         }
-        storectrl.addToCategory(storeId,id,categories);
         return id;
     }
     public ProductInfo getProductInformation(int storeId, int productId) throws Exception {
@@ -228,7 +226,7 @@ public class MarketController {
      * @param filterOptions
      * @return json string representation of the selected products.
      */
-    public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) {
+    public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) throws Exception{
         return storectrl.filterBy(filterOptions);
     }
 

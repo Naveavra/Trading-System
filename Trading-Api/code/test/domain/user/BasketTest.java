@@ -1,5 +1,6 @@
 package domain.user;
 
+import database.Dao;
 import domain.store.product.Product;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ class BasketTest {
         p =  new ProductInfo(0, apple, 10);
         banana = new Product(0, 1, "banana", "yellow banana");
         p2 =  new ProductInfo(0, banana, 10);
+        Dao.setForTests(true);
     }
 
     //product - int prod_id, String _name, String desc

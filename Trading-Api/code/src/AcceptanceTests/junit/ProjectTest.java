@@ -7,6 +7,7 @@ import java.util.List;
 import bridge.Bridge;
 import bridge.Driver;
 import data.*;
+import database.Dao;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,7 @@ public abstract class ProjectTest{
 
 
     // Store, admin, appointment
-    AdminInfo mainAdmin = new AdminInfo(1,"admin@gmail.com", "admin");
+    AdminInfo mainAdmin = new AdminInfo(1,"admin@gmail.com", "admin1A");
     public static final int USER_EMAIL = 0, USER_USER = 1, USER_PASS = 2, USER_BIRTHDAY = 3;
     public static final int ADMIN_ID = 0, ADMIN_USER = 1, ADMIN_PASS = 2;
     protected final String[][] admins = {{"2","admin1@gmail.com", "admin1A"}};
@@ -39,6 +40,7 @@ public abstract class ProjectTest{
 
     @BeforeEach
     public void setUp() {
+        Dao.setForTests(true);
         this.bridge = Driver.getBridge();
         setUpTradingSystem();
         setUpAdmins();
@@ -115,7 +117,7 @@ public abstract class ProjectTest{
         payment.put("month", "01");
         payment.put("year", "30");
         payment.put("holder", "Israel Visceral");
-        payment.put("ccv", "000");
+        payment.put("ccv", "986");
         payment.put("id", "123456789");
         return payment;
     }

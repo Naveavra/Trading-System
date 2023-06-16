@@ -147,7 +147,7 @@ const DashboardPage: React.FC = () => {
         return () => {
             clearInterval(pingInterval)
         };
-    }, [userId, dispatch, token, userName])
+    }, [userId, dispatch, token, userName, storeId])
     const handleSet = (text: string) => {
         setText(text);
     }

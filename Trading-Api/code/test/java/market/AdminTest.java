@@ -1,5 +1,6 @@
 package market;
 
+import database.Dao;
 import domain.store.storeManagement.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ class AdminTest {
         market = new Market(a);
         adminId = market.login("eli@gmail.com", "123Aaa").getValue().getUserId();
         token = market.addTokenForTests();
+        Dao.setForTests(true);
     }
 
     @Test

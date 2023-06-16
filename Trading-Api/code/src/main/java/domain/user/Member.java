@@ -38,9 +38,6 @@ public class Member extends Subscriber implements User{
     private PurchaseHistory purchaseHistory;
 
     public Member(){
-//        setCartFromDb();
-//        setRolesFromDb();
-//        setPurchaseHistoryFromDb();
     }
     public Member(int id, String email, String password, String birthday) {
         super(id, email, password);
@@ -86,18 +83,18 @@ public class Member extends Subscriber implements User{
     }
     private void setNewEmail(String newEmail){
         email = newEmail;
-        Dao.update(this);
+        Dao.save(this);
     }
 
     private void setNewBirthday(String newBirthday){
         this.birthday = newBirthday;
-        Dao.update(this);
+        Dao.save(this);
     }
 
     public void setMemberPassword(String oldPassword, String newPassword) throws Exception {
         if(password.equals(oldPassword)){
             password = newPassword;
-            Dao.update(this);
+            Dao.save(this);
         }
         else
             throw new Exception("wrong password entered, can't change to a new password");
@@ -358,6 +355,8 @@ public class Member extends Subscriber implements User{
         bids.add(bid);
     }
     public List<Bid> getBids(){return this.bids;}
+
+    //database
 
     public ShoppingCart getCartFromDb(){
         if(cart == null) {

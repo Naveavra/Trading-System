@@ -1,4 +1,5 @@
 
+import database.Dao;
 import domain.states.StoreCreator;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
@@ -40,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
             node4 = new Pair<>(m4, new StoreOwner(m4.getId(), m4.getName(), null));
             node5 = new Pair<>(m5, new StoreOwner(m5.getId(), m5.getName(), null));
             root = new AppHistory(0, node0);
+            Dao.setForTests(true);
         }
 
         @Test

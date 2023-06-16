@@ -8,6 +8,7 @@ import domain.user.StringChecks;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
 import org.json.JSONObject;
+import server.Config.ESConfig;
 import service.security.UserAuth;
 import service.ExternalService.Supplier.ProxySupplier;
 import service.UserController;
@@ -37,28 +38,55 @@ public class Market implements MarketInterface {
     private final Logger logger;
 
     private HashMap<Integer, Action> actionIds;
-
     private MarketInfo marketInfo;
 
-    public Market(Admin a) {
+    public Market(Admin admin, ESConfig payment, ESConfig supply) {
 
         logger = Logger.getInstance();
         userController = new UserController();
         marketController = new MarketController();
 
         userAuth = new UserAuth();
+        try {
+            proxyPayment = new ProxyPayment(payment);
+            proxySupplier = new ProxySupplier(supply);
+        } catch (Exception e) {
+            // Handle the exception appropriately (e.g., log the error, terminate the program)
+            System.err.println("Error with the connection to the external service: " + e.getMessage());
+            System.exit(1); // Terminate the program
+        }
+
+        marketInfo = new MarketInfo();
+
+        actionIds = Permissions.getActionIds();
+
+        addAdmin(admin);
+    }
+
+    public Market(Admin admin) {
+
+        logger = Logger.getInstance();
+        userController = new UserController();
+        marketController = new MarketController();
+
+        userAuth = new UserAuth();
+//        TODO
 //        try {
-//            proxyPayment = new ProxyPayment();
-//            proxySupplier = new ProxySupplier();
+//            proxyPayment = new ProxyPayment(payment);
+//            proxySupplier = new ProxySupplier(supply);
 //        } catch (Exception e) {
-//            System.out.println(e.getMessage());
+//            throw new RuntimeException(e);
 //        }
 
         marketInfo = new MarketInfo();
 
         actionIds = Permissions.getActionIds();
 
-        addAdmin(a);
+        Response<String> res = addAdmin(admin);
+        if(res.errorOccurred()) {
+            //TODO: what to throw here
+            //throw new Exception(res.getErrorMessage());
+        }
     }
 
 
@@ -155,13 +183,6 @@ public class Market implements MarketInterface {
         userController.addNotification(userId, notification);
     }
 
-    private List<String> toStringList(List<Notification> notifications) {
-        return notifications
-                .stream()
-                .map(notification -> notification.toString())
-                .collect(Collectors.toList());
-    }
-
     @Override
     public Response<List<Notification>> displayNotifications(int userId, String token) {
         try {
@@ -169,7 +190,7 @@ public class Market implements MarketInterface {
             List<Notification> notifications = userController.displayNotifications(userId);
             return logAndRes(Event.LogStatus.Success, "user got notifications successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
-                    toStringList(notifications), null, null);
+                    notifications, null, null);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant get his notifications because " + e.getMessage(),
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -459,12 +480,16 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response<List<? extends Information>> filterBy(HashMap<String, String> filterOptions) {
-        ArrayList<ProductInfo> result = marketController.filterBy(filterOptions);
-        if (result.isEmpty()) {
-            return new Response<>(null, "No products found by those filter options", "result array is empty, no products found");
+    public Response<List<? extends Information>> filterBy(HashMap<String, String> filterOptions){
+        try {
+            ArrayList<ProductInfo> result = marketController.filterBy(filterOptions);
+            if (result.isEmpty()) {
+                return new Response<>(null, "No products found by those filter options", "result array is empty, no products found");
+            }
+            return new Response<>(result, null, null);
+        }catch (Exception e){
+            return new Response<>(null, "filterFailed", e.getMessage());
         }
-        return new Response<>(result, null, null);
     }
 
     @Override
@@ -869,9 +894,14 @@ public class Market implements MarketInterface {
         }
     }
 
-    private void addAdmin(Admin a) {
-        String hashedPass = userAuth.hashPassword(a.getName(), a.getPassword());
-        userController.addAdmin(a, hashedPass);
+    private Response<String> addAdmin(Admin a) {
+        try {
+            String hashedPass = userAuth.hashPassword(a.getName(), a.getPassword());
+            userController.addAdmin(a, hashedPass, a.getPassword());
+            return new Response<>("admin was added successfully", null, null);
+        }catch (Exception e){
+            return new Response<>(null, "add admin failed", e.getMessage());
+        }
     }
 
     @Override
