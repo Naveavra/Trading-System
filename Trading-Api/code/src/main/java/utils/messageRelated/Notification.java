@@ -1,6 +1,7 @@
 package utils.messageRelated;
 
 
+import database.DbEntity;
 import domain.user.Subscriber;
 import jakarta.persistence.*;
 import org.json.JSONObject;
@@ -8,7 +9,7 @@ import utils.infoRelated.Information;
 
 @Entity
 @Table(name = "notifications")
-public class Notification extends Information {
+public class Notification extends Information implements DbEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -64,5 +65,9 @@ public class Notification extends Information {
 
     public void setSubId(int subId) {
         this.subId = subId;
+    }
+
+    @Override
+    public void initialParams() {
     }
 }

@@ -1,23 +1,17 @@
 package domain.states;
 
 
+import database.DbEntity;
 import jakarta.persistence.*;
 import utils.stateRelated.Action;
 
 @Entity
 @Table(name = "permissions")
-public class Permission {
-
-
+public class Permission implements DbEntity {
     @Id
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "storeId", foreignKey = @ForeignKey, referencedColumnName = "storeId"),
-            @JoinColumn(name = "userId", foreignKey = @ForeignKey, referencedColumnName = "userId")
-    })
-    private UserState state;
-
-
+    private int userId;
+    @Id
+    private int storeId;
     @Id
     @Enumerated(EnumType.STRING)
     private Action permission;
@@ -25,18 +19,12 @@ public class Permission {
     public Permission(){
     }
 
-    public Permission(UserState state, Action permission){
-        this.state = state;
+    public Permission(int userId, int storeId, Action permission){
+        this.userId = userId;
+        this.storeId = storeId;
         this.permission = permission;
     }
 
-    public UserState getState() {
-        return state;
-    }
-
-    public void setState(UserState state) {
-        this.state = state;
-    }
 
     public Action getPermission() {
         return permission;
@@ -45,4 +33,23 @@ public class Permission {
     public void setPermission(Action permission) {
         this.permission = permission;
     }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
+    @Override
+    public void initialParams() {}
 }

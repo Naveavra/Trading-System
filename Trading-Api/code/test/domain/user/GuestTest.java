@@ -20,12 +20,12 @@ class GuestTest {
 
     @BeforeEach
     void setUp() {
+        Dao.setForTests(true);
         apple = new Product(0, 0, "apple", "red apple");
         p =  new ProductInfo(0, apple, 10);
         banana = new Product(0, 1, "banana", "yellow banana");
         p2 =  new ProductInfo(0, banana, 10);
         guest = new Guest(2);
-        Dao.setForTests(true);
     }
 
     @AfterEach

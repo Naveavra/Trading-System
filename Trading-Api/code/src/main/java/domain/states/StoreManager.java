@@ -4,6 +4,7 @@ package domain.states;
 import database.Dao;
 import domain.store.storeManagement.Store;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
@@ -13,14 +14,42 @@ import java.util.List;
 @Entity
 public class StoreManager extends UserState {
 
+    @Transient
+    private List<Action> actions;
+
+    @Transient
+    private List<Action> addedActions;
+
     public StoreManager(){
+        actions = new LinkedList<>();
+        addedActions = new LinkedList<>();
+
+        actions.add(Action.viewMessages);
+        actions.add(Action.answerMessage);
+        actions.add(Action.seeStoreHistory);
+        actions.add(Action.seeStoreOrders);
+        actions.add(Action.checkWorkersStatus);
+
+        addedActions.add(Action.viewMessages);
+        addedActions.add(Action.answerMessage);
+        addedActions.add(Action.seeStoreHistory);
+        addedActions.add(Action.seeStoreOrders);
+        addedActions.add(Action.checkWorkersStatus);
+        addedActions.add(Action.changeStoreDetails);
+        addedActions.add(Action.changePurchasePolicy);
+        addedActions.add(Action.changeDiscountPolicy);
+        addedActions.add(Action.addPurchaseConstraint);
+        addedActions.add(Action.addDiscountConstraint);
+        addedActions.add(Action.addProduct);
+        addedActions.add(Action.removeProduct);
+        addedActions.add(Action.updateProduct);
     }
 
     public  StoreManager(int memberId, String name, Store store){
         super(memberId, name, store);
         role = Role.Manager;
-        List<Action> actions = new LinkedList<>();
-        List<Action> addedActions = new LinkedList<>();
+        actions = new LinkedList<>();
+        addedActions = new LinkedList<>();
 
 
         actions.add(Action.viewMessages);
@@ -30,7 +59,7 @@ public class StoreManager extends UserState {
         actions.add(Action.checkWorkersStatus);
 
         for(Action a : actions)
-            permissionList.add(new Permission(this, a));
+            Dao.save(new Permission(userId, storeId, a));
         permissions.addActions(actions);
 
 
@@ -54,9 +83,7 @@ public class StoreManager extends UserState {
     public void addAction(Action a) throws Exception{
         if (!checkPermission(a)) {
             if (checkHasAvailableAction(a)) {
-                Permission p = new Permission(this, a);
-                permissionList.add(p);
-                Dao.save(p);
+                Dao.save(new Permission(userId, storeId, a));
                 permissions.addAction(a);
             }
             else
@@ -70,10 +97,17 @@ public class StoreManager extends UserState {
     public void removeAction(Action a) throws Exception{
         if (checkPermission(a)) {
             permissions.removeAction(a);
-            permissionList.removeIf(p -> a == p.getPermission());
-            Dao.removeIf("Permission", String.format("permission = %s", a.toString()));
+            Dao.removeIf(Permission.class,"Permission", String.format("permission = '%s'", a.toString()));
         }
         else
             throw new Exception("the manager does not have this action");
+    }
+
+    @Override
+    protected void getPermissionsFromDb() {
+        getPermissionsHelp();
+        for(Action a : addedActions)
+            if(!permissions.checkPermission(a))
+                permissions.addPossibleAction(a);
     }
 }

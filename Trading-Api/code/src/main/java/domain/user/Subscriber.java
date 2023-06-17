@@ -1,17 +1,15 @@
 package domain.user;
 
 import database.Dao;
+import database.DbEntity;
 import jakarta.persistence.*;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
@@ -20,9 +18,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public abstract class Subscriber {
+public abstract class Subscriber implements DbEntity{
 
     @Id
+    @SequenceGenerator(name = "ids", sequenceName = "ids", initialValue = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ids")
     protected int id;
     protected String email;
     protected String birthday;
@@ -36,8 +36,7 @@ public abstract class Subscriber {
 
     public Subscriber(){
     }
-    public Subscriber(int id, String email, String password){
-        this.id = id;
+    public Subscriber(String email, String password){
         this.email = email;
         this.password = password;
         this.birthday = "no input";
@@ -77,7 +76,6 @@ public abstract class Subscriber {
     }
 
     public synchronized void addNotification(Notification notification){
-        setNotificationsFromDb();
         notification.setSubId(id);
         boolean got = notifications.offer(notification);
         if(got)
@@ -85,9 +83,8 @@ public abstract class Subscriber {
     }
 
     public List<Notification> displayNotifications(){
-        setNotificationsFromDb();
         List<Notification> display = new LinkedList<>(notifications);
-        Dao.removeIf("Notification", String.format("subId = %d", id));
+        Dao.removeIf(Notification.class,"Notification", String.format("subId = %d", id));
         notifications.clear();
         return display;
     }
@@ -105,10 +102,11 @@ public abstract class Subscriber {
         }
     }
 
-    public void setNotificationsFromDb(){
+    public void initialNotificationsFromDb(){
         if(notifications == null) {
             notifications = new LinkedBlockingQueue<>();
-            for (Notification n : (List<Notification>) Dao.getListById(Notification.class, id, "Notification", "subId"))
+            List<? extends DbEntity> notifics = Dao.getListById(Notification.class, id, "Notification", "subId");
+            for (Notification n : (List<Notification>) notifics)
                 addNotification(n);
         }
     }

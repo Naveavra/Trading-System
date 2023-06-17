@@ -33,22 +33,22 @@ class StoreTest {
 
     Order orderA, orderB;
     ProductInfo p, p2;
-    Member creator = new Member(0, "eli@gmail.com", "123Aaa", "24/02/2002");
-    Member worker = new Member(1, "eli1@gmail.com", "123Aaa", "24/02/2002");
-    Member worker2 = new Member(2, "eli2@gmail.com", "123Aaa", "24/02/2002");
+    Member creator = new Member("eli@gmail.com", "123Aaa", "24/02/2002");
+    Member worker = new Member("eli1@gmail.com", "123Aaa", "24/02/2002");
+    Member worker2 = new Member("eli2@gmail.com", "123Aaa", "24/02/2002");
 
     @BeforeEach
     void setUp() throws Exception {
         Dao.setForTests(true);
-        store = new Store(1, "candy shop", creator);
+        store = new Store("candy shop", creator);
         List<String> categories = new ArrayList<>();
         store.addNewProduct("gum", "gumigun", new AtomicInteger(0), 10, 3, categories);
         store.getInventory().getProduct(0).replaceQuantity(10);
         store.addNewProduct("coke", "diet", new AtomicInteger(1), 10, 3, categories);
         store.getInventory().getProduct(1).replaceQuantity(10);
-        store.appointUser(0, worker, new StoreManager(worker.getId(), worker.getName(), null));
-        store.appointUser(1, worker2, new StoreManager(worker2.getId(), worker2.getName(), null));
-        member = new Member(2, "lala@gmail.com", "aA12345", "31/08/2022");
+        store.appointUser(creator.getId(), worker, new StoreManager(worker.getId(), worker.getName(), null));
+        store.appointUser(worker.getId(), worker2, new StoreManager(worker2.getId(), worker2.getName(), null));
+        member = new Member("lala@gmail.com", "aA12345", "31/08/2022");
         ShoppingCart cart = new ShoppingCart();
         p = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(0), 10);
         p2 = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(1), 10);
@@ -65,9 +65,9 @@ class StoreTest {
     }
     @Test
     void getStoreRating() throws Exception {
-        StoreReview review = new StoreReview(0, "great store", member, orderA_Id,
+        StoreReview review = new StoreReview("great store", member, orderA_Id,
                 store.getStoreId(), 4);
-        StoreReview reviewB = new StoreReview(1, "shitty store", member, orderB_Id,
+        StoreReview reviewB = new StoreReview("shitty store", member, orderB_Id,
                 store.getStoreId(), 2);
         store.addReview(orderA_Id, review);
         store.addReview(orderB_Id, reviewB);
@@ -80,7 +80,7 @@ class StoreTest {
     void invalidAddReview() throws Exception {
         Exception exception = assertThrows(Exception.class, () -> {
             int invalidOrderId = 3;
-            StoreReview review = new StoreReview(0, "great store", member, invalidOrderId,
+            StoreReview review = new StoreReview("great store", member, invalidOrderId,
                     store.getStoreId(), 5);
             store.addReview(invalidOrderId, review);
         });
@@ -175,9 +175,9 @@ class StoreTest {
 
     @Test
     void getMessages() throws Exception {
-        StoreReview review = new StoreReview(0,"great store", member, orderA_Id,
+        StoreReview review = new StoreReview("great store", member, orderA_Id,
                 store.getStoreId(), 5);
-        StoreReview reviewB = new StoreReview(1, "shitty store", member,
+        StoreReview reviewB = new StoreReview("shitty store", member,
                 orderB_Id, store.getStoreId(), 0);
         store.addReview(orderA_Id, review);
         store.addReview(orderB_Id, reviewB);

@@ -44,8 +44,8 @@ public class DiscountTest {
     Store s2;
     Inventory inv1;
     Inventory inv2;
-    Member creator = new Member(0, "eli@gmail.com", "123Aaa", "24/02/2002");
-    Member worker = new Member(1, "eli1@gmail.com", "123Aaa", "24/02/2002");
+    Member creator = new Member("eli@gmail.com", "123Aaa", "24/02/2002");
+    Member worker = new Member("eli1@gmail.com", "123Aaa", "24/02/2002");
 
     @BeforeEach
     void setUp() throws Exception{
@@ -54,8 +54,7 @@ public class DiscountTest {
         storeCtrl = new StoreController();
 
         //inventory 1 items
-        storeCtrl.createNewStore(creator,"Shoes and stuff");
-        s1 = storeCtrl.getStore(0);
+        s1 = storeCtrl.createNewStore(creator,"Shoes and stuff");
         inv1 = s1.getInventory();
         //Products
         List<String> categories = new ArrayList<>();
@@ -74,8 +73,7 @@ public class DiscountTest {
         inv1.addToCategory(Laptops,s1Product3ID);
 
         //inventory 2 items
-        storeCtrl.createNewStore(worker,"Slippers and stuff");
-        s2 = storeCtrl.getStore(1);
+        s2 = storeCtrl.createNewStore(worker,"Slippers and stuff");
         inv2 = s2.getInventory();
         inv2.addProduct("Banana","",inventoryIds2,10,5, categories);
         s2Product1ID = inventoryIds2.get()-1;

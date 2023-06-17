@@ -1,8 +1,8 @@
 package utils.messageRelated;
 
+import database.Dao;
 import domain.user.Member;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.json.JSONObject;
 
@@ -18,18 +18,19 @@ public class Complaint extends Message{
         this.opcode = NotificationOpcode.GET_ADMIN_DATA;
     }
 
-    public Complaint(int messageId, String content, Member reviewer, int orderId){
-        super(messageId, NotificationOpcode.GET_ADMIN_DATA, content, reviewer);
+    public Complaint(String content, Member reviewer, int orderId){
+        super(NotificationOpcode.GET_ADMIN_DATA, content, reviewer);
         this.orderId = orderId;
         this.gotFeedback = false;
+        Dao.save(this);
     }
 
     public void sendFeedback(String feedback) throws Exception{
-        setSenderDb();
         if(!gotFeedback) {
-                Notification notification = new Notification(NotificationOpcode.GET_STORE_DATA_AND_COMPLAINS, feedback);
-                sender.addNotification(notification);
-                gotFeedback = true;
+            Notification notification = new Notification(NotificationOpcode.GET_STORE_DATA_AND_COMPLAINS, feedback);
+            sender.addNotification(notification);
+            gotFeedback = true;
+            Dao.save(this);
         }
         else throw new Exception("the complaint already got an answer");
 

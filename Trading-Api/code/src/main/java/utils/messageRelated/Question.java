@@ -16,14 +16,13 @@ public class Question extends Message{
     public Question(){
         this.opcode = NotificationOpcode.GET_STORE_DATA;
     }
-    public Question(int messageId, String content, Member reviewer, int storeId){
-        super(messageId, NotificationOpcode.GET_STORE_DATA, content, reviewer);
+    public Question(String content, Member reviewer, int storeId){
+        super(NotificationOpcode.GET_STORE_DATA, content, reviewer);
         this.storeId = storeId;
         this.gotFeedback = false;
     }
 
     public void sendFeedback(String feedback) throws Exception{
-        setSenderDb();
         if(!gotFeedback) {
             Notification notification = new Notification(NotificationOpcode.GET_STORE_DATA_AND_COMPLAINS, feedback);
             sender.addNotification(notification);

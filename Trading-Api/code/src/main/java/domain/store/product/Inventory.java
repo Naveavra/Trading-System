@@ -2,6 +2,7 @@ package domain.store.product;
 
 
 import database.Dao;
+import database.DbEntity;
 import database.dtos.CategoryDto;
 import domain.user.Member;
 import utils.Filter.ProductFilter;
@@ -14,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Inventory {
+public class Inventory{
     private int storeId;
     private ConcurrentHashMap<Integer, Product> productList; // <id, product>
     private ConcurrentHashMap<String,ArrayList<Integer>> categories; // <Category String,<List<ProductID>>
@@ -230,7 +231,7 @@ public class Inventory {
                 prodIds.removeIf(id -> id == productId);
             }
         }
-        Dao.removeIf("CategoryDto", String.format("productId = %d", productId));
+        Dao.removeIf(CategoryDto.class,"CategoryDto", String.format("productId = %d", productId));
     }
 
     public void updateProduct(int productId, List<String> categories,String name, String description,
@@ -277,7 +278,7 @@ public class Inventory {
                 category.remove(Integer.valueOf(productId));
             }
         }
-        Dao.removeIf("CategoryDto", String.format("productId = %d", productId));
+        Dao.removeIf(CategoryDto.class, "CategoryDto", String.format("productId = %d", productId));
         for(String category: categories){
             addToCategory(category,productId);
         }
@@ -288,7 +289,7 @@ public class Inventory {
         if(rating < 0 || rating > 5)
             throw new Exception("the rating given is not between 0 and 5");
         Product p = getProduct(productID);
-        p.addReview(new ProductReview(-1, "not important", new Member(-1, "ni", "ni", "ni"), -1, storeId, productID, rating));
+        p.addReview(new ProductReview("not important", new Member("ni", "ni", "ni"), -1, storeId, productID, rating));
 
     }
     public ArrayList<ProductInfo> filterBy(ProductFilter filter,double storeRating) throws Exception{
@@ -326,8 +327,8 @@ public class Inventory {
     public ConcurrentHashMap<String,ArrayList<Integer>> getCategoriesFromDb(){
         if(categories == null){
             categories = new ConcurrentHashMap<>();
-            List<CategoryDto> cats = (List<CategoryDto>) Dao.getListById(CategoryDto.class, storeId, "CategoryDto", "storeId");
-            for(CategoryDto cat : cats){
+            List<? extends DbEntity> cats = Dao.getListById(CategoryDto.class, storeId, "CategoryDto", "storeId");
+            for(CategoryDto cat : (List<CategoryDto>)cats){
                 if(!categories.containsKey(cat.getCategoryName()))
                     categories.put(cat.getCategoryName(), new ArrayList<>());
                 categories.get(cat.getCategoryName()).add(cat.getProductId());
@@ -337,8 +338,8 @@ public class Inventory {
     }
 
     public ConcurrentHashMap<Integer, Product> getProductsFromDb(){
-        List<Product> products = (List<Product>) Dao.getListById(Product.class, storeId, "Product", "storeId");
-        for(Product p : products)
+        List<? extends DbEntity> products = Dao.getListById(Product.class, storeId, "Product", "storeId");
+        for(Product p : (List<Product>) products)
             if(!productList.containsKey(p.productId))
                 productList.put(p.productId, p);
         return productList;

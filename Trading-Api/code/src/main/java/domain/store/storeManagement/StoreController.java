@@ -1,6 +1,7 @@
 package domain.store.storeManagement;
 
 import database.Dao;
+import database.DbEntity;
 import domain.store.discount.AbstractDiscount;
 import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.discount.discountDataObjects.PredicateDataObject;
@@ -29,13 +30,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StoreController {
 
     public ConcurrentHashMap<Integer, Store> storeList; //storeid, Store
-    AtomicInteger storescounter;
     AtomicInteger productIDs = new AtomicInteger(0);
     ConcurrentHashMap<Integer, Product> products; //for fast access
 
     public StoreController() {
         storeList = new ConcurrentHashMap<>();
-        storescounter = new AtomicInteger(0);
         products = new ConcurrentHashMap<>();
     }
 
@@ -90,13 +89,13 @@ public class StoreController {
     }
 
     public Store openStore(String desc, Member user) {
-        Store store = new Store(storescounter.getAndIncrement(), desc, user);
+        Store store = new Store(desc, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
 
     public Store openStore(String name, String desc, String img, Member user) {
-        Store store = new Store(storescounter.getAndIncrement(), name, desc, img, user);
+        Store store = new Store(name, desc, img, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
@@ -213,9 +212,8 @@ public class StoreController {
 
 
     public Store createNewStore(Member creator, String description) {
-        Store store = new Store(storescounter.get(), description, creator);
-        int storeid = storescounter.getAndIncrement();
-        storeList.put(storeid, store);
+        Store store = new Store(description, creator);
+        storeList.put(store.getStoreId(), store);
         return store;
     }
 
@@ -290,7 +288,7 @@ public class StoreController {
         Store store = getStore(storeId);
         if(store != null){
             storeList.remove(storeId);
-            Dao.removeIf("Store", String.format("storeId = %d", storeId));
+            Dao.removeIf(Store.class, "Store", String.format("storeId = %d", storeId));
             return store.getUsersInStore();
         }
         else
@@ -425,8 +423,8 @@ public class StoreController {
 
     //database
     public void getStoresFromDb(){
-        List<Store> stores = (List<Store>) Dao.getAllInTable("Store");
-        for(Store s : stores) {
+        List<? extends DbEntity> stores = Dao.getAllInTable("Store");
+        for(Store s : (List<Store>) stores) {
             if(!storeList.containsKey(s.getStoreId()))
                 storeList.put(s.getStoreId(), s);
         }

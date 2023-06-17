@@ -21,16 +21,20 @@ import utils.infoRelated.Receipt;
 import utils.messageRelated.*;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 
 public class HibernateUtil {
     private static SessionFactory sessionFactory;
     private static Properties settings = ConfigParser.getInstance().getDBSetting();
+    public static boolean createDrop = false;
     public static SessionFactory getSessionFactory(){
         if(sessionFactory == null){
             try{
                 Configuration configuration = new Configuration();
-
+                if(createDrop)
+                    settings.put(Environment.HBM2DDL_AUTO, "create-drop");
+                java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.WARNING);
                 configuration.setProperties(settings);
                 //TODO: add all tables needed to here
                 configuration.addAnnotatedClass(Member.class);

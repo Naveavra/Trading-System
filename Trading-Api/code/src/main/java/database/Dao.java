@@ -11,15 +11,15 @@ import java.util.List;
 
 public class Dao {
 
-    private static HashMap<Class, HashMap<Integer, Object>> identityMap;
+    private static HashMap<Class, HashMap<Integer, DbEntity>> identityMap;
     private static boolean forTests = false;
 
     public static void setForTests(boolean forTestsTmp){
         forTests = forTestsTmp;
     }
 
-    public static void save(Object o){
-        if(!forTests) {
+    public static void save(DbEntity o){
+//        if(!forTests) {
             Transaction transaction = null;
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
                 transaction = session.beginTransaction();
@@ -29,10 +29,10 @@ public class Dao {
                 if (transaction != null)
                     transaction.rollback();
             }
-        }
+//        }
     }
 
-    public static void remove(Object o) {
+    public static void remove(DbEntity o) {
         if(!forTests) {
             Transaction transaction = null;
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -46,16 +46,16 @@ public class Dao {
         }
     }
 
-    public static Object getById(Class c, int id){
+    public static DbEntity getById(Class c, int id){
         if(!forTests) {
-            Object o = getObjectIfLoaded(c, id);
+            DbEntity o = getObjectIfLoaded(c, id);
             if (o != null)
                 return o;
             Transaction transaction = null;
             o = null;
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
                 transaction = session.beginTransaction();
-                o = session.get(c, id);
+                o = (DbEntity) session.get(c, id);
                 putInMap(c, id, o);
                 transaction.commit();
             } catch (Exception e) {
@@ -68,15 +68,17 @@ public class Dao {
         return null;
     }
 
-    public static Object getByParam(Class c, String entityName, String param){
+    public static DbEntity getByParam(Class c, String entityName, String param){
         if(!forTests) {
             Transaction transaction = null;
-            Object o = null;
+            DbEntity o = null;
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
                 transaction = session.beginTransaction();
                 String sql = String.format("FROM %s WHERE %s", entityName, param);
-                Query query = session.createQuery(sql, c);
+                Query<DbEntity> query = session.createQuery(sql, c);
                 o = query.uniqueResult();
+                if(o!= null)
+                    o.initialParams();
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -88,15 +90,17 @@ public class Dao {
         return null;
     }
 
-    public static List<?> getAllInTable(String entityName){
+    public static List<DbEntity> getAllInTable(String entityName){
         if(!forTests) {
             Transaction transaction = null;
-            List<?> list = new ArrayList<>();
+            List<DbEntity> list = new ArrayList<>();
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
                 transaction = session.beginTransaction();
                 String sql = String.format("FROM %s", entityName);
-                Query query = session.createQuery(sql);
+                Query<DbEntity> query = session.createQuery(sql);
                 list = query.list();
+                for(DbEntity db : list)
+                    db.initialParams();
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -108,15 +112,17 @@ public class Dao {
         return new ArrayList<>();
     }
 
-    public static List<?> getListById(Class c, int id, String entityName, String param){
+    public static List<DbEntity> getListById(Class c, int id, String entityName, String param){
         if(!forTests) {
             Transaction transaction = null;
-            List<?> list = new ArrayList<>();
+            List<DbEntity> list = new ArrayList<>();
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
                 transaction = session.beginTransaction();
                 String sql = String.format("FROM %s WHERE %s = %d", entityName, param, id);
-                Query query = session.createQuery(sql, c);
+                Query<DbEntity> query = session.createQuery(sql, c);
                 list = query.list();
+                for(DbEntity db : list)
+                    db.initialParams();
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -128,15 +134,17 @@ public class Dao {
         return new ArrayList<>();
     }
 
-    public static List<?> getListByCompositeKey(Class c, int id1, int id2, String entityName, String param1, String param2){
+    public static List<DbEntity> getListByCompositeKey(Class c, int id1, int id2, String entityName, String param1, String param2){
         if(!forTests) {
             Transaction transaction = null;
-            List<?> list = new ArrayList<>();
+            List<DbEntity> list = new ArrayList<>();
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
                 transaction = session.beginTransaction();
                 String sql = String.format("FROM %s WHERE %s = %d and %s = %d", entityName, param1, id1, param2, id2);
-                Query query = session.createQuery(sql, c);
+                Query<DbEntity> query = session.createQuery(sql, c);
                 list = query.list();
+                for(DbEntity db : list)
+                    db.initialParams();
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -148,7 +156,7 @@ public class Dao {
         return new ArrayList<>();
     }
 
-    public static void removeIf(String entityName, String param) {
+    public static void removeIf(Class c, String entityName, String param) {
         if(!forTests) {
             Transaction transaction = null;
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -162,6 +170,7 @@ public class Dao {
                 if (transaction != null)
                     transaction.rollback();
             }
+            removeFromIdentityMap(c);
         }
     }
 
@@ -182,7 +191,7 @@ public class Dao {
         }
     }
 
-    private static Object getObjectIfLoaded(Class c, int id){
+    private static DbEntity getObjectIfLoaded(Class c, int id){
         if(!forTests) {
             if (identityMap == null)
                 identityMap = new HashMap<>();
@@ -194,12 +203,24 @@ public class Dao {
         return null;
     }
 
-    private static void putInMap(Class c, int id, Object o) {
+    private static void putInMap(Class c, int id, DbEntity o) {
         if(!forTests) {
             if (o != null) {
+                o.initialParams();
                 if (!identityMap.containsKey(c))
                     identityMap.put(c, new HashMap<>());
                 identityMap.get(c).put(id, o);
+            }
+        }
+    }
+
+    private static void removeFromIdentityMap(Class c) {
+        if(!forTests){
+            HashMap<Integer, DbEntity> val = identityMap.get(c);
+            if(val != null) {
+                for (int id : val.keySet())
+                    if (getById(c, id) == null)
+                        val.remove(id);
             }
         }
     }

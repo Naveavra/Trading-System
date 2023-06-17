@@ -1,6 +1,7 @@
 package utils.messageRelated;
 
 import database.Dao;
+import database.DbEntity;
 import domain.user.Member;
 import jakarta.persistence.*;
 import org.json.JSONObject;
@@ -8,9 +9,10 @@ import utils.infoRelated.Information;
 
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public abstract class Message extends Information {
+public abstract class Message extends Information implements DbEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
     protected int messageId;
 
     @Transient
@@ -25,8 +27,7 @@ public abstract class Message extends Information {
 
     public Message(){
     }
-    public Message(int messageId, NotificationOpcode opcode, String content, Member reviewer){
-        this.messageId = messageId;
+    public Message(NotificationOpcode opcode, String content, Member reviewer){
         this.content = content;
         this.sender = reviewer;
         this.senderId = sender.getId();
@@ -67,8 +68,13 @@ public abstract class Message extends Information {
         return json;
     }
 
-    protected void setSenderDb(){
+    @Override
+    public void initialParams(){
+        getSenderFromDb();
+    }
+    protected void getSenderFromDb(){
         if(sender == null)
             sender = (Member) Dao.getById(Member.class, senderId);
     }
+
 }

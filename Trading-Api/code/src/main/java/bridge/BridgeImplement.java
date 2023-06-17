@@ -21,7 +21,7 @@ public class BridgeImplement implements Bridge {
     private String token;
 
     public BridgeImplement() {
-        mainAdmin = new Admin(1, "admin@gmail.com", "admin1A");
+        mainAdmin = new Admin("admin@gmail.com", "admin1A");
         market = new Market(mainAdmin);
     }
 

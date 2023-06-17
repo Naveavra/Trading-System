@@ -17,11 +17,11 @@ class AdminTest {
 
     @BeforeEach
     void setUp() {
-        Admin a = new Admin(1, "eli@gmail.com", "123Aaa");
+        Dao.setForTests(true);
+        Admin a = new Admin("eli@gmail.com", "123Aaa");
         market = new Market(a);
         adminId = market.login("eli@gmail.com", "123Aaa").getValue().getUserId();
         token = market.addTokenForTests();
-        Dao.setForTests(true);
     }
 
     @Test
@@ -50,10 +50,11 @@ class AdminTest {
     }
     @Test
     void removeAdmin() {
+        int size = market.getAdminSize();
         market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
         int adminId2 = market.login("ziv@gmail.com", "456Bbb").getValue().getUserId();
-        market.removeAdmin(-2, token);
-        assertEquals(adminId2, market.getAdminSize());
+        market.removeAdmin(adminId2, token);
+        assertEquals(size, market.getAdminSize());
     }
 
     @Test

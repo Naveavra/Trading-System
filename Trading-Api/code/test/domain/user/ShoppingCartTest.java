@@ -19,13 +19,13 @@ class ShoppingCartTest {
     private ProductInfo p2;
     @BeforeEach
     void setUp() {
+        Dao.setForTests(true);
         g = new Guest(1);
         s = new ShoppingCart();
         apple = new Product(0, 0, "apple", "red apple");
         p =  new ProductInfo(0, apple, 100);
         banana = new Product(0, 1, "banana", "yellow banana");
         p2 =  new ProductInfo(1, banana, 50);
-        Dao.setForTests(true);
     }
 
     @Test

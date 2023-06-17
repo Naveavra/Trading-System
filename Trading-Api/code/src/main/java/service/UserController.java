@@ -1,6 +1,7 @@
 package service;
 
 import database.Dao;
+import database.DbEntity;
 import domain.store.storeManagement.Store;
 import domain.user.*;
 
@@ -26,7 +27,6 @@ public class UserController {
     private ConcurrentHashMap<Integer, Member> memberList;
     private ConcurrentHashMap<Integer, Admin> admins;
     private StringChecks checks;
-    private int messageIds;
     private ConcurrentHashMap<Integer, Complaint> complaints; //complaintId,message
 
     public UserController(){
@@ -35,7 +35,6 @@ public class UserController {
         memberList = new ConcurrentHashMap<>();
         admins = new ConcurrentHashMap<>();
         checks = new StringChecks();
-        messageIds = 0;
         complaints = new ConcurrentHashMap<>();
     }
 
@@ -162,13 +161,11 @@ public class UserController {
     }
 
     public synchronized void register(String email, String password, String hashedPass, String birthday) throws Exception{
-        int id = ids.getAndIncrement();
         checks.checkRegisterInfo(email, password, birthday);
         if(isEmailTaken(email))
                 throw new Exception("the email is already taken");
-        Member m = new Member(id, email, hashedPass, birthday);
-        Dao.save(m);
-        memberList.put(id, m);
+        Member m = new Member(email, hashedPass, birthday);
+        memberList.put(m.getId(), m);
     }
 
     //the answers given are for the security questions, if there are no security questions then put an empty list
@@ -235,9 +232,7 @@ public class UserController {
         Member m = getActiveMember(userId);
         if(grading > 5 || grading < 0)
             throw new Exception("the rating given is not between 0 and 5");
-        int tmp = messageIds;
-        messageIds++;
-        return m.writeReview(tmp, storeId, orderId, content, grading);
+        return m.writeReview(storeId, orderId, content, grading);
 
     }
 
@@ -245,31 +240,24 @@ public class UserController {
         Member m = getActiveMember(userId);
         if(grading > 5 || grading < 0)
             throw new Exception("the rating given is not between 0 and 5");
-        int tmp = messageIds;
-        messageIds ++;
-        return m.writeReview(tmp, storeId, productId, orderId, comment, grading);
+        return m.writeReview(storeId, productId, orderId, comment, grading);
     }
 
 
     public synchronized void writeComplaintToMarket(int orderId, String comment,int userId)throws Exception{
         Member m = getActiveMember(userId);
-        int tmp = messageIds;
-        messageIds++;
         String notify = "a complaint has been submitted";
         Notification notification = new Notification(NotificationOpcode.GET_ADMIN_DATA, notify);
-        for(Admin a : getAdmins())
+        for(Admin a : getAdminsFromDb())
             a.addNotification(notification);
-        Complaint complaint = m.writeComplaint(tmp, orderId, comment);
-        Dao.save(complaint);
+        Complaint complaint = m.writeComplaint(orderId, comment);
         complaints.put(complaint.getMessageId(), complaint);
     }
 
 
     public Question sendQuestionToStore(int userId, int storeId, String question) throws Exception {
         Member m = getActiveMember(userId);
-        int tmp = messageIds;
-        messageIds++;
-        return m.sendQuestion(tmp, storeId, question);
+        return m.sendQuestion(storeId, question);
     }
 
     public synchronized void addNotification(int userId, Notification notification) throws Exception{
@@ -494,7 +482,7 @@ public class UserController {
 
     public List<PurchaseHistory> getUsersInformation() {
         List<PurchaseHistory> membersInformation = new LinkedList<>();
-        for(Member m : (List<Member>) Dao.getAllInTable("Member")){
+        for(Member m : getMembersFromDb()){
             PurchaseHistory history = m.getUserPurchaseHistory();
             membersInformation.add(history);
         }
@@ -564,7 +552,7 @@ public class UserController {
         if(!checks.checkEmail(email))
             throw new Exception("the email given does not match the email pattern");
         checks.checkPassword(pass);
-        Admin a = new Admin(ids.getAndIncrement(), email, hashPass);
+        Admin a = new Admin(email, hashPass);
         Dao.save(a);
         admins.put(a.getId(), a);
     }
@@ -572,24 +560,18 @@ public class UserController {
         checks.checkPassword(pass);
         if(!checks.checkEmail(a.getName()))
             throw new Exception("admin email given was not valid");
-        Admin admin = new Admin(a.getId(), a.getName(), hashedPass);
-        Dao.save(admin);
-        admins.put(a.getId(), admin);
+        if(isEmailTaken(a.getName()))
+            throw new Exception("the email is already taken");
+        Admin admin = new Admin(a.getName(), hashedPass);
+        admin.saveAdmin();
+        admins.put(admin.getId(), admin);
     }
 
     public void removeAdmin(int adminId) throws Exception{
         getActiveAdmin(adminId);
         checkRemoveAdmin();
         admins.remove(adminId);
-        Dao.removeIf("Admin", String.format("id = %d", adminId));
-    }
-
-    private List<Admin> getAdmins(){
-        List<Admin> list = new ArrayList<>();
-        for (Admin a : (List<Admin>)Dao.getAllInTable("Admin")) {
-            list.add(a);
-        }
-        return list;
+        Dao.removeIf(Admin.class, "Admin", String.format("id = %d", adminId));
     }
 
     public HashMap<Integer, Admin> getAdmins(int adminId) throws Exception{
@@ -611,7 +593,6 @@ public class UserController {
         Complaint m = getComplaint(messageId);
         if (m != null) {
             m.sendFeedback(ans);
-            Dao.save(m);
         }
         else
             throw new Exception("message does not found");
@@ -632,7 +613,7 @@ public class UserController {
     public void removeUser(String userName) throws Exception{
         Member m = getMember(userName);
         memberList.remove(m.getId());
-        Dao.removeIf("Member", String.format("email = %s", userName));
+        Dao.removeIf(Member.class,"Member", String.format("email = '%s' ", userName));
     }
 
     public int getAdminSize() {
@@ -643,8 +624,11 @@ public class UserController {
 
     public List<Complaint> getComplaints(int userId) throws Exception{
         getActiveAdmin(userId);
-
-        return new ArrayList<>((List<Complaint>)Dao.getAllInTable("Complaint"));
+        List<? extends DbEntity> complaintsDto = Dao.getAllInTable("Complaint");
+        for(Complaint complaint : (List<Complaint>)complaintsDto)
+            if(!complaints.containsKey(complaint.getMessageId()))
+                complaints.put(complaint.getMessageId(), complaint);
+        return new ArrayList<>(complaints.values());
     }
 
     private Complaint getComplaint(int complaintId) throws Exception{
@@ -656,9 +640,17 @@ public class UserController {
         throw new Exception("the id does not belong to any complaint");
     }
 
+    private List<Member> getMembersFromDb() {
+        List<? extends DbEntity> memberDto = Dao.getAllInTable("Member");
+        for(Member m : (List<Member>) memberDto)
+            if(!memberList.containsKey(m.getId()))
+                memberList.put(m.getId(), m);
+        return new ArrayList<>(memberList.values());
+    }
+
     private List<Admin> getAdminsFromDb() {
-        List<Admin> adminsDto = (List<Admin>) Dao.getAllInTable("Admin");
-        for(Admin a : adminsDto)
+        List<? extends DbEntity> adminsDto = Dao.getAllInTable("Admin");
+        for(Admin a : (List<Admin>) adminsDto)
             if(!admins.containsKey(a.getId()))
                 admins.put(a.getId(), a);
         return new ArrayList<>(admins.values());

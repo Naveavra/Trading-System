@@ -1,24 +1,23 @@
 package domain.store.product;
 
 import database.Dao;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import database.DbEntity;
+import jakarta.persistence.*;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.ProductReview;
+import utils.messageRelated.StoreReview;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Entity
 @Table(name = "products")
-public class Product {
+public class Product implements DbEntity{
 
     @Id
     public int productId;
-
     @Id
     private int storeId;
 
@@ -169,4 +168,14 @@ public class Product {
     }
 
     public List<ProductReview> getReviews(){return reviews;}
+
+    @Override
+    public void initialParams() {
+        if(reviews == null){
+            reviews = new ArrayList<>();
+            List<? extends DbEntity> productReviewsDto = Dao.getListByCompositeKey(ProductReview.class, storeId, productId,
+                    "StoreReview", "storeId", "productId");
+            reviews.addAll((List<ProductReview>) productReviewsDto);
+        }
+    }
 }

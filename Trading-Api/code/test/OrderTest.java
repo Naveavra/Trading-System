@@ -27,6 +27,7 @@ public class OrderTest {
 
     @Test
     void testAddProductsToOrder() throws Exception{
+        Dao.setForTests(true);
         // Test that adds products to a new store
 //        order.clean();
         int storeID = 1;
@@ -42,11 +43,11 @@ public class OrderTest {
         HashMap<Integer, List<ProductInfo>> expected = new HashMap<>();
         expected.put(storeID, products.getContent());
         assertEquals(expected.get(storeID).size(), order.getProductsInStores().size());
-        Dao.setForTests(true);
     }
 
     @Test
     void testAddProductsToOrderFail() {
+        Dao.setForTests(true);
         // Test that fails because of a wrong input parameter
 //        order.clean();
         try {

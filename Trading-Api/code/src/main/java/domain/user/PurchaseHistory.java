@@ -1,6 +1,7 @@
 package domain.user;
 
 import database.Dao;
+import database.DbEntity;
 import utils.infoRelated.Receipt;
 
 import java.util.ArrayList;

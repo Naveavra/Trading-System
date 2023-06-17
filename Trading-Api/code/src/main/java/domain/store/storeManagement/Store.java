@@ -1,6 +1,7 @@
 package domain.store.storeManagement;
 
 import database.Dao;
+import database.DbEntity;
 import database.dtos.AppointmentDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
@@ -38,8 +39,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Entity
 @Table(name = "stores")
-public class Store extends Information{
+public class Store extends Information implements DbEntity {
     @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int storeId;
     private String storeName;
     private boolean isActive;
@@ -79,51 +81,51 @@ public class Store extends Information{
 
     public Store(){
     }
-    public Store(int id, String description, Member creator){
+    public Store(String description, Member creator){
         StoreCreator sc = new StoreCreator(creator.getId(), creator.getName(), this);
         Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
-        this.storeId = id;
-        appHistory = new AppHistory(storeId, creatorNode);
         this.storeDescription = description;
         this.creator = creator;
         this.creatorId = creator.getId();
-        this.inventory = new Inventory(storeId);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
-//        this.discountPolicy = new DiscountPolicy();
         this.purchasePolicies = new ArrayList<>();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
-        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
         bids = new ArrayList<>();
         approvedBids = new ArrayList<>();
         bidIds = new AtomicInteger();
-
+        Dao.save(this);
+        appHistory = new AppHistory(storeId, creatorNode);
+        this.inventory = new Inventory(storeId);
+        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
+        policyIds = new AtomicInteger(0);
     }
 
-    public Store(int storeid, String storeName, String description, String imgUrl, Member creator){
+    public Store(String storeName, String description, String imgUrl, Member creator){
         StoreCreator sc = new StoreCreator(creator.getId(), creator.getName(), this);
         Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
-        this.storeId = storeid;
-        appHistory = new AppHistory(storeid, creatorNode);
         this.storeDescription = description;
         this.creator = creator;
         this.creatorId = creator.getId();
-        this.inventory = new Inventory(storeid);
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
         this.purchasePolicies = new ArrayList<>();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
-        discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
         this.storeName = storeName;
         this.imgUrl = imgUrl;
         bidIds = new AtomicInteger();
         bids = new ArrayList<>();
         approvedBids = new ArrayList<>();
+        Dao.save(this);
+        appHistory = new AppHistory(storeId, creatorNode);
+        this.inventory = new Inventory(storeId);
+        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
+        policyIds = new AtomicInteger(0);
     }
 
     public void changeName(String storeName){
@@ -154,7 +156,7 @@ public class Store extends Information{
     {
         Dao.save(q);
         questions.put(q.getMessageId(), q);
-        return getCreatorFromDb().getId();
+        return creatorId;
     }
 
 
@@ -191,8 +193,8 @@ public class Store extends Information{
     {
         if (storeOrders.containsKey(m.getOrderId()))
         {
-            getInventoryFromDb().addProductReview(m);
-            return getCreatorFromDb().getId();
+            inventory.addProductReview(m);
+            return creatorId;
         }
         else
             throw new Exception("cant add review for this product");
@@ -204,12 +206,12 @@ public class Store extends Information{
     }
 
     public int getCreator() {
-        return getCreatorFromDb().getId();
+        return creatorId;
     }
 
     public List<StoreReview> getStoreReviews() {
         List<StoreReview> ans = new ArrayList<>(storeReviews.values());
-        ans.addAll(getInventoryFromDb().getProductReviews());
+        ans.addAll(inventory.getProductReviews());
         return ans;
     }
     public List<OrderInfo> getOrdersHistory() {
@@ -250,7 +252,7 @@ public class Store extends Information{
         {
             Dao.save(review);
             storeReviews.put(review.getMessageId(), review);
-            return getCreatorFromDb().getId();
+            return creatorId;
         }
         throw new Exception("order doesnt exist");
     }
@@ -275,13 +277,13 @@ public class Store extends Information{
     public Set<Integer> fireUser(int joblessuser) throws Exception
     {
         Set<Integer> ans = new HashSet<>(appHistory.removeChild(joblessuser));
-        Dao.removeIf("AppointmentDto", String.format("fatherId = %d OR childId = %d", joblessuser, joblessuser));
+        Dao.removeIf(AppointmentDto.class, "AppointmentDto", String.format("fatherId = %d OR childId = %d", joblessuser, joblessuser));
         return ans;
     }
 
     public Inventory getInventory()
     {
-        return getInventoryFromDb();
+        return inventory;
     }
 
     /**
@@ -293,15 +295,15 @@ public class Store extends Information{
      */
     public synchronized Product addNewProduct(String name, String description, AtomicInteger pid, int price,
                                               int quantity, List<String> categories) throws Exception {
-        return getInventoryFromDb().addProduct(name, description, pid,price,quantity, categories);
+        return inventory.addProduct(name, description, pid,price,quantity, categories);
     }
 
     public synchronized Product addNewProduct(String name, String description, AtomicInteger pid, int price,
                                               int quantity, String img, List<String> categories) throws Exception {
-        return getInventoryFromDb().addProduct(name, description, pid,price,quantity, img, categories);
+        return inventory.addProduct(name, description, pid,price,quantity, img, categories);
     }
     public synchronized Product addNewExistingProduct(Product p) throws Exception{
-        return getInventoryFromDb().addProduct(p);
+        return inventory.addProduct(p);
     }
     /**
      * adds the quantity to the product previous quantity
@@ -309,7 +311,7 @@ public class Store extends Information{
      */
     public void setProductQuantity(int pid, int quantity) throws Exception
     {
-        getInventoryFromDb().addQuantity(pid, quantity);
+        inventory.addQuantity(pid, quantity);
     }
 
     /**
@@ -317,9 +319,9 @@ public class Store extends Information{
      * @param pid product id
      */
     public void setDescription(int pid, String description) throws Exception {
-        if (getInventoryFromDb().getProduct(pid)!= null)
+        if (inventory.getProduct(pid)!= null)
         {
-            getInventoryFromDb().setDescription(pid, description);
+            inventory.setDescription(pid, description);
             return;
         }
         throw new Exception("product isn't available at this store");
@@ -328,15 +330,15 @@ public class Store extends Information{
     /**
      * this function meant for the store owner only to change the price of product p
      * @param pid product id
-     * @param newprice new price should be a positive integer
+     * @param newPrice new price should be a positive integer
      */
-    public void setPrice(int pid, int newprice) throws Exception  {
-        getInventoryFromDb().setPrice(pid, newprice);
+    public void setPrice(int pid, int newPrice) throws Exception  {
+        inventory.setPrice(pid, newPrice);
     }
 
 
     public int getQuantityOfProduct(int pid) throws Exception {
-        return getInventoryFromDb().getQuantity(pid);
+        return inventory.getQuantity(pid);
     }
 
 //    public ArrayList<Product> getProductByCategories(ArrayList<String> categories) {
@@ -349,7 +351,7 @@ public class Store extends Information{
      * @throws Exception if the user isn't the store creator
      */
     public Set<Integer> closeStoreTemporary(int userID) throws Exception {
-        if (getCreatorFromDb().getId() == userID){
+        if (creatorId == userID){
             isActive = false;
             return appHistory.getUsers();
         }
@@ -357,7 +359,7 @@ public class Store extends Information{
     }
 
     public Set<Integer> reopenStore(int userID) throws Exception{
-        if (getCreatorFromDb().getId() == userID){
+        if (creatorId == userID){
             isActive = true;
             return appHistory.getUsers();
         }
@@ -399,12 +401,12 @@ public class Store extends Information{
     public boolean makeOrder(Basket basket) throws Exception{
         for (ProductInfo product : basket.getContent())
         {
-            Product p = getInventoryFromDb().getProduct(product.id);
+            Product p = inventory.getProduct(product.id);
             if (!(p != null && product.quantity <= p.getQuantity()))
             {
                 return false;
             }
-            getInventoryFromDb().getProduct(product.id).setQuantity(product.quantity * (-1));
+            inventory.getProduct(product.id).setQuantity(product.quantity * (-1));
         }
         return true;
     }
@@ -413,7 +415,7 @@ public class Store extends Information{
 
 
     public String getProductName(int productId) throws Exception{
-        Product p = getInventoryFromDb().getProduct(productId);
+        Product p = inventory.getProduct(productId);
         if (p!= null)
         {
             return p.getName();
@@ -438,9 +440,9 @@ public class Store extends Information{
 
     public ProductInfo getProductInformation(int productId) throws Exception{
 
-        if (getInventoryFromDb().getProduct(productId) != null)
+        if (inventory.getProduct(productId) != null)
         {
-            return getInventoryFromDb().getProductInfo(storeId, productId);
+            return inventory.getProductInfo(storeId, productId);
         }
         throw new Exception("cant get product information");
     }
@@ -450,7 +452,7 @@ public class Store extends Information{
         int purchaseingprice = 0;
         for (ProductInfo product : basket.getContent())
         {
-            Product p = getInventoryFromDb().getProduct(product.id);
+            Product p = inventory.getProduct(product.id);
             if (p != null && product.quantity <= p.getQuantity())
             {
 //                int discount = discountPolicy.handleDiscounts(basket,inventory.getPrices());
@@ -463,7 +465,7 @@ public class Store extends Information{
     }
 
     public List<ProductInfo> getProducts(){
-        return getInventoryFromDb().getProducts();
+        return inventory.getProducts();
     }
 
 //    public synchronized void setStorePolicy(String policy) throws Exception {
@@ -495,17 +497,17 @@ public class Store extends Information{
 
     public void addToCategories(int productId, List<String> categories) throws Exception{
         for(String category: categories){
-            getInventoryFromDb().addToCategory(category,productId);
+            inventory.addToCategory(category,productId);
         }
     }
 
     public void removeProduct(int productId) throws Exception{
-        getInventoryFromDb().removeProduct(productId);
+        inventory.removeProduct(productId);
     }
 
     public void updateProduct(int productId, List<String> categories, String name, String description,
                               int price, int quantity, String img) throws Exception {
-        getInventoryFromDb().updateProduct(productId,categories,name,description,price,quantity, img);
+        inventory.updateProduct(productId,categories,name,description,price,quantity, img);
     }
 
 
@@ -518,7 +520,7 @@ public class Store extends Information{
                 filter.addStrategy(next);
             }
         }
-        return getInventoryFromDb().filterBy(filter,getStoreRating());
+        return inventory.filterBy(filter,getStoreRating());
     }
 
     public StoreInfo getStoreInformation() {
@@ -536,7 +538,7 @@ public class Store extends Information{
         return order.getTotalPrice();
     }
 
-    public List<Pair<Info, List<Info>>> getApp() throws Exception{
+    public List<Pair<Info, List<Info>>> getApp(){
         return appHistory.getAppHistory();
     }
 
@@ -551,7 +553,7 @@ public class Store extends Information{
     }
 
     public void checkProductInStore(int productId) throws Exception{
-        getInventoryFromDb().getProduct(productId);
+        inventory.getProduct(productId);
     }
 
     @Override
@@ -593,7 +595,7 @@ public class Store extends Information{
             if(bid.getUser().getId() == user.getId() && bid.getProduct().getID() == prodId)
                 throw new Exception("Cannot place a bid on the same item more than once.");
         }
-        Bid b = new Bid(bidIds.getAndIncrement(),user,getInventoryFromDb().getProduct(prodId),price,quantity,
+        Bid b = new Bid(bidIds.getAndIncrement(),user,inventory.getProduct(prodId),price,quantity,
                 (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct));
         bids.add(b);
         user.addBid(b);
@@ -671,46 +673,61 @@ public class Store extends Information{
 
     }
     //database
-    public Member getCreatorFromDb(){
+    @Override
+    public void initialParams() {
+        getCreatorFromDb();
+        getAppHistoryFromDb();
+        getInventoryFromDb();
+        getStoreReviewsFromDb();
+    }
+
+    public void getCreatorFromDb(){
         if(creator == null){
             creator = (Member) Dao.getById(Member.class, creatorId);
         }
-        return creator;
     }
 
-    public AppHistory getAppHistoryFromDb() throws Exception{
+    public void getAppHistoryFromDb(){
         if(appHistory == null){
-            Member m = getCreatorFromDb();
-            appHistory = new AppHistory(storeId, new Pair<>(m, m.getRole(storeId)));
-            List<Integer> fathers = new ArrayList<>();
-            fathers.add(creatorId);
-            while(fathers.size() > 0){
-                int id = fathers.remove(0);
-                List<AppointmentDto> appointmentDtos = (List<AppointmentDto>) Dao.getListByCompositeKey(AppointmentDto.class, storeId
-                        , id,  "AppointmentDto", "storeId", "fatherId");
-                for(AppointmentDto app : appointmentDtos){
-                    Member worker = (Member) Dao.getById(Member.class, app.getChildId());
-                    appHistory.addNode(id, new Pair<>(worker, worker.getRole(storeId)));
-                    fathers.add(worker.getId());
+            try {
+                appHistory = new AppHistory(storeId, new Pair<>(creator, creator.getRole(storeId)));
+                List<Integer> fathers = new ArrayList<>();
+                fathers.add(creatorId);
+                while (fathers.size() > 0) {
+                    int id = fathers.remove(0);
+                    List<? extends DbEntity> appointmentDtos = Dao.getListByCompositeKey(AppointmentDto.class, storeId
+                            , id, "AppointmentDto", "storeId", "fatherId");
+                    for (AppointmentDto app : (List<AppointmentDto>) appointmentDtos) {
+                        Member worker = (Member) Dao.getById(Member.class, app.getChildId());
+                        appHistory.addNode(id, new Pair<>(worker, worker.getRole(storeId)));
+                        fathers.add(worker.getId());
+                    }
+
                 }
-
-            }
-
+            }catch (Exception ignored){}
         }
-        return appHistory;
     }
 
-    public Inventory getInventoryFromDb(){
+    public void getInventoryFromDb(){
         if(inventory == null){
             inventory = new Inventory(storeId);
-            List<Product> products = (List<Product>) Dao.getListById(Product.class, storeId, "Product", "storeId");
-            for(Product p : products) {
+            List<? extends DbEntity> products = Dao.getListById(Product.class, storeId, "Product", "storeId");
+            for(Product p : (List<Product>) products) {
                 try {
                     inventory.addProduct(p);
                 } catch (Exception ignored) {
                 }
             }
         }
-        return inventory;
+    }
+
+    public void getStoreReviewsFromDb(){
+        if(storeReviews == null){
+            storeReviews = new ConcurrentHashMap<>();
+            List<? extends DbEntity> storeReviewsDto = Dao.getListById(StoreReview.class, storeId,
+                    "StoreReview", "storeId");
+            for(StoreReview storeReview : (List<StoreReview>) storeReviewsDto)
+                storeReviews.put(storeReview.getMessageId(), storeReview);
+        }
     }
 }

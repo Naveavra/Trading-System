@@ -81,7 +81,7 @@ public class Server {
                     """);
         }
         init();
-        api.mockData();
+        //api.mockData();
         connectedThread = new ConnectedThread(connected);
        // connectedThread.start();
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
