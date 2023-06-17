@@ -660,6 +660,18 @@ public class Server {
             toSparkRes(res, api.editBid(token, storeId, userId, price,quantity,bidId));
             return res.body();
         });
+        post("api/biddings/bidPayment", (req, res) -> {
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            double price = Double.parseDouble(request.get("price").toString());
+            int prodId = Integer.parseInt(request.get("productId").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.purchaseBid(token, userId, storeId, prodId, price, quantity,
+                    getPaymentDetails(request), getSupplierDetails(request)));
+            return res.body();
+        });
 
         //----------------------Bid-------------------------------------
         //----------------------Purchase--------------------------------

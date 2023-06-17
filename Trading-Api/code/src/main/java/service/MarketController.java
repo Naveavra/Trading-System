@@ -263,21 +263,14 @@ public class MarketController {
 
     }
 
-    public Pair<Receipt,Set<Integer>> answerBid(String userName, int storeId, boolean ans, int prodId, int bidId) throws Exception {
+    /**
+     * store owner reply for the bid suggestion
+     * @return true if he was the last to approve false otherwise
+     */
+    public boolean answerBid(String userName, int storeId, boolean ans, int prodId, int bidId) throws Exception {
         Store s = storectrl.getActiveStore(storeId);
         Bid bid = s.answerBid(bidId,userName,prodId,ans);
-        if(bid != null){
-            ShoppingCart sc = new ShoppingCart();
-            sc.addProductToCart(storeId,getProductInformation(storeId,prodId),bid.quantity);
-            Order or = orderctrl.createNewOrder(bid.getUser(),sc,bid.getOffer());
-            or.setStatus(Status.pending);
-            Set<Integer> creatorIds = storectrl.purchaseProductsBid(sc,or);
-            or.setStatus(Status.submitted);
-            Receipt receipt = new Receipt(or.getOrderId(),sc,or.getTotalPrice());
-            Pair<Receipt,Set<Integer>> res = new Pair<>(receipt,creatorIds);
-            return res;
-        }
-        return null;
+        return bid != null;
     }
 
     public List<String> counterBid(String userName, int storeId, double counterOffer, int prodId, int bidId) throws Exception {
@@ -301,5 +294,18 @@ public class MarketController {
 
     public void deletePurchaseConstraint(int userId, int storeId, int purchasePolicyId) {
         //todo miki
+    }
+
+    public Pair<Receipt, Set<Integer>> purchaseBid(User user, int storeId, int prodId, double price, int quantity) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        ShoppingCart sc = new ShoppingCart();
+        sc.addProductToCart(storeId,getProductInformation(storeId,prodId),quantity);
+        Order or = orderctrl.createNewOrder(user,sc,price);
+        or.setStatus(Status.pending);
+        Set<Integer> creatorIds = storectrl.purchaseProductsBid(sc,or);
+        or.setStatus(Status.submitted);
+        Receipt receipt = new Receipt(or.getOrderId(),sc,or.getTotalPrice());
+        Pair<Receipt,Set<Integer>> res = new Pair<>(receipt,creatorIds);
+        return res;
     }
 }

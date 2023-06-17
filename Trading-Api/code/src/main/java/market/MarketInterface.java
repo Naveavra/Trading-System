@@ -144,6 +144,8 @@ public interface MarketInterface {
     Response<String> addShoppingRule(int userId, String token, int storeId, String purchasePolicy);
 
     Response<String> deletePurchasePolicy(String token, int userId, int storeId, int purchasePolicyId);
+
+    public Response puchaseBid(String token, int userId, int storeId, int prodId, double price, int quantity, JSONObject paymentDetails, JSONObject supplierDetails);
 }
 
 

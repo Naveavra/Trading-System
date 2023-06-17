@@ -464,6 +464,10 @@ public class API {
         Response<String> res = market.deletePurchasePolicy(token, userId, storeId, purchasePolicyId);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> purchaseBid(String token, int userId, int storeId, int prodId, double price, int quantity, JSONObject paymentDetails, JSONObject supplierDetails) {
+        Response<Receipt> res = market.puchaseBid(token, userId, storeId, prodId, price, quantity, paymentDetails, supplierDetails);
+        return fromResToPair(res);
+    }
 
     //for actions to actionString
     private void getActionStrings(){

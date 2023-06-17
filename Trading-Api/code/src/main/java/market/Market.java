@@ -287,6 +287,34 @@ public class Market implements MarketInterface {
                     null, "remove cart failed", e.getMessage());
         }
     }
+    @Override
+    public synchronized Response<Receipt> puchaseBid(String token, int userId, int storeId, int prodId, double price, int quantity, JSONObject paymentDetails, JSONObject supplierDetails) {
+        try {
+            userAuth.checkUser(userId, token);
+            proxyPayment.makePurchase(paymentDetails, price);
+            //TODO CHAI proxySupplier
+            Pair<Receipt, Set<Integer>> ans = marketController.purchaseBid(userController.getUser(userId), storeId, prodId, price,
+                    quantity);
+            return getReceiptResponse(userId, ans);
+
+        } catch (Exception e) {
+            return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    null, "make purchase failed", e.getMessage());
+        }
+    }
+
+    private Response<Receipt> getReceiptResponse(int userId, Pair<Receipt, Set<Integer>> ans) throws Exception {
+        Receipt receipt = ans.getFirst();
+        Set<Integer> creatorIds = ans.getSecond();
+        userController.purchaseMade(userId, receipt);
+        for (int creatorId : creatorIds)
+            addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
+        marketInfo.addPurchaseCount();
+        return logAndRes(Event.LogStatus.Success, "user made purchase",
+                StringChecks.curDayString(), userController.getUserName(userId),
+                receipt, null, null);
+    }
 
     @Override
     public synchronized Response<Receipt> makePurchase(int userId, JSONObject payment, JSONObject supplier) {
@@ -296,15 +324,7 @@ public class Market implements MarketInterface {
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
 //            proxyPayment.makePurchase(payment, totalPrice);
 //            proxySupplier.orderSupplies(supplier, cart);
-            Receipt receipt = ans.getFirst();
-            Set<Integer> creatorIds = ans.getSecond();
-            userController.purchaseMade(userId, receipt);
-            for (int creatorId : creatorIds)
-                addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
-            marketInfo.addPurchaseCount();
-            return logAndRes(Event.LogStatus.Success, "user made purchase",
-                    StringChecks.curDayString(), userController.getUserName(userId),
-                    receipt, null, null);
+            return getReceiptResponse(userId, ans);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -1035,15 +1055,20 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.updateProduct, storeId);
-            Pair<Receipt, Set<Integer>> ans = marketController.answerBid( userController.getUser(userId).getName(), storeId, answer, prodId, bidId);
+           boolean ans = marketController.answerBid( userController.getUser(userId).getName(), storeId, answer, prodId, bidId);
+            if (ans)
+            {
+                //TODO ELI
+                //addNotification(userId, NotificationOpcode., "your bid has been approved, please continue for payment");
+            }
             //            proxyPayment.makePurchase(payment, totalPrice);
             //            proxySupplier.orderSupplies(supplier, cart);
-            Receipt receipt = ans.getFirst();
-            Set<Integer> creatorIds = ans.getSecond();
-            userController.purchaseMade(userId, receipt);
-            for (int creatorId : creatorIds)
-                addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
-            marketInfo.addPurchaseCount();
+//            Receipt receipt = ans.getFirst();
+//            Set<Integer> creatorIds = ans.getSecond();
+//            userController.purchaseMade(userId, receipt);
+//            for (int creatorId : creatorIds)
+//                addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
+//            marketInfo.addPurchaseCount();
             return logAndRes(Event.LogStatus.Success, "user answer the bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user answer the bid", null, null);
@@ -1327,6 +1352,8 @@ public class Market implements MarketInterface {
                     null, "delete shopping rule failed", e.getMessage());
         }
     }
+
+
 
     public static Pair<UserController, MarketController> getControllers(){
         if(userController == null)
