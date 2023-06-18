@@ -229,6 +229,7 @@ public class UserController {
     public synchronized void openStore(int userId, Store store) throws Exception{
         Member m = getActiveMember(userId);
         m.openStore(store);
+        m.addNotification(new Notification(NotificationOpcode.GET_CLIENT_DATA, "successfully opened store"));
     }
 
     public synchronized StoreReview writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
@@ -370,7 +371,7 @@ public class UserController {
         Member manager = getMember(managerId);
         for(Action a : actions) {
             manager.addAction(a, storeId);
-            Notification notify = new Notification(NotificationOpcode.GET_STORE_DATA, "the following action: " + a.toString() + "\n" +
+            Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA, "the following action: " + a.toString() + "\n" +
                     "has been added for you for store: " + storeId);
             manager.addNotification(notify);
         }
@@ -382,7 +383,7 @@ public class UserController {
         Member manager = getMember(managerId);
         for(Action a : actions) {
             manager.removeAction(a, storeId);
-            Notification notify = new Notification(NotificationOpcode.GET_STORE_DATA, "the following action: " + a.toString() + "\n" +
+            Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA, "the following action: " + a.toString() + "\n" +
                     "has been removed from you for store: " + storeId);
             manager.addNotification(notify);
         }

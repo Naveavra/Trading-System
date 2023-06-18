@@ -716,4 +716,49 @@ public class Store extends Information{
         }
         return inventory;
     }
+
+    public Set<Integer> getStoreCreatorsOwners() {
+        return appHistory.getStoreCreatorsOwners();
+    }
+
+    public int getBidClient(int bidId) throws Exception {
+        for (Bid bid : bids)
+        {
+            if (bid.bidId == bidId){return bid.user.getId();}
+        }
+        throw new Exception("cant find bid Id");
+    }
+
+    public List<String> getApprovers(int bidId) throws Exception {
+        for (Bid bid : bids)
+        {
+            if (bid.bidId == bidId){return bid.approvers;}
+        }
+        throw new Exception("bid doesnt exist");
+    }
+
+    public void clientAcceptCounter(int bidId) {
+        for (Bid bid : bids){
+            if (bid.bidId == bidId){bid.clientAcceptCounter();}
+        }
+    }
+
+//    public void clientAcceptCounter(int bidId) {
+//        Member user;
+//        int prodId;
+//        double price;
+//        int quantity;
+//        for (Bid bid : bids)
+//        {
+//           if (bid.bidId == bidId)
+//           {
+//               user = bid.user;
+//               prodId = bid.product.productId;
+//               price = bid.offer;
+//               quantity = bid.quantity;
+//               Bid newBid = new Bid
+//           }
+//        }
+//
+//    }
 }

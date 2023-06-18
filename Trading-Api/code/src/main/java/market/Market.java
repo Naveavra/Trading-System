@@ -304,6 +304,23 @@ public class Market implements MarketInterface {
         }
     }
 
+    @Override
+    public Response clientAcceptCounter(String token, int bidId, int storeId) {
+        try {
+            userAuth.checkUser(marketController.getBidClient(bidId, storeId), token);
+            List<String> creators = marketController.getBidApprovers(bidId, storeId);
+            marketController.clientAcceptCounter(bidId, storeId);
+            for(String name : creators)
+                userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
+                        "a new bid was placed in store: " + storeId));
+            return logAndRes(Event.LogStatus.Success, "user placed his successfully",
+                    StringChecks.curDayString(), userController.getUserName(marketController.getBidClient(bidId, storeId)),
+                    "user placed his bid", null, null);
+        } catch (Exception ex) {
+            return new Response<>(null, "could not place bid", ex.getMessage());
+        }
+    }
+
     private Response<Receipt> getReceiptResponse(int userId, Pair<Receipt, Set<Integer>> ans) throws Exception {
         Receipt receipt = ans.getFirst();
         Set<Integer> creatorIds = ans.getSecond();
@@ -1055,12 +1072,27 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.updateProduct, storeId);
-           boolean ans = marketController.answerBid( userController.getUser(userId).getName(), storeId, answer, prodId, bidId);
+            int clientId = marketController.getBidClient(bidId, storeId);
+            boolean ans = marketController.answerBid( userController.getUser(userId).getName(), storeId, answer, prodId, bidId);
             if (ans)
             {
-                //TODO ELI
-                //addNotification(userId, NotificationOpcode., "your bid has been approved, please continue for payment");
+                addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been approved, please continue for payment");
+                Set<Integer> usersInStore = marketController.getStoreCreatorsOwners(storeId);
+                for (int creatorId : usersInStore)
+                {
+                    addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "bid number : " + bidId + " was approved by all.");
+                }
             }
+            if (!answer) {
+                addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been declined.");
+                Set<Integer> usersInStore = marketController.getStoreCreatorsOwners(storeId);
+                for (int creatorId : usersInStore)
+                {
+                    addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "bid number : " + bidId + " was declined by " + userId);
+                }
+            }
+
+
             //            proxyPayment.makePurchase(payment, totalPrice);
             //            proxySupplier.orderSupplies(supplier, cart);
 //            Receipt receipt = ans.getFirst();
@@ -1080,12 +1112,14 @@ public class Market implements MarketInterface {
     @Override
     public Response counterBid(String token, int userId, int storeId, double counterOffer, int prodId, int bidId){
         try{
+            int clientId = marketController.getBidClient(bidId, storeId);
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.updateProduct, storeId);
             List<String> ans = marketController.counterBid(userController.getUserName(userId), storeId, counterOffer, prodId, bidId);
             for(String name : ans)
                 userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a counter bid was placed in store: " + storeId + " for bid: " + bidId));
+            addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "a counter bid was placed in store: " + storeId + " for bid: " + bidId);
             return logAndRes(Event.LogStatus.Success, "user answer with counter bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user answer with counter bid", null, null);
@@ -1352,6 +1386,7 @@ public class Market implements MarketInterface {
                     null, "delete shopping rule failed", e.getMessage());
         }
     }
+
 
 
 
