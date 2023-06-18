@@ -4,7 +4,9 @@ import domain.user.ShoppingCart;
 import org.json.JSONObject;
 import server.Config.ESConfig;
 import service.ExternalService.Payment.ESPayment;
+import utils.Exceptions.ExternalServiceException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,11 +26,24 @@ public class ProxySupplier implements SupplierAdapter {
      */
     public ProxySupplier(ESConfig supply) throws Exception {
         this.supplierServices = new HashMap<>();
-        ESSupply es = new ESSupply(supply);
-        this.supplierServices.put(es.getName(), es);
-        this.real = es;
-        es.setAvailable(true);
+        loadConfig(supply);
     }
+
+    private void loadConfig(ESConfig supply) throws ExternalServiceException, IOException {
+        OurSupplyService ziv = new OurSupplyService();
+        this.supplierServices.put(ziv.getName(), ziv);
+        if (supply.isDefault())
+        {
+            this.real = ziv;
+        }
+        else {
+            ESSupply es = new ESSupply(supply);
+            this.supplierServices.put(es.getName(), es);
+            this.real = es;
+        }
+        this.real.setAvailable(true);
+    }
+
 
     /**
      * Retrieves the available options for supplier services.
@@ -125,12 +140,33 @@ public class ProxySupplier implements SupplierAdapter {
 
     }
 
+    private String getSupplyService(JSONObject supplyContent) throws Exception {
+        try{
+            String service_name = supplyContent.getString("supply_service");
+            return service_name;
+        }
+        catch (Exception e)
+        {
+            throw new Exception("The supply doesn't exists!");
+        }
+    }
+
     @Override
     public int orderSupplies(JSONObject supplyContent, ShoppingCart cart) throws Exception {
-        String supplier = supplyContent.getString("supply_service");
+        String supplier = getSupplyService(supplyContent);
         if (supplierServices.containsKey(supplier) &&
                 supplierServices.get(supplier).isAvailable()) {
             return supplierServices.get(supplier).orderSupplies(supplyContent, cart);
+        }
+        throw new Exception("The supplier service " + supplier + " is not available or does not exist!");
+    }
+
+    @Override
+    public int orderSupplies(JSONObject supplierDetails, int storeId, int prodId, int quantity) throws Exception {
+        String supplier = getSupplyService(supplierDetails);
+        if (supplierServices.containsKey(supplier) &&
+                supplierServices.get(supplier).isAvailable()) {
+            return supplierServices.get(supplier).orderSupplies(supplierDetails, storeId, prodId, quantity);
         }
         throw new Exception("The supplier service " + supplier + " is not available or does not exist!");
     }

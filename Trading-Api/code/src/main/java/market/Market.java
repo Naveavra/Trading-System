@@ -25,7 +25,6 @@ import utils.infoRelated.Receipt;
 
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class Market implements MarketInterface {
@@ -52,7 +51,7 @@ public class Market implements MarketInterface {
             proxySupplier = new ProxySupplier(supply);
         } catch (Exception e) {
             // Handle the exception appropriately (e.g., log the error, terminate the program)
-            System.err.println("Error with the connection to the external service: " + e.getMessage());
+            System.out.println("Error with the connection to the external service: " + e.getMessage());
             System.exit(1); // Terminate the program
         }
 
@@ -287,16 +286,23 @@ public class Market implements MarketInterface {
                     null, "remove cart failed", e.getMessage());
         }
     }
+
+    private JSONObject getStorePaymentDetails(int storeId)
+    {
+        JSONObject storeDetails = new JSONObject();
+        storeDetails.put("Account Number", 0);
+        return storeDetails;
+    }
+
     @Override
     public synchronized Response<Receipt> puchaseBid(String token, int userId, int storeId, int prodId, double price, int quantity, JSONObject paymentDetails, JSONObject supplierDetails) {
         try {
             userAuth.checkUser(userId, token);
-            proxyPayment.makePurchase(paymentDetails, price);
-            //TODO CHAI proxySupplier
+            proxyPayment.makePurchase(paymentDetails, getStorePaymentDetails(storeId), price);
+            proxySupplier.orderSupplies(supplierDetails, storeId, prodId, quantity);
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseBid(userController.getUser(userId), storeId, prodId, price,
                     quantity);
             return getReceiptResponse(userId, ans);
-
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
                     StringChecks.curDayString(), userController.getUserName(userId),

@@ -705,7 +705,7 @@ public class Server {
             port(port);
         } catch (Exception e) {
             // Handle the exception appropriately (e.g., log the error, terminate the program)
-            System.err.println("Error initializing server: " + e.getMessage());
+            System.out.println("Error initializing server: " + e.getMessage());
             System.exit(1); // Terminate the program
         }
     }
