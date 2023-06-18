@@ -25,6 +25,7 @@ public class CategoryPolicy extends PurchasePolicy{
         return handleNext(switch (limiter){
             case Max -> handleMax(count);
             case Min -> handleMin(count);
+            case Exact -> count == amount;
         },order);
     }
 

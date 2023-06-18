@@ -27,6 +27,7 @@ public class ItemPolicy extends PurchasePolicy{
                 return handleNext(switch (limiter){
                     case Max ->  handleMax(productInfo);
                     case Min ->  handleMin(productInfo);
+                    case Exact -> productInfo.quantity == amount;
                 },order);
             }
         }

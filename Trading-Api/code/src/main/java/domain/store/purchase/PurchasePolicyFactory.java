@@ -31,8 +31,10 @@ public class PurchasePolicyFactory {
     }
 
     private PurchasePolicy createDateTimePolicy(PurchasePolicyDataObject policyData) throws Exception {
-        if((policyData.dateLimit.length ==0 && policyData.timeLimit.length == 0 ) || policyData.limiter == null || policyData.category == null){
-            throw new Exception("Some information is missing in creating dateTime policy, please check all required fields:\n dateLimit, timeLimit, limiter, category");
+        if(policyData.dateLimit == null && policyData.timeLimit == null)
+            throw new Exception("Some information is missing in creating dateTime policy, please check given date or time");
+        if(policyData.limiter == null || policyData.category == null){
+            throw new Exception("Some information is missing in creating dateTime policy, please check- limiter, category");
         }
         return new DateTimePolicy(policyData.policyID, policyData.storeID, policyData.category, policyData.limiter, policyData.dateLimit, policyData.timeLimit);
     }
