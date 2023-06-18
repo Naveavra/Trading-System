@@ -431,4 +431,8 @@ public class StoreController {
                 storeList.put(s.getStoreId(), s);
         }
     }
+
+    public Set<Integer> getStoreCreatorsOwners(int storeId) throws Exception {
+        return getActiveStore(storeId).getStoreCreatorsOwners();
+    }
 }

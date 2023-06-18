@@ -672,6 +672,14 @@ public class Server {
                     getPaymentDetails(request), getSupplierDetails(request)));
             return res.body();
         });
+        post("api/biddings/clientAnswer", (req, res) -> {
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int bidId = Integer.parseInt(request.get("bidId").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            toSparkRes(res, api.clientAcceptCounter(token, bidId, storeId));
+            return res.body();
+        });
 
         //----------------------Bid-------------------------------------
         //----------------------Purchase--------------------------------

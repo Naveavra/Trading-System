@@ -276,8 +276,6 @@ public class MarketController {
     public List<String> counterBid(String userName, int storeId, double counterOffer, int prodId, int bidId) throws Exception {
         Store s = storectrl.getActiveStore(storeId);
         return s.counterBid(bidId,counterOffer,userName);
-        //eli send a message to the user that placed this bid in the first place that he got a counter offer.
-        //send a message to all shop owners and people who need to approve this bid.
     }
 
     public List<String> editBid(int storeId, int bidId, double price, int quantity) throws Exception {
@@ -308,4 +306,27 @@ public class MarketController {
         Pair<Receipt,Set<Integer>> res = new Pair<>(receipt,creatorIds);
         return res;
     }
+
+    public Set<Integer> getStoreCreatorsOwners(int storeId) throws Exception {
+        return storectrl.getStoreCreatorsOwners(storeId);
+    }
+
+    public int getBidClient(int bidId, int storeId) throws Exception {
+        return storectrl.getActiveStore(storeId).getBidClient(bidId);
+    }
+
+    public List<String> getBidApprovers(int bidId, int storeId) throws Exception {
+        Store s= storectrl.getActiveStore(storeId);
+        return s.getApprovers(bidId);
+    }
+
+    public void clientAcceptCounter(int bidId, int storeId) throws Exception {
+        Store store = storectrl.getActiveStore(storeId);
+        store.clientAcceptCounter(bidId);
+    }
+
+//    public Set<Integer> clientAcceptCounter(int bidId, int storeId) throws Exception {
+//        Store s = storectrl.getActiveStore(storeId);
+//        s.clientAcceptCounter(bidId);
+//    }
 }

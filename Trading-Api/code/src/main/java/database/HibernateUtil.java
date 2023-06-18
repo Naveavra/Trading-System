@@ -30,7 +30,7 @@ public class HibernateUtil {
         if(sessionFactory == null){
             try{
                 Configuration configuration = new Configuration();
-
+                settings.put(Environment.HBM2DDL_AUTO, "create-drop");
                 configuration.setProperties(settings);
                 //TODO: add all tables needed to here
                 configuration.addAnnotatedClass(Member.class);

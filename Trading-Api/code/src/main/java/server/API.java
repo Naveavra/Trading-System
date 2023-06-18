@@ -468,6 +468,10 @@ public class API {
         Response<Receipt> res = market.puchaseBid(token, userId, storeId, prodId, price, quantity, paymentDetails, supplierDetails);
         return fromResToPair(res);
     }
+    public Pair<Boolean, JSONObject> clientAcceptCounter(String token, int bidId, int storeId) {
+        Response<String> res = market.clientAcceptCounter(token, bidId, storeId);
+        return fromResToPair(res);
+    }
 
     //for actions to actionString
     private void getActionStrings(){
