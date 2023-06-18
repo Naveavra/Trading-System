@@ -27,8 +27,8 @@ public class Admin extends Subscriber {
     public Admin(){
         setControllers();
     }
-    public Admin(String email, String password){
-        super(email, password);
+    public Admin(int id, String email, String password){
+        super(id, email, password);
         Pair<UserController, MarketController> controllers = Market.getControllers();
         userController = controllers.getFirst();
         marketController = controllers.getSecond();

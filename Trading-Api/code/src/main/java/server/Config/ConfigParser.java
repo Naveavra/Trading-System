@@ -220,7 +220,7 @@ public class ConfigParser {
         JSONObject adminConfig = jsonConfig.getJSONObject("Admin");
         String adminEmail = adminConfig.getString("EMAIL");
         String adminPassword = adminConfig.getString("PASSWORD");
-        initialAdmin = new Admin(adminEmail, adminPassword);
+        initialAdmin = new Admin(1, adminEmail, adminPassword);
     }
 
     /**

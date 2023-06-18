@@ -21,8 +21,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public abstract class Subscriber implements DbEntity{
 
     @Id
-    @SequenceGenerator(name = "ids", sequenceName = "ids", initialValue = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ids")
     protected int id;
     protected String email;
     protected String birthday;
@@ -36,7 +34,8 @@ public abstract class Subscriber implements DbEntity{
 
     public Subscriber(){
     }
-    public Subscriber(String email, String password){
+    public Subscriber(int id, String email, String password){
+        this.id = id;
         this.email = email;
         this.password = password;
         this.birthday = "no input";

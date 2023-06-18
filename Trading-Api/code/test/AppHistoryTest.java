@@ -26,15 +26,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         static Pair<Member, UserState> node4;
         static Pair<Member, UserState> node5;
         static AppHistory root;
-        Member m0 = new Member("eli@gmail.com", "123Aaa", "24/02/2002");
-        Member m1 = new Member("eli2@gmail.com", "123Aaa", "24/02/2002");
-        Member m2 = new Member("eli3@gmail.com", "123Aaa", "24/02/2002");
-        Member m3 = new Member("eli4@gmail.com", "123Aaa", "24/02/2002");
-        Member m4 = new Member("eli5@gmail.com", "123Aaa", "24/02/2002");
-        Member m5 = new Member("eli6@gmail.com", "123Aaa", "24/02/2002");
+        Member m0;
+        Member m1;
+        Member m2;
+        Member m3;
+        Member m4;
+        Member m5;
         @BeforeEach
         public void setup() {
             Dao.setForTests(true);
+            m0 = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
+            m1 = new Member(3, "eli2@gmail.com", "123Aaa", "24/02/2002");
+            m2 = new Member(4, "eli3@gmail.com", "123Aaa", "24/02/2002");
+            m3 = new Member(5, "eli4@gmail.com", "123Aaa", "24/02/2002");
+            m4 = new Member(6, "eli5@gmail.com", "123Aaa", "24/02/2002");
+            m5 = new Member(7, "eli6@gmail.com", "123Aaa", "24/02/2002");
             node0 = new Pair<>(m0, new StoreCreator(m0.getId(), m0.getName(), null));
             node1 = new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null));
             node2 = new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null));
@@ -80,7 +86,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
         @Test
         void getNodeNotExists() {
-            Assertions.assertNull(root.getNode(2));
+            Assertions.assertNull(root.getNode(1));
 
         }
 

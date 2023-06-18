@@ -18,7 +18,7 @@ class AdminTest {
     @BeforeEach
     void setUp() {
         Dao.setForTests(true);
-        Admin a = new Admin("eli@gmail.com", "123Aaa");
+        Admin a = new Admin(1, "eli@gmail.com", "123Aaa");
         market = new Market(a);
         adminId = market.login("eli@gmail.com", "123Aaa").getValue().getUserId();
         token = market.addTokenForTests();
@@ -61,10 +61,12 @@ class AdminTest {
     void closeStorePermanently() {
         market.register("nave@gmail.com", "123Ccc", "01/01/1996");
         int userId = market.login("nave@gmail.com", "123Ccc").getValue().getUserId();
-        market.register("eli@gmail.com", "123Aaa", "01/01/1996");
-        int userId2= market.login("eli@gmail.com", "123Aaa").getValue().getUserId();
+        market.register("eli2@gmail.com", "123Aaa", "01/01/1996");
+        int userId2= market.login("eli2@gmail.com", "123Aaa").getValue().getUserId();
         int sid = market.openStore(userId, token, "nike", "good store", "img").getValue();
         int sid2 = market.openStore(userId2, token, "adidas", "good store2", "img").getValue();
+        market.displayNotifications(userId, token);
+        market.displayNotifications(userId2, token);
         market.closeStorePermanently(adminId, token, sid);
         Response<Store> res = market.getStore(userId, token, sid);
         assertTrue(res.errorOccurred());

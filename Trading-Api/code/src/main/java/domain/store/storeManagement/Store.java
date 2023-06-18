@@ -44,7 +44,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Table(name = "stores")
 public class Store extends Information implements DbEntity {
     @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int storeId;
     private String storeName;
     private boolean isActive;
@@ -84,7 +83,8 @@ public class Store extends Information implements DbEntity {
 
     public Store(){
     }
-    public Store(String description, Member creator){
+    public Store(int storeId, String description, Member creator){
+        this.storeId = storeId;
         StoreCreator sc = new StoreCreator(creator.getId(), creator.getName(), this);
         Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
         this.storeDescription = description;
@@ -103,12 +103,12 @@ public class Store extends Information implements DbEntity {
         appHistory = new AppHistory(storeId, creatorNode);
         this.inventory = new Inventory(storeId);
         discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
-        policyIds = new AtomicInteger(0);
         policyIds = new AtomicInteger();
 
     }
 
-    public Store(String storeName, String description, String imgUrl, Member creator){
+    public Store(int storeId, String storeName, String description, String imgUrl, Member creator){
+        this.storeId = storeId;
         StoreCreator sc = new StoreCreator(creator.getId(), creator.getName(), this);
         Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
         this.storeDescription = description;

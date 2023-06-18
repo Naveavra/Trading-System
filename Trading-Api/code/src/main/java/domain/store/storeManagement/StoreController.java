@@ -28,10 +28,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StoreController {
 
     public ConcurrentHashMap<Integer, Store> storeList; //storeid, Store
+    private AtomicInteger storeIds;
     AtomicInteger productIDs = new AtomicInteger(0);
     ConcurrentHashMap<Integer, Product> products; //for fast access
 
     public StoreController() {
+        storeIds = new AtomicInteger(0);
         storeList = new ConcurrentHashMap<>();
         products = new ConcurrentHashMap<>();
     }
@@ -87,13 +89,13 @@ public class StoreController {
     }
 
     public Store openStore(String desc, Member user) {
-        Store store = new Store(desc, user);
+        Store store = new Store(storeIds.getAndIncrement(), desc, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
 
     public Store openStore(String name, String desc, String img, Member user) {
-        Store store = new Store(name, desc, img, user);
+        Store store = new Store(storeIds.getAndIncrement(), name, desc, img, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
@@ -210,7 +212,7 @@ public class StoreController {
 
 
     public Store createNewStore(Member creator, String description) {
-        Store store = new Store(description, creator);
+        Store store = new Store(storeIds.getAndIncrement(), description, creator);
         storeList.put(store.getStoreId(), store);
         return store;
     }

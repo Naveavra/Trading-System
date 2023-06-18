@@ -21,9 +21,9 @@ public class StoreReview extends Message{
         this.opcode = NotificationOpcode.GET_STORE_DATA;
     }
 
-    public StoreReview(String content, Member reviewer, int orderId, int storeId,
+    public StoreReview(int messageId, String content, Member reviewer, int orderId, int storeId,
                        int rating){
-        super(NotificationOpcode.GET_STORE_DATA, content, reviewer);
+        super(messageId, NotificationOpcode.GET_STORE_DATA, content, reviewer);
         this.orderId = orderId;
         this.storeId = storeId;
         this.rating = rating;

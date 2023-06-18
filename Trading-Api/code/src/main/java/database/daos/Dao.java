@@ -18,7 +18,7 @@ public class Dao {
     }
 
     public static void save(DbEntity o){
-//        if(!forTests) {
+        if(!forTests) {
             Transaction transaction = null;
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
                 transaction = session.beginTransaction();
@@ -28,7 +28,7 @@ public class Dao {
                 if (transaction != null)
                     transaction.rollback();
             }
-//        }
+        }
     }
 
     public static void remove(DbEntity o) {

@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UserController {
 
     private AtomicInteger ids;
+    private AtomicInteger messageIds;
     private ConcurrentHashMap<Integer, Guest> guestList;
     private ConcurrentHashMap<Integer, Member> memberList;
     private ConcurrentHashMap<Integer, Admin> admins;
@@ -31,6 +32,7 @@ public class UserController {
 
     public UserController(){
         ids = new AtomicInteger(2);
+        messageIds = new AtomicInteger(0);
         guestList = new ConcurrentHashMap<>();
         memberList = new ConcurrentHashMap<>();
         admins = new ConcurrentHashMap<>();
@@ -164,7 +166,7 @@ public class UserController {
         checks.checkRegisterInfo(email, password, birthday);
         if(isEmailTaken(email))
                 throw new Exception("the email is already taken");
-        Member m = new Member(email, hashedPass, birthday);
+        Member m = new Member(ids.getAndIncrement(), email, hashedPass, birthday);
         memberList.put(m.getId(), m);
     }
 
@@ -233,7 +235,7 @@ public class UserController {
         Member m = getActiveMember(userId);
         if(grading > 5 || grading < 0)
             throw new Exception("the rating given is not between 0 and 5");
-        return m.writeReview(storeId, orderId, content, grading);
+        return m.writeReview(messageIds.getAndIncrement(), storeId, orderId, content, grading);
 
     }
 
@@ -241,7 +243,7 @@ public class UserController {
         Member m = getActiveMember(userId);
         if(grading > 5 || grading < 0)
             throw new Exception("the rating given is not between 0 and 5");
-        return m.writeReview(storeId, productId, orderId, comment, grading);
+        return m.writeReview(messageIds.getAndIncrement(), storeId, productId, orderId, comment, grading);
     }
 
 
@@ -251,14 +253,14 @@ public class UserController {
         Notification notification = new Notification(NotificationOpcode.GET_ADMIN_DATA, notify);
         for(Admin a : getAdminsFromDb())
             a.addNotification(notification);
-        Complaint complaint = m.writeComplaint(orderId, comment);
+        Complaint complaint = m.writeComplaint(messageIds.getAndIncrement(), orderId, comment);
         complaints.put(complaint.getMessageId(), complaint);
     }
 
 
     public Question sendQuestionToStore(int userId, int storeId, String question) throws Exception {
         Member m = getActiveMember(userId);
-        return m.sendQuestion(storeId, question);
+        return m.sendQuestion(messageIds.getAndIncrement(), storeId, question);
     }
 
     public synchronized void addNotification(int userId, Notification notification) throws Exception{
@@ -533,6 +535,9 @@ public class UserController {
     }
 
     public boolean checkIsAdmin(String email){
+        for(Admin admin : admins.values())
+            if(admin.getName().equals(email))
+                return true;
         Admin a = SubscriberDao.getAdmin(email);
         return a != null;
     }
@@ -553,7 +558,7 @@ public class UserController {
         if(!checks.checkEmail(email))
             throw new Exception("the email given does not match the email pattern");
         checks.checkPassword(pass);
-        Admin a = new Admin(email, hashPass);
+        Admin a = new Admin(ids.getAndIncrement(), email, hashPass);
         SubscriberDao.saveSubscriber(a);
         admins.put(a.getId(), a);
     }
@@ -563,7 +568,7 @@ public class UserController {
             throw new Exception("admin email given was not valid");
         if(isEmailTaken(a.getName()))
             throw new Exception("the email is already taken");
-        Admin admin = new Admin(a.getName(), hashedPass);
+        Admin admin = new Admin(a.getId(), a.getName(), hashedPass);
         admin.saveAdmin();
         admins.put(admin.getId(), admin);
     }

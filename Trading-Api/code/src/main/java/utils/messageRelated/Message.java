@@ -13,7 +13,6 @@ import utils.infoRelated.Information;
 public abstract class Message extends Information implements DbEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
     protected int messageId;
 
     @Transient
@@ -28,7 +27,8 @@ public abstract class Message extends Information implements DbEntity {
 
     public Message(){
     }
-    public Message(NotificationOpcode opcode, String content, Member reviewer){
+    public Message(int messageId, NotificationOpcode opcode, String content, Member reviewer){
+        this.messageId = messageId;
         this.content = content;
         this.sender = reviewer;
         this.senderId = sender.getId();

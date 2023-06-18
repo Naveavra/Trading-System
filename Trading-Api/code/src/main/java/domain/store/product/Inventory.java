@@ -283,7 +283,7 @@ public class Inventory{
         if(rating < 0 || rating > 5)
             throw new Exception("the rating given is not between 0 and 5");
         Product p = getProduct(productID);
-        p.addReview(new ProductReview("not important", new Member("ni", "ni", "ni"), -1, storeId, productID, rating));
+        p.addReview(new ProductReview(-1, "not important", new Member(-1, "ni", "ni", "ni"), -1, storeId, productID, rating));
 
     }
     public ArrayList<ProductInfo> filterBy(ProductFilter filter,double storeRating) throws Exception{

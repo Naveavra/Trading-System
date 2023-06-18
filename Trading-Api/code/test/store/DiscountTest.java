@@ -44,8 +44,8 @@ public class DiscountTest {
     Store s2;
     Inventory inv1;
     Inventory inv2;
-    Member creator = new Member("eli@gmail.com", "123Aaa", "24/02/2002");
-    Member worker = new Member("eli1@gmail.com", "123Aaa", "24/02/2002");
+    Member creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
+    Member worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2002");
 
     @BeforeEach
     void setUp() throws Exception{

@@ -18,8 +18,8 @@ public class Complaint extends Message{
         this.opcode = NotificationOpcode.GET_ADMIN_DATA;
     }
 
-    public Complaint(String content, Member reviewer, int orderId){
-        super(NotificationOpcode.GET_ADMIN_DATA, content, reviewer);
+    public Complaint(int messageId, String content, Member reviewer, int orderId){
+        super(messageId, NotificationOpcode.GET_ADMIN_DATA, content, reviewer);
         this.orderId = orderId;
         this.gotFeedback = false;
         MessageDao.saveMessage(this);

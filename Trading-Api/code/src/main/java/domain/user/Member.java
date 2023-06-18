@@ -38,8 +38,8 @@ public class Member extends Subscriber implements User{
 
     public Member(){
     }
-    public Member(String email, String password, String birthday) {
-        super(email, password);
+    public Member(int id, String email, String password, String birthday) {
+        super(id, email, password);
         this.birthday = birthday;
         SubscriberDao.saveSubscriber(this);
         roles = new ArrayList<>();
@@ -131,6 +131,7 @@ public class Member extends Subscriber implements User{
     public void purchaseMade(Receipt receipt){
         purchaseHistory.addPurchaseMade(receipt);
         SubscriberDao.removeCart(id);
+        cart.emptyCart();
     }
 
     public void openStore(Store store) {
@@ -139,31 +140,31 @@ public class Member extends Subscriber implements User{
         roles.add(creator);
     }
 
-    public StoreReview writeReview(int storeId, int orderId, String content, int grading) throws Exception{
+    public StoreReview writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
         if (purchaseHistory.checkOrderContainsStore(orderId, storeId)) {
-            return new StoreReview(content, this, orderId, storeId, grading);
+            return new StoreReview(messageId, content, this, orderId, storeId, grading);
         }
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
     }
 
-    public ProductReview writeReview(int storeId, int productId, int orderId, String content, int grading) throws Exception{
+    public ProductReview writeReview(int messageId, int storeId, int productId, int orderId, String content, int grading) throws Exception{
         if(purchaseHistory.checkOrderContainsProduct(orderId, storeId, productId)){
-            return new ProductReview(content, this, orderId, storeId, productId, grading);
+            return new ProductReview(messageId, content, this, orderId, storeId, productId, grading);
         }
         else
             throw new Exception("the product isn't part of the order so you can't write a review about him");
     }
 
-    public Complaint writeComplaint(int orderId, String comment) throws Exception {
+    public Complaint writeComplaint(int messageId, int orderId, String comment) throws Exception {
         if(purchaseHistory.checkOrderOccurred(orderId))
-            return new Complaint(comment, this, orderId);
+            return new Complaint(messageId, comment, this, orderId);
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
     }
 
-    public Question sendQuestion(int storeId, String question) {
-        return new Question(question, this, storeId);
+    public Question sendQuestion(int messageId, int storeId, String question) {
+        return new Question(messageId, question, this, storeId);
     }
 
     private UserState getActiveRole(int storeId) throws Exception {
