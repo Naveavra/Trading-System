@@ -28,8 +28,10 @@ public class MessageDao {
         if(complaintMap.containsKey(messageId))
             return complaintMap.get(messageId);
         Complaint complaint = (Complaint) Dao.getById(Complaint.class, messageId);
-        if(complaint != null)
+        if(complaint != null) {
             complaintMap.put(complaint.getMessageId(), complaint);
+            complaint.initialParams();
+        }
         return complaint;
     }
 
@@ -37,7 +39,10 @@ public class MessageDao {
         if(!complaints) {
             List<? extends DbEntity> complaintsDto = Dao.getAllInTable("Complaint");
             for (Complaint complaint : (List<Complaint>) complaintsDto)
-                complaintMap.put(complaint.getMessageId(), complaint);
+                if(!complaintMap.containsKey(complaint.getMessageId())) {
+                    complaintMap.put(complaint.getMessageId(), complaint);
+                    complaint.initialParams();
+                }
             complaints = true;
         }
         return new ArrayList<>(complaintMap.values());
@@ -58,6 +63,7 @@ public class MessageDao {
             if(storeReviews.containsKey(storeId))
                 storeReviewMap.put(storeId, new HashMap<>());
             storeReviewMap.get(storeId).put(review.getMessageId(), review);
+            review.initialParams();
         }
         return review;
     }
@@ -69,7 +75,10 @@ public class MessageDao {
 
             List<? extends DbEntity> reviewsDto = Dao.getListById(StoreReview.class, storeId, "StoreReview", "storeId");
             for (StoreReview review : (List<StoreReview>) reviewsDto) {
-                storeReviewMap.get(storeId).put(review.getMessageId(), review);
+                if(!storeReviewMap.get(storeId).containsKey(review.getMessageId())) {
+                    storeReviewMap.get(storeId).put(review.getMessageId(), review);
+                    review.initialParams();
+                }
             }
             storeReviews.put(storeId, true);
         }
@@ -92,11 +101,11 @@ public class MessageDao {
         if(review != null) {
             if(productReviewMap.containsKey(storeId))
                 productReviewMap.put(storeId, new HashMap<>());
-
             if(productReviewMap.get(storeId).containsKey(productId))
                 productReviewMap.get(storeId).put(productId, new HashMap<>());
 
             productReviewMap.get(storeId).get(productId).put(review.getMessageId(), review);
+            review.initialParams();
         }
         return review;
     }
@@ -113,7 +122,10 @@ public class MessageDao {
                 List<? extends DbEntity> reviewDto = Dao.getListByCompositeKey(ProductReview.class, storeId, productId,
                         "ProductReview", "storeId", "productId");
                 for (ProductReview review : (List<ProductReview>) reviewDto) {
-                    productReviewMap.get(storeId).get(productId).put(review.getMessageId(), review);
+                    if(!productReviewMap.get(storeId).get(productId).containsKey(review.getMessageId())) {
+                        productReviewMap.get(storeId).get(productId).put(review.getMessageId(), review);
+                        review.initialParams();
+                    }
                 }
             }
         return new ArrayList<>(productReviewMap.get(storeId).get(productId).values());
@@ -140,6 +152,7 @@ public class MessageDao {
             if(!questionMap.containsKey(storeId))
                 questionMap.put(storeId, new HashMap<>());
             questionMap.get(storeId).put(question.getMessageId(), question);
+            question.initialParams();
         }
         return question;
     }
@@ -150,7 +163,10 @@ public class MessageDao {
                 questionMap.put(storeId, new HashMap<>());
             List<? extends DbEntity> questionDto = Dao.getListById(Question.class, storeId, "Question", "storeId");
             for (Question question : (List<Question>) questionDto)
-                questionMap.get(storeId).put(question.getMessageId(), question);
+                if(!questionMap.get(storeId).containsKey(question.getMessageId())) {
+                    questionMap.get(storeId).put(question.getMessageId(), question);
+                    question.initialParams();
+                }
 
             questions.put(storeId, true);
         }

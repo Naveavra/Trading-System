@@ -44,6 +44,7 @@ public class SubscriberDao {
             roles.put(m.getId(), false);
             carts.put(m.getId(), false);
             purchases.put(m.getId(), false);
+            m.initialParams();
         }
         return m;
     }
@@ -53,8 +54,14 @@ public class SubscriberDao {
             if(m.getName().equals(name))
                 return m;
         Member m = (Member) Dao.getByParam(Member.class, "Member", String.format("email = '%s' ", name));
-        if(m != null)
+        if(m != null) {
             membersMap.put(m.getId(), m);
+            notifications.put(m.getId(), false);
+            roles.put(m.getId(), false);
+            carts.put(m.getId(), false);
+            purchases.put(m.getId(), false);
+            m.initialParams();
+        }
         return m;
 
     }
@@ -63,7 +70,10 @@ public class SubscriberDao {
         if(!members) {
             List<? extends DbEntity> memberDto = Dao.getAllInTable("Member");
             for (Member m : (List<Member>) memberDto)
-                membersMap.put(m.getId(), m);
+                if(membersMap.containsKey(m.getId())) {
+                    membersMap.put(m.getId(), m);
+                    m.initialParams();
+                }
             members = true;
         }
         return new ArrayList<>(membersMap.values());
@@ -85,8 +95,11 @@ public class SubscriberDao {
         if(adminsMap.containsKey(id))
             return adminsMap.get(id);
         Admin a = (Admin) Dao.getById(Admin.class, id);
-        if(a != null)
+        if(a != null) {
             adminsMap.put(a.getId(), a);
+            notifications.put(a.getId(), false);
+            a.initialParams();
+        }
         return a;
     }
 
@@ -95,8 +108,11 @@ public class SubscriberDao {
             if(a.getName().equals(name))
                 return a;
         Admin a = (Admin) Dao.getByParam(Admin.class, "Admin", String.format("email = '%s' ", name));
-        if(a != null)
+        if(a != null) {
             adminsMap.put(a.getId(), a);
+            notifications.put(a.getId(), false);
+            a.initialParams();
+        }
         return a;
     }
 
@@ -104,7 +120,10 @@ public class SubscriberDao {
         if(!admins) {
             List<? extends DbEntity> adminDto = Dao.getAllInTable("Admin");
             for (Admin a : (List<Admin>) adminDto)
-                adminsMap.put(a.getId(), a);
+                if(!adminsMap.containsKey(a.getId())) {
+                    adminsMap.put(a.getId(), a);
+                    a.initialParams();
+                }
             admins = true;
         }
         return new ArrayList<>(adminsMap.values());
@@ -157,6 +176,7 @@ public class SubscriberDao {
             if(!rolesMap.containsKey(userId))
                 rolesMap.put(userId, new HashMap<>());
             rolesMap.get(userId).put(storeId, state);
+            state.initialParams();
         }
         return state;
     }
@@ -167,7 +187,10 @@ public class SubscriberDao {
                 rolesMap.put(userId, new HashMap<>());
             List<? extends DbEntity> rolesTmp = Dao.getListById(UserState.class, userId, "UserState", "userId");
             for(UserState state : (List<UserState>) rolesTmp)
-                rolesMap.get(userId).put(state.getStoreId(), state);
+                if(!rolesMap.get(userId).containsKey(state.getStoreId())) {
+                    rolesMap.get(userId).put(state.getStoreId(), state);
+                    state.initialParams();
+                }
             roles.put(userId, true);
         }
         return new ArrayList<>(rolesMap.get(userId).values());
@@ -263,6 +286,7 @@ public class SubscriberDao {
             if(!purchasesMap.containsKey(userId))
                 purchasesMap.put(userId, new PurchaseHistory(userId));
             purchasesMap.get(userId).addPurchaseMade(receipt);
+            receipt.initialParams();
         }
         return receipt;
     }
@@ -273,7 +297,10 @@ public class SubscriberDao {
                 purchasesMap.put(userId, new PurchaseHistory(userId));
             List<? extends DbEntity> receiptsDto = Dao.getListById(Receipt.class, userId, "Receipt", "memberId");
             for(Receipt receipt : (List<Receipt>)  receiptsDto)
-                purchasesMap.get(userId).addPurchaseMade(receipt);
+                if(!purchasesMap.get(userId).checkOrderOccurred(receipt.getOrderId())) {
+                    purchasesMap.get(userId).addPurchaseMade(receipt);
+                    receipt.initialParams();
+                }
             purchases.put(userId, true);
         }
         return purchasesMap.get(userId);

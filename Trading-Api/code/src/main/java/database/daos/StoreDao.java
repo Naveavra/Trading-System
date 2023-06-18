@@ -35,6 +35,7 @@ public class StoreDao {
             products.put(s.getStoreId(), false);
             appointments.put(s.getStoreId(), false);
             categories.put(s.getStoreId(), new HashMap<>());
+            s.initialParams();
         }
         return s;
     }
@@ -49,6 +50,7 @@ public class StoreDao {
             products.put(s.getStoreId(), false);
             appointments.put(s.getStoreId(), false);
             categories.put(s.getStoreId(), new HashMap<>());
+            s.initialParams();
         }
         return s;
     }
@@ -57,7 +59,10 @@ public class StoreDao {
         if (!stores) {
             List<? extends DbEntity> storesDto = Dao.getAllInTable("Store");
             for(Store s : (List<Store>) storesDto)
-                storesMap.put(s.getStoreId(), s);
+                if(!storesMap.containsKey(s.getStoreId())) {
+                    storesMap.put(s.getStoreId(), s);
+                    s.initialParams();
+                }
             stores = true;
         }
         return new ArrayList<>(storesMap.values());
@@ -82,6 +87,7 @@ public class StoreDao {
             if(!productsMap.containsKey(storeId))
                 productsMap.put(storeId, new HashMap<>());
             productsMap.get(storeId).put(productId, p);
+            p.initialParams();
         }
         return p;
     }
@@ -97,6 +103,7 @@ public class StoreDao {
             if(!productsMap.containsKey(storeId))
                 productsMap.put(storeId, new HashMap<>());
             productsMap.get(storeId).put(p.productId, p);
+            p.initialParams();
         }
         return p;
     }
@@ -107,7 +114,10 @@ public class StoreDao {
                 productsMap.put(storeId, new HashMap<>());
             List<? extends DbEntity> productsDto = Dao.getListById(Product.class, storeId, "Product", "storeId");
             for(Product p : (List<Product>) productsDto)
-                productsMap.get(storeId).put(p.productId, p);
+                if(!productsMap.get(storeId).containsKey(p.productId)) {
+                    productsMap.get(storeId).put(p.productId, p);
+                    p.initialParams();
+                }
             products.put(storeId, true);
         }
         return new ArrayList<>(productsMap.get(storeId).values());

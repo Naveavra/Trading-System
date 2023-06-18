@@ -51,7 +51,7 @@
     {
       "command": "APPOINT_STORE_OWNER",
       "params": {
-        "userId": "3",
+        "userId": "2",
         "storeId": "0",
         "emailOfUser": "U3@gmail.com"
       }

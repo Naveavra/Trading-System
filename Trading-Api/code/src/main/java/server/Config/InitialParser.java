@@ -1,9 +1,11 @@
 package server.Config;
 
+import database.HibernateUtil;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
 import server.API;
+import server.Server;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -40,9 +42,11 @@ public class InitialParser {
             throw new RuntimeException("Failed to read config file: " + initialFilePath, e);
         }
     }
-    public void initUseCases(API api) {
+    public void initUseCases() {
+        HibernateUtil.createDrop = true;
+        Server.api = new API(Server.configs);
         JSONArray commands = jsonInitial.getJSONArray("commands");
-        String token = api.getTokenForTest();
+        String token = Server.api.getTokenForTest();
 
         for (int i = 0; i < commands.length(); i++) {
             JSONObject commandObject = commands.getJSONObject(i);
@@ -54,41 +58,41 @@ public class InitialParser {
                     String email = params.getString("userName");
                     String password = params.getString("password");
                     String birthday = params.getString("birthday");
-                    api.register(email, password, birthday);
+                    Server.api.register(email, password, birthday);
                     break;
                 case "LOGIN":
                     String loginEmail = params.getString("userName");
                     String loginPassword = params.getString("password");
-                    api.login(loginEmail, loginPassword);
+                    Server.api.login(loginEmail, loginPassword);
                     break;
                 case "OPEN_STORE":
                     int userId = params.getInt("userId");
                     String storeName = params.getString("name");
                     String description = params.getString("description");
                     String image = params.getString("img");
-                    api.openStore(userId, token, storeName, description, image);
+                    Server.api.openStore(userId, token, storeName, description, image);
                     break;
                 case "APPOINT_STORE_OWNER":
                     int appointOwnerId = params.getInt("userId");
                     String ownerEmail = params.getString("emailOfUser");
                     int storeId = params.getInt("storeId");
-                    api.appointOwner(appointOwnerId, token, ownerEmail, storeId);
+                    Server.api.appointOwner(appointOwnerId, token, ownerEmail, storeId);
                     break;
                 case "APPOINT_STORE_MANAGER":
                     int appointManagerId = params.getInt("userId");
                     String managerEmail = params.getString("managerToAppoint");
                     int storeIdManager = params.getInt("storeId");
-                    api.appointManager(appointManagerId, token, managerEmail, storeIdManager);
+                    Server.api.appointManager(appointManagerId, token, managerEmail, storeIdManager);
                     break;
                 case "LOGOUT":
                     int logoutUserId = params.getInt("userId");
-                    api.logout(logoutUserId);
+                    Server.api.logout(logoutUserId);
                     break;
                 case "ADD_ADMIN":
                     int adminId = params.getInt("adminId");
                     String newAdminEmail = params.getString("email");
                     String passwordAdmin = params.getString("password");
-                    api.addAdmin(adminId, token,newAdminEmail,passwordAdmin);
+                    Server.api.addAdmin(adminId, token,newAdminEmail,passwordAdmin);
                     break;
                 case "ADD_ITEM_TO_STORE":
                     List<String> categories = new ArrayList<>();
@@ -103,7 +107,7 @@ public class InitialParser {
                     int addItemPrice = params.getInt("price");
                     int addItemQuantity = params.getInt("quantity");
                     String addItemImg = params.getString("img");
-                    api.addProduct(addItemUserId, token, addItemStoreId, categories, addItemName, addItemDescription, addItemPrice, addItemQuantity, addItemImg);
+                    Server.api.addProduct(addItemUserId, token, addItemStoreId, categories, addItemName, addItemDescription, addItemPrice, addItemQuantity, addItemImg);
                     break;
                 default:
                     // Handle unsupported command

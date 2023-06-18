@@ -46,14 +46,14 @@ public class Market implements MarketInterface {
         marketController = new MarketController();
 
         userAuth = new UserAuth();
-        try {
-            proxyPayment = new ProxyPayment(payment);
-            proxySupplier = new ProxySupplier(supply);
-        } catch (Exception e) {
-            // Handle the exception appropriately (e.g., log the error, terminate the program)
-            System.out.println("Error with the connection to the external service: " + e.getMessage());
-            System.exit(1); // Terminate the program
-        }
+//        try {
+//            proxyPayment = new ProxyPayment(payment);
+//            proxySupplier = new ProxySupplier(supply);
+//        } catch (Exception e) {
+//            // Handle the exception appropriately (e.g., log the error, terminate the program)
+//            System.out.println("Error with the connection to the external service: " + e.getMessage());
+//            System.exit(1); // Terminate the program
+//        }
 
         marketInfo = new MarketInfo();
 
