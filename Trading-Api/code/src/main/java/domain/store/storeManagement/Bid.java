@@ -17,7 +17,8 @@ public class Bid extends Information {
 
 
 
-    public enum status {Declined,Approved,Pending};
+
+    public enum status {Declined,Approved,Pending, Counter};
     public int bidId;
     public double offer; //how much user has offered for Product.
     public int quantity; //how much does he want to buy.
@@ -57,11 +58,14 @@ public class Bid extends Information {
         }
         approved = status.Declined;
     }
+    public void clientAcceptCounter() {
+        approved = status.Pending;
+    }
     public void counterBid(double offer,String userName) throws Exception {
         if(Objects.equals(counter, "")) {
             counter = userName;
             this.offer = offer;
-            this.approved = status.Pending;
+            this.approved = status.Counter;
             approveCount = new ArrayList<>();
             return;
         }

@@ -104,6 +104,8 @@ public class Store extends Information implements DbEntity {
         this.inventory = new Inventory(storeId);
         discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
         policyIds = new AtomicInteger(0);
+        policyIds = new AtomicInteger();
+
     }
 
     public Store(String storeName, String description, String imgUrl, Member creator){
@@ -128,7 +130,8 @@ public class Store extends Information implements DbEntity {
         appHistory = new AppHistory(storeId, creatorNode);
         this.inventory = new Inventory(storeId);
         discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
-        policyIds = new AtomicInteger(0);
+        policyIds = new AtomicInteger();
+
     }
 
     public void changeName(String storeName){
@@ -653,18 +656,18 @@ public class Store extends Information implements DbEntity {
         PurchasePolicyDataObject head = null;
         PurchasePolicyDataObject prev = null;
         for(int i = 0 ; i<policies.length() ; i++){
-            PurchasePolicyDataObject actualPolicy = null;
+//            PurchasePolicyDataObject actualPolicy = null;
             JSONObject policy = policies.getJSONObject(i);
             String type = policy.getString("type");
             switch (type){
-                case "item" -> actualPolicy = factory.parseItem(policy,prev);
-                case "category" -> actualPolicy = factory.parseCategory(policy,prev);
-                case "dateTime" -> actualPolicy = factory.parseDateTime(policy,prev);
-                case "user" -> actualPolicy = factory.parseUser(policy,prev);
-                case "basket" -> actualPolicy = factory.parseBasket(policy,prev);
+                case "item" -> prev = factory.parseItem(policy,prev);
+                case "category" -> prev = factory.parseCategory(policy,prev);
+                case "dateTime" -> prev = factory.parseDateTime(policy,prev);
+                case "user" -> prev = factory.parseUser(policy,prev);
+                case "basket" -> prev = factory.parseBasket(policy,prev);
             }
-            if(i==0 && actualPolicy!=null)
-                head = actualPolicy;
+            if(i==0 && prev!=null)
+                head = prev;
         }
         if(head!=null){
             purchasePolicies.add(factory.createPolicy(head));
@@ -721,4 +724,63 @@ public class Store extends Information implements DbEntity {
                 questions.put(question.getMessageId(), question);
         }
     }
+
+    public synchronized boolean handlePolicies(Order order) throws Exception {
+        boolean res = true;
+        for(PurchasePolicy policy : purchasePolicies){
+            res = policy.validate(order);
+            if(!res)
+                return res;
+        }
+        return res;
+    }
+
+    public void removePolicy(int policyId) {
+        purchasePolicies.removeIf(policy -> policy.policyID == policyId);
+    }
+
+    public Set<Integer> getStoreCreatorsOwners() {
+        return appHistory.getStoreCreatorsOwners();
+    }
+
+    public int getBidClient(int bidId) throws Exception {
+        for (Bid bid : bids)
+        {
+            if (bid.bidId == bidId){return bid.user.getId();}
+        }
+        throw new Exception("cant find bid Id");
+    }
+
+    public List<String> getApprovers(int bidId) throws Exception {
+        for (Bid bid : bids)
+        {
+            if (bid.bidId == bidId){return bid.approvers;}
+        }
+        throw new Exception("bid doesnt exist");
+    }
+
+    public void clientAcceptCounter(int bidId) {
+        for (Bid bid : bids){
+            if (bid.bidId == bidId){bid.clientAcceptCounter();}
+        }
+    }
+
+//    public void clientAcceptCounter(int bidId) {
+//        Member user;
+//        int prodId;
+//        double price;
+//        int quantity;
+//        for (Bid bid : bids)
+//        {
+//           if (bid.bidId == bidId)
+//           {
+//               user = bid.user;
+//               prodId = bid.product.productId;
+//               price = bid.offer;
+//               quantity = bid.quantity;
+//               Bid newBid = new Bid
+//           }
+//        }
+//
+//    }
 }

@@ -8,12 +8,15 @@ import utils.Pair;
 import utils.infoRelated.Info;
 import utils.infoRelated.Information;
 import utils.stateRelated.Action;
+import utils.stateRelated.Role;
 
 import java.util.*;
 
 
 public class AppHistory{
     private int storeId;
+
+
 
     public static class Node{
         private Pair<Member, UserState> data; //userid and role
@@ -221,5 +224,13 @@ public class AppHistory{
             ans.add(jsonBranch);
         }
         return ans;
+    }
+    public Set<Integer> getStoreCreatorsOwners() {
+        Set<Integer> roles = new HashSet<>();
+        for (UserState state : getRoles())
+        {
+            if (state.getRole() == Role.Owner || state.getRole() == Role.Manager){roles.add(state.getUserId());}
+        }
+        return roles;
     }
 }

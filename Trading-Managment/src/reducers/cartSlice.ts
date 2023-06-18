@@ -27,18 +27,6 @@ const initialState: CartState = {
     responseData: [],
     error: null,
 };
-// export const postBasket = createAsyncThunk<
-//     string,
-//     PostBasketParams,
-//     { rejectValue: ApiError }
-// >(
-//     `${reducerName}/post`,
-//     async (formData, thunkApi) => {
-//         return cartApi.postBaket(formData)
-//             .then((res) => thunkApi.fulfillWithValue(res as string))
-//             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
-//     });
-
 export const patchCart = createAsyncThunk<
     string,
     PatchCartParams,
@@ -117,10 +105,13 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
     name: reducerName,
     initialState,
     reducers: {
-        clearBasketError: (state) => {
-            state.error = null;
-        },
         clearCartError: (state) => {
+            state.basketState.error = null;
+        },
+        clearCartMessage: (state) => {
+            state.basketState.responseData = null;
+        },
+        clearCartsError: (state) => {
             state.error = null;
         },
     },
@@ -197,7 +188,7 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
     }
 });
 
-export const { clearBasketError, clearCartError } = cartActions;
+export const { clearCartMessage, clearCartsError, clearCartError } = cartActions;
 export default cartReducer;
 
 

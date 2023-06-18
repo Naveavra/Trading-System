@@ -20,6 +20,8 @@ export interface Store {
     appHistory: Appointment[];
     roles: RoleInStore[];
     bids: Bid[];
+    discounts: string[];
+    shopingRules: string[];
     //todo add purchase and discount policy
 }
 export const emptyStore: Store = {
@@ -37,6 +39,8 @@ export const emptyStore: Store = {
     roles: [],
     appHistory: [],
     bids: [],
+    discounts: [],
+    shopingRules: []
 }
 //    inventory: { id: number, product: { categories: string[], description: string, name: string, price: number, productId: number, quantity: number, img: string, rating: { value: number, content: string }[], reviewNumber: number } }[];
 //    storeOrders: { orderId: number, totalPrice: number, productsInStores: { storeId: number, products: { productId: number, quantity: number }[][] }, userId: number }[];

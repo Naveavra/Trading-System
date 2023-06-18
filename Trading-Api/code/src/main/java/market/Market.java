@@ -46,14 +46,14 @@ public class Market implements MarketInterface {
         marketController = new MarketController();
 
         userAuth = new UserAuth();
-//        try {
-//            proxyPayment = new ProxyPayment(payment);
-//            proxySupplier = new ProxySupplier(supply);
-//        } catch (Exception e) {
-//            // Handle the exception appropriately (e.g., log the error, terminate the program)
-//            System.err.println("Error with the connection to the external service: " + e.getMessage());
-//            System.exit(1); // Terminate the program
-//        }
+        try {
+            proxyPayment = new ProxyPayment(payment);
+            proxySupplier = new ProxySupplier(supply);
+        } catch (Exception e) {
+            // Handle the exception appropriately (e.g., log the error, terminate the program)
+            System.out.println("Error with the connection to the external service: " + e.getMessage());
+            System.exit(1); // Terminate the program
+        }
 
         marketInfo = new MarketInfo();
 
@@ -75,7 +75,6 @@ public class Market implements MarketInterface {
 //            proxySupplier = new ProxySupplier(supply);
 //        } catch (Exception e) {
 //            throw new RuntimeException(e);
-//              //sout("the payment/supplier was wrong");
 //        }
 
         marketInfo = new MarketInfo();
@@ -288,6 +287,58 @@ public class Market implements MarketInterface {
         }
     }
 
+    private JSONObject getStorePaymentDetails(int storeId)
+    {
+        JSONObject storeDetails = new JSONObject();
+        storeDetails.put("Account Number", 0);
+        return storeDetails;
+    }
+
+    @Override
+    public synchronized Response<Receipt> puchaseBid(String token, int userId, int storeId, int prodId, double price, int quantity, JSONObject paymentDetails, JSONObject supplierDetails) {
+        try {
+            userAuth.checkUser(userId, token);
+            proxyPayment.makePurchase(paymentDetails, getStorePaymentDetails(storeId), price);
+            proxySupplier.orderSupplies(supplierDetails, storeId, prodId, quantity);
+            Pair<Receipt, Set<Integer>> ans = marketController.purchaseBid(userController.getUser(userId), storeId, prodId, price,
+                    quantity);
+            return getReceiptResponse(userId, ans);
+        } catch (Exception e) {
+            return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    null, "make purchase failed", e.getMessage());
+        }
+    }
+
+    @Override
+    public Response clientAcceptCounter(String token, int bidId, int storeId) {
+        try {
+            userAuth.checkUser(marketController.getBidClient(bidId, storeId), token);
+            List<String> creators = marketController.getBidApprovers(bidId, storeId);
+            marketController.clientAcceptCounter(bidId, storeId);
+            for(String name : creators)
+                userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
+                        "a new bid was placed in store: " + storeId));
+            return logAndRes(Event.LogStatus.Success, "user placed his successfully",
+                    StringChecks.curDayString(), userController.getUserName(marketController.getBidClient(bidId, storeId)),
+                    "user placed his bid", null, null);
+        } catch (Exception ex) {
+            return new Response<>(null, "could not place bid", ex.getMessage());
+        }
+    }
+
+    private Response<Receipt> getReceiptResponse(int userId, Pair<Receipt, Set<Integer>> ans) throws Exception {
+        Receipt receipt = ans.getFirst();
+        Set<Integer> creatorIds = ans.getSecond();
+        userController.purchaseMade(userId, receipt);
+        for (int creatorId : creatorIds)
+            addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
+        marketInfo.addPurchaseCount();
+        return logAndRes(Event.LogStatus.Success, "user made purchase",
+                StringChecks.curDayString(), userController.getUserName(userId),
+                receipt, null, null);
+    }
+
     @Override
     public synchronized Response<Receipt> makePurchase(int userId, JSONObject payment, JSONObject supplier) {
         try {
@@ -296,15 +347,7 @@ public class Market implements MarketInterface {
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
 //            proxyPayment.makePurchase(payment, totalPrice);
 //            proxySupplier.orderSupplies(supplier, cart);
-            Receipt receipt = ans.getFirst();
-            Set<Integer> creatorIds = ans.getSecond();
-            userController.purchaseMade(userId, receipt);
-            for (int creatorId : creatorIds)
-                addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
-            marketInfo.addPurchaseCount();
-            return logAndRes(Event.LogStatus.Success, "user made purchase",
-                    StringChecks.curDayString(), userController.getUserName(userId),
-                    receipt, null, null);
+            return getReceiptResponse(userId, ans);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -1035,15 +1078,35 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.updateProduct, storeId);
-            Pair<Receipt, Set<Integer>> ans = marketController.answerBid( userController.getUser(userId).getName(), storeId, answer, prodId, bidId);
+            int clientId = marketController.getBidClient(bidId, storeId);
+            boolean ans = marketController.answerBid( userController.getUser(userId).getName(), storeId, answer, prodId, bidId);
+            if (ans)
+            {
+                addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been approved, please continue for payment");
+                Set<Integer> usersInStore = marketController.getStoreCreatorsOwners(storeId);
+                for (int creatorId : usersInStore)
+                {
+                    addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "bid number : " + bidId + " was approved by all.");
+                }
+            }
+            if (!answer) {
+                addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been declined.");
+                Set<Integer> usersInStore = marketController.getStoreCreatorsOwners(storeId);
+                for (int creatorId : usersInStore)
+                {
+                    addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "bid number : " + bidId + " was declined by " + userId);
+                }
+            }
+
+
             //            proxyPayment.makePurchase(payment, totalPrice);
             //            proxySupplier.orderSupplies(supplier, cart);
-            Receipt receipt = ans.getFirst();
-            Set<Integer> creatorIds = ans.getSecond();
-            userController.purchaseMade(userId, receipt);
-            for (int creatorId : creatorIds)
-                addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
-            marketInfo.addPurchaseCount();
+//            Receipt receipt = ans.getFirst();
+//            Set<Integer> creatorIds = ans.getSecond();
+//            userController.purchaseMade(userId, receipt);
+//            for (int creatorId : creatorIds)
+//                addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
+//            marketInfo.addPurchaseCount();
             return logAndRes(Event.LogStatus.Success, "user answer the bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user answer the bid", null, null);
@@ -1055,15 +1118,17 @@ public class Market implements MarketInterface {
     @Override
     public Response counterBid(String token, int userId, int storeId, double counterOffer, int prodId, int bidId){
         try{
+            int clientId = marketController.getBidClient(bidId, storeId);
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.updateProduct, storeId);
             List<String> ans = marketController.counterBid(userController.getUserName(userId), storeId, counterOffer, prodId, bidId);
             for(String name : ans)
                 userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a counter bid was placed in store: " + storeId + " for bid: " + bidId));
-            return logAndRes(Event.LogStatus.Success, "user answer with counter bid",
+            addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "a counter bid was placed in store: " + storeId + " for bid: " + bidId);
+            return logAndRes(Event.LogStatus.Success, "u answer with counter bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
-                    "user answer with counter bid", null, null);
+                    "u answer with counter bid", null, null);
     } catch (Exception ex) {
         return new Response<>(null, "could not answer bid", ex.getMessage());
     }
@@ -1327,6 +1392,9 @@ public class Market implements MarketInterface {
                     null, "delete shopping rule failed", e.getMessage());
         }
     }
+
+
+
 
     public static Pair<UserController, MarketController> getControllers(){
         if(userController == null)

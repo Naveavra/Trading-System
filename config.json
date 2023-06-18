@@ -21,7 +21,7 @@
       }
     },
     "Server_Back": {
-    "IP": "127.0.0.1",
+    "IP": "localhost",
     "Port": 4567
     },
     "Server_Front": {

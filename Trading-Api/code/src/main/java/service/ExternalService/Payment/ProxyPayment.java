@@ -2,7 +2,11 @@ package service.ExternalService.Payment;
 
 import org.json.JSONObject;
 import server.Config.ESConfig;
+import service.ExternalService.Supplier.ESSupply;
+import service.ExternalService.Supplier.OurSupplyService;
+import utils.Exceptions.ExternalServiceException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +30,22 @@ public class ProxyPayment implements PaymentAdapter {
      */
     public ProxyPayment(ESConfig payment) throws Exception {
         this.paymentServices = new HashMap<>();
-        ESPayment es = new ESPayment(payment);
-        this.paymentServices.put(es.getName(), es);
-        this.real = es;
-        es.setAvailable(true);
+        loadConfig(payment);
+    }
+
+    private void loadConfig(ESConfig payment) throws ExternalServiceException, IOException {
+        OurPaymentService eli = new OurPaymentService();
+        this.paymentServices.put(eli.getName(), eli);
+        if (payment.isDefault())
+        {
+            this.real = eli;
+        }
+        else {
+            ESPayment es = new ESPayment(payment);
+            this.paymentServices.put(es.getName(), es);
+            this.real = es;
+        }
+        this.real.setAvailable(true);
     }
 
     /**
@@ -121,12 +137,22 @@ public class ProxyPayment implements PaymentAdapter {
         return real != null;
     }
 
-    @Override
-    public int makePurchase(JSONObject paymentContent, double price) throws Exception {
-        String payment = paymentContent.getString("payment_service");
+    private String getPaymentService(JSONObject paymentContent) throws Exception {
+        try{
+            String service_name = paymentContent.getString("payment_service");
+            return service_name;
+        }
+        catch (Exception e)
+        {
+            throw new Exception("The payment doesn't exists!");
+        }
+    }
 
+    @Override
+    public int makePurchase(JSONObject userDetails, JSONObject storeDetails, double price) throws Exception {
+        String payment = getPaymentService(userDetails);
         if (paymentServices.containsKey(payment) && paymentServices.get(payment).isAvailable()) {
-            return paymentServices.get(payment).makePurchase(paymentContent, price);
+            return paymentServices.get(payment).makePurchase(userDetails, storeDetails, price);
         }
         throw new Exception("The payment service: " + payment + " doesn't exist or is unavailable!");
     }

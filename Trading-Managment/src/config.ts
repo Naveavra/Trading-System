@@ -1,7 +1,8 @@
+import data from "../../config.json";
 
+export const frontPort = data.Server_Front['Port'];
+export const backendUrl = `http://${data.Server_Back['IP']}:${data.Server_Back['Port']}`;
 
-export const frontPort = 5173;
-export const backendUrl = 'http://localhost:4567/';
 export interface LocalStorageEntry<T> {
     name: string;
     value: T;

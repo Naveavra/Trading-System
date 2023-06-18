@@ -5,6 +5,7 @@ import market.Admin;
 import org.hibernate.cfg.Environment;
 import org.json.JSONException;
 import org.json.JSONObject;
+import utils.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -81,21 +82,69 @@ public class ConfigParser {
             String jsonString = new String(buffer, "UTF-8");
             return new JSONObject(jsonString);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Config file not found: " + configFilePath, e);
+            System.out.println("Config file not found: " + configFilePath);
+            System.exit(-1);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to read config file: " + configFilePath, e);
+            System.out.println("Failed to read config file: " + configFilePath);
+            System.exit(-1);
         }
+        return null;
     }
 
     /**
      * Initializes all the settings from the loaded JSON config.
      */
     private void initSettings() {
-        initServerSettings();
-        initDBSettings();
-        initAdminSettings();
-        supplyConfig = initESConfigSettings("Supply");
-        paymentConfig = initESConfigSettings("Payment");
+        try {
+            initAdminSettings();
+            initServerSettings();
+            initDBSettings();
+            supplyConfig = initESConfigSettings("Supply");
+            paymentConfig = initESConfigSettings("Payment");
+        }
+        catch (Exception e)
+        {
+            System.out.println("""
+                                Config file structure is illegal!:
+                    {
+                        "Database": {
+                          "DB_DRIVER": "com.mysql.cj.jdbc.Driver",
+                          "DB_URL": "jdbc:mysql://<ip address>/<db_name>",
+                          "DB_USER": "root",
+                          "DB_PASS": "<db password>",
+                          "DB_SHOW_SQL": "true",
+                          "DB_CURRENT_SESSION_CONTEXT_CLASS": "thread",
+                          "DB_HBM2DDL_AUTO": "update"
+                        },
+                        "ExternalService": {
+                          "Payment": {
+                           "NAME": <Supplier name>,
+                            "URL": <Service url>,
+                            "RESPONSE_TIME": <response time>
+                          },
+                          "Supply": {
+                            "NAME": <Supplier name>,
+                            "URL": <Service url>,
+                            "RESPONSE_TIME": <response time>
+                          }
+                        },
+                        "Server_Back": {
+                        "IP": <ip address>,
+                        "Port": <port number>
+                        },
+                        "Server_Front": {
+                        "Port": <port number>
+                        },
+                        "Admin": {
+                          "EMAIL": "<admin mail>",
+                          "PASSWORD": "<legal password>"
+                        }
+                      }
+                    }
+                                """);
+            System.exit(-1);
+        }
+
     }
 
     /**
@@ -147,15 +196,21 @@ public class ConfigParser {
     private ESConfig initESConfigSettings(String esType) {
         JSONObject es = jsonConfig.getJSONObject("ExternalService");
         JSONObject esConfig = es.getJSONObject(esType);
-        String name = esConfig.getString("NAME");
-        String url = esConfig.getString("URL");
-        int responseTime;
-        try {
-            responseTime = esConfig.getInt("RESPONSE_TIME");
-        } catch (JSONException e) {
-            throw new IllegalArgumentException("Invalid value for response time: " + esConfig.get("RESPONSE_TIME"), e);
+        try{
+            String name = esConfig.getString("NAME");
+            String url = esConfig.getString("URL");
+            int responseTime;
+            try {
+                responseTime = esConfig.getInt("RESPONSE_TIME");
+            } catch (JSONException e) {
+                throw new IllegalArgumentException("Invalid value for response time: " + esConfig.get("RESPONSE_TIME"), e);
+            }
+            return new ESConfig(name, url, responseTime);
         }
-        return new ESConfig(name, url, responseTime);
+        catch (Exception e)
+        {
+            return new ESConfig();
+        }
     }
 
     /**

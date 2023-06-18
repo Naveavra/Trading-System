@@ -2,7 +2,7 @@ package domain.store.purchase;
 import utils.orderRelated.Order;
 
 public abstract class PurchasePolicy {
-    public enum limiters{Min,Max}
+    public enum limiters{Min,Max,Exact}
     public enum policyTypes{Basket,Category,DateTime,Item,User};
     public enum policyComposeTypes{PolicyAnd,PolicyOr,PolicyConditioning}
 

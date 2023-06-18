@@ -31,8 +31,10 @@ public class PurchasePolicyFactory {
     }
 
     private PurchasePolicy createDateTimePolicy(PurchasePolicyDataObject policyData) throws Exception {
-        if((policyData.dateLimit.length ==0 && policyData.timeLimit.length == 0 ) || policyData.limiter == null || policyData.category == null){
-            throw new Exception("Some information is missing in creating dateTime policy, please check all required fields:\n dateLimit, timeLimit, limiter, category");
+        if(policyData.dateLimit == null && policyData.timeLimit == null)
+            throw new Exception("Some information is missing in creating dateTime policy, please check given date or time");
+        if(policyData.limiter == null || policyData.category == null){
+            throw new Exception("Some information is missing in creating dateTime policy, please check- limiter, category");
         }
         return new DateTimePolicy(policyData.policyID, policyData.storeID, policyData.category, policyData.limiter, policyData.dateLimit, policyData.timeLimit);
     }
@@ -155,11 +157,11 @@ public class PurchasePolicyFactory {
     }
 
     public PurchasePolicyDataObject parseItem(JSONObject policy,PurchasePolicyDataObject prev) {
-        int amount = Integer.parseInt(policy.getString("amount"));
-        int productId = Integer.parseInt(policy.getString("productId"));
-        PurchasePolicy.limiters limiter = getLimiter(policy.getString("limiter"));
-        PurchasePolicy.policyTypes type = getPolicyType(policy.getString("type"));
-        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.getString("composore"));
+        int amount = Integer.parseInt(policy.get("amount").toString());;
+        int productId = Integer.parseInt(policy.get("productId").toString());
+        PurchasePolicy.limiters limiter = getLimiter(policy.get("limiter").toString());
+        PurchasePolicy.policyTypes type = getPolicyType(policy.get("type").toString());
+        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.get("composore").toString());
         int[] nullVal = null;
         PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyIds.getAndIncrement(),storeId,policy.toString(),limiter,productId,
                 -1,"",amount,nullVal,nullVal,null,compose,type);

@@ -18,7 +18,7 @@ const RegularBids = () => {
     const bids = useAppSelector((state) => state.store.storeState.watchedStore.bids);
     useEffect(() => {
         dispatch(getStore({ userId: userId, storeId: store.storeId }));
-    }, [dispatch, bids]);
+    }, []);
 
     return (
         <>
@@ -54,6 +54,10 @@ const RegularBids = () => {
                                         <Alert severity="success">approved</Alert> :
                                         bid.state === status.Pending ?
                                             <Alert severity="info">pending</Alert> :
+                                             bid.state === status.Counter ?
+                                            <>
+                                                <Alert severity="info">counter</Alert>
+                                            </> :
                                             <Alert severity="error">rejected</Alert>
                                     }                                </CardContent>
                                 <CardActions>

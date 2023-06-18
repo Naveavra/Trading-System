@@ -50,10 +50,10 @@ const { reducer: shoppingRuleReducer, actions: shoppingRuleActions } = createSli
     name: reducerName,
     initialState,
     reducers: {
-        clearMessage: (state) => {
+        clearShopRuleMessage: (state) => {
             state.message = '';
         },
-        clearError: (state) => {
+        clearShopRuleError: (state) => {
             state.error = '';
         },
         clearTmpShopRule: (state) => {
@@ -114,6 +114,6 @@ const { reducer: shoppingRuleReducer, actions: shoppingRuleActions } = createSli
         });
     }
 });
-export const { setDescritionToCurrent, clearCurrentShoppingRules, clearError, clearMessage, clearTmpShopRule, addTmpToCurrent, setTmpShopRule } = shoppingRuleActions;
+export const { setDescritionToCurrent, clearCurrentShoppingRules, clearShopRuleError, clearShopRuleMessage, clearTmpShopRule, addTmpToCurrent, setTmpShopRule } = shoppingRuleActions;
 
 export default shoppingRuleReducer;

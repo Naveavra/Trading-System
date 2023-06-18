@@ -3,6 +3,7 @@ package server;
 import org.json.JSONObject;
 import server.Config.ConfigParser;
 import server.Config.ConnectionDetails;
+import server.Config.InitialParser;
 import utils.Pair;
 
 import java.util.*;
@@ -19,6 +20,8 @@ public class Server {
     static ConnectedThread connectedThread;
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
     private static ConfigParser configs;
+    private static InitialParser initialConfigs;
+
 
     private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes) {
         if (apiRes.getFirst()) {
@@ -69,8 +72,18 @@ public class Server {
             initServer();
             api = new API(configs);
         }
-        else if (args.length == 2){
+        else if (args.length == 2) {
             //TODO: Get also state file
+            String configPath = args[0];
+            System.out.println("Start the system with config file...");
+            configs = ConfigParser.getInstance(configPath);
+            String initialPath = args[1];
+            System.out.println("load initial file...");
+            initialConfigs = InitialParser.getInstance(initialPath);
+
+            api = new API(configs);
+            initialConfigs.initUseCases(api);
+            initServer();
         }
         else{
             System.out.println("""
@@ -359,10 +372,17 @@ public class Server {
                 String[] arr = catStr.substring(1, catStr.length() - 1).split(",");
                 categories =new ArrayList<>(Arrays.asList(arr));
             }
-            String name = request.getString("name");
+            String name = request.get("name").toString();
             String description = request.get("description").toString();
-            int price = Integer.parseInt(request.get("price").toString());
-            int quantity = Integer.parseInt(request.get("quantity").toString());
+            int price = -1;
+            int quantity = -1;
+            if(!request.get("price").toString().equals("null")){
+                price = Integer.parseInt(request.get("price").toString());
+
+            }
+            if(!request.get("quantity").toString().equals("null")) {
+                quantity = Integer.parseInt(request.get("quantity").toString());
+            }
             String img = request.get("img").toString();
             toSparkRes(res, api.updateProduct(userId, token, storeId, productId, categories, name, description, price, quantity, img));
             return res.body();
@@ -660,6 +680,26 @@ public class Server {
             toSparkRes(res, api.editBid(token, storeId, userId, price,quantity,bidId));
             return res.body();
         });
+        post("api/biddings/bidPayment", (req, res) -> {
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            double price = Double.parseDouble(request.get("price").toString());
+            int prodId = Integer.parseInt(request.get("productId").toString());
+            int quantity = Integer.parseInt(request.get("quantity").toString());
+            toSparkRes(res, api.purchaseBid(token, userId, storeId, prodId, price, quantity,
+                    getPaymentDetails(request), getSupplierDetails(request)));
+            return res.body();
+        });
+        post("api/biddings/clientAnswer", (req, res) -> {
+            JSONObject request= new JSONObject(req.body());
+            String token = req.headers("Authorization");
+            int bidId = Integer.parseInt(request.get("bidId").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            toSparkRes(res, api.clientAcceptCounter(token, bidId, storeId));
+            return res.body();
+        });
 
         //----------------------Bid-------------------------------------
         //----------------------Purchase--------------------------------
@@ -693,7 +733,7 @@ public class Server {
             port(port);
         } catch (Exception e) {
             // Handle the exception appropriately (e.g., log the error, terminate the program)
-            System.err.println("Error initializing server: " + e.getMessage());
+            System.out.println("Error initializing server: " + e.getMessage());
             System.exit(1); // Terminate the program
         }
     }

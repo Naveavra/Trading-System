@@ -16,7 +16,7 @@ public class DateTimePolicy extends PurchasePolicy {
      * @param storeID
      * @param category
      * @param limiter   enum {Min,Max}
-     * @param dateLimit should be int[] = [0,0,0] for null value
+     * @param dateLimit should be int[] = [0,0,0] for null value || int[]=null
      * @param timeLimit should be int[] = [0,0,0] for null value
      */
     public DateTimePolicy(int policyID, int storeID, String category, limiters limiter, int[] dateLimit, int[] timeLimit) {
@@ -46,26 +46,37 @@ public class DateTimePolicy extends PurchasePolicy {
             return handleNext(switch (limiter) {
                 case Min -> handleMin(curDate, dateLimit);
                 case Max -> handleMax(curDate, dateLimit);
+                case Exact -> !(handleExact(curDate,dateLimit));
             },order);
         }
         if (!checkLimitValues(timeLimit)) {
             return handleNext(switch (limiter) {
                 case Min -> handleMin(curTime, timeLimit);
                 case Max -> handleMax(curTime, timeLimit);
+                case Exact -> !(handleExact(curTime,timeLimit));
+
             },order);
         }
         return handleNext(true,order);
     }
 
     private boolean handleMax(int[] curDay, int[] limit) {
-        return curDay[0] <= limit[0] || (curDay[1] <= limit[1] || (curDay[2] <= limit[2]));
+        boolean res = true;
+        res = curDay[2] <= limit[2] && (curDay[1] <= limit[1] && curDay[0] <= limit[0]);
+        return res;
     }
 
     private boolean handleMin(int[] curDay, int[] limit) {
-        return curDay[0] >= limit[0] || (curDay[1] >= limit[1] || (curDay[2] >= limit[2]));
+        return curDay[0] >= limit[0] && (curDay[1] >= limit[1] && (curDay[2] >= limit[2]));
     }
 
+    private boolean handleExact(int[] cur,int[] limit){
+        boolean res = cur[0] == limit[0] && cur[1] == limit[1]  && cur[2] == limit[2];
+        return res;
+    }
     public boolean checkLimitValues(int[] limit) {
+        if(limit == null)
+            return true;
         if (limit[0] == 0 && limit[1] == 0 && limit[2] == 0)
             return true;
         return false;

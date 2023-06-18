@@ -1,6 +1,5 @@
 package service.ExternalService.Payment;
 
-import domain.user.ShoppingCart;
 import org.json.JSONObject;
 import server.Config.ESConfig;
 import service.ExternalService.CancelRequest;
@@ -60,15 +59,15 @@ public class ESPayment extends ExternalService implements PaymentAdapter {
     }
 
     @Override
-    public int makePurchase(JSONObject userDetails, double price) throws Exception {
-        String cardNumber = userDetails.getString("cardNumber");
-        String month = userDetails.getString("month");
-        String year = userDetails.getString("year");
-        String holder = userDetails.getString("holder");
-        String ccv = userDetails.getString("ccv");
-        String id = userDetails.getString("id");
-        Request paymentRequest = new PaymentRequest(cardNumber, month, year, holder, ccv, id);
+    public int makePurchase(JSONObject userDetails, JSONObject storeDetails, double price) throws Exception {
         try {
+            String cardNumber = userDetails.getString("cardNumber");
+            String month = userDetails.getString("month");
+            String year = userDetails.getString("year");
+            String holder = userDetails.getString("holder");
+            String ccv = userDetails.getString("ccv");
+            String id = userDetails.getString("id");
+            Request paymentRequest = new PaymentRequest(cardNumber, month, year, holder, ccv, id);
             return sendRequest(paymentRequest);
         } catch (Exception e) {
             throw new Exception("Payment: " + e.getMessage());
