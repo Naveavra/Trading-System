@@ -164,7 +164,7 @@ public class StoreController {
         for (Basket b : shoppingCart.getBaskets()) {
             Store store = getStore(b.getStoreId());
             store.handleDiscount(order);
-            if (!(store.makeOrder(b))) {
+            if (!store.handlePolicies(order) || !(store.makeOrder(b))) {
                 return null;
             }
             storeOwnersIDS.add(store.getCreator());

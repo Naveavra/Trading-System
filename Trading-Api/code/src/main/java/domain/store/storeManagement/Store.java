@@ -717,6 +717,20 @@ public class Store extends Information{
         return inventory;
     }
 
+    public synchronized boolean handlePolicies(Order order) throws Exception {
+        boolean res = true;
+        for(PurchasePolicy policy : purchasePolicies){
+            res = policy.validate(order);
+            if(!res)
+                return res;
+        }
+        return res;
+    }
+
+    public void removePolicy(int policyId) {
+        purchasePolicies.removeIf(policy -> policy.policyID == policyId);
+    }
+
     public Set<Integer> getStoreCreatorsOwners() {
         return appHistory.getStoreCreatorsOwners();
     }
