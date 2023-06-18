@@ -1,6 +1,6 @@
 package store;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.store.order.OrderController;
 import domain.store.product.Product;
 import domain.store.purchase.PurchasePolicy;
@@ -27,8 +27,8 @@ public class PurchasePolicyTests {
     private StoreController storeCtrl = new StoreController();
     private AtomicInteger pids = new AtomicInteger();
     private AtomicInteger policyIds = new AtomicInteger();
-    Member creator = new Member(0, "eli@gmail.com", "123Aaa", "24/02/2002");
-    Member worker = new Member(1, "eli1@gmail.com", "123Aaa", "24/02/2015");
+    Member creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
+    Member worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2015");
     Store store = storeCtrl.createNewStore(creator,"Some Random Description");
     int storeId = store.getStoreId();
     Product tomato;
@@ -37,7 +37,7 @@ public class PurchasePolicyTests {
     PurchasePolicyFactory factory = new PurchasePolicyFactory(policyIds,storeId);
     boolean flag = true;
 
-    public PurchasePolicyTests() throws Exception {
+    public PurchasePolicyTests(){
         Dao.setForTests(true);
     }
 

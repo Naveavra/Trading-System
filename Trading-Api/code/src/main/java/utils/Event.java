@@ -1,5 +1,6 @@
 package utils;
 
+import database.DbEntity;
 import jakarta.persistence.*;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
@@ -7,7 +8,8 @@ import utils.infoRelated.Information;
 
 @Entity
 @Table(name = "logs")
-public class Event extends Information {
+public class Event extends Information implements DbEntity {
+
 
     public enum LogStatus{ //maybe should be moved to a designated class
         Success,
@@ -83,5 +85,10 @@ public class Event extends Information {
        json.put("time", time);
        json.put("userName", userName);
        return json;
+    }
+
+    @Override
+    public void initialParams() {
+
     }
 }

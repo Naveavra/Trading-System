@@ -1,6 +1,8 @@
 package domain.states;
 
-import database.Dao;
+import database.daos.Dao;
+import database.DbEntity;
+import database.daos.StoreDao;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import jakarta.persistence.*;
@@ -9,14 +11,13 @@ import utils.infoRelated.Information;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 
 @Entity
 @Table(name = "roles")
-public abstract class UserState extends Information {
+public abstract class UserState extends Information implements DbEntity {
 
 
     @Id
@@ -29,8 +30,6 @@ public abstract class UserState extends Information {
     protected String userName;
     @Transient
     protected Permissions permissions; //saves all the permission a user has for a store.
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="state")
-    protected List<Permission> permissionList;
 
     @Enumerated(EnumType.STRING)
     protected Role role;
@@ -47,7 +46,6 @@ public abstract class UserState extends Information {
         if(store != null)
             this.storeId = store.getStoreId();
         permissions = new Permissions();
-        permissionList = new ArrayList<>();
         isActive = true;
 
 
@@ -59,7 +57,7 @@ public abstract class UserState extends Information {
     public List<Action> getPossibleActions(){return permissions.getAddedActions();}
 
 
-    public Store getStore(){return getStoreFromDb();}
+    public Store getStore(){return store;}
 
     public int getUserId(){return userId;}
     public void setIsActive(boolean isActive){
@@ -89,51 +87,49 @@ public abstract class UserState extends Information {
 
     public void appointManager(Member appointed) throws Exception{
         checkPermission(Action.appointManager);
-        StoreManager m = new StoreManager(appointed.getId(), appointed.getName(), getStoreFromDb());
-        getStoreFromDb().appointUser(userId, appointed, m);
-        appointed.changeRoleInStore(m, getStoreFromDb());
+        StoreManager m = new StoreManager(appointed.getId(), appointed.getName(), store);
+        store.appointUser(userId, appointed, m);
+        appointed.changeRoleInStore(m, store);
     }
 
     public Set<Integer> fireManager(int appointedId) throws Exception{
         if(userId == appointedId)
-            return getStoreFromDb().fireUser(appointedId);
+            return store.fireUser(appointedId);
         checkPermission(Action.fireManager);
-        return getStoreFromDb().fireUser(appointedId);
+        return store.fireUser(appointedId);
     }
 
     public void appointOwner(Member appointed) throws Exception{
         checkPermission(Action.appointOwner);
-        StoreOwner s = new StoreOwner(appointed.getId(), appointed.getName(), getStoreFromDb());
-        getStoreFromDb().appointUser(userId, appointed, s);
-        appointed.changeRoleInStore(s, getStoreFromDb());
+        StoreOwner s = new StoreOwner(appointed.getId(), appointed.getName(), store);
+        store.appointUser(userId, appointed, s);
+        appointed.changeRoleInStore(s, store);
     }
 
     public Set<Integer> fireOwner(int appointedId) throws Exception{
         if(userId == appointedId)
-            return getStoreFromDb().fireUser(appointedId);
+            return store.fireUser(appointedId);
         checkPermission(Action.fireOwner);
-        return getStoreFromDb().fireUser(appointedId);
+        return store.fireUser(appointedId);
     }
 
     public Set<Integer> closeStore() throws Exception{
         checkPermission(Action.closeStore);
-        //setIsActive(false);
-        Set<Integer> ans = getStoreFromDb().closeStoreTemporary(userId);
-        Dao.save(getStoreFromDb());
+        Set<Integer> ans = store.closeStoreTemporary(userId);
+        Dao.save(store);
         return ans;
     }
 
     public Set<Integer> reOpenStore() throws Exception{
         checkPermission(Action.reopenStore);
-        //setIsActive(true);
-        Set<Integer> ans = getStoreFromDb().reopenStore(userId);
-        Dao.save(getStoreFromDb());
+        Set<Integer> ans = store.reopenStore(userId);
+        Dao.save(store);
         return ans;
     }
 
     public Set<Integer> getWorkerIds() throws Exception{
         checkPermission(Action.checkWorkersStatus);
-        return getStoreFromDb().getUsersInStore();
+        return store.getUsersInStore();
     }
 
     public int getStoreId() {
@@ -157,10 +153,28 @@ public abstract class UserState extends Information {
     }
 
     //database
-    public Store getStoreFromDb(){
+
+    @Override
+    public void initialParams(){
+        getStoreFromDb();
+        getPermissionsFromDb();
+    }
+
+    protected void getStoreFromDb(){
         if(store == null){
-            store = (Store) Dao.getById(Store.class, storeId);
+            store = StoreDao.getStore(storeId);
         }
-        return store;
+    }
+
+    protected abstract void getPermissionsFromDb();
+
+    protected void getPermissionsHelp(){
+        if(permissions == null) {
+            permissions = new Permissions();
+            List<? extends DbEntity> permissionsDto = Dao.getListByCompositeKey(Permission.class, userId, storeId,
+                    "Permission", "userId", "storeId");
+            for (Permission p : (List<Permission>) permissionsDto)
+                permissions.addAction(p.getPermission());
+        }
     }
 }

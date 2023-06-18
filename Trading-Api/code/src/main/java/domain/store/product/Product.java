@@ -1,10 +1,9 @@
 package domain.store.product;
 
-import database.Dao;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import database.daos.Dao;
+import database.DbEntity;
+import database.daos.StoreDao;
+import jakarta.persistence.*;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.ProductReview;
 
@@ -14,11 +13,10 @@ import java.util.*;
 
 @Entity
 @Table(name = "products")
-public class Product {
+public class Product implements DbEntity{
 
     @Id
     public int productId;
-
     @Id
     private int storeId;
 
@@ -59,6 +57,7 @@ public class Product {
         categories = new ArrayList<>();
         this.imgUrl = imgUrl;
         reviews = new ArrayList<>();
+        StoreDao.saveProduct(this);
     }
 
     public void changeImg(String imgUrl){
@@ -165,8 +164,28 @@ public class Product {
 
     public void addReview(ProductReview m) {
         reviews.add(m);
-        Dao.save(m);
     }
 
     public List<ProductReview> getReviews(){return reviews;}
+
+    @Override
+    public void initialParams() {
+        getReviewsFromDb();
+        getCategoriesFromDb();
+    }
+
+    private void getReviewsFromDb(){
+        if(reviews == null){
+            reviews = new ArrayList<>();
+            List<? extends DbEntity> productReviewsDto = Dao.getListByCompositeKey(ProductReview.class, storeId, productId,
+                    "StoreReview", "storeId", "productId");
+            reviews.addAll((List<ProductReview>) productReviewsDto);
+        }
+    }
+
+    private void getCategoriesFromDb(){
+        if(categories == null){
+            categories = new ArrayList<>();
+        }
+    }
 }

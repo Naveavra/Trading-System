@@ -1,6 +1,6 @@
 package domain.user;
 
-import database.Dao;
+import database.daos.Dao;
 import utils.infoRelated.Receipt;
 
 import java.util.ArrayList;
@@ -22,6 +22,10 @@ public class PurchaseHistory{
         receipt.setMemberId(userId);
         Dao.save(receipt);
         purchaseHistory.put(receipt.getOrderId(), receipt);
+    }
+
+    public Receipt getReceipt(int orderId){
+        return purchaseHistory.get(orderId);
     }
 
     public List<Receipt> getReceipts(){
@@ -53,4 +57,7 @@ public class PurchaseHistory{
         return purchaseHistory;
     }
 
+    public void removeReceipt(int orderId) {
+        purchaseHistory.remove(orderId);
+    }
 }

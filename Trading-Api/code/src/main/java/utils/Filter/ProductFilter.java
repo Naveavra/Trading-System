@@ -6,6 +6,7 @@ import domain.store.product.Product;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -146,7 +147,7 @@ public class ProductFilter{
 //            strategy.setRating(rating);
 //        }
 //    }
-    public void setCategories(ConcurrentHashMap<String,ArrayList<Integer>> cat){
+    public void setCategories(ConcurrentHashMap<String, List<Integer>> cat){
         FilterStrategy strategy = getFilterStrategy("Categories");
         if(strategy!=null) {
             strategy.setCategories(cat);

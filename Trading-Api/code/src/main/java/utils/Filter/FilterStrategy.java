@@ -4,6 +4,7 @@ import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.product.Product;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -37,7 +38,7 @@ public abstract class FilterStrategy {
     }
     public void setRating(int rating){
     }
-    public void setCategories(ConcurrentHashMap<String,ArrayList<Integer>> cat){
+    public void setCategories(ConcurrentHashMap<String, List<Integer>> cat){
     }
 
 }

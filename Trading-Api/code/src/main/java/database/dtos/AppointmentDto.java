@@ -1,11 +1,13 @@
 package database.dtos;
 
+import database.DbEntity;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "appointments")
-public class AppointmentDto {
+public class AppointmentDto implements DbEntity {
 
+    @Id
     private int storeId;
     @Id
     private int fatherId;
@@ -43,5 +45,9 @@ public class AppointmentDto {
 
     public void setChildId(int childId) {
         this.childId = childId;
+    }
+
+    @Override
+    public void initialParams() {
     }
 }

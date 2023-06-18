@@ -1,15 +1,19 @@
 package utils;
-import java.util.ArrayList;
+import database.daos.Dao;
+import database.DbEntity;
+import database.daos.LoggerDao;
+
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class Logger {
+public class Logger{
     private static Logger instance;
     private List<Event> eventMap;
     
     private Logger() {
         eventMap = new LinkedList<>();
+        List<? extends DbEntity> events = LoggerDao.getLogs();
+        eventMap.addAll((List<Event>) events);
     }
     
     public static synchronized Logger getInstance() {

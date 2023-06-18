@@ -1,6 +1,6 @@
 package market;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.states.Permissions;
 import domain.store.storeManagement.AppHistory;
 import domain.user.Member;
@@ -1047,7 +1047,6 @@ public class Market implements MarketInterface {
             for(String name : workerNames)
                 userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a new bid was placed in store: " + storeId +" for product: " + prodId));
-
             return logAndRes(Event.LogStatus.Success, "user placed his successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user placed his bid", null, null);

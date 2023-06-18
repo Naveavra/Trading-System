@@ -1,5 +1,6 @@
 package domain.user;
 
+import database.DbEntity;
 import utils.infoRelated.Information;
 import utils.infoRelated.ProductInfo;
 

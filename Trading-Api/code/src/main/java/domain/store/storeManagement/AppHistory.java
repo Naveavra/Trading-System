@@ -1,5 +1,6 @@
 package domain.store.storeManagement;
 
+import database.DbEntity;
 import domain.states.UserState;
 import domain.user.Member;
 import org.json.JSONObject;

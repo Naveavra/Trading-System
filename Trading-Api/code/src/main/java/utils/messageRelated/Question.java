@@ -1,5 +1,6 @@
 package utils.messageRelated;
 
+import database.daos.MessageDao;
 import domain.user.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -20,14 +21,15 @@ public class Question extends Message{
         super(messageId, NotificationOpcode.GET_STORE_DATA, content, reviewer);
         this.storeId = storeId;
         this.gotFeedback = false;
+        MessageDao.saveMessage(this);
     }
 
     public void sendFeedback(String feedback) throws Exception{
-        setSenderDb();
         if(!gotFeedback) {
             Notification notification = new Notification(NotificationOpcode.GET_STORE_DATA_AND_COMPLAINS, feedback);
             sender.addNotification(notification);
             gotFeedback = true;
+            MessageDao.saveMessage(this);
         }
         else throw new Exception("the complaint already got an answer");
 

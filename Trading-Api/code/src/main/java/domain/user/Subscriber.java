@@ -1,17 +1,15 @@
 package domain.user;
 
-import database.Dao;
+import database.DbEntity;
+import database.daos.SubscriberDao;
 import jakarta.persistence.*;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
@@ -20,7 +18,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public abstract class Subscriber {
+public abstract class Subscriber implements DbEntity{
 
     @Id
     protected int id;
@@ -77,17 +75,14 @@ public abstract class Subscriber {
     }
 
     public synchronized void addNotification(Notification notification){
-        setNotificationsFromDb();
         notification.setSubId(id);
         boolean got = notifications.offer(notification);
         if(got)
-            Dao.save(notification);
+            SubscriberDao.saveNotification(notification);
     }
 
     public List<Notification> displayNotifications(){
-        setNotificationsFromDb();
         List<Notification> display = new LinkedList<>(notifications);
-        Dao.removeIf("Notification", String.format("subId = %d", id));
         notifications.clear();
         return display;
     }
@@ -96,7 +91,7 @@ public abstract class Subscriber {
         synchronized (notifications) {
             Notification n = notifications.take();
             if(isConnected) {
-                Dao.remove(n);
+                SubscriberDao.removeNotification(n.getId());
                 return n;
             }else{
                 notifications.offer(n);
@@ -105,10 +100,11 @@ public abstract class Subscriber {
         }
     }
 
-    public void setNotificationsFromDb(){
+    public void initialNotificationsFromDb(){
         if(notifications == null) {
             notifications = new LinkedBlockingQueue<>();
-            for (Notification n : (List<Notification>) Dao.getListById(Notification.class, id, "Notification", "subId"))
+            List<Notification> notifics = SubscriberDao.getNotifications(id);
+            for (Notification n : notifics)
                 addNotification(n);
         }
     }

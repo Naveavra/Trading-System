@@ -1,23 +1,24 @@
 package domain.store.product;
 
 
-import database.Dao;
+import database.daos.Dao;
+import database.DbEntity;
+import database.daos.StoreDao;
 import database.dtos.CategoryDto;
+import domain.store.storeManagement.Store;
 import domain.user.Member;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.ProductReview;
 
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Inventory {
+public class Inventory{
     private int storeId;
     private ConcurrentHashMap<Integer, Product> productList; // <id, product>
-    private ConcurrentHashMap<String,ArrayList<Integer>> categories; // <Category String,<List<ProductID>>
+    private ConcurrentHashMap<String,List<Integer>> categories; // <Category String,<List<ProductID>>
 
 
     // AtomicInteger prod_id = new AtomicInteger();
@@ -43,7 +44,6 @@ public class Inventory {
             p.setPrice(price);
             p.replaceQuantity(quantity);
             productList.put(id,p);
-            Dao.save(p);
             addToCategories(id, categories);
         }
         else
@@ -60,7 +60,6 @@ public class Inventory {
             p.setPrice(price);
             p.replaceQuantity(quantity);
             productList.put(id,p);
-            Dao.save(p);
             addToCategories(id, categories);
         }
         else
@@ -71,7 +70,6 @@ public class Inventory {
     public synchronized Product addProduct(Product p) throws Exception{
         if(getProductByName(p.name) == null) {
             productList.put(p.getID(), p);
-            Dao.save(p);
             addToCategories(p.getID(), p.getCategories());
         }
         else
@@ -86,8 +84,8 @@ public class Inventory {
      */
     public synchronized ArrayList<String> getProductCategories(int productId){
         ArrayList<String> relatedCategories = new ArrayList<>();
-        for(String category : getCategoriesFromDb().keySet()){
-            if(getCategoriesFromDb().get(category).contains(productId)){
+        for(String category : categories.keySet()){
+            if(categories.get(category).contains(productId)){
                 relatedCategories.add(category);
             }
         }
@@ -141,8 +139,7 @@ public class Inventory {
         if(productList.containsKey(productId)){
             return productList.get(productId);
         }
-        Product p = (Product) Dao.getByParam(Product.class,
-                "Product", String.format("storeId = %d AND productId = %d", storeId, productId));
+        Product p = StoreDao.getProduct(storeId, productId);
         if(p != null) {
             productList.put(p.productId, p);
             return p;
@@ -151,7 +148,7 @@ public class Inventory {
     }
 
     public ArrayList<String> getAllCategories(){
-        return new ArrayList<>(getCategoriesFromDb().keySet());
+        return new ArrayList<>(categories.keySet());
     }
 
 
@@ -173,8 +170,7 @@ public class Inventory {
                 return p;
             }
         }
-        Product p = (Product) Dao.getByParam(Product.class,
-                "Product", String.format("storeId = %d AND name = '%s'", storeId, name));
+        Product p = StoreDao.getProduct(storeId, name);
         if(p != null){
             productList.put(p.productId, p);
             return p;
@@ -184,7 +180,7 @@ public class Inventory {
 
     public synchronized HashMap<Integer, Integer> getPrices() {
         HashMap<Integer,Integer> prices = new HashMap<>();
-        for(Product p : getProductsFromDb().values()){
+        for(Product p : productList.values()){
             prices.put(p.getID(),p.getPrice());
         }
         return prices;
@@ -192,7 +188,7 @@ public class Inventory {
 
     public List<ProductInfo> getProducts(){
         List<ProductInfo> productInfos = new LinkedList<>();
-        for (Product p : getProductsFromDb().values()){
+        for (Product p : productList.values()){
             ProductInfo info = new ProductInfo(storeId, p.getID(), p.getCategories(), p.getName(), p.getDescription(), p.getPrice(), p.getQuantity(),
                     p.getRating(), getProductReviews(p.getID()), p.getImgUrl());
             info.setCategories(getProductCategories(p.getID()));
@@ -202,15 +198,15 @@ public class Inventory {
     }
     public synchronized void addToCategory(String category, int productId) throws Exception {
         Product p = getProduct(productId);
-        if(getCategoriesFromDb().containsKey(category)){
-            if(!getCategoriesFromDb().get(category).contains(productId)){
-                getCategoriesFromDb().get(category).add(productId);
+        if(categories.containsKey(category)){
+            if(!categories.get(category).contains(productId)){
+                categories.get(category).add(productId);
                 p.addCategory(category);
                 Dao.save(new CategoryDto(storeId, productId, category));
             }
         }else{
-            getCategoriesFromDb().put(category,new ArrayList<>());
-            getCategoriesFromDb().get(category).add(productId);
+            categories.put(category,new ArrayList<>());
+            categories.get(category).add(productId);
             p.addCategory(category);
             Dao.save(new CategoryDto(storeId, productId, category));
         }
@@ -224,13 +220,12 @@ public class Inventory {
     public synchronized void removeProduct(int productId) throws Exception{
         Product p = getProduct(productId);
         productList.remove(productId);
-        Dao.remove(p);
-        for(List<Integer> prodIds : getCategoriesFromDb().values()){
+        StoreDao.removeProduct(storeId, productId);
+        for(List<Integer> prodIds : categories.values()){
             if(prodIds.contains(productId)){
                 prodIds.removeIf(id -> id == productId);
             }
         }
-        Dao.removeIf("CategoryDto", String.format("productId = %d", productId));
     }
 
     public void updateProduct(int productId, List<String> categories,String name, String description,
@@ -271,14 +266,14 @@ public class Inventory {
         p.setName(name);
     }
 
-    private void replaceCategories(int productId, List<String> categories) throws Exception {
-        for(ArrayList<Integer> category: getCategoriesFromDb().values()){
+    private void replaceCategories(int productId, List<String> cats) throws Exception {
+        for(List<Integer> category: categories.values()){
             if(category.contains(productId)){
                 category.remove(Integer.valueOf(productId));
             }
         }
         Dao.removeIf("CategoryDto", String.format("productId = %d", productId));
-        for(String category: categories){
+        for(String category: cats){
             addToCategory(category,productId);
         }
     }
@@ -293,10 +288,10 @@ public class Inventory {
     }
     public ArrayList<ProductInfo> filterBy(ProductFilter filter,double storeRating) throws Exception{
 //        filter.setOp(this::getProduct);
-        filter.setCategories(getCategoriesFromDb());
+        filter.setCategories(categories);
         filter.setStoreRating(storeRating);
         //need to set more relevant things here as soon as all filters are implemented.
-        ArrayList<Product> filtered = filter.filter(new ArrayList<>(getProductsFromDb().values()));
+        ArrayList<Product> filtered = filter.filter(new ArrayList<>(productList.values()));
         ArrayList<ProductInfo> result = new ArrayList<>();
         for(Product p: filtered){
             ProductInfo info = getProductInfo(storeId, p.getID());
@@ -323,24 +318,27 @@ public class Inventory {
     }
 
     //database
-    public ConcurrentHashMap<String,ArrayList<Integer>> getCategoriesFromDb(){
+
+    public void initialParams(){
+        getProductsFromDb();
+        getCategoriesFromDb();
+    }
+    public void getCategoriesFromDb(){
         if(categories == null){
+            HashMap<String, Set<Integer>> tmp = StoreDao.getAllCategories(storeId);
             categories = new ConcurrentHashMap<>();
-            List<CategoryDto> cats = (List<CategoryDto>) Dao.getListById(CategoryDto.class, storeId, "CategoryDto", "storeId");
-            for(CategoryDto cat : cats){
-                if(!categories.containsKey(cat.getCategoryName()))
-                    categories.put(cat.getCategoryName(), new ArrayList<>());
-                categories.get(cat.getCategoryName()).add(cat.getProductId());
+            for(String cat : tmp.keySet()) {
+                categories.put(cat, new ArrayList<>());
+                for(int id : tmp.get(cat))
+                    categories.get(cat).add(id);
             }
         }
-        return categories;
     }
 
-    public ConcurrentHashMap<Integer, Product> getProductsFromDb(){
-        List<Product> products = (List<Product>) Dao.getListById(Product.class, storeId, "Product", "storeId");
+    public void getProductsFromDb(){
+        List<Product> products = StoreDao.getProducts(storeId);
         for(Product p : products)
             if(!productList.containsKey(p.productId))
                 productList.put(p.productId, p);
-        return productList;
     }
 }

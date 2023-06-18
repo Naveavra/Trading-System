@@ -555,6 +555,7 @@ public class API {
         Response<Receipt> res3 = market.makePurchase(id1, payment, supplier);
         market.sendComplaint(id1, token1, res3.getValue().getOrderId(), "baaaaaad");
         market.writeReviewToStore(id1, token1, res3.getValue().getOrderId(), "rollups", "bad store", 2);
+        market.writeReviewToProduct(id1, token1, res3.getValue().getOrderId(),sid2, pid2, "aaaaa", 3);
         res3 = market.makePurchase(id2, payment, supplier);
         market.writeReviewToStore(id2, token2, res3.getValue().getOrderId(), "nike", "good store", 4);
         market.sendQuestion(id1, token1, sid1, "why bad?");
