@@ -1,6 +1,9 @@
 package bridge;
 
 import data.*;
+import org.json.JSONObject;
+import utils.messageRelated.Notification;
+import utils.stateRelated.Role;
 
 import java.util.List;
 
@@ -12,17 +15,17 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int initTradingSystem() {
+    public boolean initTradingSystem() {
         if (real != null)
             return real.initTradingSystem();
-        return -1;
+        return false;
     }
 
     @Override
-    public int shutDownTradingSystem() {
+    public boolean shutDownTradingSystem() {
         if (real != null)
             return real.shutDownTradingSystem();
-        return -1;
+        return false;
     }
 
     @Override
@@ -47,6 +50,13 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
+    public LoginData loginAndGetData(String email, String password) {
+        if (real != null)
+            return real.loginAndGetData(email, password);
+        return null;
+    }
+
+    @Override
     public int logout(int user) {
         if (real != null)
             return real.logout(user);
@@ -68,9 +78,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public List<String> getAvailableExternalSupplierService(int user) {
+    public List<String> getAvailableExternalSupplierService() {
         if (real != null)
-            return real.getAvailableExternalSupplierService(user);
+            return real.getAvailableExternalSupplierService();
         return null;
     }
 
@@ -103,9 +113,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public List<String> getAvailableExternalPaymentService(int user) {
+    public List<String> getAvailableExternalPaymentService() {
         if (real != null)
-            return real.getAvailableExternalPaymentService(user);
+            return real.getAvailableExternalPaymentService();
         return null;
     }
 
@@ -153,10 +163,10 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int removeProduct(int user, int store, int product) {
+    public boolean removeProduct(int user, int store, int product) {
         if (real != null)
             return real.removeProduct(user, store, product);
-        return -1;
+        return false;
     }
 
     @Override
@@ -202,10 +212,10 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int closeStore(int user, int store) {
+    public boolean closeStore(int user, int store) {
         if (real != null)
             return real.closeStore(user, store);
-        return -1;
+        return false;
     }
 
     @Override
@@ -230,17 +240,17 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int removeStoreManagerPermissions(int user, int store, int managerId, int permissionsIds) {
+    public boolean removeStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
         if (real != null)
             return real.removeStoreManagerPermissions(user, store, managerId, permissionsIds);
-        return -1;
+        return false;
     }
 
     @Override
-    public int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
+    public boolean addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
         if (real != null)
             return real.addStoreManagerPermissions(user, store, managerId, permissionsIds);
-        return -1;
+        return false;
     }
 
 
@@ -323,9 +333,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int makePurchase(int user, String accountNumber) {
+    public int makePurchase(int user, JSONObject payment, JSONObject supplier) {
         if (real != null)
-            return real.makePurchase(user, accountNumber);
+            return real.makePurchase(user, payment, supplier);
         return -1;
     }
 
@@ -351,9 +361,23 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public List<String> getNotifications(int userId) {
+    public List<Notification> getNotifications(int userId) {
         if(real != null)
             return real.getNotifications(userId);
+        return null;
+    }
+
+    @Override
+    public StoreInfo getStoreInfo(int storeId) {
+        if(real != null)
+            return real.getStoreInfo(storeId);
+        return null;
+    }
+
+    @Override
+    public Role getRoleInStore(int userId, int workerId, int storeId) {
+        if(real != null)
+            return real.getRoleInStore(userId, workerId, storeId);
         return null;
     }
 }

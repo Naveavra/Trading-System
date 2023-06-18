@@ -1,20 +1,34 @@
 package utils.messageRelated;
 
 
+import database.DbEntity;
+import database.daos.Dao;
+import domain.user.Subscriber;
+import jakarta.persistence.*;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
 
-public class Notification<T> extends Information {
-    private T notification;
+@Entity
+@Table(name = "notifications")
+public class Notification extends Information implements DbEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private int subId;
+    private String notification;
     private NotificationOpcode opcode;
 
 
-    public Notification(NotificationOpcode opcode, T notification){
+    public Notification(){
+    }
+    public Notification(NotificationOpcode opcode, String notification){
         this.opcode =  opcode;
         this.notification =  notification;
+        Dao.save(this);
     }
 
-    public T getNotification(){
+    public String getNotification(){
         return notification;
     }
 
@@ -37,5 +51,25 @@ public class Notification<T> extends Information {
 
     public void setOpcode(NotificationOpcode opcode) {
         this.opcode = opcode;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getSubId() {
+        return subId;
+    }
+
+    public void setSubId(int subId) {
+        this.subId = subId;
+    }
+
+    @Override
+    public void initialParams() {
     }
 }

@@ -1,9 +1,13 @@
 package market;
 
-import database.dtos.AdminDto;
+import database.daos.Dao;
 import domain.user.Subscriber;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import service.MarketController;
 import service.UserController;
+import utils.Pair;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
@@ -12,27 +16,30 @@ import utils.stateRelated.Action;
 import java.util.List;
 import java.util.Set;
 
+@Entity
+@Table(name = "admins")
 public class Admin extends Subscriber {
-
+    @Transient
     private MarketController marketController;
+    @Transient
     private UserController userController;
 
-    private AdminDto adminDto;
-    public Admin(int adminId, String email, String password){
-        super(adminId, email, password);
-        adminDto = new AdminDto(adminId);
+    public Admin(){
+        setControllers();
+    }
+    public Admin(int id, String email, String password){
+        super(id, email, password);
+        Pair<UserController, MarketController> controllers = Market.getControllers();
+        userController = controllers.getFirst();
+        marketController = controllers.getSecond();
     }
 
-    public void addControllers(UserController userController, MarketController marketController){
-        this.userController = userController;
-        this.marketController = marketController;
-    }
     public void closeStorePermanently(int storeId, int creatId) throws Exception {
         Set<Integer> userIds = marketController.closeStorePermanently(storeId);
         for(int userId : userIds){
             if(creatId != userId) {
                 String notify = "the store: " + storeId + " has been permanently closed";
-                Notification<String> notification = new Notification<>(NotificationOpcode.CLOSE_STORE_PERMANENTLY, notify);
+                Notification notification = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, notify);
                 userController.addNotification(userId, notification);
                 userController.removeStoreRole(userId, storeId);
             }
@@ -51,18 +58,29 @@ public class Admin extends Subscriber {
             closeStorePermanently(storeId, userToRemove);
     }
 
-    //database
-    public AdminDto getAdminDto() {
-        return adminDto;
+    public void setControllers(){
+        Pair<UserController, MarketController> controllers = Market.getControllers();
+        userController = controllers.getFirst();
+        marketController = controllers.getSecond();
     }
+
 
     @Override
     public LoginInformation getLoginInformation(String token) {
         return new LoginInformation(token, getId(), getName(), true, displayNotifications(),
-                null, null, null, null, null, -1, null);
+                null, null, null, null, null, -1, null, null);
     }
 
     @Override
     public void checkPermission(Action action, int storeId) throws Exception {
+    }
+
+    public void saveAdmin() {
+        Dao.save(this);
+    }
+
+    @Override
+    public void initialParams() {
+        initialNotificationsFromDb();
     }
 }

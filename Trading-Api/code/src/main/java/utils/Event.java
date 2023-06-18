@@ -1,9 +1,39 @@
 package utils;
 
+import database.DbEntity;
+import jakarta.persistence.*;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
 
-public class Event extends Information {
+
+@Entity
+@Table(name = "logs")
+public class Event extends Information implements DbEntity {
+
+
+    public enum LogStatus{ //maybe should be moved to a designated class
+        Success,
+        Fail,
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @Enumerated(EnumType.STRING)
+    private LogStatus status;
+    private String content;
+    private String time;
+    private String userName;
+
+    public Event(){
+    }
+
+    public Event(LogStatus status, String content, String time, String userName){
+        this.status = status;
+        this.content = content;
+        this.time = time;
+        this.userName = userName;
+    }
 
 
     public int getId() {
@@ -46,25 +76,6 @@ public class Event extends Information {
         this.userName = userName;
     }
 
-    public enum LogStatus{ //maybe should be moved to a designated class
-        Success,
-        Fail,
-    }
-
-    private int id;
-    private LogStatus status;
-    private String content;
-    private String time;
-    private String userName;
-
-    public Event(int id, LogStatus status, String content, String time, String userName){
-        this.id = id;
-        this.status = status;
-        this.content = content;
-        this.time = time;
-        this.userName = userName;
-    }
-
     @Override
     public JSONObject toJson() {
        JSONObject json = new JSONObject();
@@ -74,5 +85,10 @@ public class Event extends Information {
        json.put("time", time);
        json.put("userName", userName);
        return json;
+    }
+
+    @Override
+    public void initialParams() {
+
     }
 }

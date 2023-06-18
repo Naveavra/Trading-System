@@ -2,18 +2,18 @@ package market;
 
 import domain.store.storeManagement.Store;
 import domain.user.PurchaseHistory;
+import org.json.JSONObject;
+import utils.infoRelated.Information;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
+import utils.infoRelated.Receipt;
+import utils.messageRelated.Notification;
 import utils.messageRelated.NotificationOpcode;
 
 import java.util.HashMap;
 import java.util.List;
 
 public interface MarketInterface {
-    //assumption :
-        // guest will be recognized by id
-        // member will be recognized by email & id
-        //for each function of guest there will be 2 function , owns get an id and the other gets userName
     //guest methods
     public Response enterGuest();
     public Response exitGuest(int guestId);
@@ -22,7 +22,6 @@ public interface MarketInterface {
     public Response removeProductFromCart(int userId,  int storeId, int productId);
     public Response changeQuantityInCart(int userId, int storeId, int productId, int change);
     Response<String> removeCart(int userId);
-    public Response makePurchase(int userId , String accountNumber);
 
 
     //TODO: will change when miki adds all changes
@@ -35,6 +34,9 @@ public interface MarketInterface {
     Response<LoginInformation> getMember(int userId, String token);
     public Response displayNotifications(int userId, String token);
     public Response logout(int userId);
+
+    Response<Receipt> makePurchase(int userId, JSONObject payment, JSONObject supplier);
+
     public Response changeMemberAttributes(int userId, String token, String newEmail, String newBirthday);
 
     Response<String> changeMemberPassword(int userId, String token, String newEmail, String newBirthday);
@@ -43,7 +45,7 @@ public interface MarketInterface {
 
     Response<PurchaseHistory> getUserPurchaseHistory(int userId, String token, int buyerId);
 
-    public Response writeReviewToStore(int userId, String token, int orderId, int storeId, String content, int grading);
+    public Response writeReviewToStore(int userId, String token, int orderId, String storeName, String content, int grading);
 
     Response<String> sendNotification(int userId, String token, NotificationOpcode opcode, String receiverEmail, String notify);
 
@@ -63,7 +65,7 @@ public interface MarketInterface {
     public Response changeStoreInfo(int userId, String token, int storeId, String name, String description, String img,
                                     String isActive);
     public String changeStoreAttributes(int userId, int storeId, String name, String description, String img) throws Exception;
-    public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
+//    public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
     //public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
     public Response addPurchaseConstraint(int userId, String token, int storeId, String constraint);
     public Response fireManager(int userId, String token, int managerToFire, int storeId);
@@ -104,20 +106,49 @@ public interface MarketInterface {
     public Response removeAdmin(int adminId, String token);
     public Response getUsersPurchaseHistory(int buyerId, String token);
     public Response answerComplaint(int adminId, String token, int complaintId, String ans);
-    public Response cancelMembership(int adminId, String token, int userToRemove);
+    public Response<String> cancelMembership(int adminId, String token, String userToRemove);
+    Response<String> removeUser(String userName);
     public Response watchEventLog(int adminId, String token);
     public Response watchMarketStatus(int adminId, String token);
 
     public Response setPaymentService(int adminId, String token, String paymentService);
     public Response getPaymentServicePossible(int adminId, String token);
-    public Response getPaymentServiceAvailable(int userId);
+
+    //TODO: fix template for this function
+    Response getPaymentServiceAvailable();
+
     public Response addPaymentService(int adminId, String token, String paymentService);
     public Response removePaymentService(int adminId, String token, String paymentService);
 
     public Response setSupplierService(int adminId, String token, String supplierService);
     public Response getSupplierServicePossible(int adminId, String token);
-    public Response getSupplierServiceAvailable(int userId);
+
+    //TODO: fix template for this function
+    Response getSupplierServiceAvailable();
+
     public Response addSupplierService(int adminId, String token, String supplierService);
     public Response removeSupplierService(int adminId, String token, String supplierService);
 
+    Response<List<? extends Information>> getComplaints(int userId, String token);
+
+    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst);
+
+    public Response placeBid(String token, int userId, int storeId, int prodId, double price,int quantity);
+
+    public Response answerBid(String token, int userId, int storeId, boolean ans, int prodId, int bidId);
+
+    public Response counterBid(String token, int userId, int storeId, double counterOffer, int prodId, int bidId);
+
+    public Response editBid(String token, int userId, int storeId, double price, int quantity, int bidId);
+
+    Response<String> addShoppingRule(int userId, String token, int storeId, String purchasePolicy);
+
+    Response<String> deletePurchasePolicy(String token, int userId, int storeId, int purchasePolicyId);
+
+    public Response puchaseBid(String token, int userId, int storeId, int prodId, double price, int quantity, JSONObject paymentDetails, JSONObject supplierDetails);
+
+    public Response clientAcceptCounter(String token, int bidId, int storeId);
 }
+
+
+

@@ -84,6 +84,7 @@ public class LogicalDiscountComposite extends AbstractDiscountComposite{
         return predicate;
     }
 
+
     @Override
     public void setDecidingRule(xorDecidingRules decidingRule) {
         this.decidingRule = decidingRule;

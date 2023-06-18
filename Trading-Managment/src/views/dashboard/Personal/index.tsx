@@ -1,49 +1,56 @@
 import { useAppDispatch, useAppSelector } from "../../../redux/store";
-import { Card, CardContent, Typography, CardActions, Divider, Box, Grid, TextField } from "@mui/material";
+import { Card, CardContent, Typography, CardActions, Divider, Box, Alert, Button } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import { Outlet, useNavigate } from "react-router-dom";
 import Bar3 from "../../../components/Bars/Navbar/NavBar3";
-import { LoadingButton } from "@mui/lab";
-import { useForm } from "react-hook-form";
-import { sendMsgFormValues } from "../../../types/formsTypes";
-import { sendMessage } from "../../../reducers/authSlice";
-import { useState } from "react";
-
+import { clearAuthError, clearAuthMsg, getClientData, setWatchedOrder } from "../../../reducers/authSlice";
+import PasswordIcon from '@mui/icons-material/Password';
+import SuccessAlert from "../../../components/Alerts/success";
+import ErrorAlert from "../../../components/Alerts/error";
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import InfoIcon from '@mui/icons-material/Info';
+import { status } from '../../../types/systemTypes/Bid'
+import { clearBidMsg, clearBidError, answerOnCounter } from "../../../reducers/bidSlice";
+import { useEffect } from "react";
 const Personal = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const form = useForm<sendMsgFormValues>();
-
     const userId = useAppSelector((state) => state.auth.userId);
+
     const email = useAppSelector((state) => state.auth.userName);
     const age = useAppSelector((state) => state.auth.age);
     const name = email.split('@')[0];
     const birthday = useAppSelector((state) => state.auth.birthday);
-    const isLoading = useAppSelector((state) => state.auth.isLoading);
-    const [emailError, setEmailError] = useState("");
 
     const orders = useAppSelector((state) => state.auth.purchaseHistory);
-    const handleOnSubmit = () => {
-        form.setValue('userId', userId);
-        dispatch(sendMessage(form.getValues()));
-    }
-    const validateEmail = (email: string): void => {
-        const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        if (!emailRegex.test(email)) {
-            form.setError("userName", { type: 'custom', message: 'email isnt valide' }, { shouldFocus: true })
-            setEmailError("email isnt valide")
-        }
-        else {
-            setEmailError("");
-            form.clearErrors("userName");
-        }
-        // return emailRegex.test(email);
-    }
+    const bids = useAppSelector((state) => state.auth.bids);
+
+    const userMessage = useAppSelector((state) => state.auth.message);
+    const userError = useAppSelector((state) => state.auth.error);
+
+    const bidMessage = useAppSelector((state) => state.bid.message);
+    const bidError = useAppSelector((state) => state.bid.error);
+
+
+    const handleClickOrder = (orderId: number) => {
+        dispatch(setWatchedOrder(orderId));
+        navigate(`order/${orderId}`)
+    };
+    useEffect(() => {dispatch(getClientData({userId:userId}))})
     return (
         <>
             <Bar3 headLine={"this is your personal data"} />
+            {userMessage ? <SuccessAlert message={userMessage} onClose={() => { dispatch(clearAuthMsg()) }} /> : null}
+            {userError ? <ErrorAlert message={userError} onClose={() => { dispatch(clearAuthError()) }} /> : null}
+            {bidMessage ? <SuccessAlert message={bidMessage} onClose={() => { dispatch(clearBidMsg()) }} /> : null}
+            {bidError ? <ErrorAlert message={bidError} onClose={() => { dispatch(clearBidError()) }} /> : null}
             <Box sx={{ width: '100%', display: 'flex' }}>
+                <Typography sx={{ fontSize: 25, mt: 3, ml: '10%' }} gutterBottom>
+                    your personal data
+                </Typography>
+            </Box>
+            <Box sx={{ width: '100%', display: 'flex', mb: 2 }}>
                 <Card sx={{ minWidth: 275, width: '30%', mt: 5, ml: 3 }}>
                     <CardContent sx={{ padding: 2 }}>
                         <Typography sx={{ fontSize: 20, mt: 2, mb: 2 }} variant="h5" gutterBottom>
@@ -63,92 +70,102 @@ const Personal = () => {
                         <IconButton onClick={() => navigate("editMyProfile")} sx={{ marginLeft: 'auto' }}>
                             <EditIcon />
                         </IconButton>
+                        <IconButton onClick={() => navigate("changePassword")} sx={{ marginLeft: 'auto' }}>
+                            <PasswordIcon />
+                        </IconButton>
                     </CardActions>
                 </Card>
-                <Grid
-                    spacing={2}
-                    container
-                    component="form"
-                    onSubmit={handleOnSubmit}
-                    sx={{ width: '50%', ml: 10, mt: 5 }}
-                >
-                    <Grid item xs={12}>
-                        <TextField
-                            name="email"
-                            type="text"
-                            fullWidth
-                            label="name"
-                            sx={{ mt: 1, mb: 1 }}
-                            inputProps={{
-                                ...form.register('userName', {
-                                    required: {
-                                        value: true,
-                                        message: "name is required"
-                                    }
-                                })
-                            }}
-                            error={!!form.formState.errors['userName'] ?? false}
-                            helperText={form.formState.errors['userName']?.message ?? undefined}
-                            onChange={(e) => {
-                                validateEmail(e.target.value)
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            name="message"
-                            type="text"
-                            fullWidth
-                            label="message"
-                            sx={{ mt: 1, mb: 1 }}
-                            inputProps={{
-                                ...form.register('message', {
-                                    required: {
-                                        value: true,
-                                        message: "msg is mendatory"
-                                    }
-                                })
-                            }}
-                            error={!!form.formState.errors['message'] ?? false}
-                            helperText={form.formState.errors['message']?.message ?? undefined}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <LoadingButton
-                            disabled={emailError != ""}
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2, width: '50%', ml: 23 }}
-                            loading={isLoading}
-                        >
-                            send msg
-                        </LoadingButton>
-                    </Grid>
-                </Grid >
-
             </Box >
             <Divider />
-            <Typography sx={{ fontSize: 25, mt: 3, ml: '40%' }} gutterBottom>
+            <Typography sx={{ fontSize: 25, mt: 3, display: 'flex', justifyContent: 'center' }} gutterBottom>
                 your purchase history
             </Typography>
-            {
-                orders.map((order, index) => {
-                    return (
-                        <Card sx={{ minWidth: 275, width: '30%', mt: 5, ml: 3 }} key={index} onClick={() => navigate(`order/${order.orderId}`)}>
-                            <CardContent>
-                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                    price:  {order.totalPrice}
-                                </Typography>
-                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                    quntity:  {order.products.length}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    )
-                })
-            }
+            <Box sx={{ display: "flex", width: '100%', mb: 2 }}>
+                {
+                    orders?.map((order, index) => {
+                        return (
+                            <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index}>
+                                <CardContent>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        orderId:  {order.orderId}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        price:  {order.totalPrice}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        quntity:  {order.productsInStores?.length}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <IconButton onClick={() => handleClickOrder(order.orderId)}>
+                                        <InfoIcon />
+                                    </IconButton>
+                                    <IconButton onClick={() => navigate(`${order.orderId}/sendComplaint`)}>
+                                        <RateReviewIcon />
+                                    </IconButton>
+                                </CardActions>
+                            </Card>
+                        )
+                    })
+                }
+            </Box>
+            <Typography sx={{ fontSize: 25, mt: 3, display: 'flex', justifyContent: 'center' }} gutterBottom>
+                your bids
+            </Typography>
+            <Box sx={{ display: "flex", width: '100%', mb: 2 }}>
+                {
+                    bids?.map((bid, index) => {
+                        debugger;
+                        console.log(bid);
+                        return (
+                            <Card sx={{ width: 350, mt: 5, ml: 3 }} key={index}>
+                                <CardContent>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        bidId:  {bid.bidId}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        storeId:  {bid.storeId}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        product: {bid.product.name}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        current offer: {String(bid.offer)}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        product price: {bid.product.price}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        time: {bid.time}
+                                    </Typography>
+                                    {bid.state === status.Approved ?
+                                        <>
+                                            <Alert severity="success">approved</Alert>
+                                            <Button onClick={() => navigate(`${bid.bidId}/makePurchase`)}>enter details and meake purchase</Button>
+                                        </> :
+                                        bid.state === status.Pending ?
+                                            <Alert severity="info">pending</Alert> :
+                                        bid.state === status.Counter ?
+                                        <>
+                                            <Alert severity="info">counter</Alert>
+                                            <Button onClick={() => {
+                                                dispatch(answerOnCounter({bidId:bid.bidId,storeId:bid.storeId}))
+
+                                            }}>approved store offer</Button>
+                                            <Button onClick={() => {
+                                                navigate(`${bid.storeId}/${bid.product.productId}/${bid.bidId}/EditBid`);
+                                        }
+                                                }>counter offer</Button>
+                                        </> :
+                                            <Alert severity="error">reject</Alert>
+                                    }                                </CardContent>
+                                <CardActions>
+                                </CardActions>
+                            </Card>
+                        )
+                    })
+                }
+            </Box>
             <Outlet />
         </>
     );

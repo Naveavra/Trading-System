@@ -1,6 +1,9 @@
 package bridge;
 
 import data.*;
+import org.json.JSONObject;
+import utils.messageRelated.Notification;
+import utils.stateRelated.Role;
 
 import java.util.List;
 
@@ -11,18 +14,18 @@ public interface Bridge {
     /**
      * System - Initialize trading System
      *
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int initTradingSystem();
+    boolean initTradingSystem();
 
     /**
      * System - Shut down trading System
      *
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int shutDownTradingSystem();
+    boolean shutDownTradingSystem();
 
     /**
      * System - add admin to system
@@ -56,6 +59,8 @@ public interface Bridge {
      *         return -1.
      */
     int login(String email, String password);
+
+    LoginData loginAndGetData(String email, String password);
 
     /**
      * User - user logout from the system
@@ -93,7 +98,7 @@ public interface Bridge {
      * @return If succeed returns list of available supplier service. Otherwise,
      *         return null.
      */
-    List<String> getAvailableExternalSupplierService(int user);
+    List<String> getAvailableExternalSupplierService();
 
     /**
      * System external supplier service management - adding external service
@@ -137,11 +142,10 @@ public interface Bridge {
     /**
      * System external payment service management - getting all possible external service
      *
-     * @param user user Id
      * @return If succeed returns list of available payment service. Otherwise,
      *         return null.
      */
-    List<String> getAvailableExternalPaymentService(int user);
+    List<String> getAvailableExternalPaymentService();
 
     /**
      * System external payment service management - adding external service
@@ -210,10 +214,10 @@ public interface Bridge {
      * @param user user id
      * @param store store id
      * @param product product id.
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int removeProduct(int user, int store, int product);
+    boolean removeProduct(int user, int store, int product);
 
     /**
      * Inventory management - update product
@@ -289,10 +293,10 @@ public interface Bridge {
      *
      * @param user user id
      * @param store store id
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int closeStore(int user, int store);
+    boolean closeStore(int user, int store);
 
     /**
      * Reopen the store
@@ -332,10 +336,10 @@ public interface Bridge {
      * @param store store id
      * @param managerId manager id
      * @param permissionsIds  permission id
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int removeStoreManagerPermissions(int user, int store, int managerId, int permissionsIds);
+    boolean removeStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds);
 
     /**
      * Change the store manager permissions
@@ -344,10 +348,10 @@ public interface Bridge {
      * @param store store id
      * @param managerId manager id
      * @param permissionsIds list of the permissions
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
      */
-    int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds);
+    boolean addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds);
 
     /**
      * Gets information about store manager’s permissions
@@ -455,11 +459,12 @@ public interface Bridge {
      * Guest/ Member - Make Purchase
      *
      * @param user user id
-     * @param accountNumber account bank number
+     * @param payment payment details.
+     * @param supplier payment details.
      * @return If succeed returns 1 . Otherwise,
      *          return -1.
      */
-    int makePurchase(int user, String accountNumber);
+    int makePurchase(int user, JSONObject payment, JSONObject supplier);
 
     /**
      * Guest - exit system
@@ -492,5 +497,32 @@ public interface Bridge {
      */
     int changeQuantityInCart(int userId, int storeId, int productId, int change);
 
-    List<String> getNotifications(int userId);
+
+    /**
+     * Get notifications of the user
+     *
+     * @param userId user id
+     * @return If succeed returns notification list. Otherwise,
+     *         return null.
+     */
+    List<Notification> getNotifications(int userId);
+
+    /**
+     * Guest/ Member - get store information
+     *
+     * @param storeId store id
+     * @return If succeed return store. Otherwise,
+     *         return null.
+     */
+    StoreInfo getStoreInfo(int storeId);
+
+    /**
+     * Member - get role of the user in store
+     *
+     * @param userId user id
+     * @param storeId store id
+     * @return If succeed return role in store. Otherwise,
+     *         return null.
+     **/
+    Role getRoleInStore(int userId, int workerId, int storeId);
 }

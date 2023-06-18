@@ -1,43 +1,48 @@
-import * as React from 'react';
+import { useState } from 'react';
+import { logout, clearNotifications } from '../../../reducers/authSlice';
+import { useAppSelector, useAppDispatch } from '../../../redux/store';
+import './NavBar3.css';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Checkbox } from '@mui/material';
-import { logout, getNotifications, clearNotifications } from '../../../reducers/authSlice';
-import { getStore } from '../../../reducers/storesSlice';
-import { useAppSelector, useAppDispatch } from '../../../redux/store';
-import './NavBar3.css';
+
+
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import StorefrontIcon from '@mui/icons-material/Storefront';
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
-import { StoreRole } from '../../../types/systemTypes/StoreRole';
-import { useEffect, useState } from 'react';
+
+import MenuIcon from '@mui/icons-material/Menu';
+import SideDrawer from '../../SideDrawer';
+import { Action } from '../../../types/systemTypes/Action';
+import MessageIcon from '@mui/icons-material/Message';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 
 
 interface Props {
     headLine: string;
 }
-
+const DRAWER_WIDTH = 240;
 const Bar4: React.FC<Props> = ({ headLine }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const [storeOpen, setStoreOpen] = useState(false);
+    const [openDrawer, setOpenDrawer] = useState(false);
     const [profileDialogOpen, setProfileDialogOpen] = useState(false);
     const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
 
     const notifications = useAppSelector((state) => state.auth.notifications);
     const userId = useAppSelector((state) => state.auth.userId);
     const userName = useAppSelector((state) => state.auth.userName);
-    const token = useAppSelector((state) => state.auth.token) ?? "";
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
 
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+    const adminActions: Action[] = [Action.addAdmin, Action.closeStorePerminently, Action.seeComplaints, Action.cancelMembership, Action.updateServices];
 
     const handleLogout = () => {
         dispatch(logout(userId));
@@ -49,6 +54,12 @@ const Bar4: React.FC<Props> = ({ headLine }) => {
     const handleConfirm = (event: React.ChangeEvent<HTMLInputElement>, idx: number): void => {
         console.log(`confirm message ${idx}`);
     }
+    const handleDrawerClose = () => {
+        setOpenDrawer(false);
+    }
+    const handleDrawerOpen = () => {
+        setOpenDrawer(true);
+    }
 
     return (
         <>
@@ -56,28 +67,39 @@ const Bar4: React.FC<Props> = ({ headLine }) => {
                 <AppBar position="static">
                     <Toolbar>
 
-
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            className="icon"
+                            onClick={handleDrawerOpen}
+                            sx={{ mr: 2, ...(openDrawer && { display: 'none' }) }}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <IconButton color='inherit' onClick={() => navigate(-1)}>
+                            <ArrowBackIcon />
+                        </IconButton>
                         <Typography variant="h6" component="div" sx={{ flexGrow: 2, ml: 73 }}>
                             {headLine}
                         </Typography>
 
-                        {isLoggedIn &&
-                            <>
 
-                                <IconButton className="icon" color="inherit" onClick={handleLogout}>
-                                    <LogoutIcon />
-                                </IconButton>
-                                <IconButton className="icon" color="inherit" onClick={() => setStoreOpen(true)}>
-                                    <StorefrontIcon />
-                                </IconButton>
-                                <IconButton className="icon" sx={{ mt: 0.5 }} color="inherit" onClick={handleNotification}>
-                                    <div className="numberIcon">
-                                        <NotificationsOutlinedIcon />
-                                        <span>{notifications.length}</span>
-                                    </div>
-                                </IconButton>
-                            </>
-                        }
+
+                        <IconButton className="icon" color="inherit" onClick={handleLogout}>
+                            <LogoutIcon />
+                        </IconButton>
+                        <IconButton className="icon" sx={{ mt: 0.5 }} color="inherit" onClick={handleNotification}>
+                            <div className="numberIcon">
+                                <NotificationsOutlinedIcon />
+                                <span>{notifications.length}</span>
+                            </div>
+                        </IconButton>
+                        <IconButton sx={{ mt: 0.5 }} color="inherit" onClick={() => navigate('/dashboard/sendMsg')}>
+                            <MessageIcon />
+                        </IconButton>
+
                         <IconButton className="icon" color="inherit" onClick={() => {
                             setProfileDialogOpen(true);
                         }}>
@@ -96,7 +118,7 @@ const Bar4: React.FC<Props> = ({ headLine }) => {
                     <>
                         <DialogTitle>Profile</DialogTitle>
                         <DialogContent dividers>
-                            <Box display="flex" alignItems="center">
+                            <Box display="flex" alignItems="center" onClick={() => { navigate('/dashboard/personal') }}>
                                 <Avatar />
                                 <Box ml={3}>
                                     <Typography>{userName}</Typography>
@@ -156,8 +178,8 @@ const Bar4: React.FC<Props> = ({ headLine }) => {
                         return (
                             <DialogContent dividers key={index}>
                                 <Box ml={3} display={'flex'} key={index}>
-                                    <Typography sx={{ ml: 2, mr: 3 }}>{not.content}</Typography>
-                                    <Checkbox {...label} defaultChecked onChange={(e) => { handleConfirm(e, index) }} />
+                                    <Typography key={index} sx={{ ml: 2, mr: 3 }}>{not.content}</Typography>
+                                    <Checkbox key={index} {...label} defaultChecked onChange={(e) => { handleConfirm(e, index) }} />
                                 </Box>
                             </DialogContent>
                         )
@@ -175,7 +197,10 @@ const Bar4: React.FC<Props> = ({ headLine }) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-
+            <Box sx={{ display: 'flex', flexGrow: 1 }}>
+                <SideDrawer drawerWidth={DRAWER_WIDTH} onDrawerClose={handleDrawerClose} open={openDrawer} actions={adminActions} route={"dashboard/admin"} />
+            </Box>
+            <Outlet />
         </>
     );
 }

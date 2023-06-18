@@ -1,11 +1,12 @@
 import './ShopBar.css'; // Import the CSS file
-import { useAppSelector } from '../../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { setWhatchedStoreInfo } from '../../../reducers/storesSlice';
 
 
 const ShopsBar: React.FC = () => {
+    const dispatch = useAppDispatch();
     const store_response = useAppSelector((state) => state.store.storeInfoResponseData);
     const stores_names = store_response ?? [];
     const navigate = useNavigate();
@@ -17,17 +18,19 @@ const ShopsBar: React.FC = () => {
                     flexDirection: 'row',
                     overflowX: 'auto',
                 }}
+                key={'shop-list'}
             >
                 {stores_names.map((shop) => (
                     <a
-                        key={shop.id}
-                        href={`dashboard/shops/${shop.id}/visitor`}
+                        key={shop.storeId}
+                        href={`dashboard/shops/${shop.storeId}/visitor`}
                         style={{ margin: '0 10px', marginLeft: '20px' }}
                         className='shop-list__link'
                         onClick={(e) => {
+                            debugger;
                             e.preventDefault();
-                            setWhatchedStoreInfo(shop.id);
-                            navigate(`shops/${shop.id}/visitor`);
+                            dispatch(setWhatchedStoreInfo(shop.storeId));
+                            navigate(`store/${shop.storeId}/visitor`);
                         }}
                     >
                         {shop.name}

@@ -1,39 +1,51 @@
 package domain.user;
 
-import database.dtos.MemberDto;
+import database.daos.Dao;
+import database.DbEntity;
+import database.daos.SubscriberDao;
+import database.dtos.CartDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
+import jakarta.persistence.*;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
-import utils.messageRelated.Message;
-import utils.messageRelated.Notification;
-import utils.messageRelated.NotificationOpcode;
-import utils.messageRelated.MessageState;
+import utils.infoRelated.Receipt;
+import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
+import domain.store.storeManagement.Bid;
+
 
 
 import java.util.*;
 
-import static utils.messageRelated.NotificationOpcode.PRODUCT_REVIEW;
 
-
+@Entity
+@Table(name = "members")
 public class Member extends Subscriber implements User{
 
-    private transient Guest g;
-    private String birthday;
-
+    @Transient
+    private ShoppingCart cart;
+    @Transient
     private List<UserState> roles; //connection between registered to the shops
+
+    @Transient
+    private List<Bid> bids;
+    @Transient
     private PurchaseHistory purchaseHistory;
+
+    public Member(){
+    }
     public Member(int id, String email, String password, String birthday) {
         super(id, email, password);
         this.birthday = birthday;
+        SubscriberDao.saveSubscriber(this);
         roles = new ArrayList<>();
-        purchaseHistory = new PurchaseHistory(this.id);
-        g = new Guest(id);
-        memberDto.setBirthday(birthday);
+        purchaseHistory = new PurchaseHistory(id);
+        cart = new ShoppingCart();
+        bids = new ArrayList<>();
     }
     public boolean getIsConnected(){
         return isConnected;
@@ -52,11 +64,13 @@ public class Member extends Subscriber implements User{
         try {
             state = getRole(storeId);
         }catch (Exception e){
+            SubscriberDao.saveRole(userState);
             roles.add(userState);
             return;
         }
         if (state.getRole() == userState.getRole())
             throw new Exception("the member already has this role in this store");
+        SubscriberDao.saveRole(userState);
         roles.add(userState);
     }
     public String getBirthday(){return birthday;}
@@ -69,18 +83,18 @@ public class Member extends Subscriber implements User{
     }
     private void setNewEmail(String newEmail){
         email = newEmail;
-        memberDto.setEmail(newEmail);
+        SubscriberDao.saveSubscriber(this);
     }
 
     private void setNewBirthday(String newBirthday){
         this.birthday = newBirthday;
-        memberDto.setBirthday(newBirthday);
+        SubscriberDao.saveSubscriber(this);
     }
 
     public void setMemberPassword(String oldPassword, String newPassword) throws Exception {
         if(password.equals(oldPassword)){
             password = newPassword;
-            memberDto.setPassword(newPassword);
+            SubscriberDao.saveSubscriber(this);
         }
         else
             throw new Exception("wrong password entered, can't change to a new password");
@@ -88,10 +102,11 @@ public class Member extends Subscriber implements User{
 
 
     public void addProductToCart(int storeId, ProductInfo product, int quantity) throws Exception{
-            g.addProductToCart(storeId, product, quantity);
+        cart.addProductToCart(storeId, product, quantity);
+        Dao.save(new CartDto(id, storeId, product.id, quantity));
     }
     public void emptyCart(){
-        g.emptyCart();
+        cart.emptyCart();
     }
 
     @Override
@@ -100,61 +115,56 @@ public class Member extends Subscriber implements User{
     }
 
     public void removeProductFromCart(int storeId, int productId) throws Exception{
-        g.removeProductFromCart(storeId, productId);
+        cart.removeProductFromCart(storeId, productId);
+        SubscriberDao.removeCartProduct(id, storeId, productId);
     }
 
     public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
-        g.changeQuantityInCart(storeId, product, change);
+        cart.changeQuantityInCart(storeId, product, change);
+        SubscriberDao.updateCartProduct(id, storeId, product.getId(), cart.getBasket(storeId).getProduct(product.id).getQuantity());
     }
 
     public List<ProductInfo> getCartContent() {
-        return g.getCartContent();
+        return cart.getContent();
     }
 
-    public void purchaseMade(int orderId, double totalPrice){
-        purchaseHistory.addPurchaseMade(orderId, totalPrice, g.getShoppingCart());
-        g.emptyCart();
+    public void purchaseMade(Receipt receipt){
+        purchaseHistory.addPurchaseMade(receipt);
+        SubscriberDao.removeCart(id);
+        cart.emptyCart();
     }
 
     public void openStore(Store store) {
         UserState creator = new StoreCreator(id, email, store);
+        SubscriberDao.saveRole(creator);
         roles.add(creator);
     }
 
-    public Message writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
+    public StoreReview writeReview(int messageId, int storeId, int orderId, String content, int grading) throws Exception{
         if (purchaseHistory.checkOrderContainsStore(orderId, storeId)) {
-            Message message = new Message(messageId, NotificationOpcode.STORE_REVIEW, content, this, orderId, MessageState.reviewStore);
-            message.addStore(storeId);
-            message.addRating(grading);
-            return message;
+            return new StoreReview(messageId, content, this, orderId, storeId, grading);
         }
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
     }
 
-    public Message writeReview(int messageId, int storeId, int productId, int orderId, String content, int grading) throws Exception{
+    public ProductReview writeReview(int messageId, int storeId, int productId, int orderId, String content, int grading) throws Exception{
         if(purchaseHistory.checkOrderContainsProduct(orderId, storeId, productId)){
-            Message m = new Message(messageId, PRODUCT_REVIEW, content, this, orderId, MessageState.reviewProduct);
-            m.addStore(storeId);
-            m.addRating(grading);
-            m.addProductToReview(productId);
-            return m;
+            return new ProductReview(messageId, content, this, orderId, storeId, productId, grading);
         }
         else
             throw new Exception("the product isn't part of the order so you can't write a review about him");
     }
 
-    public Message writeComplaint(int messageId, int orderId, String comment) throws Exception {
+    public Complaint writeComplaint(int messageId, int orderId, String comment) throws Exception {
         if(purchaseHistory.checkOrderOccurred(orderId))
-            return new Message(messageId, NotificationOpcode.COMPLAINT, comment, this, orderId, MessageState.complaint);
+            return new Complaint(messageId, comment, this, orderId);
         else
             throw new Exception("can't write a review because the store wasn't part of the order");
     }
 
-    public Message sendQuestion(int messageId, int storeId, String question) {
-        Message m = new Message(messageId, NotificationOpcode.QUESTION, question, this, -1, MessageState.question);
-        m.addStore(storeId);
-        return m;
+    public Question sendQuestion(int messageId, int storeId, String question) {
+        return new Question(messageId, question, this, storeId);
     }
 
     private UserState getActiveRole(int storeId) throws Exception {
@@ -183,7 +193,7 @@ public class Member extends Subscriber implements User{
 
     public UserState getRole(int storeId) throws Exception{
         for (UserState state : roles)
-            if (state.getStore().getStoreId() == storeId)
+            if (state.getStoreId() == storeId)
                     return state;
         throw new Exception("the member does not have a role in this store");
     }
@@ -219,6 +229,7 @@ public class Member extends Subscriber implements User{
 
     public void removeRoleInStore(int storeId) throws Exception{
         UserState state = getRole(storeId);
+        SubscriberDao.removeRole(state.getUserId(), state.getStoreId());
         roles.remove(state);
     }
 
@@ -258,7 +269,7 @@ public class Member extends Subscriber implements User{
     }
 
     public Info getInformation(int storeId){
-        Info info = new Info(id, email, birthday, StringChecks.calculateAge(birthday));
+        Info info = new Info(id, email, birthday, StringChecks.calculateAge(birthday), purchaseHistory);
         try {
             UserState state = getRole(storeId);
             info.addRole(state.getRole());
@@ -319,24 +330,50 @@ public class Member extends Subscriber implements User{
 
     public ShoppingCart getShoppingCart() throws Exception {
         if(isConnected)
-            return g.getShoppingCart();
+            return cart;
         throw new Exception("the member is not connected");
     }
 
 
     @Override
-    public LoginInformation getLoginInformation(String token) {
+    public LoginInformation getLoginInformation(String token){
         return new LoginInformation(token, id, email, false, displayNotifications(),getRoles(),
-                getStoreNames(), getStoreImgs(), getPermissions(), getUserPurchaseHistory(), StringChecks.calculateAge(birthday), birthday);
+                getStoreNames(), getStoreImgs(), getPermissions(), getUserPurchaseHistory(), StringChecks.calculateAge(birthday), birthday,getBids());
     }
+    @Override
+    public void setShoppingCart(ShoppingCart cart) {this.cart = cart;}
+
+
+    public void addBid(Bid bid)
+    {
+        bids.add(bid);
+    }
+    public List<Bid> getBids(){return this.bids;}
+
+    //database
 
     @Override
-    public MemberDto getDto() {
-        List<Notification> nlist = new ArrayList<>(notifications);
-        memberDto.setNotifications(nlist);
-        memberDto.setCartProducts(g.getShoppingCart());
-        memberDto.setPurchases(purchaseHistory);
-        memberDto.setStores(getStores());
-        return memberDto;
+    public void initialParams(){
+        initialNotificationsFromDb();
+        getCartFromDb();
+        getPurchaseHistoryFromDb();
+        getStatesFromDb();
+        bids = new ArrayList<>();
+    }
+
+
+    public void getCartFromDb(){
+        if(cart == null)
+            cart = SubscriberDao.getCart(id);
+    }
+
+    public void getStatesFromDb(){
+        if(roles == null)
+            roles = SubscriberDao.getRoles(id);
+    }
+
+    public void getPurchaseHistoryFromDb(){
+        if(purchaseHistory == null)
+            purchaseHistory =  SubscriberDao.getReceipts(id);
     }
 }

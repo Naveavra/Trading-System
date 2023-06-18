@@ -1,6 +1,11 @@
 package domain.store.storeManagement;
 
-import com.google.gson.Gson;
+import database.daos.Dao;
+import database.DbEntity;
+import database.daos.MessageDao;
+import database.daos.StoreDao;
+import database.daos.SubscriberDao;
+import database.dtos.AppointmentDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.discount.Discount;
@@ -9,78 +14,124 @@ import domain.store.discount.discountDataObjects.CompositeDataObject;
 import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
 
+import domain.store.purchase.PurchasePolicy;
+import domain.store.purchase.PurchasePolicyDataObject;
+import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
+import jakarta.persistence.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.*;
 import utils.messageRelated.Message;
-import utils.messageRelated.MessageState;
 import utils.Pair;
+import utils.messageRelated.ProductReview;
+import utils.messageRelated.Question;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
+import utils.stateRelated.Action;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class Store extends Information{
-    private final int storeid;
+
+@Entity
+@Table(name = "stores")
+public class Store extends Information implements DbEntity {
+    @Id
+    private int storeId;
     private String storeName;
     private boolean isActive;
-    private transient Member creator;
-    private String storeDescription;
-    private final AppHistory appHistory; //first one is always the store creator //n
-    private final Inventory inventory; //<productID,<product, quantity>>
-    private final ConcurrentHashMap<Integer, Order> storeOrders;    //orederid, order
-    private final ConcurrentHashMap<Integer, Message> storeReviews; //<messageid, message>
-    private final ConcurrentHashMap<Integer, Message> questions;
 
+    private int creatorId;
+    @Transient
+    private Member creator;
+
+    private String storeDescription;
+    @Transient
+    private AppHistory appHistory; //first one is always the store creator //n
+    @Transient
+    private Inventory inventory; //<productID,<product, quantity>>
+    @Transient
+    private ConcurrentHashMap<Integer, Order> storeOrders; //orederid, order
+    @Transient
+    private ConcurrentHashMap<Integer, StoreReview> storeReviews; //<messageid, message>
+    @Transient
+    private ConcurrentHashMap<Integer, Question> questions;
+    @Transient
+    private AtomicInteger bidIds;
+    @Transient
+    private ArrayList<Bid> bids;
+    @Transient
+    private ArrayList<Bid> approvedBids;
     private String imgUrl;
-//    private DiscountPolicy discountPolicy;
-    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
+//    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
+    @Transient
+    private ArrayList<PurchasePolicy> purchasePolicies;
+    @Transient
     private ArrayList<Discount> discounts;
+    @Transient
     private DiscountFactory discountFactory;
 
-    Gson gson ;
-    public Store(int id, String description, Member creator){
-        Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
-        this.storeid = id;
-        appHistory = new AppHistory(storeid, creatorNode);
+    @Transient
+    private AtomicInteger policyIds;
+
+    public Store(){
+    }
+    public Store(int storeId, String description, Member creator){
+        this.storeId = storeId;
+        StoreCreator sc = new StoreCreator(creator.getId(), creator.getName(), this);
+        Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
         this.storeDescription = description;
         this.creator = creator;
-        this.inventory = new Inventory(storeid);
+        this.creatorId = creator.getId();
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
-//        this.discountPolicy = new DiscountPolicy();
-        this.purchasePolicy = new domain.store.purchase.PurchasePolicy2Delete();
+        this.purchasePolicies = new ArrayList<>();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
-        gson = new Gson();
-        discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
+        bids = new ArrayList<>();
+        approvedBids = new ArrayList<>();
+        bidIds = new AtomicInteger();
+        Dao.save(this);
+        appHistory = new AppHistory(storeId, creatorNode);
+        this.inventory = new Inventory(storeId);
+        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
+        policyIds = new AtomicInteger();
+
     }
 
-    public Store(int storeid, String storeName, String description, String imgUrl, Member creator){
-        Pair<Member, UserState > creatorNode = new Pair<>(creator, new StoreCreator(creator.getId(), creator.getName(), this));
-        this.storeid = storeid;
-        appHistory = new AppHistory(storeid, creatorNode);
+    public Store(int storeId, String storeName, String description, String imgUrl, Member creator){
+        this.storeId = storeId;
+        StoreCreator sc = new StoreCreator(creator.getId(), creator.getName(), this);
+        Pair<Member, UserState > creatorNode = new Pair<>(creator, sc);
         this.storeDescription = description;
         this.creator = creator;
-        this.inventory = new Inventory(storeid);
+        this.creatorId = creator.getId();
         this.storeReviews = new ConcurrentHashMap<>();
         this.storeOrders = new ConcurrentHashMap<>();
 //        this.discountPolicy = new DiscountPolicy();
-        this.purchasePolicy = new domain.store.purchase.PurchasePolicy2Delete();
+        this.purchasePolicies = new ArrayList<>();
         this.questions = new ConcurrentHashMap<>();
         this.isActive = true;
-        gson = new Gson();
-        discountFactory = new DiscountFactory(storeid,inventory::getProduct,inventory::getProductCategories);
         discounts = new ArrayList<>();
         this.storeName = storeName;
         this.imgUrl = imgUrl;
+        bidIds = new AtomicInteger();
+        bids = new ArrayList<>();
+        approvedBids = new ArrayList<>();
+        Dao.save(this);
+        appHistory = new AppHistory(storeId, creatorNode);
+        this.inventory = new Inventory(storeId);
+        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
+        policyIds = new AtomicInteger();
+
     }
 
     public void changeName(String storeName){
@@ -98,7 +149,7 @@ public class Store extends Information{
 
     public double getStoreRating(){
         double sum = 0.0;
-        for(Message msg: storeReviews.values()){
+        for(StoreReview msg: storeReviews.values()){
             sum+= msg.getRating();
         }
         if(storeReviews.size() == 0)
@@ -107,20 +158,26 @@ public class Store extends Information{
             return sum / storeReviews.size();
     }
 
-    public int addQuestion(Message m)
+    public int addQuestion(Question q)
     {
-        questions.put(m.getMessageId(), m);
-        return creator.getId();
+        questions.put(q.getMessageId(), q);
+        return creatorId;
     }
 
+
+    public List<Bid> getBids()
+    {
+        return bids;
+    }
+    public ArrayList<Discount> getDiscounts(){return this.discounts;}
+
     public void answerQuestion(int messageID, String answer) throws Exception {
-        Message msg = questions.get(messageID);
-        if (msg != null && msg.getState() == MessageState.question && !msg.getSeen())
-        {
+        Question msg = questions.get(messageID);
+        if(msg != null) {
             msg.sendFeedback(answer);
-            return;
         }
-        throw new Exception("cant answer question");
+        else
+            throw new Exception("the id given does not belong to any question that was sent to store");
     }
 
     public synchronized void addDiscount(DiscountDataObject discountData){
@@ -136,41 +193,29 @@ public class Store extends Information{
         }
     }
 
-    public int addProductReview(Message m) throws Exception
+    public int addProductReview(ProductReview m) throws Exception
     {
         if (storeOrders.containsKey(m.getOrderId()))
         {
             inventory.addProductReview(m);
-            //productReviews.put(m.getMessageId(), m);
-            return creator.getId();
+            return creatorId;
         }
         else
-        {
             throw new Exception("cant add review for this product");
-        }
     }
 
     public int getStoreId()
     {
-        return storeid;
+        return storeId;
     }
 
     public int getCreator() {
-        return creator.getId();
+        return creatorId;
     }
 
-    public HashMap<Integer, Message> getStoreReviews() {
-        HashMap<Integer, Message> ans = new HashMap<>();
-        for(int messageId : storeReviews.keySet())
-            ans.put(messageId, storeReviews.get(messageId));
-        for(int messageId : inventory.getProductReviews().keySet())
-            ans.put(messageId,  inventory.getProductReviews().get(messageId));
-        return ans;
-    }
-    public HashMap<Integer, Message> getStoreQuestions() {
-        HashMap<Integer, Message> ans = new HashMap<>();
-        for(int messageId : questions.keySet())
-            ans.put(messageId, questions.get(messageId));
+    public List<StoreReview> getStoreReviews() {
+        List<StoreReview> ans = new ArrayList<>(storeReviews.values());
+        ans.addAll(inventory.getProductReviews());
         return ans;
     }
     public List<OrderInfo> getOrdersHistory() {
@@ -203,13 +248,14 @@ public class Store extends Information{
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
         Pair<Member, UserState> node = new Pair<>(newUser, role);
         appHistory.addNode(userinchargeid, node);
+        Dao.save(new AppointmentDto(storeId, userinchargeid, newUser.getId()));
     }
 
-    public int addReview(int orderId, Message review) throws Exception {
+    public int addReview(int orderId, StoreReview review) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
             storeReviews.put(review.getMessageId(), review);
-            return creator.getId();
+            return creatorId;
         }
         throw new Exception("order doesnt exist");
     }
@@ -233,7 +279,9 @@ public class Store extends Information{
      */
     public Set<Integer> fireUser(int joblessuser) throws Exception
     {
-        return new HashSet<>(appHistory.removeChild(joblessuser));
+        Set<Integer> ans = new HashSet<>(appHistory.removeChild(joblessuser));
+        StoreDao.removeAppointment(storeId, joblessuser);
+        return ans;
     }
 
     public Inventory getInventory()
@@ -248,13 +296,14 @@ public class Store extends Information{
      * @param price int
      * @param quantity
      */
-    public synchronized Product addNewProduct(String name, String description, AtomicInteger pid, int price, int quantity) throws Exception {
-        return inventory.addProduct(name, description, pid,price,quantity);
+    public synchronized Product addNewProduct(String name, String description, AtomicInteger pid, int price,
+                                              int quantity, List<String> categories) throws Exception {
+        return inventory.addProduct(name, description, pid,price,quantity, categories);
     }
 
     public synchronized Product addNewProduct(String name, String description, AtomicInteger pid, int price,
-                                              int quantity, String img) throws Exception {
-        return inventory.addProduct(name, description, pid,price,quantity, img);
+                                              int quantity, String img, List<String> categories) throws Exception {
+        return inventory.addProduct(name, description, pid,price,quantity, img, categories);
     }
     public synchronized Product addNewExistingProduct(Product p) throws Exception{
         return inventory.addProduct(p);
@@ -284,10 +333,10 @@ public class Store extends Information{
     /**
      * this function meant for the store owner only to change the price of product p
      * @param pid product id
-     * @param newprice new price should be a positive integer
+     * @param newPrice new price should be a positive integer
      */
-    public void setPrice(int pid, int newprice) throws Exception  {
-        inventory.setPrice(pid, newprice);
+    public void setPrice(int pid, int newPrice) throws Exception  {
+        inventory.setPrice(pid, newPrice);
     }
 
 
@@ -305,7 +354,7 @@ public class Store extends Information{
      * @throws Exception if the user isn't the store creator
      */
     public Set<Integer> closeStoreTemporary(int userID) throws Exception {
-        if (creator.getId() == userID){
+        if (creatorId == userID){
             isActive = false;
             return appHistory.getUsers();
         }
@@ -313,7 +362,7 @@ public class Store extends Information{
     }
 
     public Set<Integer> reopenStore(int userID) throws Exception{
-        if (creator.getId() == userID){
+        if (creatorId == userID){
             isActive = true;
             return appHistory.getUsers();
         }
@@ -396,8 +445,7 @@ public class Store extends Information{
 
         if (inventory.getProduct(productId) != null)
         {
-            Product p = inventory.getProduct(productId);
-            return inventory.getProductInfo(storeid, productId);
+            return inventory.getProductInfo(storeId, productId);
         }
         throw new Exception("cant get product information");
     }
@@ -423,28 +471,28 @@ public class Store extends Information{
         return inventory.getProducts();
     }
 
-    public void setStorePolicy(String policy) throws Exception {
-        // i think the policy holds the constraints. or in different words, constraints define the policies.
-        try {
-            addPurchaseConstraint(policy);
-        } catch (Exception e) {
-            throw new Exception("Couldn't create a new policy");
-        }
+//    public synchronized void setStorePolicy(String policy) throws Exception {
+//        try {
+//            purchasePolicies.add(new PurchasePolicyFactory().createPolicy());
+//        } catch (Exception e) {
+//            throw new Exception("Couldn't create a new policy");
+//        }
+//    }
+
+    public ArrayList<PurchasePolicy> getPurchasePolicies(){
+        return purchasePolicies;
     }
 
-    public void addPurchaseConstraint(String constraint)throws Exception {
-        if(!purchasePolicy.createConstraint(constraint)){
-            throw new Exception("Couldn't create the constraint");
-        }
+    public List<Question> getAllQuestions(){
+        return new ArrayList<>(questions.values());
     }
-
-    public HashMap<Integer, Message> getQuestions() { //<messageids, message>
-        HashMap<Integer, Message> questionsToAnswer = new HashMap<>();
+    public List<Message> getQuestions() {
+        List<Message> questionsToAnswer = new ArrayList<>();
         for (Message message : this.questions.values())
         {
             if (!message.getSeen())
             {
-                questionsToAnswer.put(message.getMessageId(), message);
+                questionsToAnswer.add(message);
             }
         }
         return questionsToAnswer;
@@ -457,9 +505,7 @@ public class Store extends Information{
     }
 
     public void removeProduct(int productId) throws Exception{
-        if(!(inventory.removeProduct(productId)>-1)){
-            throw new Exception("Unable to remove Product, productId doesn't exist.");
-        }
+        inventory.removeProduct(productId);
     }
 
     public void updateProduct(int productId, List<String> categories, String name, String description,
@@ -469,7 +515,7 @@ public class Store extends Information{
 
 
 
-    public ArrayList<ProductInfo> filterBy(HashMap<String, String> filterOptions) {
+    public ArrayList<ProductInfo> filterBy(HashMap<String, String> filterOptions) throws Exception{
         ProductFilter filter = new ProductFilter();
         for (String option:filterOptions.keySet()){
             FilterStrategy next = filter.createStrategy(filter.getStrategy(option),filterOptions.get(option));
@@ -481,20 +527,21 @@ public class Store extends Information{
     }
 
     public StoreInfo getStoreInformation() {
-        StoreInfo info = new StoreInfo(storeid, storeName, storeDescription, isActive, creator.getId(), getStoreRating(), imgUrl);
+        StoreInfo info = new StoreInfo(storeId, storeName, storeDescription, isActive, creator.getId(), getStoreRating(),
+                imgUrl, bids);
         return info;
     }
 
     public double handleDiscount(Order order) throws Exception {
         double totalAmountToBeSubtracted = 0;
         for(Discount dis: discounts){
-            totalAmountToBeSubtracted += dis.handleDiscount(order.getShoppingCart().getBasket(storeid),order);
+            totalAmountToBeSubtracted += dis.handleDiscount(order.getShoppingCart().getBasket(storeId),order);
         }
         order.setTotalPrice(order.getTotalPrice() - totalAmountToBeSubtracted);
         return order.getTotalPrice();
     }
 
-    public List<Pair<Info, List<Info>>> getApp() throws Exception{
+    public List<Pair<Info, List<Info>>> getApp(){
         return appHistory.getAppHistory();
     }
 
@@ -523,10 +570,11 @@ public class Store extends Information{
         json.put("appHistory", getAppJson());
         json.put("inventory", infosToJson(getProducts()));
         json.put("storeOrders", infosToJson(getOrdersHistory()));
-        json.put("reviews", hashMapToJson(getStoreReviews(), "messageId", "review"));
-        json.put("questions", hashMapToJson(getStoreQuestions(), "messageId", "question"));
+        json.put("reviews", infosToJson(getStoreReviews()));
+        json.put("questions", infosToJson(getQuestions()));
         json.put("img", getImgUrl());
         json.put("roles", infosToJson(getRoles()));
+        json.put("bids", infosToJson(getBids()));
         return json;
     }
 
@@ -537,19 +585,202 @@ public class Store extends Information{
             changeName(name);
         if(!img.equals("null"))
             changeImg(img);
+        Dao.save(this);
     }
 
-//    public void setStoreDiscountPolicy(String policy) throws Exception {
-//        try {
-//            addDiscountConstraint(policy);
-//        } catch (Exception e) {
-//            throw new Exception("Couldn't create a new policy");
-//        }
+    //sets the bid flag on a product to true; meaning that potential costumers can now bid on the product.
+//    public void createBid(int prodId) throws Exception {
+//        inventory.getProduct(prodId).setBid();
 //    }
-//
-//    private void addDiscountConstraint(String policy) throws Exception {
-//        if(!discountPolicy.createConstraint(policy)){
-//            throw new Exception("Couldn't create the constraint");
+
+
+    public List<String> placeBid(Member user, int prodId, double price,int quantity) throws Exception {
+        for(Bid bid : this.bids){
+            if(bid.getUser().getId() == user.getId() && bid.getProduct().getID() == prodId)
+                throw new Exception("Cannot place a bid on the same item more than once.");
+        }
+        Bid b = new Bid(bidIds.getAndIncrement(),user,inventory.getProduct(prodId),price,quantity,
+                (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct));
+        bids.add(b);
+        user.addBid(b);
+        return b.approvers;
+    }
+
+    public Bid answerBid(int bidId,String userName, int prodId, boolean ans) throws Exception {
+        for(Bid bid : this.bids){
+            if(bid.bidId == bidId && bid.isPending()){
+                if(ans){
+                    bid.approveBid(userName);
+                    if(bid.isApproved()){
+                        bids.remove(bid);
+                        approvedBids.add(bid);
+                        return bid;
+                    }
+                    return null;
+                }
+                bid.declineBid();
+                //eli needs to send message to the user that placed the bid
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public List<String> counterBid(int bidId, double counterOffer, String userName) throws Exception {
+        for(Bid bid : this.bids){
+            if(bid.bidId == bidId){
+                bid.counterBid(counterOffer,userName);
+                List<String> ans = new ArrayList<>(bid.approvers);
+                ans.add(bid.getUser().getName());
+                return ans;
+            }
+        }
+        throw new Exception("Bid doesnt exist "+bidId);
+    }
+
+    public Bid editBid(int bidId, double price, int quantity) throws Exception {
+        for(Bid bid: this.bids){
+            if(bid.bidId == bidId){
+                bid.editBid(price,quantity);
+                return bid;
+            }
+        }
+        throw new Exception("Bid doesnt exist "+bidId);
+    }
+
+    public void addPurchasePolicy(String data) throws Exception {
+        PurchasePolicyFactory factory = new PurchasePolicyFactory(policyIds,storeId);
+        JSONObject request = new JSONObject(data);
+        String description = request.getString("description");
+        JSONArray policies = request.getJSONArray("type");
+        PurchasePolicyDataObject head = null;
+        PurchasePolicyDataObject prev = null;
+        for(int i = 0 ; i<policies.length() ; i++){
+//            PurchasePolicyDataObject actualPolicy = null;
+            JSONObject policy = policies.getJSONObject(i);
+            String type = policy.getString("type");
+            switch (type){
+                case "item" -> prev = factory.parseItem(policy,prev);
+                case "category" -> prev = factory.parseCategory(policy,prev);
+                case "dateTime" -> prev = factory.parseDateTime(policy,prev);
+                case "user" -> prev = factory.parseUser(policy,prev);
+                case "basket" -> prev = factory.parseBasket(policy,prev);
+            }
+            if(i==0 && prev!=null)
+                head = prev;
+        }
+        if(head!=null){
+            purchasePolicies.add(factory.createPolicy(head));
+            return;
+        }
+        throw new Exception("Something went wrong when creating the policy, please contact us if the problem persists.\nYours truly, the developers A-team");
+
+    }
+    //database
+    @Override
+    public void initialParams() {
+        storeOrders = new ConcurrentHashMap<>();
+        bids = new ArrayList<>();
+        getCreatorFromDb();
+        getAppHistoryFromDb();
+        getInventoryFromDb();
+        getStoreReviewsFromDb();
+        getQuestionsFromDb();
+    }
+
+
+    public void getCreatorFromDb(){
+        if(creator == null){
+            creator = SubscriberDao.getMember(creatorId);
+        }
+    }
+
+    public void getAppHistoryFromDb(){
+        if(appHistory == null)
+            appHistory = StoreDao.getAppHistory(storeId, creatorId);
+    }
+
+    public void getInventoryFromDb(){
+        if(inventory == null){
+            inventory = new Inventory(storeId);
+            inventory.initialParams();
+        }
+    }
+
+    public void getStoreReviewsFromDb(){
+        if(storeReviews == null){
+            storeReviews = new ConcurrentHashMap<>();
+            List<StoreReview> storeReviewsDto = MessageDao.getStoreReviews(storeId);
+            for(StoreReview storeReview : storeReviewsDto)
+                storeReviews.put(storeReview.getMessageId(), storeReview);
+        }
+    }
+
+    private void getQuestionsFromDb() {
+        if(questions == null){
+            questions = new ConcurrentHashMap<>();
+            List<Question> storeQuestions = MessageDao.getQuestions(storeId);
+            for(Question question : storeQuestions)
+                questions.put(question.getMessageId(), question);
+        }
+    }
+
+    public synchronized boolean handlePolicies(Order order) throws Exception {
+        boolean res = true;
+        for(PurchasePolicy policy : purchasePolicies){
+            res = policy.validate(order);
+            if(!res)
+                return res;
+        }
+        return res;
+    }
+
+    public void removePolicy(int policyId) {
+        purchasePolicies.removeIf(policy -> policy.policyID == policyId);
+    }
+
+    public Set<Integer> getStoreCreatorsOwners() {
+        return appHistory.getStoreCreatorsOwners();
+    }
+
+    public int getBidClient(int bidId) throws Exception {
+        for (Bid bid : bids)
+        {
+            if (bid.bidId == bidId){return bid.user.getId();}
+        }
+        throw new Exception("cant find bid Id");
+    }
+
+    public List<String> getApprovers(int bidId) throws Exception {
+        for (Bid bid : bids)
+        {
+            if (bid.bidId == bidId){return bid.approvers;}
+        }
+        throw new Exception("bid doesnt exist");
+    }
+
+    public void clientAcceptCounter(int bidId) {
+        for (Bid bid : bids){
+            if (bid.bidId == bidId){bid.clientAcceptCounter();}
+        }
+    }
+
+//    public void clientAcceptCounter(int bidId) {
+//        Member user;
+//        int prodId;
+//        double price;
+//        int quantity;
+//        for (Bid bid : bids)
+//        {
+//           if (bid.bidId == bidId)
+//           {
+//               user = bid.user;
+//               prodId = bid.product.productId;
+//               price = bid.offer;
+//               quantity = bid.quantity;
+//               Bid newBid = new Bid
+//           }
 //        }
+//
 //    }
 }

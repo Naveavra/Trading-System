@@ -4,6 +4,7 @@ import domain.store.product.Product;
 import org.json.JSONObject;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
+import utils.infoRelated.Receipt;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,12 @@ public class Guest implements User{
     public int getAge(){
         return -1;
     }
+
+    @Override
+    public void setShoppingCart(ShoppingCart cart) {
+        this.cart = cart;
+    }
+
     public int getId(){
         return id;
     }
@@ -50,7 +57,7 @@ public class Guest implements User{
         return "guest" + id;
     }
 
-    public void purchaseMade(int orderId, double totalPrice){
+    public void purchaseMade(Receipt receipt){
         emptyCart();
     }
 

@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+
 public class DiscountTest {
     private StoreController storeCtrl;
     int s1Product1ID;
@@ -42,8 +44,8 @@ public class DiscountTest {
     Store s2;
     Inventory inv1;
     Inventory inv2;
-    Member creator = new Member(0, "eli@gmail.com", "123Aaa", "24/02/2002");
-    Member worker = new Member(1, "eli1@gmail.com", "123Aaa", "24/02/2002");
+    Member creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
+    Member worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2002");
 
     @BeforeEach
     void setUp() throws Exception{
@@ -52,15 +54,15 @@ public class DiscountTest {
         storeCtrl = new StoreController();
 
         //inventory 1 items
-        storeCtrl.createNewStore(creator,"Shoes and stuff");
-        s1 = storeCtrl.getStore(0);
+        s1 = storeCtrl.createNewStore(creator,"Shoes and stuff");
         inv1 = s1.getInventory();
         //Products
-        inv1.addProduct("Banana","",inventoryIds1,10,5);
+        List<String> categories = new ArrayList<>();
+        inv1.addProduct("Banana","",inventoryIds1,10,5, categories);
         s1Product1ID = inventoryIds1.get()-1;
-        inv1.addProduct("Apple","",inventoryIds1,20,3);
+        inv1.addProduct("Apple","",inventoryIds1,20,3, categories);
         s1Product2ID = inventoryIds1.get()-1;
-        inv1.addProduct("Laptop","Computers and stuff",inventoryIds1,100,10);
+        inv1.addProduct("Laptop","Computers and stuff",inventoryIds1,100,10, categories);
         s1Product3ID = inventoryIds1.get()-1;
         inv1.addToCategory(Bananas,s1Product1ID);
         inv1.addToCategory(Fruits,s1Product1ID);
@@ -71,12 +73,11 @@ public class DiscountTest {
         inv1.addToCategory(Laptops,s1Product3ID);
 
         //inventory 2 items
-        storeCtrl.createNewStore(worker,"Slippers and stuff");
-        s2 = storeCtrl.getStore(1);
+        s2 = storeCtrl.createNewStore(worker,"Slippers and stuff");
         inv2 = s2.getInventory();
-        inv2.addProduct("Banana","",inventoryIds2,10,5);
+        inv2.addProduct("Banana","",inventoryIds2,10,5, categories);
         s2Product1ID = inventoryIds2.get()-1;
-        inv2.addProduct("Apple","",inventoryIds2,20,3);
+        inv2.addProduct("Apple","",inventoryIds2,20,3, categories);
         s2Product2ID = inventoryIds2.get()-1;
         inv2.addToCategory(Bananas,s2Product1ID);
         inv2.addToCategory(Fruits,s2Product1ID);
@@ -143,12 +144,12 @@ public class DiscountTest {
         double actualWithoutDiscount = 10;
         double actualAfterDiscount = 25.5;
         ShoppingCart cart = new ShoppingCart();
-        cart.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity);
         int totalPrice = storeCtrl.calculatePrice(cart);
         Order or1 = new OrderController().createNewOrder(worker,cart,totalPrice);
         double res1 = s1.handleDiscount(or1);
         assertEquals(res1,actualWithoutDiscount);
-        cart.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),quantity),quantity);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),quantity),quantity);
         Order or2 = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
         double res2 = s1.handleDiscount(or2);
         assertEquals(res2,actualAfterDiscount);
@@ -161,14 +162,14 @@ public class DiscountTest {
         double afterFirstDiscount = 25;
         double afterSecondDiscount = 40;
         ShoppingCart cart1 = new ShoppingCart();
-        cart1.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity);
-        cart1.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),quantity),quantity);
+        cart1.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity);
+        cart1.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),quantity),quantity);
         //total price is 30, after discount should be 25.
         Order or1 = new OrderController().createNewOrder(worker,cart1,storeCtrl.calculatePrice(cart1));
         double res1 = s1.handleDiscount(or1);
         assertEquals(res1,afterFirstDiscount);
-        cart1.addProductToCart(s2.getStoreId(),new ProductInfo(s2.getStoreId(),inv2.getProduct(s2Product1ID),quantity),quantity);
-        cart1.addProductToCart(s2.getStoreId(),new ProductInfo(s2.getStoreId(),inv2.getProduct(s2Product2ID),quantity),quantity);
+        cart1.changeQuantityInCart(s2.getStoreId(),new ProductInfo(s2.getStoreId(),inv2.getProduct(s2Product1ID),quantity),quantity);
+        cart1.changeQuantityInCart(s2.getStoreId(),new ProductInfo(s2.getStoreId(),inv2.getProduct(s2Product2ID),quantity),quantity);
         //total price is 60, after discount should be 40
         Order or2 = new OrderController().createNewOrder(worker,cart1,storeCtrl.calculatePrice(cart1));
         s1.handleDiscount(or2);
@@ -184,14 +185,14 @@ public class DiscountTest {
         double afterFirstDiscount = 25;
         double afterSecondDiscount = 45;
         ShoppingCart cart1 = new ShoppingCart();
-        cart1.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity);
-        cart1.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),quantity),quantity);
+        cart1.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity);
+        cart1.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),quantity),quantity);
         //total price is 30, after discount should be 25.
         Order or1 = new OrderController().createNewOrder(worker,cart1,storeCtrl.calculatePrice(cart1));
         double res1 = s1.handleDiscount(or1);
         assertEquals(res1,afterFirstDiscount);
-        cart1.addProductToCart(s2.getStoreId(),new ProductInfo(s2.getStoreId(),inv2.getProduct(s2Product1ID),quantity),quantity);
-        cart1.addProductToCart(s2.getStoreId(),new ProductInfo(s2.getStoreId(),inv2.getProduct(s2Product2ID),quantity),quantity);
+        cart1.changeQuantityInCart(s2.getStoreId(),new ProductInfo(s2.getStoreId(),inv2.getProduct(s2Product1ID),quantity),quantity);
+        cart1.changeQuantityInCart(s2.getStoreId(),new ProductInfo(s2.getStoreId(),inv2.getProduct(s2Product2ID),quantity),quantity);
         //total price is 60, after discount should be 45
         Order or2 = new OrderController().createNewOrder(worker,cart1,storeCtrl.calculatePrice(cart1));
         s1.handleDiscount(or2);
@@ -205,8 +206,8 @@ public class DiscountTest {
         int quantity = 1;
         double afterDiscount = 20;
         ShoppingCart cart1 = new ShoppingCart();
-        cart1.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity); //price = 10 5 after discount
-        cart1.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),quantity),quantity); //price = 20 15 after discount
+        cart1.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity); //price = 10 5 after discount
+        cart1.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),quantity),quantity); //price = 20 15 after discount
         //total price is 30, after discount should be 25.
         Order or1 = new OrderController().createNewOrder(worker,cart1,storeCtrl.calculatePrice(cart1));
         double res1 = s1.handleDiscount(or1);
@@ -224,16 +225,16 @@ public class DiscountTest {
         int prod1InitialQuantity = 2;
         int prod3Quantity = 1;
         PredicateDataObject predicate = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinPrice,minPriceParams,null);
-        DiscountDataObject discount = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product1ID,"",new ArrayList<>(List.of(predicate)));
+        DiscountDataObject discount = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product1ID,"",new ArrayList<>(Arrays.asList(predicate)));
         s1.addDiscount(discount);
         ShoppingCart cart = new ShoppingCart();
         //added 2 bananas, 20 before discount
-        cart.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(), inv1.getProduct(s1Product1ID),prod1InitialQuantity),prod1InitialQuantity);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(), inv1.getProduct(s1Product1ID),prod1InitialQuantity),prod1InitialQuantity);
         //price should be 120 now and there shouldn't be any discount;
-        cart.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product3ID),prod3Quantity),prod3Quantity);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product3ID),prod3Quantity),prod3Quantity);
         Order or1 = new OrderController().createNewOrder(worker,cart, storeCtrl.calculatePrice(cart));
         assertEquals(s1.handleDiscount(or1),expectedBeforeDiscount);
-        cart.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product3ID),prod3Quantity),prod3Quantity);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product3ID),prod3Quantity),prod3Quantity);
         or1 = new OrderController().createNewOrder(worker,cart, storeCtrl.calculatePrice(cart));
         assertEquals(expectedAfterDiscount,s1.handleDiscount(or1));
     }
@@ -251,8 +252,8 @@ public class DiscountTest {
         s1.addDiscount(composite);
 
         ShoppingCart cart = new ShoppingCart();
-        cart.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1Quantity),prod1Quantity); //price = 20 -> 10 after
-        cart.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product3ID),prod3Quantity),prod3Quantity); //price = 100 -> 70 after so this has max value
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1Quantity),prod1Quantity); //price = 20 -> 10 after
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product3ID),prod3Quantity),prod3Quantity); //price = 100 -> 70 after so this has max value
 
         Order order = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
 
@@ -264,23 +265,33 @@ public class DiscountTest {
     //לחמניות וגם לפחות 2 כיכרות לחם "
     @Test
     public void andLogicalCompositeTest() throws Exception{
-        PredicateDataObject pred1 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,"0 5",null);
-        DiscountDataObject dis1 = new DiscountDataObject(10, AbstractDiscount.discountTypes.Product,0,"",new ArrayList<>(List.of(pred1)));
-        PredicateDataObject pred2 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,"2 2",null);
-        DiscountDataObject dis2 = new DiscountDataObject(10, AbstractDiscount.discountTypes.Product,2,"",new ArrayList<>(List.of(pred2)));
+        String minNumOfItemParams1 = "0 5";
+        String minNumOfItemParams2 = "2 2";
+        int percentage = 10;
+        int prod1QuantityInitial = 4;
+        int prod1AddedQuantity = 1;
+        int prod3Quantity = 2;
+        double expectedPriceBefore = 240;
+        double expectedPriceAfter = 225;
+
+        PredicateDataObject pred1 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,minNumOfItemParams1,null);
+        DiscountDataObject dis1 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product1ID,"",new ArrayList<>(Arrays.asList(pred1)));
+        PredicateDataObject pred2 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,minNumOfItemParams2,null);
+        DiscountDataObject dis2 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product3ID,"",new ArrayList<>(Arrays.asList(pred2)));
         CompositeDataObject composite = new CompositeDataObject(50,null, LogicalDiscountComposite.logical.And, null,new ArrayList<>(Arrays.asList(dis1,dis2)),null);
         s1.addDiscount(composite);
 
         ShoppingCart cart = new ShoppingCart();
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(0),4),4);
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(2),2),2);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1QuantityInitial),prod1QuantityInitial);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product3ID),prod3Quantity),prod3Quantity);
 
         Order or = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
-        assertEquals(240,s1.handleDiscount(or)); //no discount because it doesnt uphold all predicates
+        assertEquals(expectedPriceBefore,s1.handleDiscount(or)); //no discount because it doesnt uphold all predicates
 
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(0),1),1);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1AddedQuantity),prod1AddedQuantity);
         or = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
-        assertEquals(225,s1.handleDiscount(or));
+        double price = s1.handleDiscount(or);
+        assertEquals(expectedPriceAfter,price);
     }
 
     // יש 5% הנחה על מוצרי חלב אם הסל מכיל לפחות 3 גביעי קוטג' או לפחות 2
@@ -291,80 +302,98 @@ public class DiscountTest {
         String minNumOfItemParams2 = "1 2";
         int percentage = 10;
         int quantity = 2;
+        int addedQuantity = 1;
         double expectedPrice1 = 54;
         double expectedPrice2 = 56;
         PredicateDataObject pred1 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,minNumOfItemParams1,null);
-        DiscountDataObject dis1 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Category,0,Bananas,new ArrayList<>(List.of(pred1)));
+        DiscountDataObject dis1 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Category,s1Product1ID,Bananas,new ArrayList<>(Arrays.asList(pred1)));
         PredicateDataObject pred2 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,minNumOfItemParams2,null);
-        DiscountDataObject dis2 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Category,1,Bananas,new ArrayList<>(List.of(pred2)));
+        DiscountDataObject dis2 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Category,s1Product2ID,Bananas,new ArrayList<>(Arrays.asList(pred2)));
         CompositeDataObject composite = new CompositeDataObject(50,null, LogicalDiscountComposite.logical.Or, null,new ArrayList<>(Arrays.asList(dis1,dis2)),null);
         s1.addDiscount(composite);
 
         ShoppingCart cart = new ShoppingCart();
-        cart.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity);
-        cart.addProductToCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),quantity),quantity);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),quantity),quantity);
 
         Order or = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
         assertEquals(expectedPrice1,s1.handleDiscount(or));
 
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(0),1),1);
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),addedQuantity),addedQuantity);
         or = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
         assertEquals(expectedPrice2,s1.handleDiscount(or));
-
     }
     //"אם שוו
     //הסל גבוה מ 100₪- וגם הסל מכיל לפחות 3 חבילות פסטה, אז יש הנחה של 5%
     //על מוצרי חלב.
     @Test
     public void predComposeTest() throws Exception {
-        PredicateDataObject pred1 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinPrice,"100", null);
-        PredicateDataObject pred2 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,"0 3",And);
-        DiscountDataObject dis = new DiscountDataObject(10, AbstractDiscount.discountTypes.Category,0,"Bananas",new ArrayList<>(Arrays.asList(pred1,pred2)));
+        String minPriceParams = "100";
+        String minNumOfItemParams = "0 3";
+        int percentage = 10;
+        int prod1InitialQuantity = 2;
+        int prod1AdditionalQuantity = 1;
+        int prod3Quantity = 1;
+        double expectedBeforeDiscount = 120;
+        double expectedAfterDiscount = 127; //added item
+        PredicateDataObject pred1 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinPrice,minPriceParams, null);
+        PredicateDataObject pred2 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,minNumOfItemParams,And);
+        DiscountDataObject dis = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Category,0,Bananas,new ArrayList<>(Arrays.asList(pred1,pred2)));
         s1.addDiscount(dis);
 
         ShoppingCart cart = new ShoppingCart();
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(0),2),2); //20
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(2),2),1); //100
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1InitialQuantity),prod1InitialQuantity); //20
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product3ID),prod3Quantity),prod3Quantity); //100
 
         Order or = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
-        assertEquals(120,s1.handleDiscount(or));
+        assertEquals(expectedBeforeDiscount,s1.handleDiscount(or));
 
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(0),1),1); //10
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1AdditionalQuantity),prod1AdditionalQuantity); //10
         or = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
-        assertEquals(127,s1.handleDiscount(or));
+        assertEquals(expectedAfterDiscount,s1.handleDiscount(or));
 
     }
     //ההנחה הניתנת היא המקס' מבין הערך בש"ח של 5% מעלות כל חבילות
     //הפסטה בסל לבין הערך בש"ח של 17% מעלות קרטוני החלב בסל."
     @Test
     public void maxNumericCompositeTest() throws Exception {
-        DiscountDataObject d1 = new DiscountDataObject(10, AbstractDiscount.discountTypes.Product,0,"",null);
-        DiscountDataObject d2 = new DiscountDataObject(10, AbstractDiscount.discountTypes.Product,1,"",null);
-        CompositeDataObject comp = new CompositeDataObject(10, NumericDiscountComposite.numeric.Max,null,null,new ArrayList<>(Arrays.asList(d1,d2)),null);
+        int percentage = 10;
+        int prod1Quantity = 3;
+        int prod2Quantity = 1;
+        double expectedPriceAfterDiscount = 47;
+
+        DiscountDataObject d1 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product1ID,"",null);
+        DiscountDataObject d2 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product2ID,"",null);
+        CompositeDataObject comp = new CompositeDataObject(percentage, NumericDiscountComposite.numeric.Max,null,null,new ArrayList<>(Arrays.asList(d1,d2)),null);
         s1.addDiscount(comp);
 
         ShoppingCart cart = new ShoppingCart();
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(0),3),3); //30
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(1),1),1); //20
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1Quantity),prod1Quantity); //30
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product2ID),prod2Quantity),prod2Quantity); //20
 
         Order or = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
-        assertEquals(47,s1.handleDiscount(or));
+        assertEquals(expectedPriceAfterDiscount,s1.handleDiscount(or));
     }
 
     // יש 5% הנחה על מוצרי חלב, ובנוסף, יש 20% הנחה על כל חנות לכן על
     //מוצרי חלב יש בסה"כ 25% הנחה".
     @Test
     public void additionNumericCompositeTest() throws Exception {
-        DiscountDataObject d1 = new DiscountDataObject(10, AbstractDiscount.discountTypes.Category,0,"Bananas",null);
-        DiscountDataObject d2 = new DiscountDataObject(10, AbstractDiscount.discountTypes.Store,1,"",null);
-        CompositeDataObject comp = new CompositeDataObject(10, NumericDiscountComposite.numeric.Addition,null,null,new ArrayList<>(Arrays.asList(d1,d2)),null);
+        int percentage = 10;
+        int prod1Quantity = 3;
+        int prod3Quantity = 1;
+        double expectedPriceAfterDiscount = 114;
+
+        DiscountDataObject d1 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Category,s1Product1ID,"Bananas",null);
+        DiscountDataObject d2 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Store,s1Product2ID,"",null);
+        CompositeDataObject comp = new CompositeDataObject(percentage, NumericDiscountComposite.numeric.Addition,null,null,new ArrayList<>(Arrays.asList(d1,d2)),null);
         s1.addDiscount(comp);
 
         ShoppingCart cart = new ShoppingCart();
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(0),3),3); //30 ->27 ->
-        cart.addProductToCart(0,new ProductInfo(0,inv1.getProduct(2),1),1); //100 ->100 ->90
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1Quantity),prod1Quantity); //30 ->27 ->
+        cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product3ID),prod3Quantity),prod3Quantity); //100 ->100 ->90
 
         Order or = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
-        assertEquals(114,s1.handleDiscount(or));
+        assertEquals(expectedPriceAfterDiscount,s1.handleDiscount(or));
     }
 }

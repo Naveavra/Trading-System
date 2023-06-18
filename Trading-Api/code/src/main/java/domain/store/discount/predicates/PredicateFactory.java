@@ -34,7 +34,7 @@ public class PredicateFactory {
             }
             case MaxNumFromCategory,MinNumFromCategory -> {
                 List<String> rp = Arrays.asList(params.split(" "));
-                return new DiscountCategoryPredicate(rp.get(0),Integer.parseInt(rp.get(1)),type,op);
+                return new DiscountCategoryPredicate(rp.get(0),Integer.parseInt(rp.get(1)),type,op, storeId);
             }
         }
         return null;

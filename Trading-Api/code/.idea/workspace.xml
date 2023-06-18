@@ -4,107 +4,48 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/daos/LoggerDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/AppointmentDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/CategoryDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/InventoryDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/LoggerDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/PermissionDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/RoleDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/StoreReviewsDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/work1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/Trading-System.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__com_fasterxml_classmate_1_5_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__com_google_code_gson_gson_2_8_9.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__com_google_protobuf_protobuf_java_3_21_9.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__com_mysql_mysql_connector_j_8_0_32.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__com_sparkjava_spark_core_2_9_4.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__com_sun_istack_istack_commons_runtime_4_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__io_smallrye_jandex_3_0_5.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__jakarta_activation_jakarta_activation_api_2_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__jakarta_inject_jakarta_inject_api_2_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__jakarta_persistence_jakarta_persistence_api_3_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__jakarta_transaction_jakarta_transaction_api_2_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__jakarta_xml_bind_jakarta_xml_bind_api_4_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__javax_servlet_javax_servlet_api_3_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_12_18.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_antlr_antlr4_runtime_4_10_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_angus_angus_activation_2_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_jetty_client_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_jetty_http_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_jetty_io_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_jetty_security_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_jetty_server_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_jetty_servlet_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_jetty_util_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_jetty_util_ajax_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_jetty_webapp_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_jetty_xml_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_api_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_client_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_common_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_server_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_servlet_9_4_48_v20220622.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_glassfish_jaxb_jaxb_core_4_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_glassfish_jaxb_jaxb_runtime_4_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_glassfish_jaxb_txw2_4_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_hibernate_common_hibernate_commons_annotations_6_0_6_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_hibernate_orm_hibernate_core_6_2_3_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_jboss_logging_jboss_logging_3_5_0_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_json_json_20230227.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_5_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_params_5_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_mockito_mockito_all_1_9_5.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_opentest4j_opentest4j_1_2_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_25.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/code.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="Change to json.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data/PositionInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/PositionInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/MemberDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/StoreDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/StoreDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/Permission.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/Permission.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/order/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/order/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/Dao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/Dao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/orderRelated/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/orderRelated/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/java/service/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/java/service/UserControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Complaint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Complaint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/ProductReview.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/ProductReview.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Question.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Question.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/StoreReview.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/StoreReview.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/AppHistoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/AppHistoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/domain/user/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/MemberTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/java/market/AdminTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/java/market/AdminTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/store/DiscountTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/DiscountTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/store/PurchasePolicyTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/PurchasePolicyTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../.." value="payForBid" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -125,92 +66,130 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Git.Branch.Popup.ShowAllRemotes": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "last_directory_selection": "C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test/server",
+    "last_opened_file_path": "C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.junit in code">
-    <configuration name="DiscountTest.itemDiscountTestWithPredCompose" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="server" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.AcceptanceTests in work1">
+    <configuration name="runServer" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="store.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="store" />
-      <option name="MAIN_CLASS_NAME" value="store.DiscountTest" />
-      <option name="METHOD_NAME" value="itemDiscountTestWithPredCompose" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;..\..\config.json&quot;" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DiscountTest.tenPercentDiscountOver200" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="AcceptanceTests in work1" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
       <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="store.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="store" />
-      <option name="MAIN_CLASS_NAME" value="store.DiscountTest" />
-      <option name="METHOD_NAME" value="tenPercentDiscountOver200" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DiscountTest.testSimpleCompositeDiscount" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="store.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="store" />
-      <option name="MAIN_CLASS_NAME" value="store.DiscountTest" />
-      <option name="METHOD_NAME" value="testSimpleCompositeDiscount" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DiscountTest.xorLogicalCompositeTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="store.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="store" />
-      <option name="MAIN_CLASS_NAME" value="store.DiscountTest" />
-      <option name="METHOD_NAME" value="xorLogicalCompositeTest" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="junit in code" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="code" />
       <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/src/AcceptanceTests/junit" />
+      <dir value="$PROJECT_DIR$/src/AcceptanceTests" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="AppHistoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="AppHistoryTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AppHistoryTest.getNodeNotExists" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="AppHistoryTest" />
+      <option name="METHOD_NAME" value="getNodeNotExists" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MemberTest.purchaseMade" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.user" />
+      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
+      <option name="METHOD_NAME" value="purchaseMade" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MemberTest.writeReview" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.user" />
+      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
+      <option name="METHOD_NAME" value="writeReview" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/test" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.runServer" />
+      <item itemvalue="JUnit.AcceptanceTests in work1" />
+      <item itemvalue="JUnit.AppHistoryTest" />
+      <item itemvalue="JUnit.AppHistoryTest.getNodeNotExists" />
+      <item itemvalue="JUnit.MemberTest.purchaseMade" />
+      <item itemvalue="JUnit.MemberTest.writeReview" />
+      <item itemvalue="JUnit.test in work1" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.junit in code" />
-        <item itemvalue="JUnit.DiscountTest.xorLogicalCompositeTest" />
-        <item itemvalue="JUnit.DiscountTest.tenPercentDiscountOver200" />
-        <item itemvalue="JUnit.DiscountTest.testSimpleCompositeDiscount" />
-        <item itemvalue="JUnit.DiscountTest.itemDiscountTestWithPredCompose" />
+        <item itemvalue="JUnit.test in work1" />
+        <item itemvalue="JUnit.AppHistoryTest.getNodeNotExists" />
+        <item itemvalue="JUnit.AppHistoryTest" />
+        <item itemvalue="JUnit.MemberTest.writeReview" />
+        <item itemvalue="JUnit.MemberTest.purchaseMade" />
       </list>
     </recent_temporary>
   </component>
@@ -224,7 +203,48 @@
       <updated>1685868571060</updated>
       <workItem from="1685868574295" duration="140000" />
       <workItem from="1685868729427" duration="1858000" />
+      <workItem from="1685878244012" duration="10797000" />
+      <workItem from="1685922271500" duration="12000" />
+      <workItem from="1685922305319" duration="168000" />
+      <workItem from="1685922490611" duration="93000" />
+      <workItem from="1685922612042" duration="40000" />
+      <workItem from="1685981301082" duration="2023000" />
+      <workItem from="1685984211015" duration="4850000" />
+      <workItem from="1685989196873" duration="44000" />
+      <workItem from="1685989265473" duration="3592000" />
+      <workItem from="1685993590311" duration="2808000" />
+      <workItem from="1685997722228" duration="9154000" />
+      <workItem from="1686037390759" duration="1761000" />
+      <workItem from="1686041070720" duration="3009000" />
+      <workItem from="1686046203450" duration="2330000" />
+      <workItem from="1686467473046" duration="5984000" />
+      <workItem from="1686668079953" duration="985000" />
+      <workItem from="1686849278022" duration="2346000" />
+      <workItem from="1686903011570" duration="7860000" />
+      <workItem from="1687079555190" duration="12164000" />
     </task>
+    <task id="LOCAL-00001" summary="adding jdk">
+      <created>1685879507188</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1685879507188</updated>
+    </task>
+    <task id="LOCAL-00002" summary="End config file.">
+      <created>1686827755082</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1686827755082</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Change to json.">
+      <created>1686830995546</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1686830995546</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -240,5 +260,65 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="adding jdk" />
+    <MESSAGE value="End config file." />
+    <MESSAGE value="Change to json." />
+    <option name="LAST_COMMIT_MESSAGE" value="Change to json." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/java/market/AdminTest.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/store/DiscountTest.java</url>
+          <line>269</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java</url>
+          <line>216</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/MemberTest.java</url>
+          <line>114</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/service/ExternalService/WSEPServiceTest.java</url>
+          <line>44</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
+          <line>666</line>
+          <option name="timeStamp" value="68" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java</url>
+          <line>191</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/domain/user/MemberTest.java</url>
+          <line>114</line>
+          <option name="timeStamp" value="183" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/domain/user/MemberTest.java</url>
+          <line>146</line>
+          <option name="timeStamp" value="184" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/code$UserControllerTest_checkNewImp.ic" NAME="UserControllerTest.checkNewImp Coverage Results" MODIFIED="1686279744864" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

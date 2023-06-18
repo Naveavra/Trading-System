@@ -3,6 +3,7 @@ package utils.infoRelated;
 import domain.store.product.Product;
 import org.json.JSONObject;
 import utils.messageRelated.Message;
+import utils.messageRelated.ProductReview;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,10 +20,10 @@ public class ProductInfo extends Information{
     public int quantity;
     public double rating;
     public String img;
-    public HashMap<Integer, Message> reviews;
+    public List<ProductReview> reviews;
 
 
-    public ProductInfo(int storeId, int productId, List<String> categories, String name, String desc, int price, int quantity, double rating, HashMap<Integer, Message> reviews,
+    public ProductInfo(int storeId, int productId, List<String> categories, String name, String desc, int price, int quantity, double rating, List<ProductReview> reviews,
                        String img){
         this.storeId = storeId;
         this.id = productId;
@@ -47,7 +48,7 @@ public class ProductInfo extends Information{
         this.price = product.getPrice();
         this.quantity =quantity;
         this.rating = product.getRating();
-        this.reviews = new HashMap<>();
+        this.reviews = new ArrayList<>();
         this.img = product.getImgUrl();
     }
     public int getStoreId(){return storeId;}
@@ -79,11 +80,11 @@ public class ProductInfo extends Information{
         return quantity;
     }
     public double getRating(){return rating;}
-    public HashMap<Integer, Message> getReviews(){return reviews;}
+    public List<ProductReview> getReviews(){return reviews;}
     public String getImg(){return img;}
 
     @Override
-    public  JSONObject toJson(){
+    public JSONObject toJson(){
         JSONObject json = new JSONObject();
         json.put("storeId", getStoreId());
         json.put("productId", getId());
@@ -93,7 +94,7 @@ public class ProductInfo extends Information{
         json.put("quantity", getQuantity());
         json.put("categories", getCategories());
         json.put("rating", getRating());
-        json.put("reviews", hashMapToJson(getReviews(), "messageId", "review"));
+        //json.put("reviews", infosToJson(getReviews()));
         json.put("img", getImg());
         return json;
     }

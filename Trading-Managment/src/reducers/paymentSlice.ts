@@ -1,116 +1,90 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Supplier, paymentService } from "../types/systemTypes/Supplier";
 import { paymentApi } from "../api/paymentApi";
 import { ApiError } from "../types/apiTypes";
-import { CancelPayParams, HandShakeParams, PayParams } from "../types/requestTypes/paymentTypes";
 
 interface PaymentState {
     isLoading: boolean;
     responseData: string | number | null;
+    suppliers: string[];
+    paymentServices: string[];
     error: string | null;
 };
 const reducerName = 'payment';
 const initialState: PaymentState = {
     isLoading: false,
     responseData: null,
+    suppliers: [],
+    paymentServices: [],
     error: null,
 };
 
-const handshake = createAsyncThunk<
-    string,
-    HandShakeParams,
+export const getSuppliers = createAsyncThunk<
+    string[],
+    void,
     { rejectValue: ApiError }
 >(
-    `${reducerName}/handshake`,
-    async (formData, thunkApi) => {
-        return paymentApi.handshake()
-            .then((res) => thunkApi.fulfillWithValue(res as string))
+    `${reducerName}/getSuppliers`,
+    async (_, thunkApi) => {
+        return paymentApi.getSuppliers()
+            .then((res) => thunkApi.fulfillWithValue(res as string[]))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
-    }
-);
+    });
 
-const pay = createAsyncThunk<
-    number,
-    PayParams,
+export const getPaymentsService = createAsyncThunk<
+    string[],
+    void,
     { rejectValue: ApiError }
 >(
-    `${reducerName}/pay`,
-    async (formData, thunkApi) => {
-        return paymentApi.pay(formData)
-            .then((res) => thunkApi.fulfillWithValue(res as number))
+    `${reducerName}/getPaymentsService`,
+    async (_, thunkApi) => {
+        return paymentApi.getPaymentsService()
+            .then((res) => thunkApi.fulfillWithValue(res as string[]))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
-    }
-);
+    });
 
-const cancelPay = createAsyncThunk<
-    number,
-    CancelPayParams,
-    { rejectValue: ApiError }
->(
-    `${reducerName}/cancelPay`,
-    async (formData, thunkApi) => {
-        return paymentApi.cancelPay(formData)
-            .then((res) => thunkApi.fulfillWithValue(res as number))
-            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
-    }
-);
 
 const { reducer: paymentReducer, actions: paymentActions } = createSlice({
     name: reducerName,
     initialState,
     reducers: {
-        reset: () => initialState,
+        clearPaymentError: (state) => {
+            state.error = null;
+        },
+        clearPaymnetResponseData: (state) => {
+            state.responseData = null;
+        }
     },
     extraReducers: (builder) => {
-        //handshake
-        builder.addCase(handshake.pending, (state) => {
+        //
+        builder.addCase(getSuppliers.pending, (state) => {
             state.isLoading = true;
-            state.responseData = null;
             state.error = null;
         });
-        builder.addCase(handshake.fulfilled, (state, { payload }) => {
+        builder.addCase(getSuppliers.fulfilled, (state, { payload }) => { //payload is what we get back from the function
             state.isLoading = false;
-            state.responseData = payload;
+            state.suppliers = payload;
             state.error = null;
         });
-        builder.addCase(handshake.rejected, (state, { payload }) => {
+        builder.addCase(getSuppliers.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.responseData = null;
-            state.error = payload?.message?.data ?? "error during handshake";
+            state.error = payload?.message.data ?? "error during getSuppliers";
         });
-        //pay
-        builder.addCase(pay.pending, (state) => {
+        //
+        builder.addCase(getPaymentsService.pending, (state) => {
             state.isLoading = true;
-            state.responseData = null;
             state.error = null;
         });
-        builder.addCase(pay.fulfilled, (state, { payload }) => {
+        builder.addCase(getPaymentsService.fulfilled, (state, { payload }) => { //payload is what we get back from the function
             state.isLoading = false;
-            state.responseData = payload;
+            state.paymentServices = payload;
             state.error = null;
         });
-        builder.addCase(pay.rejected, (state, { payload }) => {
+        builder.addCase(getPaymentsService.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.responseData = null;
-            state.error = payload?.message?.data ?? "error during pay";
+            state.error = payload?.message.data ?? "error during getPaymentsService";
         });
-        //cancelPay
-        builder.addCase(cancelPay.pending, (state) => {
-            state.isLoading = true;
-            state.responseData = null;
-            state.error = null;
-        });
-        builder.addCase(cancelPay.fulfilled, (state, { payload }) => {
-            state.isLoading = false;
-            state.responseData = payload;
-            state.error = null;
-        });
-        builder.addCase(cancelPay.rejected, (state, { payload }) => {
-            state.isLoading = false;
-            state.responseData = null;
-            state.error = payload?.message?.data ?? "error during cancelPay";
-        });
-
     },
 });
-export const { reset } = paymentActions;
+export const { clearPaymentError, clearPaymnetResponseData } = paymentActions;
 export default paymentReducer;

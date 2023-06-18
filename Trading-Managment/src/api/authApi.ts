@@ -1,7 +1,7 @@
 import { getApiClient, noAuthApiClient } from './apiClient';
 import { apiErrorHandlerWrapper } from './util';
 import { EnterGuestResponseData, RegisterResponseData, TokenResponseBody, getClientNotifications, getClientResponseData } from '../types/responseTypes/authTypes';
-import { LoginPostData, RegisterPostData, editProfileParams, getUserData, getUserNotifications, messageParams } from '../types/requestTypes/authTypes';
+import { LoginPostData, RegisterPostData, changePasswordParams, complaintParams, editProfileParams, getUserData, getUserNotifications, messageParams } from '../types/requestTypes/authTypes';
 import { ApiResponse, ApiResponseListData } from '../types/apiTypes';
 import { MyNotification } from '../types/systemTypes/Notification';
 
@@ -28,7 +28,15 @@ export const authApi = {
     sendMessage: (credentials: messageParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/auth/notifications/msg', credentials)),
 
+    sendComplaint: (credentials: complaintParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post('api/auth/notifications/complaint', credentials)),
+
     editProfile: (credentials: editProfileParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/auth/profile', credentials)),
+
+    changePassword: (credentials: changePasswordParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post('api/auth/password', credentials)),
+
+
 
 }

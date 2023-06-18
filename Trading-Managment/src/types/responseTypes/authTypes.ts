@@ -1,3 +1,4 @@
+import { Bid } from "../systemTypes/Bid";
 import { MyNotification } from "../systemTypes/Notification";
 import { Order } from "../systemTypes/Order";
 import { Permission } from "../systemTypes/Permission";
@@ -18,6 +19,7 @@ export interface TokenResponseBody {
     storeImgs: StoreImg[];
     permissions: Permission[];
     purchaseHistory: Order[];
+    bids: Bid[];
 };
 export interface RegisterResponseData {
     answer: string | null;
@@ -38,6 +40,7 @@ export interface getClientResponseData {
     storeImgs: StoreImg[];
     permissions: Permission[];
     purchaseHistory: Order[];
+    bids: Bid[];
 };
 export interface getClientNotifications {
     notifications: string[];

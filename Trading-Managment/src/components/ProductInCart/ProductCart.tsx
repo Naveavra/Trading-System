@@ -1,34 +1,27 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { Product } from "../../types/systemTypes/Product";
 import { Card, CardMedia, CardContent, Typography, Box, CardActions } from "@mui/material";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { addToCart, getCart, removeFromCart } from "../../reducers/cartSlice";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
+import "../Cart/Cart.css"
 interface CardProps {
     item: Product;
 }
 const ProductInCart: React.FC<CardProps> = ({ item }) => {
-    const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const [isFav, setFav] = React.useState(false);
-    const [quantity, setQuantity] = React.useState(0);
-
-
-
+    const [quantity, setQuantity] = useState(0);
     const userId = useAppSelector((state) => state.auth.userId);
 
-    const discountPercentage = 0.2;
-    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
 
     const handleAddToCart = () => {
         dispatch(addToCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: quantity }));
+        dispatch(getCart({ userId: userId }));
         dispatch(getCart({ userId: userId }));
         setQuantity(0);
     }
@@ -41,16 +34,18 @@ const ProductInCart: React.FC<CardProps> = ({ item }) => {
         setQuantity(quantity - 1);
         dispatch(removeFromCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: 1 }));
         dispatch(getCart({ userId: userId }));
+        dispatch(getCart({ userId: userId }));
     }
     const handleDelete = () => {
         //dispatch(removeFromCart(item.id))
         dispatch(removeFromCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: quantity }));
         setQuantity(0);
         dispatch(getCart({ userId: userId }));
+        dispatch(getCart({ userId: userId }));
     }
     useEffect(() => {
         setQuantity(item.quantity);
-    }, [item.quantity])
+    }, [item.quantity, dispatch, item])
 
 
 
@@ -63,9 +58,15 @@ const ProductInCart: React.FC<CardProps> = ({ item }) => {
                 style={{ objectFit: 'cover' }}
             />
             <CardContent className="d-flex flex-column">
-                <Box width={'100%'} height={40}>
+                <Box width={'100%'} height={40} display={'flex'}>
                     <Typography gutterBottom variant="h5" component="div">
                         {item.name}
+                    </Typography>
+                    <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10 }}>
+                        price for unit : {item.price} $
+                    </Typography>
+                    <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10 }}>
+                        amount in cart : {item.quantity}
                     </Typography>
                 </Box>
             </CardContent>
@@ -83,12 +84,12 @@ const ProductInCart: React.FC<CardProps> = ({ item }) => {
                     </IconButton>
                 </Box>
                 <Typography gutterBottom variant="h6" component="div" sx={{ ml: 3, mt: 1 }}>
-                    {item.quantity}
+                    {quantity}
                 </Typography>
                 <Box>
 
                     <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10 }}>
-                        {(item.price * (quantity + 1)).toFixed(2)}$
+                        {(item.price * (quantity)).toFixed(2)}$
                     </Typography>
                 </Box>
             </CardActions>

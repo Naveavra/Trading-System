@@ -1,116 +1,171 @@
 package service.ExternalService.Payment;
 
 import org.json.JSONObject;
-import service.ExternalService.Payment.PaymentAdapter;
-import service.ExternalService.WSEPService;
+import server.Config.ESConfig;
+import service.ExternalService.Supplier.ESSupply;
+import service.ExternalService.Supplier.OurSupplyService;
+import utils.Exceptions.ExternalServiceException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+/**
+ * The ProxyPayment class acts as a proxy for different payment services,
+ * allowing dynamic selection and interaction with the chosen payment service.
+ */
 public class ProxyPayment implements PaymentAdapter {
+    private PaymentAdapter real;
 
-    private PaymentAdapter real = null;
-    private HashMap<String, PaymentAdapter> paymentServices;
+    private final Map<String, PaymentAdapter> paymentServices;
 
-    private List<String> availablePaymentServices;
-    //TODO: check by the requirement private HashMap<Integer, String> availablePaymentServices;
-
-    public ProxyPayment() throws Exception {
+    /**
+     * Constructs a ProxyPayment instance with an initial payment service.
+     *
+     * @param payment The configuration for the initial payment service.
+     * @throws Exception If an error occurs during initialization.
+     */
+    public ProxyPayment(ESConfig payment) throws Exception {
         this.paymentServices = new HashMap<>();
-        this.availablePaymentServices = new ArrayList<>();
-        this.paymentServices.put("WSEP", new WSEPService());
-        this.availablePaymentServices.add("WSEP");
-        this.real = paymentServices.get("WSEP");
+        loadConfig(payment);
     }
 
+    private void loadConfig(ESConfig payment) throws ExternalServiceException, IOException {
+        OurPaymentService eli = new OurPaymentService();
+        this.paymentServices.put(eli.getName(), eli);
+        if (payment.isDefault())
+        {
+            this.real = eli;
+        }
+        else {
+            ESPayment es = new ESPayment(payment);
+            this.paymentServices.put(es.getName(), es);
+            this.real = es;
+        }
+        this.real.setAvailable(true);
+    }
+
+    /**
+     * Retrieves the available options for payment services.
+     *
+     * @return The list of available payment service names.
+     */
+    public List<String> getPaymentServicesAvailableOptions() {
+        return paymentServices.entrySet()
+                .stream()
+                .filter(pay -> pay.getValue().isAvailable())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves all the possible options for payment services, including both available and unavailable ones.
+     *
+     * @return The list of all payment service names.
+     */
+    public List<String> getPaymentServicesPossibleOptions() {
+        return new ArrayList<>(paymentServices.keySet());
+    }
+
+    /**
+     * Adds a new payment service to the available options.
+     *
+     * @param payment        The name of the payment service.
+     * @param paymentAdapter The PaymentAdapter implementation for the service.
+     * @throws Exception If the payment service already exists or an error occurs during addition.
+     */
     public void addPaymentService(String payment, PaymentAdapter paymentAdapter) throws Exception {
-        if (availablePaymentServices.contains(payment))
-        {
-            throw new Exception("This payment service:" + payment + "already exists!!!");
-
-        }
-        else if(!paymentServices.containsKey(payment))
-        {
-            throw new Exception("This payment service:" + payment + "doesn't exists in the possible payment services!!!");
-        }
-        else{
+        if (paymentServices.containsKey(payment)) {
+            throw new IllegalArgumentException("This payment service: " + payment + " already exists in the possible payment services!");
+        } else {
             paymentServices.put(payment, paymentAdapter);
-            availablePaymentServices.add(payment);
+            paymentAdapter.setAvailable(true);
         }
     }
 
-    public List<String> getPaymentServicesAvailableOptions()
-    {
-        return availablePaymentServices;
-    }
-
-    public List<String> getPaymentServicesPossibleOptions()
-    {
-        return paymentServices.keySet().stream().toList();
-    }
-
-    public void addPaymentService(String paymentService) throws Exception
-    {
-        if (availablePaymentServices.contains(paymentService))
-        {
-            throw new Exception("This payment service:" + paymentService + "already exists!!!");
-
-        }
-        else if(!paymentServices.containsKey(paymentService))
-        {
-            throw new Exception("This payment service:" + paymentService + "doesn't exists in the possible payment services!!!");
-        }
-        else{
-            availablePaymentServices.add(paymentService);
+    /**
+     * Adds a payment service to the available options based on its name.
+     *
+     * @param paymentService The name of the payment service to add.
+     * @throws Exception If the payment service doesn't exist or is already available.
+     */
+    public void addPaymentService(String paymentService) throws Exception {
+        if (!paymentServices.containsKey(paymentService)) {
+            throw new IllegalArgumentException("This payment service: " + paymentService + " doesn't exist in the possible payment services!");
+        } else if (paymentServices.get(paymentService).isAvailable()) {
+            throw new IllegalArgumentException("This payment service: " + paymentService + " is already available!");
+        } else {
+            paymentServices.get(paymentService).setAvailable(true);
         }
     }
 
-
-    public void removePaymentService(String paymentService) throws Exception
-    {
-        if (availablePaymentServices.size() <= 1)
-        {
-            throw new Exception("Can't remove payment service need at least 1 payment service!");
-        }
-        else if (!availablePaymentServices.contains(paymentService))
-        {
-            throw new Exception("This payment service:" + paymentService + " doesn't exists!!!");
-        }
-        else
-        {
-            availablePaymentServices.remove(paymentService);
+    /**
+     * Removes a payment service from the available options.
+     *
+     * @param paymentService The name of the payment service to remove.
+     * @throws Exception If there is only one payment service available or the payment service doesn't exist or is already unavailable.
+     */
+    public void removePaymentService(String paymentService) throws Exception {
+        if (getPaymentServicesAvailableOptions().size() <= 1) {
+            throw new IllegalArgumentException("Can't remove payment service. Need at least 1 payment service available.");
+        } else if (!paymentServices.containsKey(paymentService) || !paymentServices.get(paymentService).isAvailable()) {
+            throw new IllegalArgumentException("This payment service: " + paymentService + " doesn't exist or is already unavailable!");
+        } else {
+            paymentServices.get(paymentService).setAvailable(false);
         }
     }
 
-
-    public void setRealPayment(String paymentAdapter) throws Exception{
-        if(availablePaymentServices.contains(paymentAdapter))
+    /**
+     * Sets the current active payment service.
+     *
+     * @param paymentAdapter The name of the payment service to set as active.
+     * @throws Exception If the payment service doesn't exist or is unavailable.
+     */
+    public void setRealPayment(String paymentAdapter) throws Exception {
+        if (paymentServices.containsKey(paymentAdapter) && paymentServices.get(paymentAdapter).isAvailable()) {
             real = paymentServices.get(paymentAdapter);
-        else{
-            throw new Exception("The " + paymentAdapter + "doesn't exist!");
+        } else {
+            throw new Exception("The payment service: " + paymentAdapter + " doesn't exist or is unavailable!");
         }
     }
 
     @Override
-    public void makePurchase(String accountNumber , double amount) throws Exception{
-        if (real != null){
-            real.makePurchase(accountNumber, amount);
+    public boolean isAvailable() {
+        return real != null;
+    }
+
+    private String getPaymentService(JSONObject paymentContent) throws Exception {
+        try{
+            String service_name = paymentContent.getString("payment_service");
+            return service_name;
+        }
+        catch (Exception e)
+        {
+            throw new Exception("The payment doesn't exists!");
         }
     }
 
     @Override
-    public int makePurchase(JSONObject json) throws Exception {
-        if (real != null){
-            return real.makePurchase(json);
+    public int makePurchase(JSONObject userDetails, JSONObject storeDetails, double price) throws Exception {
+        String payment = getPaymentService(userDetails);
+        if (paymentServices.containsKey(payment) && paymentServices.get(payment).isAvailable()) {
+            return paymentServices.get(payment).makePurchase(userDetails, storeDetails, price);
         }
-        return -1;
+        throw new Exception("The payment service: " + payment + " doesn't exist or is unavailable!");
     }
 
     @Override
     public void cancelPurchase(String transactionId) throws Exception {
-        if (real != null){
+        if (real != null) {
             real.cancelPurchase(transactionId);
         }
+    }
+
+    @Override
+    public void setAvailable(boolean available) {
+
     }
 }

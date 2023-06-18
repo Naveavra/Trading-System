@@ -1,43 +1,63 @@
 package domain.store.product;
 
+import database.daos.Dao;
+import database.DbEntity;
+import database.daos.StoreDao;
+import jakarta.persistence.*;
+import utils.infoRelated.ProductInfo;
+import utils.messageRelated.ProductReview;
+
+import java.text.DecimalFormat;
 import java.util.*;
 
-public class Product {
-    public final int id;
-    private ArrayList<String> categories;
+
+@Entity
+@Table(name = "products")
+public class Product implements DbEntity{
+
+    @Id
+    public int productId;
+    @Id
+    private int storeId;
+
     public String name;
     public String description;
     public int price; //for one product
     public int quantity;
-    public double rating;
     private String imgUrl;
-//    public ArrayList<String> categories;
-    //private ConcurrentLinkedDeque<String> categories;
-    //private double discount;  no need for discount here, the discount is calculated by the policy
+    @Transient
+    private List<ProductReview> reviews;
+    @Transient
+    private List<String> categories;
 
+    public Product(){
+    }
     /**
      * Quantity, Price and Categories are set manually.
      * @param prod_id Unique
      * @param _name String
      * @param desc String
      */
-    public Product(int prod_id, String _name, String desc){
-        id = prod_id;
+    public Product(int storeId, int prod_id, String _name, String desc){
+        this.storeId = storeId;
+        productId = prod_id;
         name = _name;
         description = desc;
         price = 0;
         categories = new ArrayList<>();
-        rating = 5;
+        reviews = new ArrayList<>();
     }
 
-    public Product(int prod_id, String _name, String desc, String imgUrl){
-        id = prod_id;
+    public Product(int storeId, int prod_id, String _name, String desc, String imgUrl){
+        this.storeId = storeId;
+        productId = prod_id;
         name = _name;
         description = desc;
         price = 0;
         categories = new ArrayList<>();
-        rating = 5;
         this.imgUrl = imgUrl;
+        reviews = new ArrayList<>();
+        StoreDao.saveProduct(this);
     }
 
     public void changeImg(String imgUrl){
@@ -85,7 +105,7 @@ public class Product {
      * @return new deep copy of the product.
      */
     public synchronized Product clone() {
-        Product clone = new Product(id,name,description);
+        Product clone = new Product(storeId, productId,name,description);
         try {
             clone.setPrice(price);
         }catch (Exception e){
@@ -96,7 +116,7 @@ public class Product {
     }
 
     public int getID(){
-        return this.id;
+        return this.productId;
     }
 
     public String getDescription() { return description;
@@ -110,16 +130,22 @@ public class Product {
     }
 
 
-    public ArrayList<String> getCategories(){
+    public List<String> getCategories(){
         return categories;
     }
 
-    public void setRating(double v) {
-        rating = v;
-    }
-
     public double getRating() {
-        return rating;
+        if(reviews == null || reviews.size() == 0)
+            return 5;
+        else{
+            double sum = 0;
+            for(ProductReview review : reviews)
+                sum+=review.getRating();
+            double avg = sum / reviews.size();
+            DecimalFormat df = new DecimalFormat("#.#");
+            avg = Double.parseDouble(df.format(avg));
+            return avg;
+        }
     }
 
     public void addCategory(String category) {
@@ -129,5 +155,37 @@ public class Product {
 
     public boolean belongsToCategory(String discountedCategory) {
         return getCategories().contains(discountedCategory);
+    }
+
+    public ProductInfo getProductInfo(){
+        return new ProductInfo(storeId, productId, categories, name, description,price
+        ,quantity, getRating(), reviews, imgUrl);
+    }
+
+    public void addReview(ProductReview m) {
+        reviews.add(m);
+    }
+
+    public List<ProductReview> getReviews(){return reviews;}
+
+    @Override
+    public void initialParams() {
+        getReviewsFromDb();
+        getCategoriesFromDb();
+    }
+
+    private void getReviewsFromDb(){
+        if(reviews == null){
+            reviews = new ArrayList<>();
+            List<? extends DbEntity> productReviewsDto = Dao.getListByCompositeKey(ProductReview.class, storeId, productId,
+                    "StoreReview", "storeId", "productId");
+            reviews.addAll((List<ProductReview>) productReviewsDto);
+        }
+    }
+
+    private void getCategoriesFromDb(){
+        if(categories == null){
+            categories = new ArrayList<>();
+        }
     }
 }

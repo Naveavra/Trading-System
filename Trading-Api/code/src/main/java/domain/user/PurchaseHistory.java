@@ -1,11 +1,6 @@
 package domain.user;
 
-import domain.user.ShoppingCart;
-import org.json.JSONObject;
-import org.json.JSONPointer;
-import utils.Pair;
-import utils.Response;
-import utils.infoRelated.Information;
+import database.daos.Dao;
 import utils.infoRelated.Receipt;
 
 import java.util.ArrayList;
@@ -15,6 +10,7 @@ import java.util.List;
 public class PurchaseHistory{
 
     private int userId;
+
     private HashMap<Integer, Receipt> purchaseHistory;
 
     public PurchaseHistory(int userId){
@@ -22,10 +18,14 @@ public class PurchaseHistory{
         purchaseHistory = new HashMap<>();
     }
 
-    public void addPurchaseMade(int orderId, double totalPrice, ShoppingCart purchase){
-        ShoppingCart add = new ShoppingCart(purchase);
-        Receipt receipt = new Receipt(userId, orderId, add, totalPrice);
-        purchaseHistory.put(orderId, receipt);
+    public void addPurchaseMade(Receipt receipt){
+        receipt.setMemberId(userId);
+        Dao.save(receipt);
+        purchaseHistory.put(receipt.getOrderId(), receipt);
+    }
+
+    public Receipt getReceipt(int orderId){
+        return purchaseHistory.get(orderId);
     }
 
     public List<Receipt> getReceipts(){
@@ -44,7 +44,7 @@ public class PurchaseHistory{
     }
 
     public boolean checkOrderContainsProduct(int orderId, int storeId, int productId) {
-        if(purchaseHistory.containsKey(orderId))
+        if(checkOrderOccurred(orderId))
             return purchaseHistory.get(orderId).getCart().hasProduct(storeId, productId);
         return false;
     }
@@ -55,5 +55,9 @@ public class PurchaseHistory{
 
     public HashMap<Integer, Receipt> getPurchaseHistory(){
         return purchaseHistory;
+    }
+
+    public void removeReceipt(int orderId) {
+        purchaseHistory.remove(orderId);
     }
 }

@@ -2,12 +2,14 @@ package utils.infoRelated;
 
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MarketInfo extends Information{
     private transient LocalTime startTime;
-    private transient AtomicInteger countUserIn;
+    private transient AtomicInteger countGuestIn;
+    private transient AtomicInteger countMemberIn;
     private transient AtomicInteger countUserOut;
     private transient AtomicInteger purchaseCount;
     private transient AtomicInteger countRegister;
@@ -19,7 +21,8 @@ public class MarketInfo extends Information{
 
     public MarketInfo(){
         startTime = LocalTime.now();
-        countUserIn = new AtomicInteger(0);
+        countGuestIn = new AtomicInteger(0);
+        countMemberIn = new AtomicInteger(0);
         countUserOut = new AtomicInteger(0);
         purchaseCount = new AtomicInteger(0);
         countRegister = new AtomicInteger(0);
@@ -29,11 +32,13 @@ public class MarketInfo extends Information{
         averagePurchase = 0;
     }
 
-
-    public void addUserCount(){
-        countUserIn.incrementAndGet();
+    public void addGuestIn(){
+        countGuestIn.incrementAndGet();
     }
 
+    public void addMemberIn(){
+        countMemberIn.incrementAndGet();
+    }
     public void reduceUserCount(){
         countUserOut.incrementAndGet();
     }
@@ -49,15 +54,20 @@ public class MarketInfo extends Information{
     public void calculateAverages(){
         LocalTime curTime = LocalTime.now();
         int startHour = startTime.getHour();
+        if(startHour == 0)
+            startHour = 24;
         int startMinute = startTime.getMinute();
+        int startSecond = startTime.getSecond();
         int hour = curTime.getHour();
         int minute = curTime.getMinute();
-
-        double calcMinutes = (hour - startHour) * 60 + minute - startMinute;
+        double second = curTime.getSecond();
+        if(hour == 0)
+            hour = 24;
+        double calcMinutes = (hour - startHour) * 60 + minute - startMinute + (second - startSecond)/60;
         averagePurchase = purchaseCount.get() / calcMinutes;
         averageRegistered = countRegister.get() / calcMinutes;
         averageUserOut =countUserOut.get() / calcMinutes;
-        averageUserIn = countUserIn.get() / calcMinutes;
+        averageUserIn = (countGuestIn.get() + countMemberIn.get()) / calcMinutes;
     }
 
     public double getAverageUserIn(){
@@ -79,11 +89,16 @@ public class MarketInfo extends Information{
     @Override
     public JSONObject toJson() {
         calculateAverages();
+        DecimalFormat df=new DecimalFormat("0.000");
         JSONObject json = new JSONObject();
-        json.put("averageUserIn", averageUserIn);
-        json.put("averageUserOut", averageUserOut);
-        json.put("averageRegistered", averageRegistered);
-        json.put("averagePurchase", averagePurchase);
+        json.put("guestCount", countGuestIn);
+        json.put("memberCount", countMemberIn);
+        json.put("averageUserIn", df.format(averageUserIn));
+        json.put("averageUserOut", df.format(averageUserOut));
+        json.put("registeredCount", countRegister);
+        json.put("averageRegistered", df.format(averageRegistered));
+        json.put("purchaseCount", purchaseCount);
+        json.put("averagePurchase", df.format(averagePurchase));
         return json;
     }
 }

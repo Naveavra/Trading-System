@@ -1,14 +1,15 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ApiError, ApiListData, ApiResponseListData } from "../types/apiTypes";
-import { TokenResponseBody, RegisterResponseData, EnterGuestResponseData, getClientResponseData, getClientNotifications } from "../types/responseTypes/authTypes";
+import { ApiError } from "../types/apiTypes";
+import { TokenResponseBody, getClientResponseData } from "../types/responseTypes/authTypes";
 import { LoginFormValues } from "../views/LoginPage/types";
 import { authApi } from "../api/authApi";
 import { localStorage } from '../config'
-import { RegisterPostData, editProfileParams, getUserData, getUserNotifications, messageParams } from "../types/requestTypes/authTypes";
+import { RegisterPostData, changePasswordParams, complaintParams, editProfileParams, getUserData, getUserNotifications, messageParams } from "../types/requestTypes/authTypes";
 import { StoreImg, StoreName, StoreRole } from "../types/systemTypes/StoreRole";
 import { Permission } from "../types/systemTypes/Permission";
 import { MyNotification } from "../types/systemTypes/Notification";
-import { Order } from "../types/systemTypes/Order";
+import { Order, emptyOrder } from "../types/systemTypes/Order";
+import { Bid } from "../types/systemTypes/Bid";
 
 interface AuthState {
     token: string;
@@ -31,6 +32,8 @@ interface AuthState {
     isLogoutLoading: boolean;
     opcode: number;
     purchaseHistory: Order[];
+    whatchedOrder: Order;
+    bids: Bid[];
 }
 const reducrName = 'auth';
 const initialState: AuthState = {
@@ -60,6 +63,32 @@ const initialState: AuthState = {
     isLogoutLoading: false,
     opcode: 0,
     purchaseHistory: [],
+    whatchedOrder: emptyOrder,
+    bids: []
+};
+const cleanState: AuthState = {
+    token: '',
+    userId: 0,
+    userName: '',
+    isAdmin: false,
+    birthday: '',
+    age: 0,
+    notifications: [],
+    message: null,
+    hasQestions: false,
+    storeRoles: [],
+    storeNames: [],
+    storeImgs: [],
+    permissions: [],
+    error: null,
+    isLoading: false,
+    isLoginLoading: false,
+    isRegisterLoading: false,
+    isLogoutLoading: false,
+    opcode: 0,
+    purchaseHistory: [],
+    whatchedOrder: emptyOrder,
+    bids: []
 };
 
 export const login = createAsyncThunk<
@@ -161,6 +190,17 @@ export const sendMessage = createAsyncThunk<
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
+export const sendComplaint = createAsyncThunk<
+    string,
+    complaintParams,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/sendComplaint`,
+    async (credential, thunkApi) => {
+        return authApi.sendComplaint(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
 export const editProfile = createAsyncThunk<
     string,
     editProfileParams,
@@ -169,6 +209,17 @@ export const editProfile = createAsyncThunk<
     `${reducrName}/editProfile`,
     async (credential, thunkApi) => {
         return authApi.editProfile(credential)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+export const changePassword = createAsyncThunk<
+    string,
+    changePasswordParams,
+    { rejectValue: ApiError }
+>(
+    `${reducrName}/changePassword`,
+    async (credential, thunkApi) => {
+        return authApi.changePassword(credential)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
@@ -186,6 +237,15 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         clearNotifications: (state) => {
             state.notifications = [];
         },
+        setWatchedOrder: (state, action) => {
+            debugger;
+            state.whatchedOrder = state.purchaseHistory?.find((order) => order.orderId === action.payload) ?? emptyOrder;
+        },
+        resetAuth: (state) => {
+            debugger;
+            state = cleanState;
+            return cleanState;
+        }
 
     },
     extraReducers: builder => {
@@ -260,10 +320,17 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             window.localStorage.removeItem(localStorage.auth.token.name);
             window.localStorage.removeItem(localStorage.auth.userId.name);
             window.localStorage.removeItem(localStorage.auth.userName.name);
+            state.token = "";
+            state.userId = 0;
+            state.userName = '';
             state.message = payload;
+            debugger;
             // window.localStorage.removeItem(localStorage.auth.isAdmin.name);
         });
         builder.addCase(logout.rejected, (state, { payload }) => {
+            state.token = "";
+            state.userId = 0;
+            state.userName = '';
             state.isLogoutLoading = false;
             state.error = payload?.message.data ?? "error during logout";
         });
@@ -284,7 +351,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         // get notifications
         builder.addCase(getNotifications.pending, (state) => {
-            state.isLoading = true;
             state.error = null;
         });
         builder.addCase(getNotifications.fulfilled, (state, { payload }) => {
@@ -293,7 +359,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             const arr: MyNotification[] = [payload];
             //state.opcode = arr[0].opcode;
             state.notifications = state.notifications.concat(arr);
-
         });
         builder.addCase(getNotifications.rejected, (state, { payload }) => {
             state.isLoading = false;
@@ -305,6 +370,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.error = null;
         });
         builder.addCase(getClientData.fulfilled, (state, { payload }) => {
+            debugger;
             state.isLoading = false;
             state.userName = payload.userName;
             state.isAdmin = payload.isAdmin;
@@ -317,6 +383,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.age = payload.age;
             state.birthday = payload.birthday;
             state.purchaseHistory = payload.purchaseHistory;
+            state.bids = payload.bids;
         });
         builder.addCase(getClientData.rejected, (state, { payload }) => {
             state.isLoading = false;
@@ -335,6 +402,21 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during send message";
         });
+
+        //send complaint
+        builder.addCase(sendComplaint.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(sendComplaint.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(sendComplaint.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during send complaint";
+        });
+
         //edit profile
         builder.addCase(editProfile.pending, (state) => {
             state.isLoading = true;
@@ -348,8 +430,21 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during edit profile";
         });
+        //change password
+        builder.addCase(changePassword.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        });
+        builder.addCase(changePassword.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(changePassword.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during change password";
+        });
     }
 });
 // Action creators are generated for each case reducer function
-export const { clearAuthError, clearAuthMsg, clearNotifications } = authActions;
+export const { clearAuthError, clearAuthMsg, resetAuth, clearNotifications, setWatchedOrder } = authActions;
 export default authReducer;

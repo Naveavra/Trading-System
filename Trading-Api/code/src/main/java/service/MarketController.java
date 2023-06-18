@@ -2,12 +2,17 @@ package service;
 
 
 import domain.store.storeManagement.AppHistory;
+import domain.store.storeManagement.Bid;
 import domain.user.Member;
 import domain.user.ShoppingCart;
 import domain.user.User;
+import org.json.JSONObject;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.StoreInfo;
+import utils.messageRelated.ProductReview;
+import utils.messageRelated.Question;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.order.OrderController;
 import domain.store.storeManagement.Store;
@@ -15,7 +20,6 @@ import domain.store.storeManagement.StoreController;
 
 import java.util.*;
 
-import com.google.gson.Gson;
 import utils.messageRelated.Message;
 import utils.infoRelated.OrderInfo;
 import utils.orderRelated.Status;
@@ -25,12 +29,10 @@ public class MarketController {
 
     private StoreController storectrl;
     private OrderController orderctrl;
-    private Gson gson;
     public MarketController()
     {
         storectrl = new StoreController();
         orderctrl = new OrderController();
-        gson = new Gson();
     }
 
 
@@ -43,7 +45,7 @@ public class MarketController {
         order.setStatus(Status.pending);
         Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
         order.setStatus(Status.submitted);
-        Receipt receipt = new Receipt(user.getId(), order.getOrderId(), shoppingCart, order.getTotalPrice());
+        Receipt receipt = new Receipt(order.getOrderId(), shoppingCart, order.getTotalPrice());
         Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);
         return ans;
     }
@@ -69,44 +71,34 @@ public class MarketController {
         return storectrl.checkMessages(storeID);
     }
 
-    public int addReviewToStore(Message m) throws Exception {
+    public int addReviewToStore(StoreReview m) throws Exception {
         return storectrl.writeReviewForStore(m);
     }
 
-    public int writeReviewForProduct(Message m) throws Exception{
+    public int writeReviewForProduct(ProductReview m) throws Exception{
         return storectrl.writeReviewForProduct(m);
 
     }
 
     public int addProduct(int storeId, String name, String description, int price, int quantity, List<String> categories) throws Exception{
-        int id = storectrl.addProduct(storeId,name,description,price,quantity);
+        int id = storectrl.addProduct(storeId,name,description,price,quantity, categories);
         if(id == -1){
             throw new Exception("Something went wrong in adding product");
         }
-        storectrl.addToCategory(storeId,id,categories);
         return id;
     }
 
     public int addProduct(int storeId, String name, String description, int price, int quantity,
                           List<String> categories, String img) throws Exception{
-        int id = storectrl.addProduct(storeId,name,description,price,quantity, img);
+        int id = storectrl.addProduct(storeId,name,description,price,quantity, img, categories);
         if(id == -1){
             throw new Exception("Something went wrong in adding product");
         }
-        storectrl.addToCategory(storeId,id,categories);
         return id;
     }
     public ProductInfo getProductInformation(int storeId, int productId) throws Exception {
         Store store = storectrl.getActiveStore(storeId);
         return store.getProductInformation(productId);
-//        Store store = storectrl.getStore(storeId);
-//        if (store != null && store.isActive())
-//        {
-//            return store.getProductInformation(productId);
-//        }
-//        else {
-//            throw new Exception("cant get product information");
-//        }
     }
 
 
@@ -115,9 +107,7 @@ public class MarketController {
         return storectrl.getStoreInformation(storeId);
     }
     public Store getStore(int storeId) throws Exception {
-        if(storectrl.storeList.containsKey(storeId))
-            return storectrl.storeList.get(storeId);
-        throw new Exception("the storeId given does not belong to any store");
+        return storectrl.getStore(storeId);
     }
     public List<StoreInfo> getStoresInformation(){
         List<StoreInfo> stores = new ArrayList<>();
@@ -140,26 +130,15 @@ public class MarketController {
 //        }
 //    }
 
-    public int addQuestion(Message m) throws Exception {
-        return storectrl.addQuestion(m);
+    public int addQuestion(Question q) throws Exception {
+        return storectrl.addQuestion(q);
     }
 
     public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
         storectrl.setStoreAttributes(storeId, name, description, img);
     }
 
-    public void setStorePurchasePolicy(int storeId,String policy) throws Exception{
-        Store store = storectrl.getActiveStore(storeId);
-        store.setStorePolicy(policy);
-//        Store store = storectrl.getStore(storeId);
-//        if (store != null )
-//        {
-//            store.setStorePolicy(policy);
-//        }
-//        else {
-//            throw new Exception("store does not exist");
-//        }
-    }
+
 
 
 
@@ -193,18 +172,17 @@ public class MarketController {
 //        }
 //    }
 
-    public void addPurchaseConstraint(int storeId, String constraint) throws Exception {
-        Store s;
-        if((s= storectrl.getStore(storeId) )!= null){
-            s.addPurchaseConstraint(constraint);
-        }
-        else{
-            throw new Exception("store doesn't exist, sorry bruh :(");
-        }
-    }
+//    public void addPurchaseConstraint(int storeId, String constraint) throws Exception {
+//        Store s;
+//        if((s= storectrl.getStore(storeId) )!= null){
+//            s.addPurchaseConstraint(constraint);
+//        }
+//        else{
+//            throw new Exception("store doesn't exist, sorry bruh :(");
+//        }
+//    }
 
-    public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
-        Gson gson = new Gson();
+    public List<Message> getQuestions(int storeId) throws Exception {
         return storectrl.getQuestions(storeId);
 
     }
@@ -219,7 +197,6 @@ public class MarketController {
     }
 
     public AppHistory getAppointments(int storeId) throws Exception {
-        Gson gson = new Gson();
         return storectrl.getAppointments(storeId);
     }
 
@@ -236,7 +213,7 @@ public class MarketController {
         storectrl.updateProduct(storeId,productId,categories,name,description,price,quantity, img);
     }
 
-    public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
+    public List<StoreReview> viewReviews(int storeId) throws Exception {
         return storectrl.viewReviews(storeId);
     }
 
@@ -249,7 +226,7 @@ public class MarketController {
      * @param filterOptions
      * @return json string representation of the selected products.
      */
-    public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) {
+    public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) throws Exception{
         return storectrl.filterBy(filterOptions);
     }
 
@@ -265,4 +242,91 @@ public class MarketController {
     public void checkProductInStore(int storeId, int productId) throws Exception{
         storectrl.checkProductInStore(storeId, productId);
     }
+
+    public void changeRegularDiscount(int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst) throws Exception {
+        storectrl.changeRegularDiscount(storeId, prodId, percentage, discountType,
+                discountedCategory, predicatesLst);
+    }
+
+    public int getStoreId(String storeName) throws Exception{
+        return storectrl.getStoreId(storeName);
+    }
+
+//    public void createBidOnProduct(int storeId,int prodId) throws Exception {
+//        Store s = storectrl.getActiveStore(storeId);
+//        s.createBid(prodId);
+//    }
+    
+    public List<String> placeBid(int storeId, Member user, int prodId, double price,int quantity) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        return s.placeBid(user,prodId,price,quantity);
+
+    }
+
+    /**
+     * store owner reply for the bid suggestion
+     * @return true if he was the last to approve false otherwise
+     */
+    public boolean answerBid(String userName, int storeId, boolean ans, int prodId, int bidId) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        Bid bid = s.answerBid(bidId,userName,prodId,ans);
+        return bid != null;
+    }
+
+    public List<String> counterBid(String userName, int storeId, double counterOffer, int prodId, int bidId) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        return s.counterBid(bidId,counterOffer,userName);
+    }
+
+    public List<String> editBid(int storeId, int bidId, double price, int quantity) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        Bid bid = s.editBid(bidId,price,quantity);
+        return bid.approvers;
+        //send a message to all shop owners and people who need to approve this bid.
+    }
+
+    public void addPurchaseConstraint(int storeId, String purchasePolicy)throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        s.addPurchasePolicy(purchasePolicy);
+    }
+
+    public void deletePurchaseConstraint(int userId, int storeId, int purchasePolicyId) {
+        //todo miki
+    }
+
+    public Pair<Receipt, Set<Integer>> purchaseBid(User user, int storeId, int prodId, double price, int quantity) throws Exception {
+        Store s = storectrl.getActiveStore(storeId);
+        ShoppingCart sc = new ShoppingCart();
+        sc.addProductToCart(storeId,getProductInformation(storeId,prodId),quantity);
+        Order or = orderctrl.createNewOrder(user,sc,price);
+        or.setStatus(Status.pending);
+        Set<Integer> creatorIds = storectrl.purchaseProductsBid(sc,or);
+        or.setStatus(Status.submitted);
+        Receipt receipt = new Receipt(or.getOrderId(),sc,or.getTotalPrice());
+        Pair<Receipt,Set<Integer>> res = new Pair<>(receipt,creatorIds);
+        return res;
+    }
+
+    public Set<Integer> getStoreCreatorsOwners(int storeId) throws Exception {
+        return storectrl.getStoreCreatorsOwners(storeId);
+    }
+
+    public int getBidClient(int bidId, int storeId) throws Exception {
+        return storectrl.getActiveStore(storeId).getBidClient(bidId);
+    }
+
+    public List<String> getBidApprovers(int bidId, int storeId) throws Exception {
+        Store s= storectrl.getActiveStore(storeId);
+        return s.getApprovers(bidId);
+    }
+
+    public void clientAcceptCounter(int bidId, int storeId) throws Exception {
+        Store store = storectrl.getActiveStore(storeId);
+        store.clientAcceptCounter(bidId);
+    }
+
+//    public Set<Integer> clientAcceptCounter(int bidId, int storeId) throws Exception {
+//        Store s = storectrl.getActiveStore(storeId);
+//        s.clientAcceptCounter(bidId);
+//    }
 }

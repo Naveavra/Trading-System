@@ -1,11 +1,13 @@
 package domain.store.storeManagement;
 
+import database.DbEntity;
 import domain.states.UserState;
 import domain.user.Member;
 import org.json.JSONObject;
 import utils.Pair;
 import utils.infoRelated.Info;
 import utils.infoRelated.Information;
+import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
 import java.util.*;
@@ -14,11 +16,12 @@ import java.util.*;
 public class AppHistory{
     private int storeId;
 
+
+
     public static class Node{
         private Pair<Member, UserState> data; //userid and role
         private ArrayList<Node> children; //list of all the users this user appoint in this store
         private Set<Integer> dismissed;
-
         private Node father;
         public Node(Pair<Member, UserState> appointment){
             //Assign data to the new node, set left and right children to null
@@ -201,6 +204,16 @@ public class AppHistory{
         add.add(n.data.getSecond());
     }
 
+    public List<String> getStoreWorkersWithPermission(Action permission)
+    {
+        List<String> lst = new ArrayList<>();
+        for (UserState state : getRoles())
+        {
+            if (state.checkPermission(permission)){lst.add(state.getUserName());}
+        }
+        return lst;
+    }
+
     public List<JSONObject> toJson(){
         List<JSONObject> ans = new ArrayList<>();
         List<Pair<Info, List<Info>>> history = getAppHistory();
@@ -211,5 +224,13 @@ public class AppHistory{
             ans.add(jsonBranch);
         }
         return ans;
+    }
+    public Set<Integer> getStoreCreatorsOwners() {
+        Set<Integer> roles = new HashSet<>();
+        for (UserState state : getRoles())
+        {
+            if (state.getRole() == Role.Owner || state.getRole() == Role.Manager){roles.add(state.getUserId());}
+        }
+        return roles;
     }
 }

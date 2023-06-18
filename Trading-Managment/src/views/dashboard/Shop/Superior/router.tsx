@@ -6,9 +6,12 @@ import FireUser from "../../../../components/Forms/FireUser";
 import AddEditStore from "../../../../components/Forms/AddEditStore";
 import OpenCloseStore from "../../../../components/Forms/OpenCloseStore";
 import UpdatePermissions from "../../../../components/Forms/UpdatePermissions";
-import MainScreen from "../../../../components/Forms/Discounts/MainScreen";
 import RegularDiscount from "../../../../components/Forms/Discounts/RegularDiscount";
-import AddPredicate from "../../../../components/Forms/Discounts/AddPredicate";
+import SendComplain from "../../../../components/Forms/SendComplaint";
+import AddPurchasePolicy from "../../../../components/Forms/SuppingRules/AddPurchasePolicy";
+import MakeBid from "../../../../components/Forms/Bids/MakeBid";
+import CounterBid from "../../../../components/Forms/Bids/CounterBid";
+import AnswerBid from "../../../../components/Forms/Bids/AnswerBid";
 
 export const SuperiorShopRoutes =
     <Route key="routes" path="superior" element={<Superior />}>
@@ -18,12 +21,16 @@ export const SuperiorShopRoutes =
         <Route path="appointOwner" element={<AppointUser role={'owner'} />} />
         <Route path="fireManager" element={<FireUser role={'manager'} />} />
         <Route path="fireOwner" element={<FireUser role={'owner'} />} />
-        <Route path="editStore" element={<AddEditStore mode={'edit'} />} />
+        <Route path="changestoredetails" element={<AddEditStore mode={'edit'} />} />
         <Route path="closeStore" element={<OpenCloseStore />} />
         <Route path="reopenStore" element={<OpenCloseStore />} />
         <Route path="changemanagerpermission" element={<UpdatePermissions />} />
-        <Route path="addpurchaseconstraint" element={<MainScreen />} />
-        <Route path="regularDiscount" element={<RegularDiscount />} />
-        <Route path="regularDiscount/addPredicate" element={<AddPredicate />} />
+        <Route path="regularDiscount" element={<RegularDiscount tree={false} />} />
+
+        <Route path="sendComplaint" element={<SendComplain />} />
+        <Route path="addpurchaseconstraint" element={<AddPurchasePolicy />} />
+        <Route path=":storeId/:productId/makeBid" element={<MakeBid opcode={2} />} />
+
+
     </Route>
     ;

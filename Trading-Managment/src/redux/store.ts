@@ -4,13 +4,14 @@ import authReducer from '../reducers/authSlice';
 import storeReducer from '../reducers/storesSlice';
 import productsReducer from '../reducers/productsSlice';
 import cartReducer from "../reducers/cartSlice";
-import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import storageSession from 'reduxjs-toolkit-persist/lib/storage/session'
-import orderReducer from '../reducers/orderSlice';
 import { getPersistConfig } from 'redux-deep-persist';
 import discountReducer from '../reducers/discountSlice';
 import adminReducer from '../reducers/adminSlice';
+import paymentReducer from '../reducers/paymentSlice';
+import shoppingRuleReducer from '../reducers/ShoppingRules';
+import bidReducer from '../reducers/bidSlice';
 
 
 const authPersistConfig = {
@@ -36,9 +37,11 @@ export const store = configureStore({
         store: persistedStoreReducer,
         product: productsReducer,
         cart: cartReducer,
-        order: orderReducer,
         discount: discountReducer,
         admin: adminReducer,
+        payment: paymentReducer,
+        shoppingRule: shoppingRuleReducer,
+        bid: bidReducer,
 
     },
     middleware(getDefaultMiddleware) {

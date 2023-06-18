@@ -1,8 +1,7 @@
 package service;
 
-import database.daos.AdminDao;
-import database.daos.MemberDao;
-import database.dtos.*;
+import database.daos.MessageDao;
+import database.daos.SubscriberDao;
 import domain.store.storeManagement.Store;
 import domain.user.*;
 
@@ -10,9 +9,8 @@ import domain.user.PurchaseHistory;
 import market.Admin;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
-import utils.messageRelated.Message;
-import utils.messageRelated.Notification;
-import utils.messageRelated.NotificationOpcode;
+import utils.infoRelated.Receipt;
+import utils.messageRelated.*;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 import utils.infoRelated.Info;
@@ -25,33 +23,30 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UserController {
 
     private AtomicInteger ids;
+    private AtomicInteger messageIds;
     private ConcurrentHashMap<Integer, Guest> guestList;
     private ConcurrentHashMap<Integer, Member> memberList;
     private ConcurrentHashMap<Integer, Admin> admins;
     private StringChecks checks;
-    private int messageIds;
-    private ConcurrentHashMap<Integer, Message> complaints; //complaintId,message
-    private MemberDao memberDao;
-    private AdminDao adminDao;
+    private ConcurrentHashMap<Integer, Complaint> complaints; //complaintId,message
 
     public UserController(){
         ids = new AtomicInteger(2);
+        messageIds = new AtomicInteger(0);
         guestList = new ConcurrentHashMap<>();
         memberList = new ConcurrentHashMap<>();
         admins = new ConcurrentHashMap<>();
         checks = new StringChecks();
-        messageIds = 0;
         complaints = new ConcurrentHashMap<>();
-        memberDao = new MemberDao();
-        adminDao = new AdminDao();
     }
 
 
     public User getUser(int id) throws Exception{
         if(guestList.containsKey(id))
             return guestList.get(id);
-        else if(memberList.containsKey(id))
-            return memberList.get(id);
+        Member m = getMember(id);
+        if(m != null)
+            return m;
         throw new Exception("the id given does not belong to any user");
     }
 
@@ -64,6 +59,11 @@ public class UserController {
     public Member getMember(int id) throws Exception{
         if(memberList.containsKey(id))
                 return memberList.get(id);
+        Member m = SubscriberDao.getMember(id);
+        if(m != null) {
+            memberList.put(m.getId(), m);
+            return m;
+        }
         throw new Exception("the id given does not belong to any member");
     }
 
@@ -71,11 +71,18 @@ public class UserController {
         for(Member m : memberList.values())
             if(m.getName().equals(email))
                 return m;
+        Member m = SubscriberDao.getMember(email);
+        if(m != null) {
+            memberList.put(m.getId(), m);
+            return m;
+        }
         throw new Exception("no member has this email");
     }
     public boolean isEmailTaken(String email){
+        if(checkIsAdmin(email))
+            return true;
         try {
-            return getMember(email) != null || checkIsAdmin(email);
+            return getMember(email) != null;
         }catch (Exception e){
             return false;
         }
@@ -91,19 +98,37 @@ public class UserController {
     }
 
     public Subscriber getSubscriber(int id) throws Exception{
-        if(admins.containsKey(id))
-            return admins.get(id);
-        else if(memberList.containsKey(id))
-            return memberList.get(id);
+        Admin a = null;
+        Member m = null;
+        try {
+            a = getAdmin(id);
+            if(a != null)
+                return a;
+        }catch (Exception ignored){
+        }
+        try{
+            m = getMember(id);
+            if(m != null)
+                return m;
+        }catch (Exception e){
+        }
         throw new Exception("the id given does not belong to any user");
     }
     public Subscriber getSubscriber(String email) throws Exception{
-        for(Member m : memberList.values())
-            if(m.getName().equals(email))
+        Member m = null;
+        Admin a = null;
+        try {
+            m = getMember(email);
+            if (m != null)
                 return m;
-        for(Admin a : admins.values())
-            if(a.getName().equals(email))
+        }catch (Exception ignored){
+        }
+        try{
+            a = getAdmin(email);
+            if(a != null)
                 return a;
+        }catch (Exception ignored){
+        }
         throw new Exception("no user has this email");
     }
 
@@ -130,15 +155,6 @@ public class UserController {
         return g.getId();
     }
 
-    public Notification getNotification(int userId) throws Exception {
-        if(memberList.containsKey(userId)) {
-            if (memberList.get(userId).getIsConnected()) {
-                return memberList.get(userId).getNotification();
-            }
-            throw new Exception("the id given belongs to an inactive member");
-        }
-        throw new Exception("the id given does not belong to any member");
-    }
 
     public void exitGuest(int id) throws Exception {
         Guest g = getGuest(id);
@@ -147,12 +163,11 @@ public class UserController {
     }
 
     public synchronized void register(String email, String password, String hashedPass, String birthday) throws Exception{
-        int id = ids.getAndIncrement();
         checks.checkRegisterInfo(email, password, birthday);
         if(isEmailTaken(email))
                 throw new Exception("the email is already taken");
-        Member m = new Member(id, email, hashedPass, birthday);
-        memberList.put(id, m);
+        Member m = new Member(ids.getAndIncrement(), email, hashedPass, birthday);
+        memberList.put(m.getId(), m);
     }
 
     //the answers given are for the security questions, if there are no security questions then put an empty list
@@ -195,6 +210,7 @@ public class UserController {
     public synchronized void changeQuantityInCart(int userId, int storeId, ProductInfo product, int change) throws Exception{
         User user = getUser(userId);
         user.changeQuantityInCart(storeId, product, change);
+
     }
 
 
@@ -203,51 +219,48 @@ public class UserController {
         return user.getShoppingCart();
     }
 
-    public synchronized void purchaseMade(int userId, int orderId, double totalPrice) throws Exception{
+    public synchronized void purchaseMade(int userId, Receipt receipt) throws Exception{
         User user = getUser(userId);
-        user.purchaseMade(orderId, totalPrice);
+        user.purchaseMade(receipt);
     }
 
 
     public synchronized void openStore(int userId, Store store) throws Exception{
         Member m = getActiveMember(userId);
         m.openStore(store);
+        m.addNotification(new Notification(NotificationOpcode.GET_CLIENT_DATA, "successfully opened store"));
     }
 
-    public synchronized Message writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
+    public synchronized StoreReview writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
         Member m = getActiveMember(userId);
-        int tmp = messageIds;
-        messageIds++;
-        return m.writeReview(tmp, storeId, orderId, content, grading);
+        if(grading > 5 || grading < 0)
+            throw new Exception("the rating given is not between 0 and 5");
+        return m.writeReview(messageIds.getAndIncrement(), storeId, orderId, content, grading);
 
     }
 
-    public synchronized Message writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId) throws Exception {
+    public synchronized ProductReview writeReviewForProduct(int orderId, int storeId, int productId, String comment, int grading, int userId) throws Exception {
         Member m = getActiveMember(userId);
-        int tmp = messageIds;
-        messageIds += 2;
-        return m.writeReview(tmp, storeId, productId, orderId, comment, grading);
+        if(grading > 5 || grading < 0)
+            throw new Exception("the rating given is not between 0 and 5");
+        return m.writeReview(messageIds.getAndIncrement(), storeId, productId, orderId, comment, grading);
     }
 
 
     public synchronized void writeComplaintToMarket(int orderId, String comment,int userId)throws Exception{
         Member m = getActiveMember(userId);
-        int tmp = messageIds;
-        messageIds++;
         String notify = "a complaint has been submitted";
-        Notification notification = new Notification(NotificationOpcode.COMPLAINT, notify);
-        for(Admin a : admins.values())
+        Notification notification = new Notification(NotificationOpcode.GET_ADMIN_DATA, notify);
+        for(Admin a : getAdminsFromDb())
             a.addNotification(notification);
-        Message complaint = m.writeComplaint(tmp, orderId, comment);
+        Complaint complaint = m.writeComplaint(messageIds.getAndIncrement(), orderId, comment);
         complaints.put(complaint.getMessageId(), complaint);
     }
 
 
-    public Message sendQuestionToStore(int userId, int storeId, String question) throws Exception {
+    public Question sendQuestionToStore(int userId, int storeId, String question) throws Exception {
         Member m = getActiveMember(userId);
-        int tmp = messageIds;
-        messageIds++;
-        return m.sendQuestion(tmp, storeId, question);
+        return m.sendQuestion(messageIds.getAndIncrement(), storeId, question);
     }
 
     public synchronized void addNotification(int userId, Notification notification) throws Exception{
@@ -259,6 +272,10 @@ public class UserController {
         s.addNotification(notification);
     }
 
+    public Notification getNotification(int userId) throws Exception {
+        Subscriber s = getActiveSubscriber(userId);
+        return s.getNotification();
+    }
     public synchronized List<Notification> displayNotifications(int userId) throws Exception{
         Subscriber s = getActiveSubscriber(userId);
         return s.displayNotifications();
@@ -298,7 +315,7 @@ public class UserController {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
         owner.appointToOwner(appointed, storeId);
-        Notification<String> notify = new Notification<>(NotificationOpcode.APPOINT_OWNER, "you have been appointed to owner in store: " + storeId);
+        Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "you have been appointed to owner in store: " + storeId);
         appointed.addNotification(notify);
     }
 
@@ -307,11 +324,11 @@ public class UserController {
     public void fireIds(Set<Integer> firedIds, int storeId) throws Exception{
         for (int firedId : firedIds) {
             Member fired = getMember(firedId);
-            Notification<String> notify;
+            Notification notify;
             if (fired.getRole(storeId).getRole() == Role.Owner)
-               notify = new Notification<>(NotificationOpcode.FIRE_OWNER, "you have been fired from owner in store: " + storeId);
+               notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "you have been fired from owner in store: " + storeId);
              else
-                notify = new Notification<>(NotificationOpcode.FIRE_MANAGER, "you have been fired from manager in store: " + storeId);
+                notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "you have been fired from manager in store: " + storeId);
             fired.addNotification(notify);
             fired.removeRoleInStore(storeId);
         }
@@ -327,7 +344,7 @@ public class UserController {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
         owner.appointToManager(appointed, storeId);
-        Notification<String> notify = new Notification<>(NotificationOpcode.APPOINT_MANAGER, "you have been appointed to manager in store: " + storeId);
+        Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "you have been appointed to manager in store: " + storeId);
         appointed.addNotification(notify);
     }
 
@@ -344,7 +361,7 @@ public class UserController {
         Member manager = getMember(managerId);
         for(Action a : actions) {
             manager.addAction(a, storeId);
-            Notification<String> notify = new Notification<>(NotificationOpcode.ADD_MANGER_PERMISSTION, "the following action: " + a.toString() + "\n" +
+            Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA, "the following action: " + a.toString() + "\n" +
                     "has been added for you for store: " + storeId);
             manager.addNotification(notify);
         }
@@ -356,8 +373,8 @@ public class UserController {
         Member manager = getMember(managerId);
         for(Action a : actions) {
             manager.removeAction(a, storeId);
-            Notification<String> notify = new Notification<>(NotificationOpcode.REMOVE_MANGER_PERMISSTION, "the following action: " + a.toString() + "\n" +
-                    "has been added for you for store: " + storeId);
+            Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA, "the following action: " + a.toString() + "\n" +
+                    "has been removed from you for store: " + storeId);
             manager.addNotification(notify);
         }
     }
@@ -380,7 +397,7 @@ public class UserController {
             Member worker = getMember(workerId);
             worker.changeToInActive(storeId);
             String notify = "the store: " + storeId + " has been temporarily closed";
-            Notification<String> notification = new Notification<>(NotificationOpcode.CLOSE_STORE, notify);
+            Notification notification = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, notify);
             addNotification(workerId, notification);
         }
     }
@@ -393,7 +410,7 @@ public class UserController {
             Member worker = getMember(workerId);
             worker.changeToActive(storeId);
             String notify = "the store: " + storeId + " has been reOpened";
-            Notification<String> notification = new Notification<>(NotificationOpcode.OPEN_STORE,  notify);
+            Notification notification = new Notification(NotificationOpcode.GET_CLIENT_DATA,  notify);
             addNotification(workerId, notification);
         }
     }
@@ -403,7 +420,7 @@ public class UserController {
         s.checkPermission(action, storeId);
     }
 
-    public synchronized  Info getWorkerInformation(int userId, int workerId, int storeId) throws Exception{
+    public synchronized Info getWorkerInformation(int userId, int workerId, int storeId) throws Exception{
         Member m = getActiveMember(userId);
         Member worker = getMember(workerId);
         if(m.getWorkerIds(storeId).contains(workerId))
@@ -461,13 +478,14 @@ public class UserController {
             else
                 creatorStoreIds.add(storeId);
         }
-        memberList.remove(userToRemove);
+        addNotification(userToRemove, new Notification(NotificationOpcode.CANCEL_MEMBERSHIP, "you have been removed from the system"));
+        //memberList.remove(userToRemove);
         return creatorStoreIds;
     }
 
     public List<PurchaseHistory> getUsersInformation() {
         List<PurchaseHistory> membersInformation = new LinkedList<>();
-        for(Member m : memberList.values()) {
+        for(Member m : getMembersFromDb()){
             PurchaseHistory history = m.getUserPurchaseHistory();
             membersInformation.add(history);
         }
@@ -483,7 +501,23 @@ public class UserController {
     public Admin getAdmin(int adminId) throws Exception {
         if(admins.containsKey(adminId))
                 return admins.get(adminId);
+        Admin a = SubscriberDao.getAdmin(adminId);
+        if(a != null) {
+            admins.put(a.getId(), a);
+            return a;
+        }
         throw new Exception("the id given does not belong to any admin");
+    }
+    public Admin getAdmin(String email) throws Exception{
+        for(Admin a : admins.values())
+            if(a.getName().equals(email))
+                return a;
+        Admin a = SubscriberDao.getAdmin(email);
+        if(a != null) {
+            admins.put(a.getId(), a);
+            return a;
+        }
+        throw new Exception("no admin has this name");
     }
     public Admin getActiveAdmin(int adminId) throws Exception {
         if(admins.containsKey(adminId)) {
@@ -496,48 +530,62 @@ public class UserController {
 
     //check if admin
     public boolean checkIsAdmin(int adminId){
-        return admins.containsKey(adminId);
+        Admin a = SubscriberDao.getAdmin(adminId);
+        return a != null;
     }
 
     public boolean checkIsAdmin(String email){
-        for(Admin a : admins.values())
-            if(a.checkEmail(email))
+        for(Admin admin : admins.values())
+            if(admin.getName().equals(email))
                 return true;
-        return false;
+        Admin a = SubscriberDao.getAdmin(email);
+        return a != null;
     }
 
     private void checkRemoveAdmin() throws Exception{
-        if(admins.size() == 1)
+        if(getAdminSize() == 1)
             throw new Exception("the admin cannot be removed because it is the only admin in the system");
     }
     public void closeStorePermanently(int adminId, int storeId) throws Exception{
         Admin admin = getActiveAdmin(adminId);
         admin.closeStorePermanently(storeId, -1);
     }
-    public synchronized Admin addAdmin(int userId, String email, String pass)throws Exception {
+    public synchronized void addAdmin(int userId, String email, String hashPass ,String pass)throws Exception {
+        if(isEmailTaken(email))
+            throw new Exception("the email is already taken");
         if (userId != 0)
             getActiveAdmin(userId);
-        Admin a = new Admin(ids.getAndIncrement(), email, pass);
+        if(!checks.checkEmail(email))
+            throw new Exception("the email given does not match the email pattern");
+        checks.checkPassword(pass);
+        Admin a = new Admin(ids.getAndIncrement(), email, hashPass);
+        SubscriberDao.saveSubscriber(a);
         admins.put(a.getId(), a);
-        return a;
     }
-    public Admin addAdmin(Admin a, String pass) {
-        Admin admin = new Admin(a.getId(), a.getName(), pass);
-        admins.put(a.getId(), admin);
-        return admin;
+    public void addAdmin(Admin a, String hashedPass, String pass) throws Exception{
+        checks.checkPassword(pass);
+        if(!checks.checkEmail(a.getName()))
+            throw new Exception("admin email given was not valid");
+        if(isEmailTaken(a.getName()))
+            throw new Exception("the email is already taken");
+        Admin admin = new Admin(a.getId(), a.getName(), hashedPass);
+        admin.saveAdmin();
+        admins.put(admin.getId(), admin);
     }
 
     public void removeAdmin(int adminId) throws Exception{
         getActiveAdmin(adminId);
         checkRemoveAdmin();
         admins.remove(adminId);
+        SubscriberDao.removeAdmin(adminId);
     }
 
     public HashMap<Integer, Admin> getAdmins(int adminId) throws Exception{
         getActiveAdmin(adminId);
         HashMap<Integer, Admin> list = new HashMap<>();
-        for (int key : admins.keySet())
-            list.put(key, admins.get(key));
+        for (Admin a : getAdminsFromDb()) {
+            list.put(a.getId(), a);
+        }
         return list;
     }
 
@@ -548,9 +596,10 @@ public class UserController {
     }
 
     private void sendFeedback(int messageId, String ans) throws Exception{
-        Message m = complaints.get(messageId);
-        if (m != null)
+        Complaint m = getComplaint(messageId);
+        if (m != null) {
             m.sendFeedback(ans);
+        }
         else
             throw new Exception("message does not found");
 
@@ -558,81 +607,59 @@ public class UserController {
 
     public void answerComplaint(int adminId, int complaintId, String ans) throws Exception{
         getActiveAdmin(adminId);
-        sendFeedback(complaintId, ans);
+        sendFeedback(complaintId, "you got an answer for complaint: " + complaintId + ", answer is: " + ans);
     }
 
-    public void cancelMembership(int adminId, int userToRemove) throws Exception{
+    public void cancelMembership(int adminId, String userToRemove) throws Exception{
         Admin admin = getActiveAdmin(adminId);
-        admin.cancelMembership(userToRemove);
+        Member m = getMember(userToRemove);
+        admin.cancelMembership(m.getId());
+    }
+
+    public void removeUser(String userName) throws Exception{
+        Member m = getMember(userName);
+        memberList.remove(m.getId());
+        SubscriberDao.removeMember(userName);
     }
 
     public int getAdminSize() {
-        return admins.size();
+        return getAdminsFromDb().size();
     }
 
     //database
 
-    //users
-    public void saveMemberState(int userId) throws Exception{
-        Member m = getMember(userId);
-        memberDao.saveMember(m.getDto());
-    }
-    public void updateMemberState(int userId) throws Exception{
-        Member m = getMember(userId);
-        memberDao.updateMember(m.getDto());
-    }
-
-    public MemberDto getMemberDto(int id){
-        MemberDto m = memberDao.getMemberById(id);
-        return m;
+    public List<Complaint> getComplaints(int userId) throws Exception{
+        getActiveAdmin(userId);
+        List<Complaint> complaintsDto = MessageDao.getComplaints();
+        for(Complaint complaint : complaintsDto)
+            if(!complaints.containsKey(complaint.getMessageId()))
+                complaints.put(complaint.getMessageId(), complaint);
+        return new ArrayList<>(complaints.values());
     }
 
-    public List<CartDto> getMemberCartDto(int id){
-        List<CartDto> clist = memberDao.getMemberCart(id);
-        return clist;
+    private Complaint getComplaint(int complaintId) throws Exception{
+        if(complaints.containsKey(complaintId))
+            return complaints.get(complaintId);
+        Complaint complaint = MessageDao.getComplaint(complaintId);
+        if(complaint != null)
+            return complaint;
+        throw new Exception("the id does not belong to any complaint");
     }
 
-    public List<UserHistoryDto> getMemberUserHistoryDto(int id){
-        List<UserHistoryDto> ulist = memberDao.getMemberHistory(id);
-        return ulist;
+    private List<Member> getMembersFromDb() {
+        List<Member> memberDto = SubscriberDao.getAllMembers();
+        for(Member m : memberDto)
+            if(!memberList.containsKey(m.getId()))
+                memberList.put(m.getId(), m);
+        return new ArrayList<>(memberList.values());
     }
 
-    public List<NotificationDto> getSubscriberNotificationsDto(int id){
-        List<NotificationDto> nlist = memberDao.getMemberNotifications(id);
-        return nlist;
+    private List<Admin> getAdminsFromDb() {
+        List<Admin> adminsDto = SubscriberDao.getAllAdmins();
+        for(Admin a : adminsDto)
+            if(!admins.containsKey(a.getId()))
+                admins.put(a.getId(), a);
+        return new ArrayList<>(admins.values());
     }
 
-
-
-    //admins
-    public void saveAdminState(int userId) throws Exception{
-        Admin a = getAdmin(userId);
-        adminDao.saveAdmin(a.getAdminDto());
-        memberDao.saveMember(a.getDto());
-    }
-    public void updateAdminState(int userId) throws Exception{
-        Admin a = getAdmin(userId);
-        adminDao.updateAdmin(a.getAdminDto());
-        memberDao.updateMember(a.getDto());
-    }
-
-    public AdminDto getAdminDto(int id){
-        AdminDto a = adminDao.getAdminById(id);
-        return a;
-    }
-
-    public void saveState() throws Exception{
-        for(Member m : memberList.values())
-            saveMemberState(m.getId());
-        for(Admin a : admins.values())
-            saveAdminState(a.getId());
-
-    }
-
-    public void updateState() throws Exception{
-        for(Member m : memberList.values())
-            updateMemberState(m.getId());
-        for(Admin a : admins.values())
-            updateAdminState(a.getId());
-    }
 }

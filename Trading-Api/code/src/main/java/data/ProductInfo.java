@@ -1,5 +1,7 @@
 package data;
 
+import utils.messageRelated.ProductReview;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class ProductInfo {
         this.categories.addAll(product.getCategories());
         this.img = product.img;
     }
+
 
     public int getProductId() {
         return productId;
@@ -82,4 +85,25 @@ public class ProductInfo {
     }
 
     public String getImg(){return img;}
+
+    private boolean compare(List<String> cat1, List<String> cat2)
+    {
+        if(cat1 == null || cat2 == null || cat1.size() != cat2.size()){
+            return false;
+        }
+        return cat1.containsAll(cat2);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof ProductInfo))
+            return false;
+        ProductInfo other = (ProductInfo)obj;
+        return this.productId == other.productId && this.name.equals(other.name) &&
+                this.description.equals(other.description) && this.img.equals(other.img) &&
+                this.price == other.price && this.quantity == other.quantity
+                && compare(this.categories, other.categories);
+    }
 }

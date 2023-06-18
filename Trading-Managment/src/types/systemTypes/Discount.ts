@@ -1,3 +1,5 @@
+import { RegularDiscountNode, CompositeDiscountNode } from "./DiscountNodes";
+
 export type Discount = DiscountDataObject | CompositeDataObject;
 export interface DiscountDataObject {
     percentage: Number;
@@ -12,8 +14,6 @@ export interface CompositeDataObject {
     numericType: Numeric;
     logicalType: Composore;
     xorDecidingRule: XorDecidingRules;
-    discounts: DiscountDataObject[];
-    composores: CompositeDataObject[];
 }
 export interface PredicateDataObject {
     predType: PredicateType;
@@ -33,6 +33,7 @@ export enum DiscountType {
     Product = "Product",
     Category = "Category",
     Store = "Store",
+    Regular = "Regular"
 };
 export enum PredicateType {
     MinPrice = "MinPrice",
@@ -46,20 +47,25 @@ export enum XorDecidingRules {
     MaxDiscountValue = "MaxDiscountValue",
     MinDiscountValue = "MinDiscountValue"
 }
-export const empryRegularDiscount: DiscountDataObject = {
+export const emptyRegularDiscount: RegularDiscountNode = {
+    type: 'regular',
+    description: "",
+    label: "",
     percentage: 0,
     discountType: DiscountType.Product,
     prodId: 0,
     discountedCategory: "",
-    predicates: []
+    predicates: [],
 }
-export const empryCompositeDiscount: CompositeDataObject = {
+export const emptyCompositeDiscount: CompositeDiscountNode = {
+    type: 'composite',
+    description: "",
+    label: "",
     percentage: 0,
     numericType: Numeric.Max,
     logicalType: Composore.AND,
     xorDecidingRule: XorDecidingRules.MaxDiscountValue,
-    discounts: [],
-    composores: []
+
 }
 export const emptyPredicate: PredicateDataObject = {
     predType: PredicateType.MinPrice,

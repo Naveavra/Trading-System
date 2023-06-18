@@ -9,8 +9,11 @@ import market.Market;
 
 import java.util.*;
 
+import org.json.JSONObject;
 import utils.infoRelated.*;
 import utils.Response;
+import utils.messageRelated.Notification;
+import utils.stateRelated.Role;
 
 public class BridgeImplement implements Bridge {
     private Market market;
@@ -18,22 +21,22 @@ public class BridgeImplement implements Bridge {
     private String token;
 
     public BridgeImplement() {
-        mainAdmin = new Admin(1, "admin@gmail.com", "admin");
+        mainAdmin = new Admin(1, "admin@gmail.com", "admin1A");
         market = new Market(mainAdmin);
     }
 
     @Override
-    public int initTradingSystem() {
-        mainAdmin = new Admin(1, "admin@gmail.com", "admin");
+    public boolean initTradingSystem() {
+        //mainAdmin = new Admin(1, "admin@gmail.com", "admin1A");
         this.market = new Market(mainAdmin);
         token = market.addTokenForTests();
-        return 1;
+        return true;
     }
 
     @Override
-    public int shutDownTradingSystem() {
+    public boolean shutDownTradingSystem() {
         this.market = null;
-        return 1;
+        return true;
     }
 
 
@@ -65,6 +68,15 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
+    public LoginData loginAndGetData(String email, String password) {
+        Response<LoginInformation> res = market.login(email, password);
+        if (res != null && !res.errorOccurred()) {
+            return new LoginData(res.getValue());
+        }
+        return null;
+    }
+
+    @Override
     public int logout(int user) {
         Response<String> res = market.logout(user);
         if (res != null && !res.errorOccurred()) {
@@ -92,8 +104,8 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public List<String> getAvailableExternalSupplierService(int user) {
-        Response<List<String>> res = market.getSupplierServiceAvailable(user);
+    public List<String> getAvailableExternalSupplierService() {
+        Response<List<String>> res = market.getSupplierServiceAvailable();
         if (res != null && !res.errorOccurred()) {
             return res.getValue();
         }
@@ -137,8 +149,8 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public List<String> getAvailableExternalPaymentService(int user) {
-        Response<List<String>> res = market.getPaymentServiceAvailable(user);
+    public List<String> getAvailableExternalPaymentService() {
+        Response<List<String>> res = market.getPaymentServiceAvailable();
         if (res != null && !res.errorOccurred()) {
             return res.getValue();
         }
@@ -193,12 +205,9 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int removeProduct(int user, int store, int product) {
+    public boolean removeProduct(int user, int store, int product) {
         Response<String> res = market.deleteProduct(user, token, store, product);
-        if (res != null && !res.errorOccurred()) {
-            return 1;
-        }
-        return -1;
+        return res != null && !res.errorOccurred();
     }
 
     @Override
@@ -260,12 +269,12 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int closeStore(int user, int store) {
+    public boolean closeStore(int user, int store) {
         try {
             String res = market.changeStoreActive(user, store, "false");
-            return 1;
+            return true;
         }catch (Exception e){
-            return -1;
+            return false;
         }
     }
 
@@ -307,25 +316,15 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int removeStoreManagerPermissions(int user, int store, int managerId,int permissionsIds) {
-        List<Integer> ids = new ArrayList<>();
-        ids.add(permissionsIds);
-        Response<String> res = market.removeManagerPermissions(user, token, managerId, store, ids);
-        if(res == null || res.errorOccurred())
-        {
-            return -1;
-        }
-        return 1;
+    public boolean removeStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
+        Response<String> res = market.removeManagerPermissions(user, token, managerId, store, permissionsIds);
+        return res != null && !res.errorOccurred();
     }
 
     @Override
-    public int addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
+    public boolean addStoreManagerPermissions(int user, int store, int managerId, List<Integer> permissionsIds) {
         Response<String> res = market.addManagerPermissions(user, token, managerId, store, permissionsIds);
-        if(res == null || res.errorOccurred())
-        {
-            return -1;
-        }
-        return 1;
+        return res != null && !res.errorOccurred();
     }
 
     @Override
@@ -487,8 +486,8 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int makePurchase(int user, String accountNumber) {
-        Response<Receipt> res = market.makePurchase(user, accountNumber);
+    public int makePurchase(int user, JSONObject payment, JSONObject supplier) {
+        Response<Receipt> res = market.makePurchase(user, payment, supplier);
         if(!res.errorOccurred())
         {
             return 1;
@@ -527,11 +526,42 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public List<String> getNotifications(int userId) {
-        Response<List<String>> res = market.displayNotifications(userId, token);
+    public List<Notification> getNotifications(int userId) {
+        Response<List<Notification>> res = market.displayNotifications(userId, token);
         if(!res.errorOccurred())
         {
             return res.getValue();
+        }
+        return null;
+    }
+
+    private StoreInfo getStoreFromList(int storeId, List<utils.infoRelated.StoreInfo> stores)
+    {
+        for (utils.infoRelated.StoreInfo store: stores)
+        {
+            if (store.getStoreId() == storeId)
+            {
+                return new StoreInfo(store);
+            }
+        }
+        return null;
+    }
+    @Override
+    public StoreInfo getStoreInfo(int storeId) {
+        Response<List<? extends Information>> res = market.getStoresInformation();
+        if(!res.errorOccurred())
+        {
+            return getStoreFromList(storeId, (List<utils.infoRelated.StoreInfo>) res.getValue());
+        }
+        return null;
+    }
+
+    @Override
+    public Role getRoleInStore(int userId, int workerId, int storeId) {
+        Response<Info> res = market.checkWorkerStatus(userId, token, workerId, storeId);
+        if(res != null && !res.errorOccurred())
+        {
+            return res.getValue().getRole();
         }
         return null;
     }

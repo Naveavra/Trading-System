@@ -1,11 +1,20 @@
 package domain.store.storeManagement;
 
+import database.daos.StoreDao;
+import domain.store.discount.AbstractDiscount;
+import domain.store.discount.discountDataObjects.DiscountDataObject;
+import domain.store.discount.discountDataObjects.PredicateDataObject;
+import domain.store.discount.predicates.DiscountPredicate;
 import domain.user.Basket;
 import domain.user.Member;
 import domain.user.ShoppingCart;
+import org.json.JSONObject;
 import utils.infoRelated.ProductInfo;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.StoreInfo;
+import utils.messageRelated.ProductReview;
+import utils.messageRelated.Question;
+import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.messageRelated.Message;
@@ -19,25 +28,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StoreController {
 
     public ConcurrentHashMap<Integer, Store> storeList; //storeid, Store
-    AtomicInteger storescounter;
+    private AtomicInteger storeIds;
     AtomicInteger productIDs = new AtomicInteger(0);
     ConcurrentHashMap<Integer, Product> products; //for fast access
 
     public StoreController() {
+        storeIds = new AtomicInteger(0);
         storeList = new ConcurrentHashMap<>();
-        storescounter = new AtomicInteger(0);
         products = new ConcurrentHashMap<>();
     }
 
     /**
      * adds a new product to a store.
      */
-    public synchronized int addProduct(int storeid, String name, String desc, int price, int quantity) throws Exception {
+    public synchronized int addProduct(int storeId, String name, String desc, int price, int quantity,
+                                       List<String> categories) throws Exception {
         Store st;
-        //Product prod;
         int id = -1;
-        if ((st = getStore(storeid)) != null) {
-            Product p = st.addNewProduct(name, desc, productIDs,price,quantity);
+        if ((st = getStore(storeId)) != null) {
+            Product p = st.addNewProduct(name, desc, productIDs,price,quantity, categories);
             p.replaceQuantity(quantity);
             addToProducts(p.clone());
             id = p.getID();
@@ -45,23 +54,17 @@ public class StoreController {
         return id;
     }
 
-    public synchronized int addProduct(int storeid, String name, String desc, int price, int quantity, String img) throws Exception {
+    public synchronized int addProduct(int storeid, String name, String desc, int price, int quantity,
+                                       String img, List<String> categories) throws Exception {
         Store st;
-        //Product prod;
         int id = -1;
         if ((st = getStore(storeid)) != null) {
-            Product p = st.addNewProduct(name, desc, productIDs,price,quantity, img);
+            Product p = st.addNewProduct(name, desc, productIDs,price,quantity, img, categories);
             p.replaceQuantity(quantity);
             addToProducts(p.clone());
             id = p.getID();
         }
         return id;
-    }
-    public void addToCategory(int storeId, int productId, List<String> categories) throws Exception{
-        Store st;
-        if((st = getStore(storeId))!= null){
-            st.addToCategories(productId,categories);
-        }
     }
 
     private Product getExistingProductByName(String prodName) {
@@ -73,16 +76,10 @@ public class StoreController {
         return null;
     }
 
-    public int addQuestion(Message m) throws Exception
+    public int addQuestion(Question q) throws Exception
     {
-        Store store = getActiveStore(m.getStoreId());
-        return store.addQuestion(m);
-//        Store store = storeList.get(m.getStoreId());
-//        if (store != null && store.isActive())
-//        {
-//            return store.addQuestion(m);
-//        }
-//        throw new Exception("store does not exist or is not open");
+        Store store = getActiveStore(q.getStoreId());
+        return store.addQuestion(q);
     }
     public Store getActiveStore(int storeID) throws Exception
     {
@@ -92,13 +89,13 @@ public class StoreController {
     }
 
     public Store openStore(String desc, Member user) {
-        Store store = new Store(storescounter.getAndIncrement(), desc, user);
+        Store store = new Store(storeIds.getAndIncrement(), desc, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
 
     public Store openStore(String name, String desc, String img, Member user) {
-        Store store = new Store(storescounter.getAndIncrement(), name, desc, img, user);
+        Store store = new Store(storeIds.getAndIncrement(), name, desc, img, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
@@ -106,24 +103,14 @@ public class StoreController {
     /**
      * @return the store creator id if the store or order doesn't exist return -1
      */
-    public int writeReviewForStore(Message message) throws Exception {
+    public int writeReviewForStore(StoreReview message) throws Exception {
         Store store = getActiveStore(message.getStoreId());
         return store.addReview(message.getOrderId(), message);
-//        Store store = storeList.get(message.getStoreId());
-//        if (store != null && store.isActive()) {
-//            return store.addReview(message.getOrderId(), message);
-//        }
-//        throw new Exception("the storeId given does not belong to any active store");
     }
 
-    public int writeReviewForProduct(Message message) throws Exception {
+    public int writeReviewForProduct(ProductReview message) throws Exception {
         Store store = getActiveStore(message.getStoreId());
         return store.addProductReview(message);
-//        Store store = storeList.get(message.getStoreId());
-//        if (store != null && store.isActive()) {
-//            return store.addProductReview(message);
-//        }
-//        throw new Exception("the storeId given does not belong to any active store");
     }
 
     public int calculatePrice(ShoppingCart cart) throws Exception{
@@ -174,8 +161,21 @@ public class StoreController {
         Set<Integer> storeOwnersIDS = new HashSet<>();
         //should apply discounts here
         for (Basket b : shoppingCart.getBaskets()) {
-            Store store = storeList.get(b.getStoreId());
+            Store store = getStore(b.getStoreId());
             store.handleDiscount(order);
+            if (!store.handlePolicies(order) || !(store.makeOrder(b))) {
+                return null;
+            }
+            storeOwnersIDS.add(store.getCreator());
+            store.addOrder(order);
+        }
+        return storeOwnersIDS;
+    }
+
+    public Set<Integer> purchaseProductsBid(ShoppingCart shoppingCart, Order order) throws Exception{
+        Set<Integer> storeOwnersIDS = new HashSet<>();
+        for (Basket b : shoppingCart.getBaskets()) {
+            Store store = getStore(b.getStoreId());
             if (!(store.makeOrder(b))) {
                 return null;
             }
@@ -202,14 +202,18 @@ public class StoreController {
     public Store getStore(int storeId) throws Exception{
         if(storeList.containsKey(storeId))
             return storeList.get(storeId);
+        Store s = StoreDao.getStore(storeId);
+        if(s != null) {
+            storeList.put(s.getStoreId(), s);
+            return s;
+        }
         throw new Exception("the storeId given does not belong to any store in the system");
     }
 
 
     public Store createNewStore(Member creator, String description) {
-        Store store = new Store(storescounter.get(), description, creator);
-        int storeid = storescounter.getAndIncrement();
-        storeList.put(storeid, store);
+        Store store = new Store(storeIds.getAndIncrement(), description, creator);
+        storeList.put(store.getStoreId(), store);
         return store;
     }
 
@@ -252,22 +256,15 @@ public class StoreController {
     }
 
 
-    public HashMap<Integer, Message> getQuestions(int storeId) throws Exception {
+    public List<Message> getQuestions(int storeId) throws Exception {
         Store store = getActiveStore(storeId);
         return store.getQuestions();
-//        Store store = getStore(storeId);
-//        if (store != null && store.isActive())
-//        {
-//            return store.getQuestions();
-//        }
-//        else {
-//            throw new Exception("store doesnt Exist or Open");
-//        }
     }
 
     public void answerQuestion(int storeId, int questionId, String answer) throws Exception{
         Store store = getActiveStore(storeId);
-        store.answerQuestion(questionId, answer);
+        store.answerQuestion(questionId, "you got an answer for question: " + questionId + " to store: " + storeId
+                +" the answer is: " + answer);
     }
 
     public List<OrderInfo> getStoreOrderHistory(int storeId) throws Exception {
@@ -291,6 +288,7 @@ public class StoreController {
         Store store = getStore(storeId);
         if(store != null){
             storeList.remove(storeId);
+            StoreDao.removeStore(storeId);
             return store.getUsersInStore();
         }
         else
@@ -299,7 +297,7 @@ public class StoreController {
 
     public void removeProduct(int storeId, int productId) throws Exception  {
         Store st;
-        if((st = storeList.get(storeId))!=null){
+        if((st = getStore(storeId))!=null){
             st.removeProduct(productId);
         }
         else{
@@ -310,7 +308,7 @@ public class StoreController {
     public void updateProduct(int storeId, int productId, List<String> categories, String name, String description,
                               int price, int quantity, String img) throws Exception {
         Store st;
-        if((st = storeList.get(storeId))!=null){
+        if((st = getStore(storeId))!=null){
             st.updateProduct(productId, categories, name,  description, price, quantity, img);
         }
         else{
@@ -318,24 +316,17 @@ public class StoreController {
         }
     }
 
-    public HashMap<Integer, Message> viewReviews(int storeId) throws Exception {
+    public List<StoreReview> viewReviews(int storeId) throws Exception {
         Store store = getActiveStore(storeId);
         return store.getStoreReviews();
-//        Store store = getStore(storeId);
-//        if (store != null && store.isActive())
-//        {
-//            return store.getStoreReviews();
-//        }
-//        else {
-//            throw new Exception("store doesnt Exist or Open");
-//        }
     }
 
     public ArrayList<String> showFilterOptions() {
         return new ProductFilter().getNames();
     }
 
-    public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) {
+    public ArrayList<ProductInfo> filterBy(HashMap<String,String> filterOptions) throws Exception{
+        getStoresFromDb();
         ArrayList<ProductInfo> result = new ArrayList<>();
         for(Store st : storeList.values()){
             result.addAll(st.filterBy(filterOptions));
@@ -375,6 +366,7 @@ public class StoreController {
     }
 
     public List<ProductInfo> getAllProducts() {
+        getStoresFromDb();
         List<ProductInfo> products = new ArrayList<>();
         for(Store s : storeList.values()){
             if(s.isActive())
@@ -391,5 +383,51 @@ public class StoreController {
     public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
         Store s = getStore(storeId);
         s.setStoreAttributes(name, description, img);
+    }
+    public ArrayList<PredicateDataObject> parsePredicateData(ArrayList<String> predData){
+        ArrayList<PredicateDataObject> predicates = new ArrayList<>();
+        for(String data : predData){
+            JSONObject dataJson = new JSONObject(data);
+            String predTypeStr = dataJson.getString("predType");
+            DiscountPredicate.PredicateTypes predType = DiscountPredicate.PredicateTypes.valueOf(predTypeStr);
+            String params = dataJson.getString("params");
+            String composureStr = dataJson.getString("composore");
+            DiscountPredicate.composore composore = DiscountPredicate.composore.valueOf(composureStr);
+            predicates.add(new PredicateDataObject(predType,params,composore));
+        }
+        return predicates;
+    }
+
+    public void changeRegularDiscount(int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst) throws Exception {
+        Store s = getActiveStore(storeId);
+        AbstractDiscount.discountTypes discountTypeEnum = AbstractDiscount.discountTypes.Store;
+        if (Objects.equals(discountType.toLowerCase(), "product")){discountTypeEnum = AbstractDiscount.discountTypes.Product;}
+        if (Objects.equals(discountType.toLowerCase(), "category")){discountTypeEnum = AbstractDiscount.discountTypes.Category;}
+        s.addDiscount(new DiscountDataObject(percentage,discountTypeEnum,prodId, discountedCategory, parsePredicateData(new ArrayList<>(predicatesLst))));
+
+    }
+
+    public int getStoreId(String storeName) throws Exception{
+        for(Store s : storeList.values())
+            if(s.getName().equals(storeName))
+                return s.getStoreId();
+        Store s = StoreDao.getStore(storeName);
+        if(s != null) {
+            storeList.put(s.getStoreId(), s);
+            return s.getStoreId();
+        }
+        throw new Exception("the name does not belong to any store");
+    }
+
+
+    //database
+    public void getStoresFromDb(){
+        List<Store> stores = StoreDao.getAllStores();
+        for(Store s : stores)
+            storeList.put(s.getStoreId(), s);
+    }
+
+    public Set<Integer> getStoreCreatorsOwners(int storeId) throws Exception {
+        return getActiveStore(storeId).getStoreCreatorsOwners();
     }
 }

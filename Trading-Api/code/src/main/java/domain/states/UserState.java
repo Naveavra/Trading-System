@@ -1,38 +1,65 @@
 package domain.states;
 
+import database.daos.Dao;
+import database.DbEntity;
+import database.daos.StoreDao;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
-import market.Market;
+import jakarta.persistence.*;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-public abstract class UserState extends Information {
 
+@Entity
+@Table(name = "roles")
+public abstract class UserState extends Information implements DbEntity {
+
+
+    @Id
     protected int userId;
-    protected String userName;
+
+    @Id
+    protected int storeId;
+    @Transient
     protected Store store;
-    protected Permission permission; //saves all the permission a user has for a store.
+    protected String userName;
+    @Transient
+    protected Permissions permissions; //saves all the permission a user has for a store.
+
+    @Enumerated(EnumType.STRING)
     protected Role role;
+    @Transient
     protected boolean isActive;
 
-    public UserState(int userId, String name, Store store){
-        this.userId = userId;
+    public UserState(){
+    }
+
+    public UserState(int memberId, String name, Store store){
+        this.userId = memberId;
         this.userName = name;
         this.store = store;
-        permission = new Permission();
+        if(store != null)
+            this.storeId = store.getStoreId();
+        permissions = new Permissions();
         isActive = true;
 
 
     }
 
+    public List<Action> getActions() {
+        return permissions.getActions();
+    }
+    public List<Action> getPossibleActions(){return permissions.getAddedActions();}
+
 
     public Store getStore(){return store;}
+
+    public int getUserId(){return userId;}
     public void setIsActive(boolean isActive){
         this.isActive = isActive;
     }
@@ -40,14 +67,14 @@ public abstract class UserState extends Information {
         return isActive;
     }
     public boolean checkPermission(Action a){
-        return permission.checkPermission(a);
+        return permissions.checkPermission(a);
     }
     public Role getRole(){
         return role;
     }
 
     public boolean checkHasAvailableAction(Action a){
-        return permission.checkAvailablePermission(a);
+        return permissions.checkAvailablePermission(a);
     }
 
     public void addAction(Action a) throws Exception{
@@ -56,10 +83,6 @@ public abstract class UserState extends Information {
 
     public void removeAction(Action a) throws Exception{
         throw new Exception("cannot remove action to role: " + role);
-    }
-
-    public List<Action> getActions() {
-        return permission.getActions();
     }
 
     public void appointManager(Member appointed) throws Exception{
@@ -92,19 +115,32 @@ public abstract class UserState extends Information {
 
     public Set<Integer> closeStore() throws Exception{
         checkPermission(Action.closeStore);
-        //setIsActive(false);
-        return store.closeStoreTemporary(userId);
+        Set<Integer> ans = store.closeStoreTemporary(userId);
+        Dao.save(store);
+        return ans;
     }
 
     public Set<Integer> reOpenStore() throws Exception{
         checkPermission(Action.reopenStore);
-        //setIsActive(true);
-        return store.reopenStore(userId);
+        Set<Integer> ans = store.reopenStore(userId);
+        Dao.save(store);
+        return ans;
     }
 
     public Set<Integer> getWorkerIds() throws Exception{
         checkPermission(Action.checkWorkersStatus);
         return store.getUsersInStore();
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+    public String getUserName(){
+        return this.userName;
     }
 
     public JSONObject toJson(){
@@ -114,5 +150,31 @@ public abstract class UserState extends Information {
         json.put("storeRole", role.toString());
         json.put("actions", fromActionToString(getActions()));
         return json;
+    }
+
+    //database
+
+    @Override
+    public void initialParams(){
+        getStoreFromDb();
+        getPermissionsFromDb();
+    }
+
+    protected void getStoreFromDb(){
+        if(store == null){
+            store = StoreDao.getStore(storeId);
+        }
+    }
+
+    protected abstract void getPermissionsFromDb();
+
+    protected void getPermissionsHelp(){
+        if(permissions == null) {
+            permissions = new Permissions();
+            List<? extends DbEntity> permissionsDto = Dao.getListByCompositeKey(Permission.class, userId, storeId,
+                    "Permission", "userId", "storeId");
+            for (Permission p : (List<Permission>) permissionsDto)
+                permissions.addAction(p.getPermission());
+        }
     }
 }

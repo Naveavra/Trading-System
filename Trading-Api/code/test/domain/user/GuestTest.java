@@ -1,12 +1,11 @@
 package domain.user;
 
+import database.daos.Dao;
 import domain.store.product.Product;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.infoRelated.ProductInfo;
-
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,12 +18,12 @@ class GuestTest {
 
     @BeforeEach
     void setUp() {
-        apple = new Product(0, "apple", "red apple");
+        Dao.setForTests(true);
+        apple = new Product(0, 0, "apple", "red apple");
         p =  new ProductInfo(0, apple, 10);
-        banana = new Product(1, "banana", "yellow banana");
+        banana = new Product(0, 1, "banana", "yellow banana");
         p2 =  new ProductInfo(0, banana, 10);
         guest = new Guest(2);
-
     }
 
     @AfterEach

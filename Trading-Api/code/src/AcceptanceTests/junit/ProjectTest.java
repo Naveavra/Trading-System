@@ -7,8 +7,14 @@ import java.util.List;
 import bridge.Bridge;
 import bridge.Driver;
 import data.*;
+import database.daos.Dao;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import utils.messageRelated.Notification;
+import utils.stateRelated.Role;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public abstract class ProjectTest{
@@ -20,7 +26,7 @@ public abstract class ProjectTest{
 
 
     // Store, admin, appointment
-    AdminInfo mainAdmin = new AdminInfo(1,"admin@gmail.com", "admin");
+    AdminInfo mainAdmin = new AdminInfo(1,"admin@gmail.com", "admin1A");
     public static final int USER_EMAIL = 0, USER_USER = 1, USER_PASS = 2, USER_BIRTHDAY = 3;
     public static final int ADMIN_ID = 0, ADMIN_USER = 1, ADMIN_PASS = 2;
     protected final String[][] admins = {{"2","admin1@gmail.com", "admin1A"}};
@@ -34,6 +40,7 @@ public abstract class ProjectTest{
 
     @BeforeEach
     public void setUp() {
+        Dao.setForTests(true);
         this.bridge = Driver.getBridge();
         setUpTradingSystem();
         setUpAdmins();
@@ -79,11 +86,11 @@ public abstract class ProjectTest{
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
         ui1.setUserId(login(ui1.getEmail(), ui1.getPassword()));
         //Create Stores:
-        StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "iphone", "Phone Store", "img");
+        StoreInfo newStore0 = new StoreInfo(ui.getUserId(), "Apple", "Phone Store", "img");
         StoreInfo newStore1 = new StoreInfo(ui.getUserId(), "nike", "Sport Store", "img");
         StoreInfo newStore2 = new StoreInfo(ui.getUserId(), "store3", "Cloth Store", "img");
         StoreInfo newStore3 = new StoreInfo(ui.getUserId(), "toysRus", "Kids Store", "img");
-        StoreInfo newStore4 = new StoreInfo(ui1.getUserId(), "samsumg", "Phone Store", "img");
+        StoreInfo newStore4 = new StoreInfo(ui1.getUserId(), "samsung", "Phone Store", "img");
         newStore0.setStoreId(createStore(newStore0));
         stores.add(newStore0);
         newStore1.setStoreId(createStore(newStore1));
@@ -100,6 +107,31 @@ public abstract class ProjectTest{
 
         logout(ui.getUserId());
         logout(ui1.getUserId());
+    }
+
+    protected JSONObject createPaymentJson()
+    {
+        JSONObject payment = new JSONObject();
+        payment.put("payment_service", "WSEP");
+        payment.put("cardNumber", "123456789");
+        payment.put("month", "01");
+        payment.put("year", "30");
+        payment.put("holder", "Israel Visceral");
+        payment.put("ccv", "986");
+        payment.put("id", "123456789");
+        return payment;
+    }
+
+    protected  JSONObject createSupplierJson()
+    {
+        JSONObject supplier = new JSONObject();
+        supplier.put("supply_service", "WSEP");
+        supplier.put("name", "Israel Visceral");
+        supplier.put("address", "Reger 17");
+        supplier.put("city", "Beer Sheva");
+        supplier.put("country", "Israel");
+        supplier.put("zip", "700000");
+        return supplier;
     }
 
     // Auxiliary procedures
@@ -157,7 +189,7 @@ public abstract class ProjectTest{
         return bridge.createStore(creatorId, name, storeDesc, img);
     }
 
-    public int removeProduct(int user, int store, int productId) {
+    public boolean removeProduct(int user, int store, int productId) {
         return bridge.removeProduct(user, store, productId);
     }
 
@@ -186,9 +218,9 @@ public abstract class ProjectTest{
         return bridge.appointmentOwnerInStore(user, store, newOwnerEmail);
     }
 
-    public int appointmentManagerInStore(int user, int store, String newManagerID)
+    public int appointmentManagerInStore(int user, int store, String newManager)
     {
-        return bridge.appointmentMangerInStore(user, store, newManagerID);
+        return bridge.appointmentMangerInStore(user, store, newManager);
     }
 
     public int changePurchasePolicy(int user, int store, String policy)
@@ -196,15 +228,19 @@ public abstract class ProjectTest{
         return bridge.changePurchasePolicy(user, store, policy);
     }
 
-    public int addStoreManagerPermissions(int user, int store, int manager, List<Integer> permissionsIds) {
+    public boolean addStoreManagerPermissions(int user, int store, int manager, List<Integer> permissionsIds) {
         return bridge.addStoreManagerPermissions(user, store, manager, permissionsIds);
     }
 
-    public int closeStore(int user, int store) {
+    public boolean removeStoreManagerPermissions(int user, int store, int manager, List<Integer> permissionsIds) {
+        return bridge.removeStoreManagerPermissions(user, store, manager, permissionsIds);
+    }
+
+    public boolean closeStore(int user, int store) {
         return bridge.closeStore(user, store);
     }
 
-    public List<String> getNotifications(int userId){
+    public List<Notification> getNotifications(int userId){
         return bridge.getNotifications(userId);
     }
 
@@ -224,7 +260,7 @@ public abstract class ProjectTest{
         return bridge.getBuyerPurchasesHistory(user, buyer);
     }
 
-    public PermissionInfo getManagerPermissionInStore(int user, int store, int manager) {
+    public PermissionInfo getManagerPermissionInStore(int user, int manager, int store) {
         return bridge.getManagerPermissionInStore(user, store, manager);
     }
 
@@ -234,6 +270,10 @@ public abstract class ProjectTest{
 
     public int login(String email, String password) {
         return bridge.login(email, password);
+    }
+
+    public LoginData loginAndGetData(String email, String password) {
+        return bridge.loginAndGetData(email, password);
     }
 
     public int adminLogin(String email, String password) {
@@ -273,6 +313,11 @@ public abstract class ProjectTest{
         return bridge.getStore(storeId);
     }
 
+    public StoreInfo getStoreInfo(int storeId)
+    {
+        return bridge.getStoreInfo(storeId);
+    }
+
     public List<ProductInfo> getProductInStore(int storeId)
     {
         return bridge.getProductInStore(storeId);
@@ -297,6 +342,7 @@ public abstract class ProjectTest{
     {
         return bridge.addExternalSupplierService(adminId, esSupplier);
     }
+
 
     public int removeExternalSupplierService(int adminId, String esSupplier)
     {
@@ -328,9 +374,9 @@ public abstract class ProjectTest{
         return bridge.getCart(user);
     }
 
-    public int makePurchase(int user, String accountNumber)
+    public int makePurchase(int user, JSONObject payment, JSONObject supply)
     {
-        return bridge.makePurchase(user, accountNumber);
+        return bridge.makePurchase(user, payment, supply);
     }
 
     public int removeProductFromCart(int userId,  int storeId, int productId)
@@ -342,9 +388,9 @@ public abstract class ProjectTest{
         return bridge.changeQuantityInCart(userId, storeId, productId, change);
     }
 
-    public List<String> getAvailableExternalSupplierService(int userId)
+    public List<String> getAvailableExternalSupplierService()
     {
-        return bridge.getAvailableExternalSupplierService(userId);
+        return bridge.getAvailableExternalSupplierService();
     }
 
     public List<String> getPossibleExternalSupplierService(int adminId)
@@ -352,13 +398,18 @@ public abstract class ProjectTest{
         return bridge.getPossibleExternalSupplierService(adminId);
     }
 
-    public List<String> getAvailableExternalPaymentService(int userId)
+    public List<String> getAvailableExternalPaymentService()
     {
-        return bridge.getAvailableExternalPaymentService(userId);
+        return bridge.getAvailableExternalPaymentService();
     }
 
     public List<String> getPossibleExternalPaymentService(int adminId)
     {
         return bridge.getPossibleExternalPaymentService(adminId);
+    }
+
+    Role getRoleInStore(int userId, int workerId, int storeId)
+    {
+        return bridge.getRoleInStore(userId, workerId, storeId);
     }
 }

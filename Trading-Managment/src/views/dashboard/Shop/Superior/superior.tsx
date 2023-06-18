@@ -8,13 +8,16 @@ import Bar2 from "../../../../components/Bars/Navbar/NavBar2";
 import { Box, CardContent, Typography, Card, Divider } from "@mui/material";
 import ProductCard from "../../../../components/ProductInStore/Card";
 import axios from "axios";
-import { getProducts } from "../../../../reducers/productsSlice";
+import { clearProductError, clearProductMsg, getProducts } from "../../../../reducers/productsSlice";
 import { clearStoreError, clearStoresResponse, getStoresInfo } from "../../../../reducers/storesSlice";
 import { Action } from "../../../../types/systemTypes/Action";
 
 import React from "react";
 import SuccessAlert from "../../../../components/Alerts/success";
 import ErrorAlert from "../../../../components/Alerts/error";
+import { clearBidError, clearBidMsg } from "../../../../reducers/bidSlice";
+import { clearDiscountError, clearDiscountMsg } from "../../../../reducers/discountSlice";
+import { clearShopRuleError, clearShopRuleMessage } from "../../../../reducers/ShoppingRules";
 
 
 const Superior: React.FC = () => {
@@ -30,16 +33,27 @@ const Superior: React.FC = () => {
     const privateName = userName.split('@')[0];
     const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
     const inventory = useAppSelector((state) => state.store.storeState.watchedStore.inventory);
-    const permmisions = useAppSelector((state: RootState) => state.auth.permissions).filter((perm) => perm.storeId === storeId);
+    const permmisions = useAppSelector((state: RootState) => state.auth.permissions)?.filter((perm) => perm.storeId === storeId);
     const Actions = permmisions[0]?.actions ?? [];
-    const canRemove = Actions.includes(Action.removeProduct);
-    const canEdit = Actions.includes(Action.updateProduct);
-
+    const canRemove = Actions?.includes(Action.removeProduct);
+    const canEdit = Actions?.includes(Action.updateProduct);
+    debugger;
     const storeError = useAppSelector((state) => state.store.storeState.error);
     const storeMessage = useAppSelector((state) => state.store.storeState.responseData);
 
+    const bidMessage = useAppSelector((state) => state.bid.message);
+    const bidError = useAppSelector((state) => state.bid.error);
+
+    const discountMessage = useAppSelector((state) => state.discount.discountState.responseData);
+    const discountError = useAppSelector((state) => state.discount.discountState.error);
+
+    const productMessage = useAppSelector((state) => state.product.productState.responseData);
+    const productError = useAppSelector((state) => state.product.productState.error);
+
+    const shopRuleMessage = useAppSelector((state) => state.shoppingRule.message);
+    const shopRuleError = useAppSelector((state) => state.shoppingRule.error);
+
     const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    //const PING_INTERVAL2 = 5000; // 10 seconds in milliseconds
 
     const sendPing = () => {
         if (userId != 0) {
@@ -54,23 +68,14 @@ const Superior: React.FC = () => {
         }
     }
 
-
-    // const getC = () => {
-    //     if (token) {
-    //         dispatch(getNotifications({ userId: userId, token: token }));
-    //     }
-    // }
-
     useEffect(() => {
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        //const pingInterval2 = setInterval(getC, PING_INTERVAL2);
 
         dispatch(getStoresInfo());
         dispatch(getProducts());
         // Stop the ping interval when the user leaves the app
         return () => {
             clearInterval(pingInterval)
-            //clearInterval(pingInterval2)
         };
     }, []);
 
@@ -90,12 +95,19 @@ const Superior: React.FC = () => {
                             {store.description}
                         </Typography >
                     </Box>
-
                 </CardContent>
             </Card>
         </Box >
         {storeMessage ? <SuccessAlert message={storeMessage} onClose={() => { dispatch(clearStoresResponse({})) }} /> : null}
         {storeError ? <ErrorAlert message={storeError} onClose={() => { dispatch(clearStoreError({})) }} /> : null}
+        {bidMessage ? <SuccessAlert message={bidMessage} onClose={() => { dispatch(clearBidMsg()) }} /> : null}
+        {bidError ? <ErrorAlert message={bidError} onClose={() => { dispatch(clearBidError()) }} /> : null}
+        {discountMessage ? <SuccessAlert message={discountMessage} onClose={() => { dispatch(clearDiscountMsg()) }} /> : null}
+        {discountError ? <ErrorAlert message={discountError} onClose={() => { dispatch(clearDiscountError()) }} /> : null}
+        {productMessage ? <SuccessAlert message={productMessage} onClose={() => { dispatch(clearProductMsg()) }} /> : null}
+        {productError ? <ErrorAlert message={productError} onClose={() => { dispatch(clearProductError()) }} /> : null}
+        {shopRuleMessage ? <SuccessAlert message={shopRuleMessage} onClose={() => { dispatch(clearShopRuleMessage()) }} /> : null}
+        {shopRuleError ? <ErrorAlert message={shopRuleError} onClose={() => { dispatch(clearShopRuleError()) }} /> : null}
 
         <Divider />
         <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >

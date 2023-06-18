@@ -1,5 +1,6 @@
 package market;
 
+import database.daos.Dao;
 import domain.store.storeManagement.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ class AdminTest {
 
     @BeforeEach
     void setUp() {
+        Dao.setForTests(true);
         Admin a = new Admin(1, "eli@gmail.com", "123Aaa");
         market = new Market(a);
         adminId = market.login("eli@gmail.com", "123Aaa").getValue().getUserId();
@@ -48,20 +50,28 @@ class AdminTest {
     }
     @Test
     void removeAdmin() {
+        int size = market.getAdminSize();
         market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
         int adminId2 = market.login("ziv@gmail.com", "456Bbb").getValue().getUserId();
-        market.removeAdmin(-2, token);
-        assertEquals(adminId2, market.getAdminSize());
+        market.removeAdmin(adminId2, token);
+        assertEquals(size, market.getAdminSize());
     }
 
     @Test
     void closeStorePermanently() {
         market.register("nave@gmail.com", "123Ccc", "01/01/1996");
         int userId = market.login("nave@gmail.com", "123Ccc").getValue().getUserId();
-        market.openStore(userId, token, "nike", "good store", "img");
-        market.closeStorePermanently(adminId, token, 0);
-        Response<Store> res = market.getStore(userId, token, 0);
+        market.register("eli2@gmail.com", "123Aaa", "01/01/1996");
+        int userId2= market.login("eli2@gmail.com", "123Aaa").getValue().getUserId();
+        int sid = market.openStore(userId, token, "nike", "good store", "img").getValue();
+        int sid2 = market.openStore(userId2, token, "adidas", "good store2", "img").getValue();
+        market.displayNotifications(userId, token);
+        market.displayNotifications(userId2, token);
+        market.closeStorePermanently(adminId, token, sid);
+        Response<Store> res = market.getStore(userId, token, sid);
         assertTrue(res.errorOccurred());
+        res = market.getStore(userId, token, sid2);
+        assertFalse(res.errorOccurred());
         assertEquals(1, market.displayNotifications(userId, token).getValue().size());
         assertEquals(0, market.getMember(userId, token).getValue().getStoreRoles().size());
     }
@@ -71,7 +81,8 @@ class AdminTest {
         market.register("nave@gmail.com", "123Ccc", "01/01/1996");
         int login = market.login("nave@gmail.com", "123Ccc").getValue().getUserId();
         market.openStore(login, token, "nike", "good store", "img");
-        market.cancelMembership(adminId, token, login);
+        market.cancelMembership(adminId, token, "nave@gmail.com");
+        market.removeUser("nave@gmail.com");
         assertTrue(market.getMember(login, token).errorOccurred());
         Response<Store> res = market.getStore(1, token, 0);
         assertTrue(res.errorOccurred());

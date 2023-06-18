@@ -1,17 +1,19 @@
 package utils;
-import java.util.ArrayList;
+import database.daos.Dao;
+import database.DbEntity;
+import database.daos.LoggerDao;
+
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class Logger {
+public class Logger{
     private static Logger instance;
-    private AtomicInteger loggerId;
     private List<Event> eventMap;
     
     private Logger() {
         eventMap = new LinkedList<>();
-        loggerId = new AtomicInteger(1);
+        List<? extends DbEntity> events = LoggerDao.getLogs();
+        eventMap.addAll((List<Event>) events);
     }
     
     public static synchronized Logger getInstance() {
@@ -21,9 +23,8 @@ public class Logger {
         return instance;
     }
 
-    public void log(Event.LogStatus status, String content, String time, String userName) {
-        Event event = new Event(loggerId.getAndIncrement(), status, content, time, userName);
-        eventMap.add(event);
+    public void log(Event e) {
+        eventMap.add(e);
     }
     public List<Event> getEventMap(){
         return eventMap;

@@ -1,19 +1,17 @@
 package database.dtos;
 
+import database.DbEntity;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "categories")
-public class CategoryDto {
+public class CategoryDto implements DbEntity {
 
 
     @Id
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "storeId", foreignKey = @ForeignKey(name = "storeId"), referencedColumnName = "storeId"),
-            @JoinColumn(name = "productId", foreignKey = @ForeignKey(name = "productId"), referencedColumnName = "productId")
-    })
-    private InventoryDto inventoryDto;
+    private int storeId;
+    @Id
+    private int productId;
 
     @Id
     private String categoryName;
@@ -21,17 +19,10 @@ public class CategoryDto {
     public CategoryDto(){
     }
 
-    public CategoryDto(InventoryDto inventoryDto, String categoryName){
-        this.inventoryDto = inventoryDto;
+    public CategoryDto(int storeId, int productId, String categoryName){
+        this.storeId = storeId;
+        this.productId = productId;
         this.categoryName = categoryName;
-    }
-
-    public InventoryDto getInventoryDto(){
-        return inventoryDto;
-    }
-
-    public void setInventoryDto(InventoryDto inventoryDto){
-        this.inventoryDto = inventoryDto;
     }
 
     public String getCategoryName(){
@@ -41,4 +32,23 @@ public class CategoryDto {
         this.categoryName = categoryName;
     }
 
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
+    @Override
+    public void initialParams() {
+    }
 }
