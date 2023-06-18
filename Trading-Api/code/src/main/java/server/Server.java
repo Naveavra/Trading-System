@@ -3,6 +3,7 @@ package server;
 import org.json.JSONObject;
 import server.Config.ConfigParser;
 import server.Config.ConnectionDetails;
+import server.Config.InitialParser;
 import utils.Pair;
 
 import java.util.*;
@@ -19,6 +20,8 @@ public class Server {
     static ConnectedThread connectedThread;
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
     private static ConfigParser configs;
+    private static InitialParser initialConfigs;
+
 
     private static void toSparkRes(spark.Response res, Pair<Boolean, JSONObject> apiRes) {
         if (apiRes.getFirst()) {
@@ -69,8 +72,18 @@ public class Server {
             initServer();
             api = new API(configs);
         }
-        else if (args.length == 2){
+        else if (args.length == 2) {
             //TODO: Get also state file
+            String configPath = args[0];
+            System.out.println("Start the system with config file...");
+            configs = ConfigParser.getInstance(configPath);
+            String initialPath = args[1];
+            System.out.println("load initial file...");
+            initialConfigs = InitialParser.getInstance(initialPath);
+
+            api = new API(configs);
+            initialConfigs.initUseCases(api);
+            initServer();
         }
         else{
             System.out.println("""

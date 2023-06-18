@@ -1047,6 +1047,7 @@ public class Market implements MarketInterface {
             for(String name : workerNames)
                 userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a new bid was placed in store: " + storeId +" for product: " + prodId));
+
             return logAndRes(Event.LogStatus.Success, "user placed his successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user placed his bid", null, null);
@@ -1126,9 +1127,9 @@ public class Market implements MarketInterface {
                 userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a counter bid was placed in store: " + storeId + " for bid: " + bidId));
             addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "a counter bid was placed in store: " + storeId + " for bid: " + bidId);
-            return logAndRes(Event.LogStatus.Success, "user answer with counter bid",
+            return logAndRes(Event.LogStatus.Success, "u answer with counter bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
-                    "user answer with counter bid", null, null);
+                    "u answer with counter bid", null, null);
     } catch (Exception ex) {
         return new Response<>(null, "could not answer bid", ex.getMessage());
     }

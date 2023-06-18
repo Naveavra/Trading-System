@@ -11,7 +11,7 @@ import ErrorAlert from "../../../components/Alerts/error";
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import InfoIcon from '@mui/icons-material/Info';
 import { status } from '../../../types/systemTypes/Bid'
-import { clearBidMsg, clearBidError } from "../../../reducers/bidSlice";
+import { clearBidMsg, clearBidError, answerOnCounter } from "../../../reducers/bidSlice";
 import { useEffect } from "react";
 const Personal = () => {
     const navigate = useNavigate();
@@ -115,8 +115,10 @@ const Personal = () => {
             <Box sx={{ display: "flex", width: '100%', mb: 2 }}>
                 {
                     bids?.map((bid, index) => {
+                        debugger;
+                        console.log(bid);
                         return (
-                            <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index}>
+                            <Card sx={{ width: 350, mt: 5, ml: 3 }} key={index}>
                                 <CardContent>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                         bidId:  {bid.bidId}
@@ -143,6 +145,18 @@ const Personal = () => {
                                         </> :
                                         bid.state === status.Pending ?
                                             <Alert severity="info">pending</Alert> :
+                                        bid.state === status.Counter ?
+                                        <>
+                                            <Alert severity="info">counter</Alert>
+                                            <Button onClick={() => {
+                                                dispatch(answerOnCounter({bidId:bid.bidId,storeId:bid.storeId}))
+
+                                            }}>approved store offer</Button>
+                                            <Button onClick={() => {
+                                                navigate(`${bid.storeId}/${bid.product.productId}/${bid.bidId}/EditBid`);
+                                        }
+                                                }>counter offer</Button>
+                                        </> :
                                             <Alert severity="error">reject</Alert>
                                     }                                </CardContent>
                                 <CardActions>

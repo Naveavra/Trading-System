@@ -11,7 +11,7 @@
 
 import { EmptyProduct, Product } from "./Product";
 
-export enum status { Declined = "Declined", Approved = "Approved", Pending = "Pending" };
+export enum status { Declined = "Declined", Approved = "Approved", Pending = "Pending",Counter= "Counter" };
 // public String counter;
 export interface Bid {
     bidId: number;

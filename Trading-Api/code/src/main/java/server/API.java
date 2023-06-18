@@ -565,5 +565,7 @@ public class API {
     }
 
 
-
+    public String getTokenForTest() {
+        return market.addTokenForTests();
+    }
 }
