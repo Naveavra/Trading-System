@@ -37,6 +37,7 @@ public class UserPolicy extends PurchasePolicy{
                 return handleNext(switch (limiter){
                     case Max -> age <= ageLimit;
                     case Min -> age >= ageLimit;
+                    case Exact -> age == ageLimit;
                 },order);
             }
         }
