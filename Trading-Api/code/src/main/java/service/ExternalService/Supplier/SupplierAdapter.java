@@ -32,6 +32,18 @@ public interface SupplierAdapter {
     int orderSupplies(JSONObject supplyContent, ShoppingCart cart) throws Exception;
 
     /**
+     * Places an order for supplies from the supplier.
+     *
+     * @param supplierDetails The content of the supply order.
+     * @param storeId          The store id.
+     * @param prodId          The product id.
+     * @param quantity          The quantity
+     * @return The transaction ID or order ID associated with the supply order.
+     * @throws Exception If an error occurs during the order placement.
+     */
+    int orderSupplies(JSONObject supplierDetails, int storeId, int prodId, int quantity) throws Exception;
+
+    /**
      * Checks the status of a supply transaction with the supplier.
      *
      * @param transactionId The transaction ID or order ID to check.
@@ -46,4 +58,6 @@ public interface SupplierAdapter {
      * @throws Exception If an error occurs during the cancellation.
      */
     void cancelSupply(String transactionId) throws Exception;
+
+
 }

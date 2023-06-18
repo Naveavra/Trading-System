@@ -16,12 +16,13 @@ public interface PaymentAdapter {
     /**
      * Makes a purchase with the payment service.
      *
-     * @param json  The JSON object containing the payment details.
+     * @param userDetails  The JSON object containing the user payment details.
+     * @param storeDetails  The JSON object containing the store payment details.
      * @param price The price of the purchase.
      * @return The transaction ID or order ID associated with the purchase.
      * @throws Exception If an error occurs during the purchase.
      */
-    int makePurchase(JSONObject json, double price) throws Exception;
+    int makePurchase(JSONObject userDetails, JSONObject storeDetails, double price) throws Exception;
 
     /**
      * Cancels a purchase transaction with the payment service.

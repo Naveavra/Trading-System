@@ -86,6 +86,26 @@ public class ESSupply extends ExternalService implements SupplierAdapter {
         return result;
     }
 
+    @Override
+    public int orderSupplies(JSONObject supplyContent, int storeId, int prodId, int quantity) throws Exception {
+        int result;
+        String name = supplyContent.getString("name");
+        String address = supplyContent.getString("address");
+        String city = supplyContent.getString("city");
+        String country = supplyContent.getString("country");
+        String zip = supplyContent.getString("zip");
+        Request supplyRequest = new SupplyRequest(name, address, city, country, zip);
+        try {
+            result = sendRequest(supplyRequest);
+        } catch (Exception e) {
+            throw new Exception("Failed to order supplies: " + e.getMessage());
+        }
+        if (!(MIN_TRANSACTION_ID <= result && result <= MAX_TRANSACTION_ID)) {
+            throw new Exception("The supply transaction failed!");
+        }
+        return result;
+    }
+
     /**
      * Checks the status of a supply order.
      *
