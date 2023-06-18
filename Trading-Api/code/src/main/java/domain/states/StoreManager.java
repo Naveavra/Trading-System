@@ -1,7 +1,7 @@
 package domain.states;
 
 
-import database.Dao;
+import database.daos.Dao;
 import domain.store.storeManagement.Store;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
@@ -97,7 +97,7 @@ public class StoreManager extends UserState {
     public void removeAction(Action a) throws Exception{
         if (checkPermission(a)) {
             permissions.removeAction(a);
-            Dao.removeIf(Permission.class,"Permission", String.format("permission = '%s'", a.toString()));
+            Dao.removeIf("Permission", String.format("permission = '%s'", a.toString()));
         }
         else
             throw new Exception("the manager does not have this action");

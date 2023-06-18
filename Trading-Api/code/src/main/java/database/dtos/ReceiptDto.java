@@ -1,6 +1,7 @@
 package database.dtos;
 
 import database.DbEntity;
+import database.daos.Dao;
 import jakarta.persistence.*;
 
 @Entity

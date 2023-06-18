@@ -1,5 +1,5 @@
 
-import database.Dao;
+import database.daos.Dao;
 import domain.states.StoreCreator;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;

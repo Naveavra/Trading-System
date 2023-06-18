@@ -1,7 +1,8 @@
 package domain.states;
 
-import database.Dao;
+import database.daos.Dao;
 import database.DbEntity;
+import database.daos.StoreDao;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import jakarta.persistence.*;
@@ -10,7 +11,6 @@ import utils.infoRelated.Information;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -115,7 +115,6 @@ public abstract class UserState extends Information implements DbEntity {
 
     public Set<Integer> closeStore() throws Exception{
         checkPermission(Action.closeStore);
-        //setIsActive(false);
         Set<Integer> ans = store.closeStoreTemporary(userId);
         Dao.save(store);
         return ans;
@@ -123,7 +122,6 @@ public abstract class UserState extends Information implements DbEntity {
 
     public Set<Integer> reOpenStore() throws Exception{
         checkPermission(Action.reopenStore);
-        //setIsActive(true);
         Set<Integer> ans = store.reopenStore(userId);
         Dao.save(store);
         return ans;
@@ -162,11 +160,10 @@ public abstract class UserState extends Information implements DbEntity {
         getPermissionsFromDb();
     }
 
-    protected Store getStoreFromDb(){
+    protected void getStoreFromDb(){
         if(store == null){
-            store = (Store) Dao.getById(Store.class, storeId);
+            store = StoreDao.getStore(storeId);
         }
-        return store;
     }
 
     protected abstract void getPermissionsFromDb();

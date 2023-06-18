@@ -1,13 +1,11 @@
 package domain.user;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.store.product.Product;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.infoRelated.ProductInfo;
-
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 

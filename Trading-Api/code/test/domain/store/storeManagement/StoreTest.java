@@ -1,5 +1,5 @@
 package domain.store.storeManagement;
-import database.Dao;
+import database.daos.Dao;
 import domain.states.StoreManager;
 import domain.user.Basket;
 import domain.user.Member;
@@ -7,12 +7,8 @@ import domain.user.ShoppingCart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.infoRelated.ProductInfo;
-import utils.messageRelated.Message;
-import utils.messageRelated.Notification;
-import utils.messageRelated.NotificationOpcode;
 import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
-import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

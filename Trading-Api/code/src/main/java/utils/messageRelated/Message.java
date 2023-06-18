@@ -1,7 +1,8 @@
 package utils.messageRelated;
 
-import database.Dao;
+import database.daos.Dao;
 import database.DbEntity;
+import database.daos.SubscriberDao;
 import domain.user.Member;
 import jakarta.persistence.*;
 import org.json.JSONObject;
@@ -74,7 +75,7 @@ public abstract class Message extends Information implements DbEntity {
     }
     protected void getSenderFromDb(){
         if(sender == null)
-            sender = (Member) Dao.getById(Member.class, senderId);
+            sender = SubscriberDao.getMember(senderId);
     }
 
 }

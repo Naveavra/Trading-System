@@ -1,13 +1,10 @@
 package store;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.store.product.Product;
 import domain.user.Basket;
 import domain.user.Guest;

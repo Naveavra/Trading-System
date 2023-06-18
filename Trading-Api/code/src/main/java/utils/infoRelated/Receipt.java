@@ -1,7 +1,9 @@
 package utils.infoRelated;
 
-import database.Dao;
+import database.daos.Dao;
 import database.DbEntity;
+import database.daos.StoreDao;
+import database.daos.SubscriberDao;
 import database.dtos.ReceiptDto;
 import domain.store.storeManagement.Store;
 import domain.user.*;
@@ -32,6 +34,7 @@ public class Receipt extends Information implements DbEntity {
         this.totalPrice = totalPrice;
         for(ProductInfo productInfo : products.getContent())
             Dao.save(new ReceiptDto(orderId, productInfo.storeId, productInfo.id, productInfo.getQuantity()));
+        SubscriberDao.saveReceipt(this);
     }
 
     public void setMemberId(int memberId){
@@ -66,7 +69,7 @@ public class Receipt extends Information implements DbEntity {
         ShoppingCart tmpCart = new ShoppingCart();
         for (ReceiptDto rd : (List<ReceiptDto>) prods) {
             try {
-                Store s = (Store) Dao.getById(Store.class, rd.getStoreId());
+                Store s = StoreDao.getStore(rd.getStoreId());
                 if (s != null)
                     tmpCart.changeQuantityInCart(rd.getStoreId(), s.getProductInformation(rd.getProductId()), rd.getQuantity());
             } catch (Exception ignored) {

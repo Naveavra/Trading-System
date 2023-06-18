@@ -1,6 +1,6 @@
 package domain.user;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.states.StoreCreator;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
@@ -9,7 +9,6 @@ import domain.store.product.Product;
 import domain.store.storeManagement.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.UserController;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.Receipt;

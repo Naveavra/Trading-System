@@ -1,5 +1,6 @@
-package database;
+package database.daos;
 
+import database.DbEntity;
 import database.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -10,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Dao {
-
-    private static HashMap<Class, HashMap<Integer, DbEntity>> identityMap;
     private static boolean forTests = false;
 
     public static void setForTests(boolean forTestsTmp){
@@ -48,15 +47,11 @@ public class Dao {
 
     public static DbEntity getById(Class c, int id){
         if(!forTests) {
-            DbEntity o = getObjectIfLoaded(c, id);
-            if (o != null)
-                return o;
             Transaction transaction = null;
-            o = null;
+            DbEntity o = null;
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
                 transaction = session.beginTransaction();
                 o = (DbEntity) session.get(c, id);
-                putInMap(c, id, o);
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -88,6 +83,28 @@ public class Dao {
             return o;
         }
         return null;
+    }
+
+    public static List<DbEntity> getByParamList(Class c, String entityName, String param){
+        if(!forTests) {
+            Transaction transaction = null;
+            List<DbEntity> list = new ArrayList<>();
+            try (Session session = HibernateUtil.getSessionFactory().openSession()){
+                transaction = session.beginTransaction();
+                String sql = String.format("FROM %s WHERE %s", entityName, param);
+                Query<DbEntity> query = session.createQuery(sql, c);
+                list = query.list();
+                for(DbEntity db : list)
+                    db.initialParams();
+                transaction.commit();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                if (transaction != null)
+                    transaction.rollback();
+            }
+            return list;
+        }
+        return new ArrayList<>();
     }
 
     public static List<DbEntity> getAllInTable(String entityName){
@@ -156,7 +173,7 @@ public class Dao {
         return new ArrayList<>();
     }
 
-    public static void removeIf(Class c, String entityName, String param) {
+    public static void removeIf(String entityName, String param) {
         if(!forTests) {
             Transaction transaction = null;
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -170,7 +187,6 @@ public class Dao {
                 if (transaction != null)
                     transaction.rollback();
             }
-            removeFromIdentityMap(c);
         }
     }
 
@@ -187,40 +203,6 @@ public class Dao {
                 System.out.println(e.getMessage());
                 if (transaction != null)
                     transaction.rollback();
-            }
-        }
-    }
-
-    private static DbEntity getObjectIfLoaded(Class c, int id){
-        if(!forTests) {
-            if (identityMap == null)
-                identityMap = new HashMap<>();
-            if (identityMap.containsKey(c))
-                if (identityMap.get(c).containsKey(id))
-                    return identityMap.get(c).get(id);
-            return null;
-        }
-        return null;
-    }
-
-    private static void putInMap(Class c, int id, DbEntity o) {
-        if(!forTests) {
-            if (o != null) {
-                o.initialParams();
-                if (!identityMap.containsKey(c))
-                    identityMap.put(c, new HashMap<>());
-                identityMap.get(c).put(id, o);
-            }
-        }
-    }
-
-    private static void removeFromIdentityMap(Class c) {
-        if(!forTests){
-            HashMap<Integer, DbEntity> val = identityMap.get(c);
-            if(val != null) {
-                for (int id : val.keySet())
-                    if (getById(c, id) == null)
-                        val.remove(id);
             }
         }
     }

@@ -1,5 +1,6 @@
 package utils.messageRelated;
 
+import database.daos.MessageDao;
 import domain.store.product.Product;
 import domain.user.Member;
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ public class ProductReview extends StoreReview{
         super(content, reviewer, orderId, storeId, rating);
         this.opcode = NotificationOpcode.GET_STORE_DATA;
         this.productId = productId;
-
+        MessageDao.saveMessage(this);
     }
 
     @Override

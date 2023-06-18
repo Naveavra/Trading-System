@@ -1,10 +1,9 @@
 package utils;
-import database.Dao;
+import database.daos.Dao;
 import database.DbEntity;
+import database.daos.LoggerDao;
 
-import java.util.ArrayList;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class Logger{
@@ -13,7 +12,7 @@ public class Logger{
     
     private Logger() {
         eventMap = new LinkedList<>();
-        List<? extends DbEntity> events = Dao.getAllInTable("Event");
+        List<? extends DbEntity> events = LoggerDao.getLogs();
         eventMap.addAll((List<Event>) events);
     }
     

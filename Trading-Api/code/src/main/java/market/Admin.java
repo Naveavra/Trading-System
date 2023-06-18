@@ -1,6 +1,6 @@
 package market;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.user.Subscriber;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

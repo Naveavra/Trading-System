@@ -1,6 +1,6 @@
 package store;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.store.product.Product;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,7 +1,10 @@
 package domain.store.storeManagement;
 
-import database.Dao;
+import database.daos.Dao;
 import database.DbEntity;
+import database.daos.MessageDao;
+import database.daos.StoreDao;
+import database.daos.SubscriberDao;
 import database.dtos.AppointmentDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
@@ -154,7 +157,6 @@ public class Store extends Information implements DbEntity {
 
     public int addQuestion(Question q)
     {
-        Dao.save(q);
         questions.put(q.getMessageId(), q);
         return creatorId;
     }
@@ -170,7 +172,6 @@ public class Store extends Information implements DbEntity {
         Question msg = questions.get(messageID);
         if(msg != null) {
             msg.sendFeedback(answer);
-            Dao.save(msg);
         }
         else
             throw new Exception("the id given does not belong to any question that was sent to store");
@@ -250,7 +251,6 @@ public class Store extends Information implements DbEntity {
     public int addReview(int orderId, StoreReview review) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
-            Dao.save(review);
             storeReviews.put(review.getMessageId(), review);
             return creatorId;
         }
@@ -277,7 +277,7 @@ public class Store extends Information implements DbEntity {
     public Set<Integer> fireUser(int joblessuser) throws Exception
     {
         Set<Integer> ans = new HashSet<>(appHistory.removeChild(joblessuser));
-        Dao.removeIf(AppointmentDto.class, "AppointmentDto", String.format("fatherId = %d OR childId = %d", joblessuser, joblessuser));
+        StoreDao.removeAppointment(storeId, joblessuser);
         return ans;
     }
 
@@ -582,6 +582,7 @@ public class Store extends Information implements DbEntity {
             changeName(name);
         if(!img.equals("null"))
             changeImg(img);
+        Dao.save(this);
     }
 
     //sets the bid flag on a product to true; meaning that potential costumers can now bid on the product.
@@ -675,59 +676,49 @@ public class Store extends Information implements DbEntity {
     //database
     @Override
     public void initialParams() {
+        storeOrders = new ConcurrentHashMap<>();
+        bids = new ArrayList<>();
         getCreatorFromDb();
         getAppHistoryFromDb();
         getInventoryFromDb();
         getStoreReviewsFromDb();
+        getQuestionsFromDb();
     }
+
 
     public void getCreatorFromDb(){
         if(creator == null){
-            creator = (Member) Dao.getById(Member.class, creatorId);
+            creator = SubscriberDao.getMember(creatorId);
         }
     }
 
     public void getAppHistoryFromDb(){
-        if(appHistory == null){
-            try {
-                appHistory = new AppHistory(storeId, new Pair<>(creator, creator.getRole(storeId)));
-                List<Integer> fathers = new ArrayList<>();
-                fathers.add(creatorId);
-                while (fathers.size() > 0) {
-                    int id = fathers.remove(0);
-                    List<? extends DbEntity> appointmentDtos = Dao.getListByCompositeKey(AppointmentDto.class, storeId
-                            , id, "AppointmentDto", "storeId", "fatherId");
-                    for (AppointmentDto app : (List<AppointmentDto>) appointmentDtos) {
-                        Member worker = (Member) Dao.getById(Member.class, app.getChildId());
-                        appHistory.addNode(id, new Pair<>(worker, worker.getRole(storeId)));
-                        fathers.add(worker.getId());
-                    }
-
-                }
-            }catch (Exception ignored){}
-        }
+        if(appHistory == null)
+            appHistory = StoreDao.getAppHistory(storeId, creatorId);
     }
 
     public void getInventoryFromDb(){
         if(inventory == null){
             inventory = new Inventory(storeId);
-            List<? extends DbEntity> products = Dao.getListById(Product.class, storeId, "Product", "storeId");
-            for(Product p : (List<Product>) products) {
-                try {
-                    inventory.addProduct(p);
-                } catch (Exception ignored) {
-                }
-            }
+            inventory.initialParams();
         }
     }
 
     public void getStoreReviewsFromDb(){
         if(storeReviews == null){
             storeReviews = new ConcurrentHashMap<>();
-            List<? extends DbEntity> storeReviewsDto = Dao.getListById(StoreReview.class, storeId,
-                    "StoreReview", "storeId");
-            for(StoreReview storeReview : (List<StoreReview>) storeReviewsDto)
+            List<StoreReview> storeReviewsDto = MessageDao.getStoreReviews(storeId);
+            for(StoreReview storeReview : storeReviewsDto)
                 storeReviews.put(storeReview.getMessageId(), storeReview);
+        }
+    }
+
+    private void getQuestionsFromDb() {
+        if(questions == null){
+            questions = new ConcurrentHashMap<>();
+            List<Question> storeQuestions = MessageDao.getQuestions(storeId);
+            for(Question question : storeQuestions)
+                questions.put(question.getMessageId(), question);
         }
     }
 }

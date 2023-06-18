@@ -1,7 +1,7 @@
 package domain.user;
 
-import database.Dao;
 import database.DbEntity;
+import database.daos.SubscriberDao;
 import jakarta.persistence.*;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
@@ -79,12 +79,11 @@ public abstract class Subscriber implements DbEntity{
         notification.setSubId(id);
         boolean got = notifications.offer(notification);
         if(got)
-            Dao.save(notification);
+            SubscriberDao.saveNotification(notification);
     }
 
     public List<Notification> displayNotifications(){
         List<Notification> display = new LinkedList<>(notifications);
-        Dao.removeIf(Notification.class,"Notification", String.format("subId = %d", id));
         notifications.clear();
         return display;
     }
@@ -93,7 +92,7 @@ public abstract class Subscriber implements DbEntity{
         synchronized (notifications) {
             Notification n = notifications.take();
             if(isConnected) {
-                Dao.remove(n);
+                SubscriberDao.removeNotification(n.getId());
                 return n;
             }else{
                 notifications.offer(n);
@@ -105,8 +104,8 @@ public abstract class Subscriber implements DbEntity{
     public void initialNotificationsFromDb(){
         if(notifications == null) {
             notifications = new LinkedBlockingQueue<>();
-            List<? extends DbEntity> notifics = Dao.getListById(Notification.class, id, "Notification", "subId");
-            for (Notification n : (List<Notification>) notifics)
+            List<Notification> notifics = SubscriberDao.getNotifications(id);
+            for (Notification n : notifics)
                 addNotification(n);
         }
     }

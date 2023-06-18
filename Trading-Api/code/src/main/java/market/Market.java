@@ -1,6 +1,6 @@
 package market;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.states.Permissions;
 import domain.store.storeManagement.AppHistory;
 import domain.user.Member;
@@ -25,7 +25,6 @@ import utils.infoRelated.Receipt;
 
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class Market implements MarketInterface {
@@ -76,6 +75,7 @@ public class Market implements MarketInterface {
 //            proxySupplier = new ProxySupplier(supply);
 //        } catch (Exception e) {
 //            throw new RuntimeException(e);
+//              //sout("the payment/supplier was wrong");
 //        }
 
         marketInfo = new MarketInfo();

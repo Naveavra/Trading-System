@@ -5,39 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="merging code">
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/DbEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_15_06_2023_14_18__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_15_06_2023_14_18__Changes_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/database/daos/LoggerDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/database/daos/MessageDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/database/daos/SubscriberDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/Dao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/Dao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/AppointmentDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/AppointmentDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/CartDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/CartDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/CategoryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/CategoryDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/Dao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/Dao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/ReceiptDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/ReceiptDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/Permission.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/Permission.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/Permissions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/Permissions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/StoreCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/StoreCreator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/StoreManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/StoreManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/StoreOwner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/StoreOwner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/discount/predicates/DiscountCategoryPredicate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/discount/predicates/DiscountCategoryPredicate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/discount/predicates/PredicateFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/discount/predicates/PredicateFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/AppHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/AppHistory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/PurchaseHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/PurchaseHistory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/ShoppingCart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/ShoppingCart.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/market/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Admin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Event.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Filter/FilterProductByCategories.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Filter/FilterProductByCategories.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Filter/FilterStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Filter/FilterStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Filter/ProductFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Filter/ProductFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/utils/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Logger.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Receipt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Receipt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Complaint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Complaint.java" afterDir="false" />
@@ -48,13 +42,15 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/StoreReview.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/StoreReview.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/AppHistoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/AppHistoryTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/OrderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/OrderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ProductTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/ProductTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/UserAuthTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserAuthTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/domain/user/BasketTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/BasketTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/domain/user/GuestTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/GuestTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/domain/user/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/MemberTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/domain/user/ShoppingCartTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/ShoppingCartTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/java/market/AdminTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/java/market/AdminTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/store/DiscountTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/DiscountTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/store/InventoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/InventoryTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,8 +60,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -341,7 +337,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/domain/store/storeManagement/StoreTest.java</url>
-          <line>42</line>
+          <line>38</line>
           <option name="timeStamp" value="142" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -365,19 +361,14 @@
           <option name="timeStamp" value="156" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/server/API.java</url>
-          <line>525</line>
-          <option name="timeStamp" value="158" />
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java</url>
+          <line>467</line>
+          <option name="timeStamp" value="174" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/market/Market.java</url>
-          <line>136</line>
-          <option name="timeStamp" value="161" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>319</line>
-          <option name="timeStamp" value="162" />
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>366</line>
+          <option name="timeStamp" value="178" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

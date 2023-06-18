@@ -1,9 +1,7 @@
 package domain.states;
 
-import database.Dao;
-import database.DbEntity;
+import database.daos.Dao;
 import domain.store.storeManagement.Store;
-import domain.user.Member;
 import jakarta.persistence.Entity;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;

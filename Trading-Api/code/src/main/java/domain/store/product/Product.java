@@ -1,15 +1,14 @@
 package domain.store.product;
 
-import database.Dao;
+import database.daos.Dao;
 import database.DbEntity;
+import database.daos.StoreDao;
 import jakarta.persistence.*;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.ProductReview;
-import utils.messageRelated.StoreReview;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 @Entity
@@ -58,6 +57,7 @@ public class Product implements DbEntity{
         categories = new ArrayList<>();
         this.imgUrl = imgUrl;
         reviews = new ArrayList<>();
+        StoreDao.saveProduct(this);
     }
 
     public void changeImg(String imgUrl){
@@ -164,18 +164,28 @@ public class Product implements DbEntity{
 
     public void addReview(ProductReview m) {
         reviews.add(m);
-        Dao.save(m);
     }
 
     public List<ProductReview> getReviews(){return reviews;}
 
     @Override
     public void initialParams() {
+        getReviewsFromDb();
+        getCategoriesFromDb();
+    }
+
+    private void getReviewsFromDb(){
         if(reviews == null){
             reviews = new ArrayList<>();
             List<? extends DbEntity> productReviewsDto = Dao.getListByCompositeKey(ProductReview.class, storeId, productId,
                     "StoreReview", "storeId", "productId");
             reviews.addAll((List<ProductReview>) productReviewsDto);
+        }
+    }
+
+    private void getCategoriesFromDb(){
+        if(categories == null){
+            categories = new ArrayList<>();
         }
     }
 }

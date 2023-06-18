@@ -2,10 +2,7 @@ package utils.Filter;
 
 import domain.store.product.Product;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -13,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * filters by categories, need to set categories first with setCategories() function;
  */
 public class FilterProductByCategories extends FilterStrategy{
-    private ConcurrentHashMap<String,ArrayList<Integer>> categories;
+    private ConcurrentHashMap<String,List<Integer>> categories;
     private ArrayList<String> categoriesToSearchBy;
 
     public FilterProductByCategories() {
@@ -29,7 +26,7 @@ public class FilterProductByCategories extends FilterStrategy{
         ArrayList<Product> matchingProducts = new ArrayList<>();
         Map<Product, Integer> productToNumMatches = new HashMap<>();
         for(String cat: categoriesToSearchBy){
-            ArrayList<Integer> prod_ids = this.categories.get(cat);
+            List<Integer> prod_ids = this.categories.get(cat);
             if(prod_ids!= null){
                 for(Integer prodid : prod_ids){
 //                    Product p = getProductOp.getProduct(prodid);
@@ -72,7 +69,7 @@ public class FilterProductByCategories extends FilterStrategy{
      * @param cat ConcurrentHashMap<String,ArrayList<Integer>>
      */
     @Override
-    public void setCategories(ConcurrentHashMap<String,ArrayList<Integer>> cat){
+    public void setCategories(ConcurrentHashMap<String, List<Integer>> cat){
         this.categories=cat;
     }
 

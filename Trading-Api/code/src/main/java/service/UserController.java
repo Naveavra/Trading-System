@@ -1,7 +1,7 @@
 package service;
 
-import database.Dao;
-import database.DbEntity;
+import database.daos.MessageDao;
+import database.daos.SubscriberDao;
 import domain.store.storeManagement.Store;
 import domain.user.*;
 
@@ -57,7 +57,7 @@ public class UserController {
     public Member getMember(int id) throws Exception{
         if(memberList.containsKey(id))
                 return memberList.get(id);
-        Member m = (Member) Dao.getById(Member.class, id);
+        Member m = SubscriberDao.getMember(id);
         if(m != null) {
             memberList.put(m.getId(), m);
             return m;
@@ -69,7 +69,7 @@ public class UserController {
         for(Member m : memberList.values())
             if(m.getName().equals(email))
                 return m;
-        Member m = (Member) Dao.getByParam(Member.class,"Member", String.format("email = '%s' ", email));
+        Member m = SubscriberDao.getMember(email);
         if(m != null) {
             memberList.put(m.getId(), m);
             return m;
@@ -226,6 +226,7 @@ public class UserController {
     public synchronized void openStore(int userId, Store store) throws Exception{
         Member m = getActiveMember(userId);
         m.openStore(store);
+
     }
 
     public synchronized StoreReview writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {
@@ -498,7 +499,7 @@ public class UserController {
     public Admin getAdmin(int adminId) throws Exception {
         if(admins.containsKey(adminId))
                 return admins.get(adminId);
-        Admin a = (Admin) Dao.getById(Admin.class, adminId);
+        Admin a = SubscriberDao.getAdmin(adminId);
         if(a != null) {
             admins.put(a.getId(), a);
             return a;
@@ -509,7 +510,7 @@ public class UserController {
         for(Admin a : admins.values())
             if(a.getName().equals(email))
                 return a;
-        Admin a = (Admin) Dao.getByParam(Member.class,"Admin", String.format("email = '%s' ", email));
+        Admin a = SubscriberDao.getAdmin(email);
         if(a != null) {
             admins.put(a.getId(), a);
             return a;
@@ -527,12 +528,12 @@ public class UserController {
 
     //check if admin
     public boolean checkIsAdmin(int adminId){
-        Admin a = (Admin) Dao.getById(Admin.class, adminId);
+        Admin a = SubscriberDao.getAdmin(adminId);
         return a != null;
     }
 
     public boolean checkIsAdmin(String email){
-        Admin a = (Admin) Dao.getByParam(Admin.class, "Admin", String.format("email = '%s'", email));
+        Admin a = SubscriberDao.getAdmin(email);
         return a != null;
     }
 
@@ -553,7 +554,7 @@ public class UserController {
             throw new Exception("the email given does not match the email pattern");
         checks.checkPassword(pass);
         Admin a = new Admin(email, hashPass);
-        Dao.save(a);
+        SubscriberDao.saveSubscriber(a);
         admins.put(a.getId(), a);
     }
     public void addAdmin(Admin a, String hashedPass, String pass) throws Exception{
@@ -571,7 +572,7 @@ public class UserController {
         getActiveAdmin(adminId);
         checkRemoveAdmin();
         admins.remove(adminId);
-        Dao.removeIf(Admin.class, "Admin", String.format("id = %d", adminId));
+        SubscriberDao.removeAdmin(adminId);
     }
 
     public HashMap<Integer, Admin> getAdmins(int adminId) throws Exception{
@@ -613,7 +614,7 @@ public class UserController {
     public void removeUser(String userName) throws Exception{
         Member m = getMember(userName);
         memberList.remove(m.getId());
-        Dao.removeIf(Member.class,"Member", String.format("email = '%s' ", userName));
+        SubscriberDao.removeMember(userName);
     }
 
     public int getAdminSize() {
@@ -624,8 +625,8 @@ public class UserController {
 
     public List<Complaint> getComplaints(int userId) throws Exception{
         getActiveAdmin(userId);
-        List<? extends DbEntity> complaintsDto = Dao.getAllInTable("Complaint");
-        for(Complaint complaint : (List<Complaint>)complaintsDto)
+        List<Complaint> complaintsDto = MessageDao.getComplaints();
+        for(Complaint complaint : complaintsDto)
             if(!complaints.containsKey(complaint.getMessageId()))
                 complaints.put(complaint.getMessageId(), complaint);
         return new ArrayList<>(complaints.values());
@@ -634,23 +635,23 @@ public class UserController {
     private Complaint getComplaint(int complaintId) throws Exception{
         if(complaints.containsKey(complaintId))
             return complaints.get(complaintId);
-        Complaint complaint = (Complaint) Dao.getById(Complaint.class, complaintId);
+        Complaint complaint = MessageDao.getComplaint(complaintId);
         if(complaint != null)
             return complaint;
         throw new Exception("the id does not belong to any complaint");
     }
 
     private List<Member> getMembersFromDb() {
-        List<? extends DbEntity> memberDto = Dao.getAllInTable("Member");
-        for(Member m : (List<Member>) memberDto)
+        List<Member> memberDto = SubscriberDao.getAllMembers();
+        for(Member m : memberDto)
             if(!memberList.containsKey(m.getId()))
                 memberList.put(m.getId(), m);
         return new ArrayList<>(memberList.values());
     }
 
     private List<Admin> getAdminsFromDb() {
-        List<? extends DbEntity> adminsDto = Dao.getAllInTable("Admin");
-        for(Admin a : (List<Admin>) adminsDto)
+        List<Admin> adminsDto = SubscriberDao.getAllAdmins();
+        for(Admin a : adminsDto)
             if(!admins.containsKey(a.getId()))
                 admins.put(a.getId(), a);
         return new ArrayList<>(admins.values());

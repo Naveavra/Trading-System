@@ -2,6 +2,7 @@ package domain.states;
 
 
 import database.DbEntity;
+import database.daos.Dao;
 import jakarta.persistence.*;
 import utils.stateRelated.Action;
 
@@ -23,6 +24,7 @@ public class Permission implements DbEntity {
         this.userId = userId;
         this.storeId = storeId;
         this.permission = permission;
+        Dao.save(this);
     }
 
 

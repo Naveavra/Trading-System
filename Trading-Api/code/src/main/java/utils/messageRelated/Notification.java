@@ -2,6 +2,7 @@ package utils.messageRelated;
 
 
 import database.DbEntity;
+import database.daos.Dao;
 import domain.user.Subscriber;
 import jakarta.persistence.*;
 import org.json.JSONObject;
@@ -24,6 +25,7 @@ public class Notification extends Information implements DbEntity{
     public Notification(NotificationOpcode opcode, String notification){
         this.opcode =  opcode;
         this.notification =  notification;
+        Dao.save(this);
     }
 
     public String getNotification(){

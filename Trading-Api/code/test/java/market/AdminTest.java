@@ -1,6 +1,6 @@
 package market;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.store.storeManagement.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
