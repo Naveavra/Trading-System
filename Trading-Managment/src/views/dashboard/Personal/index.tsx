@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import { Outlet, useNavigate } from "react-router-dom";
 import Bar3 from "../../../components/Bars/Navbar/NavBar3";
-import { clearAuthError, clearAuthMsg, setWatchedOrder } from "../../../reducers/authSlice";
+import { clearAuthError, clearAuthMsg, getClientData, setWatchedOrder } from "../../../reducers/authSlice";
 import PasswordIcon from '@mui/icons-material/Password';
 import SuccessAlert from "../../../components/Alerts/success";
 import ErrorAlert from "../../../components/Alerts/error";
@@ -12,9 +12,11 @@ import RateReviewIcon from '@mui/icons-material/RateReview';
 import InfoIcon from '@mui/icons-material/Info';
 import { status } from '../../../types/systemTypes/Bid'
 import { clearBidMsg, clearBidError } from "../../../reducers/bidSlice";
+import { useEffect } from "react";
 const Personal = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const userId = useAppSelector((state) => state.auth.userId);
 
     const email = useAppSelector((state) => state.auth.userName);
     const age = useAppSelector((state) => state.auth.age);
@@ -35,7 +37,7 @@ const Personal = () => {
         dispatch(setWatchedOrder(orderId));
         navigate(`order/${orderId}`)
     };
-
+    useEffect(() => {dispatch(getClientData({userId:userId}))})
     return (
         <>
             <Bar3 headLine={"this is your personal data"} />
@@ -91,7 +93,7 @@ const Personal = () => {
                                         price:  {order.totalPrice}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        quntity:  {order.productsInStores.length}
+                                        quntity:  {order.productsInStores?.length}
                                     </Typography>
                                 </CardContent>
                                 <CardActions>

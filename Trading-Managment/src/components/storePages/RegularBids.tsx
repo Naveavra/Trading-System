@@ -18,7 +18,7 @@ const RegularBids = () => {
     const bids = useAppSelector((state) => state.store.storeState.watchedStore.bids);
     useEffect(() => {
         dispatch(getStore({ userId: userId, storeId: store.storeId }));
-    }, [dispatch, bids]);
+    }, []);
 
     return (
         <>

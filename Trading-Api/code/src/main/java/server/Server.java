@@ -359,10 +359,17 @@ public class Server {
                 String[] arr = catStr.substring(1, catStr.length() - 1).split(",");
                 categories =new ArrayList<>(Arrays.asList(arr));
             }
-            String name = request.getString("name");
+            String name = request.get("name").toString();
             String description = request.get("description").toString();
-            int price = Integer.parseInt(request.get("price").toString());
-            int quantity = Integer.parseInt(request.get("quantity").toString());
+            int price = -1;
+            int quantity = -1;
+            if(!request.get("price").toString().equals("null")){
+                price = Integer.parseInt(request.get("price").toString());
+
+            }
+            if(!request.get("quantity").toString().equals("null")) {
+                quantity = Integer.parseInt(request.get("quantity").toString());
+            }
             String img = request.get("img").toString();
             toSparkRes(res, api.updateProduct(userId, token, storeId, productId, categories, name, description, price, quantity, img));
             return res.body();
