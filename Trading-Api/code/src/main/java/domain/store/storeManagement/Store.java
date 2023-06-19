@@ -5,7 +5,7 @@ import database.DbEntity;
 import database.daos.MessageDao;
 import database.daos.StoreDao;
 import database.daos.SubscriberDao;
-import database.dtos.AppointmentDto;
+import database.dtos.Appointment;
 import database.dtos.ConstraintDto;
 import database.dtos.DiscountDto;
 import domain.states.StoreCreator;
@@ -23,10 +23,8 @@ import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.mockito.internal.matchers.Or;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.*;
@@ -59,7 +57,9 @@ public class Store extends Information implements DbEntity {
 
     private String storeDescription;
     @Transient
-    private AppHistory appHistory; //first one is always the store creator //n
+    private AppHistory appHistory; //first one is always the store creator
+    @Transient
+    private List<Appointment> appointments;
     @Transient
     private Inventory inventory; //<productID,<product, quantity>>
     @Transient
@@ -102,6 +102,7 @@ public class Store extends Information implements DbEntity {
         bidIds = new AtomicInteger();
         Dao.save(this);
         appHistory = new AppHistory(storeId, creatorNode);
+        appointments = new ArrayList<>();
         this.inventory = new Inventory(storeId);
         discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
         policyIds = new AtomicInteger();
@@ -128,6 +129,7 @@ public class Store extends Information implements DbEntity {
         bids = new ArrayList<>();
         Dao.save(this);
         appHistory = new AppHistory(storeId, creatorNode);
+        appointments = new ArrayList<>();
         this.inventory = new Inventory(storeId);
         discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
         policyIds = new AtomicInteger();
@@ -258,13 +260,15 @@ public class Store extends Information implements DbEntity {
         this.storeDescription = storeDescription;
     }
 
+    public void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
+    }
 
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
         Pair<Member, UserState> node = new Pair<>(newUser, role);
         appHistory.addNode(userinchargeid, node);
-        Dao.save(new AppointmentDto(storeId, userinchargeid, newUser.getId()));
+        //Member father = appHistory.getNode(userinchargeid).getData().getFirst();
     }
-
     public int addReview(int orderId, StoreReview review) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
@@ -757,6 +761,7 @@ public class Store extends Information implements DbEntity {
         getConstraintsFromDb();
         getDiscountsFromDb();
 
+        appointments = new ArrayList<>();
         storeOrders = new ConcurrentHashMap<>();
         bids = new ArrayList<>();
         purchasePolicies = new ArrayList<>();

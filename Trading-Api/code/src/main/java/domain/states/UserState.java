@@ -3,6 +3,7 @@ package domain.states;
 import database.daos.Dao;
 import database.DbEntity;
 import database.daos.StoreDao;
+import database.dtos.Appointment;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import utils.infoRelated.Information;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -87,9 +89,13 @@ public abstract class UserState extends Information implements DbEntity {
 
     public void appointManager(Member appointed) throws Exception{
         checkPermission(Action.appointManager);
-        StoreManager m = new StoreManager(appointed.getId(), appointed.getName(), store);
-        store.appointUser(userId, appointed, m);
-        appointed.changeRoleInStore(m, store);
+        List<String> approvers = new ArrayList<>(store.getAppHistory().getStoreWorkersWithPermission(Action.appointManager));
+        Appointment appointment = new Appointment(store, userId, userName, appointed, Role.Manager, approvers);
+        store.addAppointment(appointment);
+        Dao.save(appointment);
+//        StoreManager m = new StoreManager(appointed.getId(), appointed.getName(), store);
+//        store.appointUser(userId, appointed, m);
+//        appointed.changeRoleInStore(m, store);
     }
 
     public Set<Integer> fireManager(int appointedId) throws Exception{
@@ -101,9 +107,11 @@ public abstract class UserState extends Information implements DbEntity {
 
     public void appointOwner(Member appointed) throws Exception{
         checkPermission(Action.appointOwner);
-        StoreOwner s = new StoreOwner(appointed.getId(), appointed.getName(), store);
-        store.appointUser(userId, appointed, s);
-        appointed.changeRoleInStore(s, store);
+        List<String> approvers = new ArrayList<>(store.getAppHistory().getStoreWorkersWithPermission(Action.appointOwner));
+        Dao.save(new Appointment(store, userId, userName, appointed, Role.Owner, approvers));
+//        StoreOwner s = new StoreOwner(appointed.getId(), appointed.getName(), store);
+//        store.appointUser(userId, appointed, s);
+//        appointed.changeRoleInStore(s, store);
     }
 
     public Set<Integer> fireOwner(int appointedId) throws Exception{
