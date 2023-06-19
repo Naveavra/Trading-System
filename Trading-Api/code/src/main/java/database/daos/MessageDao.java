@@ -1,6 +1,7 @@
 package database.daos;
 
 import database.DbEntity;
+import domain.store.storeManagement.Store;
 import utils.messageRelated.*;
 
 import java.util.*;
@@ -188,5 +189,35 @@ public class MessageDao {
         Dao.removeIf("Question", String.format("storeId = %d", storeId));
         questions.remove(storeId);
         questionMap.remove(storeId);
+    }
+
+    public static void removeMemberMessage(int userId) {
+        Dao.removeIf("StoreReview", String.format("senderId = %d", userId));
+        List<StoreReview> removeSReview = new ArrayList<>();
+        for(HashMap<Integer, StoreReview> reviews : storeReviewMap.values())
+            for(StoreReview review : reviews.values())
+                if(review.getSenderId() == userId)
+                    removeSReview.add(review);
+        for(StoreReview review : removeSReview)
+            storeReviewMap.get(review.getStoreId()).remove(review.getMessageId());
+
+        List<ProductReview> removePReview = new ArrayList<>();
+        Dao.removeIf("ProductReview", String.format("senderId = %d", userId));
+        for(HashMap<Integer, HashMap<Integer, ProductReview>> tmp : productReviewMap.values())
+            for(HashMap<Integer, ProductReview> reviews : tmp.values())
+                for(ProductReview review : reviews.values())
+                    if(review.getSenderId() == userId)
+                        removePReview.add(review);
+        for(ProductReview review : removePReview)
+            productReviewMap.get(review.getStoreId()).get(review.getProductId()).remove(review.getMessageId());
+
+        List<Question> removeQ = new ArrayList<>();
+        Dao.removeIf("Question", String.format("senderId = %d", userId));
+        for(HashMap<Integer, Question> questions : questionMap.values())
+            for(Question question : questions.values())
+                if(question.getSenderId() == userId)
+                    removeQ.add(question);
+        for(Question q : removeQ)
+            questionMap.get(q.getStoreId()).remove(q.getMessageId());
     }
 }

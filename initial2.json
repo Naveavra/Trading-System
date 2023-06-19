@@ -3,7 +3,7 @@
     {
       "command": "ADD_ADMIN",
       "params": {
-        "adminId": "0",
+        "adminId": "1",
         "token": "token",
         "email": "U1@gmail.com",
         "password": "U1123@gmail.com"
