@@ -85,6 +85,7 @@ public class SystemTests extends ProjectTest{
         int adminId = this.mainAdmin.getAdminId();
         assertFalse(replaceExternalSupplierService(adminId, "ERROR"));
     }
+
     @Test
     public void testNotAdminReplaceExternalSupplierService(){
         int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
