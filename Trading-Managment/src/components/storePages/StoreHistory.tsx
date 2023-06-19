@@ -30,7 +30,7 @@ const StoreHistory = () => {
                                     {order.productsInStores?.map((product, index) => {
                                         return (
                                             <>
-                                                <Box sx={{ display: "flex", width: '90%', mb: 2 }}>
+                                                <Box key={index} sx={{ display: "flex", width: '90%', mb: 2 }}>
                                                     <Typography sx={{ fontSize: 14, mr: 2 }} color="text.secondary" gutterBottom>
                                                         product: {product.name}
                                                     </Typography>

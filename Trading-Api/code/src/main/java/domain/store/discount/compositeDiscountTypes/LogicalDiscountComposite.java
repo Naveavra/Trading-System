@@ -1,10 +1,12 @@
 package domain.store.discount.compositeDiscountTypes;
 
+import domain.store.discount.AbstractDiscount;
 import domain.store.discount.Discount;
 import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.discount.predicates.DiscountPredicate;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
 import domain.user.Basket;
+import utils.infoRelated.Information;
 import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
 
@@ -83,6 +85,7 @@ public class LogicalDiscountComposite extends AbstractDiscountComposite{
     public DiscountPredicate getPred() {
         return predicate;
     }
+
 
 
     @Override

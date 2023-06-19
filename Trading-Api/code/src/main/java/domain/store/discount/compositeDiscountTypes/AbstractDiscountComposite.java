@@ -1,19 +1,23 @@
 package domain.store.discount.compositeDiscountTypes;
 
+import domain.store.discount.AbstractDiscount;
 import domain.store.discount.Discount;
 import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.discount.predicates.DiscountPredicate;
 import domain.store.discount.predicates.PredicateFactory;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
+import org.json.JSONObject;
+import utils.infoRelated.Information;
 
 import java.util.ArrayList;
 
-public abstract class AbstractDiscountComposite implements Discount {
+public abstract class AbstractDiscountComposite  extends Discount {
 //    enum logical {And,Or,Xor};
 //    enum numeric {Max,Addition};
     public int discountID;
-    public DiscountPredicate predicate; //used for logical Xor
+    public DiscountPredicate predicate;
     private ArrayList<Discount> discounts;
+    private String description;
     private String content;
     private int storeId;
     private  GetCategoriesOperation getCategoriesOp;
@@ -61,9 +65,28 @@ public abstract class AbstractDiscountComposite implements Discount {
     public abstract LogicalDiscountComposite.xorDecidingRules  getDecidingRule();
 
     @Override
+    public void setContent(String content) {
+        this.content=content;
+    }
+    @Override
     public String getContent(){return this.content;}
     @Override
     public int getDiscountID() {
         return this.discountID;
     }
+    @Override
+    public String getDescription(){
+        return this.description;
+    }
+    @Override
+    public void setDescription(String desc){
+        this.description=desc;
+    }
+    @Override
+    public JSONObject toJson(){
+        JSONObject obj = new JSONObject();
+        obj.put("description",getDescription());
+        return obj;
+    }
+
 }

@@ -12,6 +12,7 @@ import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.discount.Discount;
 import domain.store.discount.DiscountFactory;
+import domain.store.discount.DiscountOnItem;
 import domain.store.discount.discountDataObjects.CompositeDataObject;
 import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.product.Inventory;
@@ -22,6 +23,7 @@ import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.mockito.internal.matchers.Or;
@@ -182,17 +184,21 @@ public class Store extends Information implements DbEntity {
             throw new Exception("the id given does not belong to any question that was sent to store");
     }
 
-    public synchronized void addDiscount(DiscountDataObject discountData){
+    public synchronized void addDiscount(DiscountDataObject discountData,String content){
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
+            dis.setContent(content);
+            dis.setDescription(new JSONObject(content).get("description").toString());
             discounts.add(dis);
             //TODO: check if need to add here to db
             Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
         }
     }
-    public synchronized void addDiscount(CompositeDataObject discountData) throws Exception {
+    public synchronized void addDiscount(CompositeDataObject discountData,String content) throws Exception {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
+            dis.setDescription(new JSONObject(content).get("description").toString());
+            dis.setContent(content);
             discounts.add(dis);
             Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
         }
@@ -580,7 +586,14 @@ public class Store extends Information implements DbEntity {
         json.put("img", getImgUrl());
         json.put("roles", infosToJson(getRoles()));
         json.put("bids", infosToJson(getBids()));
+        json.put("discounts",infosToJson(getDiscounts()));
+        json.put("purchasePolicies",getPurchasePolicies());
         return json;
+    }
+
+
+    public ArrayList<DiscountOnItem> test(){
+        return null;
     }
 
     public void setStoreAttributes(String name, String description, String img) {
@@ -653,7 +666,7 @@ public class Store extends Information implements DbEntity {
         throw new Exception("Bid doesnt exist "+bidId);
     }
 
-    public void addPurchasePolicy(String data) throws Exception {
+    public void addPurchasePolicy(String data,String content) throws Exception {
         PurchasePolicyFactory factory = new PurchasePolicyFactory(policyIds,storeId);
         JSONObject request = new JSONObject(data);
         String description = request.getString("description");
@@ -671,11 +684,14 @@ public class Store extends Information implements DbEntity {
                 case "user" -> prev = factory.parseUser(policy,prev);
                 case "basket" -> prev = factory.parseBasket(policy,prev);
             }
-            if(i==0 && prev!=null)
+            if(i==0 && prev!=null) {
                 head = prev;
+            }
         }
         if(head!=null){
             PurchasePolicy policy = factory.createPolicy(head);
+            policy.setDescription(description);
+            policy.setContent(content);
             purchasePolicies.add(policy);
             //TODO: need to check if is ok by nave/miki
             Dao.save(new ConstraintDto(storeId, policy.getId(), policy.getContent()));
@@ -798,6 +814,11 @@ public class Store extends Information implements DbEntity {
     }
 
     private void getDiscountsFromDb() {
+    }
+
+    public void addCompositeDiscount(JSONObject req) throws Exception {
+        CompositeDataObject dis = discountFactory.parseCompositeDiscount(req);
+        addDiscount(dis,req.get("content").toString());
     }
 
 //    public void clientAcceptCounter(int bidId) {

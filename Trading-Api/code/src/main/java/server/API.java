@@ -421,9 +421,9 @@ public class API {
     }
     public Pair<Boolean, JSONObject> changeRegularDiscount(int userId, String token, int storeId, int prodId,
                                                            int percentage, String discountType, String discountedCategory,
-                                                           List<String> predicatesLst) {
+                                                           List<String> predicatesLst,String content) {
         Response<String> res = market.changeRegularDiscount(userId, token, storeId, prodId, percentage, discountType,
-                discountedCategory, predicatesLst);
+                discountedCategory, predicatesLst,content);
         return fromResToPair(res);
     }
 
@@ -455,8 +455,8 @@ public class API {
         Response<String> res = market.editBid(token, userId, storeId, price,quantity, bidId);
         return fromResToPair(res);
     }
-    public Pair<Boolean, JSONObject> addShoppingRule(String token, int storeId, int userId, String purchasePolicy) {
-        Response<String> res =  market.addShoppingRule(userId, token, storeId, purchasePolicy);
+    public Pair<Boolean, JSONObject> addShoppingRule(String token, int storeId, int userId, String purchasePolicy,String content) {
+        Response<String> res =  market.addShoppingRule(userId, token, storeId, purchasePolicy,content);
         return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> deletePurchasePolicy(String token, int userId, int storeId, int purchasePolicyId) {
@@ -567,5 +567,9 @@ public class API {
 
     public String getTokenForTest() {
         return market.addTokenForTests();
+    }
+
+    public Pair<Boolean, JSONObject> addCompositeDiscount(String token, String body) throws Exception {
+        return fromResToPair(market.addCompositeDiscount(token,body));
     }
 }

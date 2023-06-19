@@ -118,6 +118,9 @@ public class Bid extends Information implements DbEntity {
     public double getOffer() {
         return offer;
     }
+    public int getStoreId(){
+        return storeId;
+    }
 
     public int getBidId(){return bidId;}
 
@@ -143,6 +146,7 @@ public class Bid extends Information implements DbEntity {
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("bidId", getBidId());
+        jsonObject.put("storeId", getStoreId());
         jsonObject.put("offer", getOffer());
         jsonObject.put("product", product.getProductInfo().toJson());
         jsonObject.put("quantity", getQuantity());

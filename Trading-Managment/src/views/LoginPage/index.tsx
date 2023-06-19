@@ -12,9 +12,10 @@ const LoginPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
     const error = useAppSelector((state) => state.auth.error);
-    const isAdmin =useAppSelector((state) => state.auth.isAdmin); 
-
+    const isAdmin = useAppSelector((state) => state.auth.isAdmin);
+    debugger;
     return (!isLoggedIn ?
+
         <>
             <Grid
                 spacing={2}
@@ -45,9 +46,9 @@ const LoginPage: React.FC = () => {
             {!!error ? <AlertDialog open={!!error} onClose={() => { dispatch(clearAuthError()); }} text={error} sevirity={'error'} /> : null}
         </> :
         isAdmin ?
-        <Navigate to="/dashboard/admin" />:
-             
-        <Navigate to="/dashboard" />
+            <Navigate to="/dashboard/admin" /> :
+
+            <Navigate to="/dashboard" />
     )
 
 };

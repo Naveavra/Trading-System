@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import { Dialog, Box, Grid, Typography, TextField, SelectChangeEvent } from "@mui/material";
+import { Dialog, Box, Grid, Typography, TextField, SelectChangeEvent, Alert } from "@mui/material";
 import AlertDialog from "../Dialog/AlertDialog";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
@@ -32,6 +32,8 @@ const BuyCart: React.FC<props> = ({ personal }) => {
     const userId = useAppSelector((state: RootState) => state.auth.userId);
     const suppliers = useAppSelector((state) => state.payment.suppliers);
     const payments = useAppSelector((state) => state.payment.paymentServices);
+    const pError = useAppSelector((state) => state.payment.error);
+
 
     //for bid
     const bidId = params.bidId ?? '-1';
@@ -45,10 +47,15 @@ const BuyCart: React.FC<props> = ({ personal }) => {
     }
 
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard');
-        dispatch(getCart({ userId: userId }));
-        dispatch(getClientData({ userId: userId }));
-        //dispatch(getStore({ userId: userId, storeId: storeId }));
+        if (personal) {
+            navigate('/dashboard/personal');
+            dispatch(getClientData({ userId: userId }));
+        }
+        else {
+            navigate('/dashboard');
+            dispatch(getCart({ userId: userId }));
+            dispatch(getClientData({ userId: userId }));
+        }
     }, []);
     //storeid, userid, price, quantity
     const handleOnSubmit = () => {
@@ -76,7 +83,7 @@ const BuyCart: React.FC<props> = ({ personal }) => {
                         marginTop: 4,
                         top: '50%',
                         left: '50%',
-                        height: 700,
+                        height: 900,
                         width: '80%',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -92,11 +99,14 @@ const BuyCart: React.FC<props> = ({ personal }) => {
                         component="form"
                         onSubmit={handleOnSubmit}
                     >
-                        <Grid item xs={12}>
-                            <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                enter the following details
-                            </Typography>
-                        </Grid>
+                        {pError === ""
+                            ? <Grid item xs={12}>
+                                <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
+                                    enter the following details
+                                </Typography>
+                            </Grid> : <Alert sx={{ margin: 'auto', width: '50%' }} severity="error" >
+                                external services unavailable try again later
+                            </Alert>}
                         <Grid item xs={12}>
                             <SelectAutoWidth label={'payments service'} values={payments} labels={payments} value={payment} handleChange={handleChangePayment} />
                         </Grid>
@@ -318,6 +328,7 @@ const BuyCart: React.FC<props> = ({ personal }) => {
                             <LoadingButton
                                 type="submit"
                                 fullWidth
+                                disabled={!!pError}
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                                 loading={isLoading}
