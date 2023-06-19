@@ -106,6 +106,7 @@ public class Appointment extends Information implements DbEntity {
             throw new Exception("the user already approved this appointment");
         Dao.save(new AppApproved(storeId, fatherId, getChildId(), name, true));
         approvers.put(name, true);
+        checkAllApproved();
     }
 
     public boolean canDeny(String name) throws Exception{

@@ -268,18 +268,20 @@ public class Store extends Information implements DbEntity {
     }
 
     public void answerAppointment(String userName, String fatherName, String childName, String ans) throws Exception{
+        Appointment app = null;
         for(Appointment appointment : appointments)
-            if(appointment.getFatherName().equals(fatherName) && appointment.getChildName().equals(childName)){
-                if(ans.equals("true")){
-                    appointment.approve(userName);
-                    if(appointment.getApproved())
-                        appointments.remove(appointment);
-                }
-                else if(ans.equals("false")){
-                    if(appointment.canDeny(userName))
-                        appointments.remove(appointment);
-                }
+            if (appointment.getFatherName().equals(fatherName) && appointment.getChildName().equals(childName))
+                app = appointment;
+        if(app != null) {
+            if (ans.equals("true")) {
+                app.approve(userName);
+                if (app.getApproved())
+                    appointments.remove(app);
+            } else if (ans.equals("false")) {
+                if (app.canDeny(userName))
+                    appointments.remove(app);
             }
+        }
     }
 
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
@@ -327,8 +329,9 @@ public class Store extends Information implements DbEntity {
      */
     public Set<Integer> fireUser(int joblessuser) throws Exception
     {
+        String joblessName = appHistory.getNode(joblessuser).getData().getFirst().getName();
         Set<Integer> ans = new HashSet<>(appHistory.removeChild(joblessuser));
-        StoreDao.removeAppointment(storeId, joblessuser);
+        StoreDao.removeAppointment(storeId, joblessuser, joblessName);
         return ans;
     }
 

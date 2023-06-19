@@ -244,11 +244,11 @@ public class StoreDao {
         return appointmentMap.get(storeId);
     }
 
-    public static void removeAppointment(int storeId, int childId){
-        Dao.removeIf("AppointmentDto", String.format("storeId = %d AND childId = %d",
-                storeId, childId));
-        Dao.removeIf("AppointmentDto", String.format("storeId = %d AND fatherId = %d",
-                storeId, childId));
+    public static void removeAppointment(int storeId, int childId, String childName){
+        Dao.removeIf("Appointment", String.format("storeId = %d AND childName = '%s' ",
+                storeId, childName));
+        Dao.removeIf("Appointment", String.format("storeId = %d AND fatherName = '%s' ",
+                storeId, childName));
         if(appointmentMap.containsKey(storeId)) {
             try {
                 appointmentMap.get(storeId).removeChild(childId);

@@ -26,7 +26,7 @@ import GavelIcon from '@mui/icons-material/Gavel';
 import SideDrawer from '../../SideDrawer';
 import { Action } from '../../../types/systemTypes/Action';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
+import ContactMailIcon from '@mui/icons-material/ContactMail';
 
 import './NavBar2.css';
 
@@ -59,6 +59,8 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
     const permissions = useAppSelector((state: RootState) => state.auth.permissions);
     const actions = permissions?.filter((perm) => perm.storeId == store.storeId)[0]?.actions ?? [];
     const canCloseStore = actions.includes(Action.closeStore);
+    const canAppointOwner = actions.includes(Action.appointOwner);
+    const canAppointManager = actions.includes(Action.appointManager);
 
     const stores = stores_roles ? stores_roles.map((role, index) => {
         return {
@@ -143,6 +145,10 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                                 {canCloseStore ?
                                     <Switch {...label} defaultChecked color="warning" value={store.isActive} onClick={handleChangeOpen} />
                                     : null}
+                                {canAppointOwner || canAppointManager ?
+                                    <IconButton className="icon" color="inherit" onClick={() => navigate(`/dashboard/store/superior/appointments`)}>
+                                        <ContactMailIcon />
+                                    </IconButton> : null}
                                 <IconButton className="icon" color="inherit" onClick={handleLogout}>
                                     <LogoutIcon />
                                 </IconButton>
@@ -278,7 +284,6 @@ const Bar2: React.FC<Props> = ({ headLine }) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            {/*--------------notofications-----------*/}
             {/* -------------------------------------notofication---------------- */}
             <Dialog
                 open={notificationDialogOpen}
