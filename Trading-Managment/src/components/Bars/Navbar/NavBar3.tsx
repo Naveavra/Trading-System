@@ -58,10 +58,12 @@ const Bar3: React.FC<Props> = ({ headLine }) => {
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const handleLogout = () => {
-        debugger;
-        dispatch(logout(userId));
-        debugger;
-        navigate('/auth/login');
+        dispatch(logout(userId))
+            .then(() => {
+                navigate('/auth/login');
+            }).catch((err) => {
+                console.log(err);
+            });
         navigate('/auth/login');
     };
     const handleChooseStore = (storeNumber: number) => () => {

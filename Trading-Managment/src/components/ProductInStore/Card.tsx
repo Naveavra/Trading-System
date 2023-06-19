@@ -14,6 +14,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { addToCart, getCart } from "../../reducers/cartSlice";
 import { deleteProduct } from "../../reducers/productsSlice";
 import { getStore } from "../../reducers/storesSlice";
+import Chip from "../Chip";
 interface CardProps {
     item: Product;
     canEdit: boolean;
@@ -66,6 +67,15 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
                     <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10 }}>
                         price for unit : {item.price}$
                     </Typography>
+                </Box>
+                <Box>
+                    {item.categories?.map((category, index) => {
+                        return (
+                            <Chip key={index} text={category} />
+                        )
+                    })
+                    }
+
                 </Box>
             </CardContent>
             <CardActions >

@@ -8,11 +8,13 @@ import ProductInCart from "../ProductInCart/ProductCart";
 import { useNavigate } from "react-router-dom";
 import Bar3 from "../Bars/Navbar/NavBar3";
 import { useEffect } from "react";
+import { getCart } from "../../reducers/cartSlice";
 
 const Cart = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
+    const userId = useAppSelector((state) => state.auth.userId);
     const cart = useAppSelector((state) => state.cart.responseData);
     const products = cart?.flat();
     const totalPrice = products?.reduce((acc, product) => acc + product.quantity * product.price, 0);
@@ -22,7 +24,7 @@ const Cart = () => {
         navigate("/dashboard/cart/payment");
     };
     useEffect(() => {
-
+        dispatch(getCart({ userId: userId }));
     }, [products]);
 
     return (
