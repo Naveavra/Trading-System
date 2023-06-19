@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { ProductFormValues } from "../../types/formsTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { clearProductError, patchProduct, postProduct } from "../../reducers/productsSlice";
+import { clearProductError, getProducts, patchProduct, postProduct } from "../../reducers/productsSlice";
 import SuccessAlert from "../Alerts/success";
 import { getNotifications, ping } from "../../reducers/authSlice";
 import { getStore } from "../../reducers/storesSlice";
@@ -56,6 +56,7 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
     const handleOnClose = useCallback(() => {
         navigate('/dashboard/store/superior');
         dispatch(getStore({ userId: userId, storeId: storeId }));
+        dispatch(getProducts());
     }, []);
 
     const sendPing = () => {

@@ -71,7 +71,7 @@ export const buyProductInBid = createAsyncThunk<
             .then((res) => thunkAPI.fulfillWithValue(res as string))
             .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
     });
-    export const answerOnCounter = createAsyncThunk<
+export const answerOnCounter = createAsyncThunk<
     string,
     clientAnswerParams,
     { rejectValue: ApiError }
@@ -82,6 +82,7 @@ export const buyProductInBid = createAsyncThunk<
             .then((res) => thunkAPI.fulfillWithValue(res as string))
             .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
     });
+
 
 const { reducer: bidReducer, actions: bidActions } = createSlice({
     name: reducerName,

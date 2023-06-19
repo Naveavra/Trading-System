@@ -1,7 +1,7 @@
 
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import AlertDialog from "../Dialog/AlertDialog";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
@@ -10,8 +10,9 @@ import { closeStoreFormValues } from "../../types/formsTypes";
 
 
 import { LoadingButton } from "@mui/lab";
-import { Dialog, Box, Grid, Typography, TextField } from "@mui/material";
+import { Dialog, Box, Grid, Typography, TextField, SelectChangeEvent } from "@mui/material";
 import { getClientData } from "../../reducers/authSlice";
+import SelectAutoWidth from "../Selectors/AutoWidth";
 
 
 const CloseStore = () => {
@@ -19,11 +20,12 @@ const CloseStore = () => {
     const navigate = useNavigate();
 
     const form = useForm<closeStoreFormValues>();
-
+    const [value, setValue] = useState('');
     const userId = useAppSelector((state: RootState) => state.auth.userId);
     const isLoading = useAppSelector((state: RootState) => state.store.isLoading);
     const error = useAppSelector((state: RootState) => state.store.error);
-
+    const stores = useAppSelector((state: RootState) => state.store.storeInfoResponseData);
+    const storesNames = stores.map(store => store.name);
 
 
     const handleOnClose = useCallback(() => {
@@ -33,8 +35,12 @@ const CloseStore = () => {
 
     const handleOnSubmit = () => {
         form.setValue("userId", userId);
+        form.setValue("storeId", stores?.filter(store => store.name === value)[0].storeId);
         dispatch(closeStorePerminently(form.getValues()));
         handleOnClose();
+    }
+    const handleChange = (event: SelectChangeEvent) => {
+        setValue(event.target.value as string);
     }
     return (
         <>
@@ -62,27 +68,11 @@ const CloseStore = () => {
                     >
                         <Grid item xs={12}>
                             <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
-                                please enter the store id
+                                please choose the store
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                name="stoer id"
-                                type="text"
-                                fullWidth
-                                label="store id"
-                                sx={{ mt: 1, mb: 1 }}
-                                inputProps={{
-                                    ...form.register('storeId', {
-                                        required: {
-                                            value: true,
-                                            message: "store id is required"
-                                        }
-                                    })
-                                }}
-                                error={!!form.formState.errors['storeId'] ?? false}
-                                helperText={form.formState.errors['storeId']?.message ?? undefined}
-                            />
+                            <SelectAutoWidth label={'stores in system'} values={storesNames} labels={storesNames} value={value} handleChange={handleChange} />
                         </Grid>
                         <Grid item xs={12}>
                             <LoadingButton

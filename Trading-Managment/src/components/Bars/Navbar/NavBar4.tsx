@@ -45,7 +45,12 @@ const Bar4: React.FC<Props> = ({ headLine }) => {
     const adminActions: Action[] = [Action.addAdmin, Action.closeStorePerminently, Action.seeComplaints, Action.cancelMembership, Action.updateServices];
 
     const handleLogout = () => {
-        dispatch(logout(userId));
+        dispatch(logout(userId))
+            .then(() => {
+                navigate('/auth/login');
+            }).catch((err) => {
+                console.log(err);
+            });
         navigate('/auth/login');
     };
     const handleNotification = () => {

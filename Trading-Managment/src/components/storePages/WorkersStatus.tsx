@@ -62,8 +62,8 @@ const WorkersStatus = () => {
                                         </Typography>
                                         {person.managerPermissions.map((permission, index) => {
                                             return (
-                                                <Typography sx={{ fontSize: 14, ml: 10 }} color="text.secondary" gutterBottom>
-                                                    {permission}
+                                                <Typography key={index} sx={{ fontSize: 14, ml: 10 }} color="text.secondary" gutterBottom>
+                                                    <h3>&#x2022; {permission}</h3>
                                                 </Typography>
                                             );
                                         }
@@ -72,12 +72,6 @@ const WorkersStatus = () => {
                                 </CardContent>
 
                                 <CardActions>
-                                    {/* <IconButton onClick={() => handleClickOrder(order.orderId)}>
-                                    <InfoIcon />
-                                </IconButton>
-                                <IconButton onClick={() => navigate(`${order.orderId}/sendComplaint`)}>
-                                    <RateReviewIcon />
-                                </IconButton> */}
                                 </CardActions>
                             </Card>
                         )
