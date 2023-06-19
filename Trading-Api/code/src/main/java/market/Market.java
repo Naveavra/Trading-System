@@ -3,6 +3,7 @@ package market;
 import database.daos.Dao;
 import domain.states.Permissions;
 import domain.store.storeManagement.AppHistory;
+import domain.store.storeManagement.Bid;
 import domain.user.Member;
 import domain.user.StringChecks;
 import domain.user.PurchaseHistory;
@@ -52,14 +53,14 @@ public class Market implements MarketInterface {
         try {
             proxyPayment = new ProxyPayment(new ESConfig());
         } catch (Exception e) {
-            System.out.println("Error with the connection to the external service: " + e.getMessage());
+            System.out.println("Error with the connection to the external payment service: " + e.getMessage());
             System.exit(-1);
         }
 
         try {
             proxySupplier = new ProxySupplier(new ESConfig());
         } catch (Exception e) {
-            System.out.println("Error with the connection to the external service: " + e.getMessage());
+            System.out.println("Error with the connection to the external supplier service: " + e.getMessage());
             System.exit(-1);
         }
 
@@ -315,13 +316,15 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public synchronized Response<Receipt> puchaseBid(String token, int userId, int storeId, int prodId, double price, int quantity, JSONObject paymentDetails, JSONObject supplierDetails) {
+    public synchronized Response<Receipt> purchaseBid(String token, int userId, int storeId, int bidId, JSONObject paymentDetails, JSONObject supplierDetails) {
         try {
             userAuth.checkUser(userId, token);
-            proxyPayment.makePurchase(paymentDetails, getStorePaymentDetails(storeId), price);
-            proxySupplier.orderSupplies(supplierDetails, storeId, prodId, quantity);
-            Pair<Receipt, Set<Integer>> ans = marketController.purchaseBid(userController.getUser(userId), storeId, prodId, price,
-                    quantity);
+            Bid bid = marketController.getBid(storeId, bidId);
+            proxyPayment.makePurchase(paymentDetails, getStorePaymentDetails(storeId), bid.getOffer());
+            proxySupplier.orderSupplies(supplierDetails, storeId, bid.getProductId(), bid.getQuantity());
+            Pair<Receipt, Set<Integer>> ans = marketController.purchaseBid(userController.getUser(userId), storeId,
+                    bid.getProductId(), bid.getOffer(), bid.getQuantity());
+            bid.setStatus(Bid.status.Completed);
             return getReceiptResponse(userId, ans);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
@@ -383,14 +386,19 @@ public class Market implements MarketInterface {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
-//            proxyPayment.makePurchase(payment, totalPrice);
-//            proxySupplier.orderSupplies(supplier, cart);
+            proxyPayment.makePurchase(payment, getStorePaymentDetails(cart), totalPrice);
+            proxySupplier.orderSupplies(supplier, cart);
+            userController.addNotification(userId, new Notification(NotificationOpcode.GET_CLIENT_DATA, "your purchase has been approved"));
             return getReceiptResponse(userId, ans);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
                     StringChecks.curDayString(), userController.getUserName(userId),
                     null, "make purchase failed", e.getMessage());
         }
+    }
+
+    private JSONObject getStorePaymentDetails(ShoppingCart cart) {
+        return new JSONObject();
     }
 
 
@@ -1094,12 +1102,11 @@ public class Market implements MarketInterface {
         }
     }
     @Override
-    public Response editBid(String token, int userId, int storeId,  double price,int quantity, int bidId) {
+    public Response editBid(String token, int userId,  int bidId, int storeId, double price,int quantity) {
         try {
             userAuth.checkUser(userId, token);
             // im assuming there is no need to check permission for this action
-            Member user = userController.getMember(userId);
-            List<String> workerNames = marketController.editBid(storeId, bidId, price,quantity);
+            List<String> workerNames = userController.editBid(userId, bidId, storeId, price, quantity);
             for(String name : workerNames)
                 userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a new bid was placed in store: " + storeId +" for bid: " + bidId));

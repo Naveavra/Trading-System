@@ -27,7 +27,6 @@ const ShopsBar: React.FC = () => {
                         style={{ margin: '0 10px', marginLeft: '20px' }}
                         className='shop-list__link'
                         onClick={(e) => {
-                            debugger;
                             e.preventDefault();
                             dispatch(setWhatchedStoreInfo(shop.storeId));
                             navigate(`store/${shop.storeId}/visitor`);

@@ -56,32 +56,41 @@ const RegularBids = () => {
                                         time: {bid.time}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        need to approve:
+                                        approvers :
                                     </Typography>
-                                    {bid.approvers.map((approver, index) => {
+                                    {bid.approved?.map((approver, index) => {
                                         return (
                                             <Typography sx={{ fontSize: 14, ml: 5 }} color="text.secondary" gutterBottom key={index}>
                                                 {approver}
                                             </Typography>
                                         )
                                     })}
-                                    {
-                                        bid.state === status.Approved ?
-                                            <Alert severity="success">approved</Alert> :
-                                            bid.state === status.Counter ?
-                                                <>
-                                                    <Alert severity="info">counter</Alert>
-                                                </> :
-                                                bid.state === status.Pending ?
-                                                    <Alert severity="info">pending</Alert> :
-                                                    <Alert severity="error">rejected</Alert>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                       need to approve :
+                                    </Typography>
+                                    {bid.notApproved?.map((approver, index) => {
+                                        return (
+                                            <Typography sx={{ fontSize: 14, ml: 5 }} color="text.secondary" gutterBottom key={index}>
+                                                {approver}
+                                            </Typography>
+                                        )
+                                    })}
+                                    {bid.state === status.Completed ?
+                                        <>
+                                        <Alert severity="success">Completed</Alert>
+                                        </> :
+                                    bid.state === status.Approved ?
+                                        <Alert severity="info">approved</Alert> :
+                                        bid.state === status.Pending ?
+                                            <Alert severity="info">pending</Alert> :
+                                            <Alert severity="error">rejected</Alert>
                                     }                                </CardContent>
                                 <CardActions>
-                                    {actions.filter((action) => action === Action.updateProduct).length > 0 ?
+                                    {bid.notApproved?.length != 0 &&
+                                    actions.filter((action) => action === Action.updateProduct).length > 0 ?
                                         <>
                                             <IconButton onClick={() => navigate(`${store.storeId}/${bid.product.productId}/${bid.bidId}/answerBid`)}>
                                                 <QuestionAnswerIcon />
-
                                             </IconButton>
                                             <IconButton onClick={() => navigate(`${store.storeId}/${bid.product.productId}/${bid.bidId}/counterBid`)}>
                                                 <WalletIcon />
@@ -95,6 +104,6 @@ const RegularBids = () => {
                 }
             </Box>
         </>
-    );
+    )
 }
 export default RegularBids;

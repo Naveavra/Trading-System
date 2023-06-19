@@ -11,19 +11,19 @@
 
 import { EmptyProduct, Product } from "./Product";
 
-export enum status { Declined = "Declined", Approved = "Approved", Pending = "Pending",Counter= "Counter" };
+export enum status { Declined = "Declined", Approved = "Approved", Pending = "Pending",Counter= "Counter", Completed = "Completed"};
 // public String counter;
 export interface Bid {
     bidId: number;
     storeId: number;
-    product: Product;
     offer: Number;
+    product: Product;
     quantity: number;
+    userId: number;
     state: status;
     time: string;
-    userId: number;
-    userName: string;
-    approvers: string[];
+    approved: string[];
+    notApproved: string[];
     count: string;
 }
 export const EmptyBid: Bid = {
@@ -35,8 +35,8 @@ export const EmptyBid: Bid = {
     state: status.Pending,
     time: '',
     userId: -1,
-    userName: '',
-    approvers: [],
+    approved: [],
+    notApproved: [],
     count: '',
 }
 

@@ -11,14 +11,12 @@ import utils.infoRelated.Information;
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public abstract class Message extends Information implements DbEntity {
-
     @Id
     protected int messageId;
-
     @Transient
     protected NotificationOpcode opcode;
-    protected String content;
 
+    protected String content;
     @Transient
     protected Member sender;
     protected int senderId;

@@ -452,7 +452,7 @@ public class API {
         return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> editBid(String token, int storeId , int userId, double price, int quantity, int bidId) {
-        Response<String> res = market.editBid(token, userId, storeId, price,quantity, bidId);
+        Response<String> res = market.editBid(token, userId, bidId, storeId, price,quantity);
         return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> addShoppingRule(String token, int storeId, int userId, String purchasePolicy,String content) {
@@ -463,8 +463,8 @@ public class API {
         Response<String> res = market.deletePurchasePolicy(token, userId, storeId, purchasePolicyId);
         return fromResToPair(res);
     }
-    public Pair<Boolean, JSONObject> purchaseBid(String token, int userId, int storeId, int prodId, double price, int quantity, JSONObject paymentDetails, JSONObject supplierDetails) {
-        Response<Receipt> res = market.puchaseBid(token, userId, storeId, prodId, price, quantity, paymentDetails, supplierDetails);
+    public Pair<Boolean, JSONObject> purchaseBid(String token, int userId, int storeId, int bidId, JSONObject paymentDetails, JSONObject supplierDetails) {
+        Response<Receipt> res = market.purchaseBid(token, userId, storeId, bidId, paymentDetails, supplierDetails);
         return fromResToPair(res);
     }
     public Pair<Boolean, JSONObject> clientAcceptCounter(String token, int bidId, int storeId) {

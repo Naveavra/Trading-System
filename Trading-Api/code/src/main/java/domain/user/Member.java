@@ -350,6 +350,15 @@ public class Member extends Subscriber implements User{
     }
     public List<Bid> getBids(){return this.bids;}
 
+    public List<String> editBid(int bidId, int storeId, double offer, int quantity) throws Exception{
+        for(Bid bid : bids)
+            if(bid.getBidId() == bidId && bid.getStoreId() == storeId) {
+                bid.editBid(offer, quantity);
+                return bid.getApprovers();
+            }
+        throw new Exception("the bidId given does not belong to the member");
+    }
+
     //database
 
     @Override

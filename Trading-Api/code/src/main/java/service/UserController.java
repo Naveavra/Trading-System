@@ -675,4 +675,8 @@ public class UserController {
         }
     }
 
+    public List<String> editBid(int userId, int bidId, int storeId, double price, int quantity) throws Exception{
+        Member member = getActiveMember(userId);
+        return member.editBid(bidId, storeId, price, quantity);
+    }
 }

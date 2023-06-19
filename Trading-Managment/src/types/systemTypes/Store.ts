@@ -21,7 +21,7 @@ export interface Store {
     roles: RoleInStore[];
     bids: Bid[];
     discounts: string[];
-    shopingRules: string[];
+    purchasePolicies: string[];
     //todo add purchase and discount policy
 }
 export const emptyStore: Store = {

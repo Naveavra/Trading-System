@@ -53,14 +53,39 @@ const BiddingCenter = () => {
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                         time: {bid.time}
                                     </Typography>
-                                    {bid.state === status.Approved ?
-                                        <Alert severity="success">approved</Alert> :
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        approvers :
+                                    </Typography>
+                                    {bid.approved?.map((approver, index) => {
+                                        return (
+                                            <Typography sx={{ fontSize: 14, ml: 5 }} color="text.secondary" gutterBottom key={index}>
+                                                {approver}
+                                            </Typography>
+                                        )
+                                    })}
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                       need to approve :
+                                    </Typography>
+                                    {bid.notApproved?.map((approver, index) => {
+                                        return (
+                                            <Typography sx={{ fontSize: 14, ml: 5 }} color="text.secondary" gutterBottom key={index}>
+                                                {approver}
+                                            </Typography>
+                                        )
+                                    })}
+                                    {bid.state === status.Completed ?
+                                        <>
+                                        <Alert severity="success">Completed</Alert>
+                                        </> :
+                                    bid.state === status.Approved ?
+                                        <Alert severity="info">approved</Alert> :
                                         bid.state === status.Pending ?
                                             <Alert severity="info">pending</Alert> :
                                             <Alert severity="error">rejected</Alert>
                                     }                                </CardContent>
                                 <CardActions>
-                                    {actions.filter((action) => action === Action.updateProduct).length > 0 ?
+                                    {bid.notApproved?.length != 0 &&
+                                    actions.filter((action) => action === Action.updateProduct).length > 0 ?
                                         <>
                                             <IconButton onClick={() => navigate(`${store.storeId}/${bid.product.productId}/${bid.bidId}/answerBid`)}>
                                                 <QuestionAnswerIcon />
