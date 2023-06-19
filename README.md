@@ -5,6 +5,89 @@ Members: Nave Avraham, Eli Ben-Shimol, Ziv Cohen-Gvura, Michael Daniarov, Chai-S
 
 Introducing a trading system inspired by Amazon's success, our innovative approach revolutionizes the financial markets. We prioritize customer-centricity, utilizing advanced algorithms and data analytics to identify profitable trading opportunities. By implementing this system, investors can experience the spirit of Amazon's triumph, driving them towards financial growth and prosperity.
 
+## Configuration File (`config.json`)
+
+The `config.json` file contains the configuration settings for the system or application. It provides a structured way to define various parameters and options used by the software.
+
+### File Structure
+
+```json
+{
+  "Database": {
+    "DB_DRIVER": "com.mysql.cj.jdbc.Driver",
+    "DB_URL": "jdbc:mysql://<ip_address>/<db_name>",
+    "DB_USER": "root",
+    "DB_PASS": "<db_password>",
+    "DB_SHOW_SQL": "true",
+    "DB_CURRENT_SESSION_CONTEXT_CLASS": "thread",
+    "DB_HBM2DDL_AUTO": "update"
+  },
+  "ExternalService": {
+    "Payment": {
+      "NAME": "<Supplier_name>",
+      "URL": "<Service_url>",
+      "RESPONSE_TIME": <response_time>
+    },
+    "Supply": {
+      "NAME": "<Supplier_name>",
+      "URL": "<Service_url>",
+      "RESPONSE_TIME": <response_time>
+    }
+  },
+  "Server_Back": {
+    "IP": "<ip_address>",
+    "Port": <port_number>
+  },
+  "Server_Front": {
+    "Port": <port_number>
+  },
+  "Admin": {
+    "EMAIL": "<admin_mail>",
+    "PASSWORD": "<legal_password>"
+  }
+}
+```
+**File Structure**
+
+- **Database**: Contains configuration settings related to the database connection and setup. It includes the following parameters:
+  - DB_DRIVER: The database driver, such as "com.mysql.cj.jdbc.Driver".
+  - DB_URL: The URL for the database connection, like "jdbc:mysql://<ip_address>/<db_name>".
+  - DB_USER: The username for the database authentication, typically "root".
+  - DB_PASS: The password for the database authentication.
+  - DB_SHOW_SQL: A boolean value ("true" or "false") indicating whether to display SQL queries.
+  - DB_CURRENT_SESSION_CONTEXT_CLASS: The session context class for the database.
+  - DB_HBM2DDL_AUTO: The HBM2DDL auto configuration for the database.
+
+- **ExternalService**: Defines external services utilized by the application. It includes the following sub-parameters:
+  - Payment: Represents the payment service with the parameters:
+    - NAME: The name of the supplier.
+    - URL: The URL for the payment service.
+    - RESPONSE_TIME: The response time for the payment service.
+  - Supply: Represents the supply service with the parameters:
+    - NAME: The name of the supplier.
+    - URL: The URL for the supply service.
+    - RESPONSE_TIME: The response time for the supply service.
+
+- **Server_Back**: Specifies the configuration for the backend server. It includes the following parameters:
+  - IP: The IP address of the backend server.
+  - Port: The port number on which the backend server will listen.
+
+- **Server_Front**: Specifies the configuration for the frontend server. It includes the following parameters:
+  - Port: The port number on which the frontend server will be accessible.
+
+- **Admin**: Contains the credentials for the system administrator. It includes the following parameters:
+  - EMAIL: The email address of the admin.
+  - PASSWORD: The password for the admin's account.
+
+**Usage**
+
+Modify the values in the config.json file according to your specific requirements. Make sure to provide the correct database connection details, external service information, server configurations, and administrator credentials.
+
+This configuration file is used by the system or application to retrieve the necessary settings at runtime. 
+Modify the values in the config.json file according to your specific requirements. Make sure to provide the correct database connection details, external service information, server configurations, and administrator credentials.
+
+This configuration file is used by the system or application to retrieve the necessary settings at runtime. 
+
 
 
 
@@ -38,6 +121,5 @@ Congratulations! The setup is complete. To run the code:
 npm install 
 npm run dev
 ``` 
- and "npm run dev" assuming you are utilizing the "code" command.
 3. Once all the setup steps are completed, you can access the system by visiting the address http://localhost:5173/ in your web browser. Enjoy using the system and explore its functionalities at your convenience.
 
