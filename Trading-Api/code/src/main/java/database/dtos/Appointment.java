@@ -7,10 +7,11 @@ import domain.states.StoreOwner;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
-import domain.user.User;
 import jakarta.persistence.*;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
+import utils.messageRelated.Notification;
+import utils.messageRelated.NotificationOpcode;
 import utils.stateRelated.Role;
 
 import java.util.ArrayList;
@@ -92,6 +93,10 @@ public class Appointment extends Information implements DbEntity {
         this.childName = childName;
     }
 
+    public boolean getApproved(){
+        return approved;
+    }
+
     public void approve(String name) throws Exception {
         if(approved)
             throw new Exception("the appointment was already approved");
@@ -123,6 +128,9 @@ public class Appointment extends Information implements DbEntity {
                     state = new StoreOwner(getChildId(), childName, store);
                 store.appointUser(fatherId, child, state);
                 child.changeRoleInStore(state, store);
+                Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA,
+                        String.format("you have been appointed to %s in store: %d", role.toString(), storeId));
+                child.addNotification(notify);
                 approved = true;
             }catch (Exception ignored){}
         }
@@ -132,7 +140,7 @@ public class Appointment extends Information implements DbEntity {
     }
 
 
-    private List<String> getApproved() {
+    private List<String> getApprovedNames() {
         List<String> ans = new ArrayList<>();
         for(String name : approvers.keySet())
             if(approvers.get(name))
@@ -154,7 +162,7 @@ public class Appointment extends Information implements DbEntity {
         json.put("memane", fatherName);
         json.put("memune", childName);
         json.put("role", role.toString());
-        json.put("approved", getApproved());
+        json.put("approved", getApprovedNames());
         json.put("notApproved", getNotApproved());
         json.put("status", approved);
         return json;

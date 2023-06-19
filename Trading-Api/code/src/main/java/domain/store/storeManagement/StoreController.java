@@ -278,6 +278,10 @@ public class StoreController {
 //        throw new Exception("store doesnt Exist or Open");
     }
 
+    public void answerAppointment(String userName, int storeId, String fatherName, String childName, String ans) throws Exception{
+        Store store = getActiveStore(storeId);
+        store.answerAppointment(userName, fatherName, childName, ans);
+    }
     public AppHistory getAppointments(int storeId) throws Exception{
         Store store = getActiveStore(storeId);
         return store.getAppHistory();

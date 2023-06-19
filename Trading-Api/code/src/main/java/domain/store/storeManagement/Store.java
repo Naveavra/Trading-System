@@ -261,7 +261,23 @@ public class Store extends Information implements DbEntity {
     }
 
     public void addAppointment(Appointment appointment) {
-        appointments.add(appointment);
+        if(!appointment.getApproved())
+            appointments.add(appointment);
+    }
+
+    public void answerAppointment(String userName, String fatherName, String childName, String ans) throws Exception{
+        for(Appointment appointment : appointments)
+            if(appointment.getFatherName().equals(fatherName) && appointment.getChildName().equals(childName)){
+                if(ans.equals("true")){
+                    appointment.approve(userName);
+                    if(appointment.getApproved())
+                        appointments.remove(appointment);
+                }
+                else if(ans.equals("false")){
+                    if(appointment.canDeny(userName))
+                        appointments.remove(appointment);
+                }
+            }
     }
 
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
@@ -546,7 +562,7 @@ public class Store extends Information implements DbEntity {
 
     public StoreInfo getStoreInformation() {
         StoreInfo info = new StoreInfo(storeId, storeName, storeDescription, isActive, creator.getId(), getStoreRating(),
-                imgUrl, bids);
+                imgUrl, bids, appointments);
         return info;
     }
 
@@ -595,6 +611,7 @@ public class Store extends Information implements DbEntity {
         json.put("bids", infosToJson(getBids()));
         json.put("discounts", getDiscountsContent());
         json.put("purchasePolicies",getPurchasePolicies());
+        json.put("appointments", infosToJson(appointments));
         return json;
     }
 

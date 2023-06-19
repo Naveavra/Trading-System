@@ -196,6 +196,10 @@ public class MarketController {
         return storectrl.getStoreOrderHistory(storeId);
     }
 
+    public void answerAppointment(String userName, int storeId, String fatherName, String childName, String ans) throws Exception{
+        storectrl.answerAppointment(userName, storeId, fatherName, childName, ans);
+    }
+
     public AppHistory getAppointments(int storeId) throws Exception {
         return storectrl.getAppointments(storeId);
     }

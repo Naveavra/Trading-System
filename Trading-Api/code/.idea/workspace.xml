@@ -5,14 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="merging code">
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/AppApproved.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/AppointmentDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/states/UserState.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/store/DiscountTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/DiscountTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/StoreInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/StoreInfo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +90,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.runServer">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -210,7 +216,7 @@
       <workItem from="1687079555190" duration="12164000" />
       <workItem from="1687155489402" duration="1285000" />
       <workItem from="1687158769895" duration="885000" />
-      <workItem from="1687160066327" duration="24960000" />
+      <workItem from="1687160066327" duration="28391000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -286,7 +292,7 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>665</line>
+          <line>677</line>
           <option name="timeStamp" value="68" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
@@ -311,12 +317,12 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>304</line>
+          <line>316</line>
           <option name="timeStamp" value="203" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>621</line>
+          <line>633</line>
           <option name="timeStamp" value="205" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -326,7 +332,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>685</line>
+          <line>697</line>
           <option name="timeStamp" value="234" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

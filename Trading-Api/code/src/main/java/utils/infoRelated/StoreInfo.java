@@ -1,5 +1,6 @@
 package utils.infoRelated;
 
+import database.dtos.Appointment;
 import domain.store.storeManagement.Bid;
 import org.json.JSONObject;
 
@@ -16,8 +17,9 @@ public class StoreInfo extends Information{
     private String imgUrl;
 
     private List<Bid> bids; // only open bids
+    private List<Appointment> appointments;
     public StoreInfo(int storeId, String name, String description, boolean isActive, int creatorId, double rating, String url,
-                        List<Bid> bids) {
+                     List<Bid> bids, List<Appointment> appointments) {
         this.storeId = storeId;
         storeName = name;
         this.description = description;
@@ -26,6 +28,7 @@ public class StoreInfo extends Information{
         this.rating = rating;
         imgUrl = url;
         this.bids = bids;
+        this.appointments = appointments;
     }
 
     public int getStoreId(){
@@ -64,6 +67,7 @@ public class StoreInfo extends Information{
         json.put("rating", getRating());
         json.put("img", getUrl());
         json.put("bids", infosToJson(bids));
+        json.put("appointments", infosToJson(appointments));
         return json;
     }
 }
