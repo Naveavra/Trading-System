@@ -577,6 +577,7 @@ public class Server {
             int prodId = Integer.parseInt(request.get("prodId").toString());
             String discountedCategory = request.get("discountedCategory").toString();
             String predicates = request.get("predicates").toString();
+            String content = req.body();
             JSONObject predicatesJson = new JSONObject(request.get("predicates"));
             List<String> predicatesLst =null;
             if (!predicates.equals("null")) {
@@ -585,7 +586,7 @@ public class Server {
             }
             String token = req.headers("Authorization");
             toSparkRes(res, api.changeRegularDiscount(userId, token, storeId, prodId, percentage, discountType,
-                    discountedCategory, predicatesLst));
+                    discountedCategory, predicatesLst,content));
             return res.body();
         });
         post("api/discounts/composite", (req, res) -> {
@@ -608,6 +609,8 @@ public class Server {
 //            String token = req.headers("Authorization");
 //            toSparkRes(res, api.changeRegularDiscount(userId, token, storeId, prodId, percentage, discountType,
 //                    discountedCategory, predicatesLst));
+            String token = req.headers("Authorization");
+            toSparkRes(res,api.addCompositeDiscount(token,req.body()));
             return res.body();
         });
 
@@ -708,7 +711,7 @@ public class Server {
            int storeId = Integer.parseInt(request.get("storeId").toString());
            int userId = Integer.parseInt(request.get("userId").toString());
            String purchasePolicy = request.get("purchasePolicy").toString();
-           toSparkRes(res, api.addShoppingRule(token, storeId, userId, purchasePolicy));
+           toSparkRes(res, api.addShoppingRule(token, storeId, userId, purchasePolicy,req.body()));
            return res.body();
         });
         delete("api/shoppingRule", (req, res) ->{

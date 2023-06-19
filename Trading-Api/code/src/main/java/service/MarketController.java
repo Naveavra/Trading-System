@@ -243,9 +243,9 @@ public class MarketController {
         storectrl.checkProductInStore(storeId, productId);
     }
 
-    public void changeRegularDiscount(int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst) throws Exception {
+    public void changeRegularDiscount(int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst,String content) throws Exception {
         storectrl.changeRegularDiscount(storeId, prodId, percentage, discountType,
-                discountedCategory, predicatesLst);
+                discountedCategory, predicatesLst,content);
     }
 
     public int getStoreId(String storeName) throws Exception{
@@ -285,9 +285,9 @@ public class MarketController {
         //send a message to all shop owners and people who need to approve this bid.
     }
 
-    public void addPurchaseConstraint(int storeId, String purchasePolicy)throws Exception {
+    public void addPurchaseConstraint(int storeId, String purchasePolicy,String content)throws Exception {
         Store s = storectrl.getActiveStore(storeId);
-        s.addPurchasePolicy(purchasePolicy);
+        s.addPurchasePolicy(purchasePolicy,content);
     }
 
     public void deletePurchaseConstraint(int userId, int storeId, int purchasePolicyId) {
@@ -323,6 +323,13 @@ public class MarketController {
     public void clientAcceptCounter(int bidId, int storeId) throws Exception {
         Store store = storectrl.getActiveStore(storeId);
         store.clientAcceptCounter(bidId);
+    }
+
+    public void addCompositeDiscount(String body) throws Exception {
+        JSONObject req = new JSONObject(body);
+        int storeId = Integer.parseInt(req.get("storeId").toString());
+        Store s = storectrl.getActiveStore(storeId);
+        s.addCompositeDiscount(req);
     }
 
 //    public Set<Integer> clientAcceptCounter(int bidId, int storeId) throws Exception {
