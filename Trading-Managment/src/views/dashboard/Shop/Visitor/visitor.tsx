@@ -112,7 +112,7 @@ const Visitor: React.FC = () => {
                                     <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
                                         store shopping rules:
                                     </Typography >
-                                    {store.shoppingRules?.map((shopRule) => {
+                                    {store.purchasePolicies?.map((shopRule) => {
                                         return (
                                             <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 10, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
                                                 <h3>&#x2022;{shopRule} </h3>

@@ -72,7 +72,6 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
         dispatch(setCategoryToRegularDiscount(input));
     }
     const handleOnSubmit = () => {
-        debugger;
         if (tree) {
             dispatch(addRegularDiscountToSource({
                 source: sorce,

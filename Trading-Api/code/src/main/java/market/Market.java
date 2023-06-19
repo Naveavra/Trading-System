@@ -366,14 +366,19 @@ public class Market implements MarketInterface {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
-//            proxyPayment.makePurchase(payment, totalPrice);
-//            proxySupplier.orderSupplies(supplier, cart);
+            proxyPayment.makePurchase(payment, getStorePaymentDetails(cart), totalPrice);
+            proxySupplier.orderSupplies(supplier, cart);
+            userController.addNotification(userId, new Notification(NotificationOpcode.GET_CLIENT_DATA, "your purchase has been approved"));
             return getReceiptResponse(userId, ans);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
                     StringChecks.curDayString(), userController.getUserName(userId),
                     null, "make purchase failed", e.getMessage());
         }
+    }
+
+    private JSONObject getStorePaymentDetails(ShoppingCart cart) {
+        return new JSONObject();
     }
 
 
