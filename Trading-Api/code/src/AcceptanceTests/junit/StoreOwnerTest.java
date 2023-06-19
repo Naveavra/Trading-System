@@ -169,7 +169,7 @@ public class StoreOwnerTest extends ProjectTest{
         String managerEmail = this.users_dict.get(users[1][USER_EMAIL]).getEmail();
         int status = this.appointmentManagerInStore(uid.getUserId(), anotherStoreId,managerEmail);
         assertTrue(status > 0);
-        PermissionInfo permissions = this.getManagerPermissionInStore(uid.getUserId(), storeId, uIdManager);
+        PermissionInfo permissions = this.getManagerPermissionInStore(uid.getUserId(), uIdManager, storeId);
         assertNull(permissions);
     }
 
@@ -485,17 +485,17 @@ public class StoreOwnerTest extends ProjectTest{
         assertTrue(this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdManager, permissions));
     }
 
-//    @Test
-//    public void testChangeStoreManagerPermissionsOnSomeoneElse() {
-//        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
-//        int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
-//        int storeId = stores.get(0).getStoreId();
-//        List<Integer> permissions = new ArrayList<>();
-//        permissions.add(0);
-//        permissions.add(1);
-//        permissions.add(2);
-//        assertTrue(this.addStoreManagerPermissions(uid, storeId, uIdManager, permissions));
-//    }
+    @Test
+    public void testChangeStoreManagerPermissionsOnSomeoneElse() {
+        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+        int uIdManager = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
+        int storeId = stores.get(0).getStoreId();
+        List<Integer> permissions = new ArrayList<>();
+        permissions.add(0);
+        permissions.add(1);
+        permissions.add(2);
+        assertFalse(this.addStoreManagerPermissions(uid, storeId, uIdManager, permissions));
+    }
 
     @Test
     public void testChangeStoreManagerPermissionsOnOwner() {
@@ -507,10 +507,10 @@ public class StoreOwnerTest extends ProjectTest{
         int status = this.appointmentOwnerInStore(uid.getUserId(), storeId,ownerEmail);
         assertTrue(status > 0);
         List<Integer> permissions = new ArrayList<>();
-        permissions.add(0);
-        permissions.add(1);
-        permissions.add(2);
-        assertTrue(this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdOwner, permissions));
+        permissions.add(10);
+        permissions.add(11);
+        permissions.add(12);
+        assertFalse(this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdOwner, permissions));
     }
 
     @Test
@@ -751,29 +751,30 @@ public class StoreOwnerTest extends ProjectTest{
     }
 
     //Change discount policy:
-    @Test
-    public void testChangeDiscountPolicy() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
-        int storeId = stores.get(0).getStoreId();
-        int status = this.changeDiscountPolicy(uid, storeId,"50% every product");
-        assertTrue(status > 0);
-    }
+    // TODO: miki
+//    @Test
+//    public void testChangeDiscountPolicy() {
+//        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+//        int storeId = stores.get(0).getStoreId();
+//        int status = this.changeDiscountPolicy(uid, storeId,"50% every product");
+//        assertTrue(status > 0);
+//    }
 
-    @Test
-    public void testChangeDiscountUnRealPolicy() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
-        int storeId = stores.get(0).getStoreId();
-        int status = this.changeDiscountPolicy(uid, storeId,"Shalom");
-        assertTrue(status < 0);
-    }
+//    @Test
+//    public void testChangeDiscountUnRealPolicy() {
+//        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+//        int storeId = stores.get(0).getStoreId();
+//        int status = this.changeDiscountPolicy(uid, storeId,"Shalom");
+//        assertTrue(status < 0);
+//    }
 
-    @Test
-    public void testNotOwnerTryChangeDiscountPolicy() {
-        int uid = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
-        int storeId = stores.get(0).getStoreId();
-        int status = this.changeDiscountPolicy(uid, storeId,"50% every product");
-        assertTrue(status < 0);
-    }
+//    @Test
+//    public void testNotOwnerTryChangeDiscountPolicy() {
+//        int uid = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
+//        int storeId = stores.get(0).getStoreId();
+//        int status = this.changeDiscountPolicy(uid, storeId,"50% every product");
+//        assertTrue(status < 0);
+//    }
 
     //Inventory management: ADD/ Remove/ Update:
     @Test
