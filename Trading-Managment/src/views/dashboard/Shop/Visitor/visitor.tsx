@@ -100,10 +100,10 @@ const Visitor: React.FC = () => {
                                     <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
                                         store discounts:
                                     </Typography >
-                                    {store.discounts?.map((discount) => {
+                                    {store.discounts?.map((discount, index) => {
                                         return (
-                                            <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 10, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
-                                                {discount?.description}
+                                            <Typography key = {index} variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 10, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
+                                                {discount}
                                             </Typography >
                                         )
                                     })}

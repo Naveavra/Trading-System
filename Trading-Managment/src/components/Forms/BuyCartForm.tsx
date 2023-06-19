@@ -33,6 +33,7 @@ const BuyCart: React.FC<props> = ({ personal }) => {
     const suppliers = useAppSelector((state) => state.payment.suppliers);
     const payments = useAppSelector((state) => state.payment.paymentServices);
     const pError = useAppSelector((state) => state.payment.error);
+    console.log("err",pError);
 
 
     //for bid
@@ -63,7 +64,7 @@ const BuyCart: React.FC<props> = ({ personal }) => {
         form.setValue('supply_service', supplier);
         form.setValue('payment_service', payment);
         if (personal) {
-            dispatch(buyProductInBid({ userId: userId, storeId: bid.storeId, productId: bid.product.productId, price: bid.offer, quantity: bid.quantity, details: form.getValues() }))
+            dispatch(buyProductInBid({ userId: userId, storeId: bid.storeId,bidId:bid.bidId, details: form.getValues() }))
         }
         else {
             dispatch(buyCart(form.getValues()));
@@ -99,7 +100,7 @@ const BuyCart: React.FC<props> = ({ personal }) => {
                         component="form"
                         onSubmit={handleOnSubmit}
                     >
-                        {pError === ""
+                        {pError === null 
                             ? <Grid item xs={12}>
                                 <Typography component="h1" sx={{ alignContent: 'center', align: 'center', textAlign: 'center' }} >
                                     enter the following details
@@ -328,7 +329,7 @@ const BuyCart: React.FC<props> = ({ personal }) => {
                             <LoadingButton
                                 type="submit"
                                 fullWidth
-                                disabled={!!pError}
+                                disabled={pError !== null}
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                                 loading={isLoading}

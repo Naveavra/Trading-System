@@ -62,7 +62,7 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(DiscountDto.class);
 
                 configuration.addAnnotatedClass(Bid.class);
-                configuration.addAnnotatedClass(ApprovedDto.class);
+                configuration.addAnnotatedClass(ApproverDto.class);
 
                 configuration.addAnnotatedClass(Event.class);
 

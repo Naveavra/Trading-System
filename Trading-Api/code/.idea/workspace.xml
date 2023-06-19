@@ -206,7 +206,7 @@
       <workItem from="1687079555190" duration="12164000" />
       <workItem from="1687155489402" duration="1285000" />
       <workItem from="1687158769895" duration="885000" />
-      <workItem from="1687160066327" duration="9425000" />
+      <workItem from="1687160066327" duration="19067000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -302,7 +302,7 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/market/Market.java</url>
-          <line>628</line>
+          <line>631</line>
           <option name="timeStamp" value="191" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
@@ -354,6 +354,11 @@
         <PinnedItemInfo parentTag="spark.Request" memberName="matchedPath" />
       </pinned-members>
     </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="((HashMap)request.map).entrySet().toArray()[2]" custom="java.util.HashMap" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/code$UserControllerTest_checkNewImp.ic" NAME="UserControllerTest.checkNewImp Coverage Results" MODIFIED="1686279744864" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
