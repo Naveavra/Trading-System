@@ -87,4 +87,9 @@ public class Basket{
         }
         return total;
     }
+
+    public List<ProductInfo> getProductList()
+    {
+        return this.productList;
+    }
 }
