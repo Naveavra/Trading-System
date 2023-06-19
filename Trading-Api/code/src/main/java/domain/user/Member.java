@@ -209,18 +209,18 @@ public class Member extends Subscriber implements User{
         return purchaseHistory;
     }
 
-    public void appointToManager(Member appointed, int storeId) throws Exception {
+    public List<String> appointToManager(Member appointed, int storeId) throws Exception {
         UserState state = getActiveRole(storeId);
-        state.appointManager(appointed);
+        return state.appointManager(appointed);
     }
 
     public Set<Integer> fireManager(int appointedId, int storeId) throws Exception{
         UserState state = getActiveRole(storeId);
         return state.fireManager(appointedId);
     }
-    public void appointToOwner(Member appointed, int storeId) throws Exception {
+    public List<String> appointToOwner(Member appointed, int storeId) throws Exception {
         UserState state = getActiveRole(storeId);
-        state.appointOwner(appointed);
+        return state.appointOwner(appointed);
     }
     public Set<Integer> fireOwner(int appointedId, int storeId) throws Exception{
         UserState state = getActiveRole(storeId);

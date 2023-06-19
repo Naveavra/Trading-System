@@ -285,6 +285,18 @@ public class Server {
             toSparkRes(res, api.appointManager(userId, token, newManager, storeId));
             return res.body();
         });
+
+        post("api/stores/:id/appointments/answer", (req, res) -> {
+            JSONObject request = new JSONObject(req.body());
+            int userId = Integer.parseInt(request.get("userId").toString());
+            String token = req.headers("Authorization");
+            int storeId = Integer.parseInt(request.get("storeId").toString());
+            String fatherName = request.get("fatherName").toString();
+            String childName = request.get("childName").toString();
+            String ans = request.get("answer").toString();
+            toSparkRes(res, api.answerAppointment(userId, token, storeId, fatherName, childName, ans));
+            return res.body();
+        });
         patch("api/stores/:id/appointments/managers", (req, res) -> {
             //fire manager
             JSONObject request = new JSONObject(req.body());
