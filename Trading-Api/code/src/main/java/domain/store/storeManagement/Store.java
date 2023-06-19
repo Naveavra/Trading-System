@@ -22,6 +22,8 @@ import domain.store.purchase.PurchasePolicyDataObject;
 import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
+import domain.user.ShoppingCart;
+import domain.user.User;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.json.JSONArray;
@@ -271,8 +273,20 @@ public class Store extends Information implements DbEntity {
         throw new Exception("order doesnt exist");
     }
 
-    public void addOrder(Order order){
-        storeOrders.put(order.getOrderId(), order);
+    public void addOrder(ShoppingCart cart, int orderId, User user) throws Exception {
+        ShoppingCart newCart = new ShoppingCart();
+        for (Basket basket : cart.getBaskets())
+        {
+            if (basket.getStoreId() == storeId)
+            {
+                for (ProductInfo p : basket.getProductList())
+                {
+                    cart.addProductToCart(storeId, p, p.quantity);
+                }
+                Order order = new Order(orderId, user, cart);
+                storeOrders.put(orderId, order);
+            }
+        }
     }
 
     /**
