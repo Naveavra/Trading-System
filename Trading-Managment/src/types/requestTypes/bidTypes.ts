@@ -36,3 +36,7 @@ export interface buyProductInBidParams {
     quantity: number;
     details: buyCartParams;
 }
+export interface clientAnswerParams {
+    storeId: number;
+    bidId: number;
+}

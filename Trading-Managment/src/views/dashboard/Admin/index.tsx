@@ -15,7 +15,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { reset } from "../../../reducers/discountSlice";
 import ErrorAlert from "../../../components/Alerts/error";
 import SuccessAlert from "../../../components/Alerts/success";
-import { getStore } from "../../../reducers/storesSlice";
+import { getStore, getStoresInfo } from "../../../reducers/storesSlice";
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -25,7 +25,6 @@ const Admin = () => {
     const userId = useAppSelector((state) => state.auth.userId);
     const token = useAppSelector((state) => state.auth.token) ?? "";
     const userName = useAppSelector((state) => state.auth.userName);
-    const isAdmin = useAppSelector((state) => state.auth.isAdmin);
     const name = userName.split('@')[0];
     const msg = useAppSelector((state) => state.admin.msg);
     const error = useAppSelector((state) => state.admin.error);
@@ -91,6 +90,8 @@ const Admin = () => {
         }
     };
     useEffect(() => {
+        dispatch(getLogger(userId));
+        dispatch(getStoresInfo());
         // Call the sendPing function every 2 seconds
         //const pingInterval = setInterval(sendPing, PING_INTERVAL);
 
@@ -187,7 +188,6 @@ const Admin = () => {
                                 <IconButton onClick={handleResign} sx={{ marginLeft: 'auto' }}>
                                     <CancelIcon />
                                 </IconButton>
-
                                 <IconButton onClick={() => navigate("editMyProfile")} sx={{ marginLeft: 'auto' }}>
                                     <EditIcon />
                                 </IconButton>

@@ -13,6 +13,7 @@ import { clearStoreError } from "../../../reducers/storesSlice";
 import { Dialog, Box, Grid, TextField, Typography, Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { answerBid, clearBidError, counterBid, editBid } from "../../../reducers/bidSlice";
+import { getClientData } from "../../../reducers/authSlice";
 
 
 const EditBid = () => {
@@ -32,6 +33,7 @@ const EditBid = () => {
     //maybe take it from params
     const handleOnClose = useCallback(() => {
         navigate('/dashboard/personal');
+        dispatch(getClientData({ userId: userId }));
     }, []);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);

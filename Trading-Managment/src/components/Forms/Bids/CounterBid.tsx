@@ -31,7 +31,7 @@ const CounterBid = () => {
 
     //maybe take it from params
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard/store/superior');
+        navigate('/dashboard/store/superior/bids');
     }, []);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);

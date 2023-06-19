@@ -26,6 +26,7 @@ import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.mockito.internal.matchers.Or;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.*;
@@ -699,54 +700,6 @@ public class Store extends Information implements DbEntity {
         throw new Exception("Something went wrong when creating the policy, please contact us if the problem persists.\nYours truly, the developers A-team");
 
     }
-    //database
-    @Override
-    public void initialParams() {
-        storeOrders = new ConcurrentHashMap<>();
-        bids = new ArrayList<>();
-        getCreatorFromDb();
-        getAppHistoryFromDb();
-        getInventoryFromDb();
-        getStoreReviewsFromDb();
-        getQuestionsFromDb();
-    }
-
-
-    public void getCreatorFromDb(){
-        if(creator == null){
-            creator = SubscriberDao.getMember(creatorId);
-        }
-    }
-
-    public void getAppHistoryFromDb(){
-        if(appHistory == null)
-            appHistory = StoreDao.getAppHistory(storeId, creatorId);
-    }
-
-    public void getInventoryFromDb(){
-        if(inventory == null){
-            inventory = new Inventory(storeId);
-            inventory.initialParams();
-        }
-    }
-
-    public void getStoreReviewsFromDb(){
-        if(storeReviews == null){
-            storeReviews = new ConcurrentHashMap<>();
-            List<StoreReview> storeReviewsDto = MessageDao.getStoreReviews(storeId);
-            for(StoreReview storeReview : storeReviewsDto)
-                storeReviews.put(storeReview.getMessageId(), storeReview);
-        }
-    }
-
-    private void getQuestionsFromDb() {
-        if(questions == null){
-            questions = new ConcurrentHashMap<>();
-            List<Question> storeQuestions = MessageDao.getQuestions(storeId);
-            for(Question question : storeQuestions)
-                questions.put(question.getMessageId(), question);
-        }
-    }
 
     public synchronized boolean handlePolicies(Order order) throws Exception {
         boolean res = true;
@@ -786,6 +739,81 @@ public class Store extends Information implements DbEntity {
         for (Bid bid : bids){
             if (bid.bidId == bidId){bid.clientAcceptCounter();}
         }
+    }
+
+    //database
+    @Override
+    public void initialParams() {
+        getCreatorFromDb();
+        getAppHistoryFromDb();
+        getInventoryFromDb();
+
+        getStoreReviewsFromDb();
+        getQuestionsFromDb();
+
+        getOrdersFromDb();
+        getBidsFromDb();
+        getConstraintsFromDb();
+        getDiscountsFromDb();
+
+        storeOrders = new ConcurrentHashMap<>();
+        bids = new ArrayList<>();
+        approvedBids = new ArrayList<>();
+        purchasePolicies = new ArrayList<>();
+        discounts = new ArrayList<>();
+        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
+    }
+
+
+    private void getCreatorFromDb(){
+        if(creator == null){
+            creator = SubscriberDao.getMember(creatorId);
+        }
+    }
+
+    private void getAppHistoryFromDb(){
+        if(appHistory == null)
+            appHistory = StoreDao.getAppHistory(storeId, creatorId);
+    }
+
+    private void getInventoryFromDb(){
+        if(inventory == null){
+            inventory = new Inventory(storeId);
+            inventory.initialParams();
+        }
+    }
+
+    private void getStoreReviewsFromDb(){
+        if(storeReviews == null){
+            storeReviews = new ConcurrentHashMap<>();
+            List<StoreReview> storeReviewsDto = MessageDao.getStoreReviews(storeId);
+            for(StoreReview storeReview : storeReviewsDto)
+                storeReviews.put(storeReview.getMessageId(), storeReview);
+        }
+    }
+
+    private void getQuestionsFromDb() {
+        if(questions == null){
+            questions = new ConcurrentHashMap<>();
+            List<Question> storeQuestions = MessageDao.getQuestions(storeId);
+            for(Question question : storeQuestions)
+                questions.put(question.getMessageId(), question);
+        }
+    }
+
+    private void getOrdersFromDb() {
+        if(storeOrders == null){
+
+        }
+    }
+
+    private void getBidsFromDb() {
+    }
+
+    private void getConstraintsFromDb() {
+    }
+
+    private void getDiscountsFromDb() {
     }
 
     public void addCompositeDiscount(JSONObject req) throws Exception {
