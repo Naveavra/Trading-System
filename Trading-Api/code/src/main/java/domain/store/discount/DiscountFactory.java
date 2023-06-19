@@ -151,6 +151,15 @@ public class DiscountFactory {
         return root;
     }
 
+    public void parse(String data,ArrayList<Discount> discounts){
+        JSONObject dataObj = new JSONObject(data);
+        try {
+            JSONArray arr = dataObj.getJSONArray("discountNodes");
+            discounts.add(createDiscount(parseCompositeDiscount(dataObj)));
+        } catch (Exception e) {
+            discounts.add(createDiscount(parseRegularDiscount(dataObj)));
+        }
+    }
     private LogicalDiscountComposite.xorDecidingRules getXorDecidingRule(String s){
         return switch (s){
             case "MinDiscountValue" -> LogicalDiscountComposite.xorDecidingRules.MinDiscountValue;
