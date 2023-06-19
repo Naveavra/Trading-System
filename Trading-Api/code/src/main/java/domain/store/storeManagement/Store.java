@@ -197,10 +197,10 @@ public class Store extends Information implements DbEntity {
     public synchronized void addDiscount(CompositeDataObject discountData,String content) throws Exception {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
-            dis.setDescription(new JSONObject(content).get("description").toString());
+            dis.setDescription(content);
             dis.setContent(content);
             discounts.add(dis);
-            Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
+            StoreDao.saveDiscount(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
         }
     }
 
@@ -539,7 +539,7 @@ public class Store extends Information implements DbEntity {
 
     public StoreInfo getStoreInformation() {
         StoreInfo info = new StoreInfo(storeId, storeName, storeDescription, isActive, creator.getId(), getStoreRating(),
-                imgUrl, bids);
+                imgUrl, bids , discounts,purchasePolicies);
         return info;
     }
 
@@ -587,7 +587,7 @@ public class Store extends Information implements DbEntity {
         json.put("roles", infosToJson(getRoles()));
         json.put("bids", infosToJson(getBids()));
         json.put("discounts",infosToJson(getDiscounts()));
-        json.put("purchasePolicies",getPurchasePolicies());
+        json.put("purchasePolicies",infosToJson(getPurchasePolicies()));
         return json;
     }
 
@@ -818,7 +818,7 @@ public class Store extends Information implements DbEntity {
 
     public void addCompositeDiscount(JSONObject req) throws Exception {
         CompositeDataObject dis = discountFactory.parseCompositeDiscount(req);
-        addDiscount(dis,req.get("content").toString());
+        addDiscount(dis,req.get("description").toString());
     }
 
 //    public void clientAcceptCounter(int bidId) {
