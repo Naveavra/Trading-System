@@ -130,8 +130,7 @@ public class MemberTest extends ProjectTest{
         CartInfo ci = getCart(buyer.getUserId());
         assertNotNull(ci);
         assertTrue(ci.getCountOfProduct() > 0);
-        status = this.addExternalPaymentService(mainAdmin.getAdminId(), "Mock");
-        assertTrue(status > 0);
+        assertTrue(this.addExternalPaymentService(mainAdmin.getAdminId(), "Mock"));
         //make purchase
         status  = makePurchase(buyer.getUserId(), paymentMock, supplier);
         assertTrue(status < 0);
@@ -151,8 +150,7 @@ public class MemberTest extends ProjectTest{
         CartInfo ci = getCart(buyer.getUserId());
         assertNotNull(ci);
         assertTrue(ci.getCountOfProduct() > 0);
-        status = this.addExternalSupplierService(mainAdmin.getAdminId(), "Mock");
-        assertTrue(status > 0);
+        assertTrue(addExternalSupplierService(mainAdmin.getAdminId(), "Mock"));
         //make purchase
         status  = makePurchase(buyer.getUserId(), payment, supplierMock);
         assertTrue(status < 0);

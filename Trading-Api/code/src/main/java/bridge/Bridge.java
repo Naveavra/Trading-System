@@ -2,6 +2,8 @@ package bridge;
 
 import data.*;
 import org.json.JSONObject;
+import service.ExternalService.Payment.PaymentAdapter;
+import service.ExternalService.Supplier.SupplierAdapter;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Role;
 
@@ -94,7 +96,6 @@ public interface Bridge {
     /**
      * System external supplier service management - getting all possible external service
      *
-     * @param user user Id
      * @return If succeed returns list of available supplier service. Otherwise,
      *         return null.
      */
@@ -103,32 +104,43 @@ public interface Bridge {
     /**
      * System external supplier service management - adding external service
      *
-     * @param admin admin Id
+     * @param admin      admin Id
      * @param esSupplier external payment service
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns `true`. Otherwise,
+     * return `false`.
      */
-    int addExternalSupplierService(int admin,  String esSupplier);
+    boolean addExternalSupplierService(int admin, String esSupplier);
+
+    /**
+     * System external supplier service management - adding external service
+     *
+     * @param adminId admin Id
+     * @param esSupplier external supplier service name.
+     * @param supplierAdapter external supplier service name.
+     * @return If succeed returns `true`. Otherwise,
+     *         return `false`.
+     */
+    boolean addExternalSupplierService(int adminId, String esSupplier, SupplierAdapter supplierAdapter);
 
     /**
      * System external supplier service management - remove external service
      *
      * @param admin admin Id
      * @param es external service
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns `true`. Otherwise,
+     *         return `false`.
      */
-    int removeExternalSupplierService(int admin, String es);
+    boolean removeExternalSupplierService(int admin, String es);
 
     /**
      * System external supplier service management - replace external service
      *
-     * @param admin admin Id
+     * @param admin      admin Id
      * @param esSupplier external payment service
      * @return If succeed returns true. Otherwise,
-     *         return false.
+     * return false.
      */
-    int replaceExternalSupplierService(int admin, String esSupplier);
+    boolean replaceExternalSupplierService(int admin, String esSupplier);
 
     /**
      * System external payment service management - getting all possible external service
@@ -140,7 +152,7 @@ public interface Bridge {
     List<String> getPossibleExternalPaymentService(int admin);
 
     /**
-     * System external payment service management - getting all possible external service
+     * System external payment service management - getting all available external service
      *
      * @return If succeed returns list of available payment service. Otherwise,
      *         return null.
@@ -150,22 +162,33 @@ public interface Bridge {
     /**
      * System external payment service management - adding external service
      *
-     * @param admin admin Id
+     * @param admin     admin Id
      * @param esPayment external payment service
      * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * return -1.
      */
-    int addExternalPaymentService(int admin, String esPayment);
+    boolean addExternalPaymentService(int admin, String esPayment);
+
+    /**
+     * System external payment service management - adding external service
+     *
+     * @param adminId admin Id
+     * @param esPayment external payment service name.
+     * @param paymentAdapter external payment service adapter class.
+     * @return If succeed returns true. Otherwise,
+     *         return false.
+     */
+    boolean addExternalPaymentService(int adminId, String esPayment, PaymentAdapter paymentAdapter);
 
     /**
      * System external payment service management - remove external service
      *
      * @param admin admin Id
      * @param es external service
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns `true`. Otherwise,
+     *         return `false`.
      */
-    int removeExternalPaymentService(int admin, String es);
+    boolean removeExternalPaymentService(int admin, String es);
 
     /**
      * System external payment service management - replace external service
@@ -176,6 +199,15 @@ public interface Bridge {
      *         return -1.
      */
     int replaceExternalPaymentService(int admin, String esPayment);
+
+    /**
+     * System external payment service management - getting all possible external service
+     *
+     * @param adminId admin id.
+     * @return If succeed returns list of available payment service. Otherwise,
+     *         return null.
+     */
+    List<String> getPaymentServicesPossibleOptions(int adminId);
 
     /**
      * Get user unread messages
@@ -206,7 +238,7 @@ public interface Bridge {
      * @return If succeed returns 1. Otherwise,
      *         return -1.
      */
-    public int addProduct(int userId, int storeId, List<String> categories, String name, String description, int price,
+     int addProduct(int userId, int storeId, List<String> categories, String name, String description, int price,
                           int quantity, String img);
     /**
      * Inventory management - remove product
@@ -525,4 +557,6 @@ public interface Bridge {
      *         return null.
      **/
     Role getRoleInStore(int userId, int workerId, int storeId);
+
+
 }

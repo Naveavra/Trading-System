@@ -304,7 +304,6 @@ public class GuestTest extends ProjectTest{
         assertTrue(status == -1);
     }
 
-    /*
     @Test
     public void testAddMoreThanExistsProductToCart(){
         GuestInfo buyer = new GuestInfo();
@@ -316,7 +315,7 @@ public class GuestTest extends ProjectTest{
         int status = addProductToCart(buyer.getId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 2);
         assertTrue(status < -1);
     }
-     */
+
 
     @Test
     public void testAddUnExistsProductToCart(){

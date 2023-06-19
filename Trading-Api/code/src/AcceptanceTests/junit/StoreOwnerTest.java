@@ -43,18 +43,18 @@ public class StoreOwnerTest extends ProjectTest{
 
 
 
-    /** TODO: Add every test also login and logout
+    /**
      * 1. Inventory management: ADD/ Remove/ Update - V
-     * 2. Change discount policy - V & TODO Alert Test?
-     * 3. Change purchase policy - V & TODO Alert Test?
+     * 2. Change discount policy - V
+     * 3. Change purchase policy - V
      * 4. Appointment Store Owner - V
      * 5. Appointment Store Manager - V
      * 6. Change Store Manager permissions - V
      * 7. Close Store - V
      * 8. Ask for getting data about position in the store - V
-     * 9. get information about purchase in the store - V & TODO: add the todos things
+     * 9. get information about purchase in the store - V
      * 10. Ask for getting data about store manager permissions in the store - V
-     * 11. get information about purchase of buyer - V & TODO: add the todos things
+     * 11. get information about purchase of buyer - V
      */
 
     @Test

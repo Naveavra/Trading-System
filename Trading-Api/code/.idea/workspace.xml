@@ -5,20 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="Change to json.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/OurPaymentService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/OurSupplyService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_9_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_9_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/MockPaymentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/MockSupplyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_agent_1_14_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_core_5_3_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_junit_jupiter_5_3_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_objenesis_objenesis_3_3.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/bridge/ProxyBridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/GuestTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/GuestTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/MemberTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/Bridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bridge/BridgeImplement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Config/ESConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Config/ESConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ESPayment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ESPayment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/PaymentAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/PaymentAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ProxyPayment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Payment/ProxyPayment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ESSupply.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ESSupply.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ProxySupplier.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ProxySupplier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/SupplierAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/SupplierAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/work1.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,28 +67,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;last_directory_selection&quot;: &quot;C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test/server&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "jdk.selected.JAVA_MODULE": "openjdk-17",
+    "last_directory_selection": "C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test/server",
+    "last_opened_file_path": "C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -89,7 +101,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.runServer">
+  <component name="RunManager" selected="JUnit.AcceptanceTests in work1">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -106,7 +118,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.testPurchaseCart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="AdminTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -115,14 +127,13 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.MemberTest" />
-      <option name="METHOD_NAME" value="testPurchaseCart" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="MAIN_CLASS_NAME" value="junit.AdminTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -131,49 +142,56 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.StoreOwnerTest" />
-      <option name="METHOD_NAME" value="testAlertAppointmentLogoutManagerInStore" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="WSEPServiceTest.makePurchase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemTests.assertGoodAdminLogin" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="service.ExternalService.*" />
+          <option name="PATTERN" value="junit.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="service.ExternalService" />
-      <option name="MAIN_CLASS_NAME" value="service.ExternalService.WSEPServiceTest" />
-      <option name="METHOD_NAME" value="makePurchase" />
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
+      <option name="METHOD_NAME" value="assertGoodAdminLogin(data.AdminInfo)" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="WSEPServiceTest.orderSupplies" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemTests.testReplaceExternalPaymentService" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="service.ExternalService.*" />
+          <option name="PATTERN" value="junit.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="service.ExternalService" />
-      <option name="MAIN_CLASS_NAME" value="service.ExternalService.WSEPServiceTest" />
-      <option name="METHOD_NAME" value="orderSupplies" />
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
+      <option name="METHOD_NAME" value="testReplaceExternalPaymentService" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="junit in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemTests.testReplaceExternalSupplierService" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
-      <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/src/AcceptanceTests/junit" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="junit.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
+      <option name="METHOD_NAME" value="testReplaceExternalSupplierService" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -181,19 +199,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
-      <item itemvalue="JUnit.junit in work1" />
-      <item itemvalue="JUnit.WSEPServiceTest.orderSupplies" />
-      <item itemvalue="JUnit.MemberTest.testPurchaseCart" />
-      <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" />
-      <item itemvalue="JUnit.WSEPServiceTest.makePurchase" />
+      <item itemvalue="JUnit.SystemTests.testReplaceExternalPaymentService" />
+      <item itemvalue="JUnit.AdminTest" />
+      <item itemvalue="JUnit.SystemTests" />
+      <item itemvalue="JUnit.SystemTests.assertGoodAdminLogin" />
+      <item itemvalue="JUnit.SystemTests.testReplaceExternalSupplierService" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.junit in work1" />
-        <item itemvalue="JUnit.WSEPServiceTest.orderSupplies" />
-        <item itemvalue="JUnit.WSEPServiceTest.makePurchase" />
-        <item itemvalue="JUnit.MemberTest.testPurchaseCart" />
-        <item itemvalue="JUnit.StoreOwnerTest.testAlertAppointmentLogoutManagerInStore" />
+        <item itemvalue="JUnit.SystemTests" />
+        <item itemvalue="JUnit.SystemTests.testReplaceExternalSupplierService" />
+        <item itemvalue="JUnit.SystemTests.testReplaceExternalPaymentService" />
+        <item itemvalue="JUnit.SystemTests.assertGoodAdminLogin" />
+        <item itemvalue="JUnit.AdminTest" />
       </list>
     </recent_temporary>
   </component>
@@ -225,7 +243,9 @@
       <workItem from="1686668079953" duration="985000" />
       <workItem from="1686849278022" duration="2346000" />
       <workItem from="1686903011570" duration="7860000" />
-      <workItem from="1687079555190" duration="12164000" />
+      <workItem from="1687079555190" duration="14908000" />
+      <workItem from="1687097453391" duration="2908000" />
+      <workItem from="1687118941303" duration="14453000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -298,16 +318,6 @@
           <url>file://$PROJECT_DIR$/test/service/ExternalService/WSEPServiceTest.java</url>
           <line>44</line>
           <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>666</line>
-          <option name="timeStamp" value="68" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java</url>
-          <line>191</line>
-          <option name="timeStamp" value="69" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

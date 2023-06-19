@@ -21,6 +21,17 @@ public class ProxySupplier implements SupplierAdapter {
     /**
      * Constructs a ProxySupplier object using the provided ESConfig object.
      *
+     * @throws Exception If an error occurs while initializing the proxy supplier.
+     */
+    public ProxySupplier() throws Exception {
+        this.supplierServices = new HashMap<>();
+        loadConfig(new ESConfig());
+    }
+
+
+    /**
+     * Constructs a ProxySupplier object using the provided ESConfig object.
+     *
      * @param supply The ESConfig object containing supplier service configuration.
      * @throws Exception If an error occurs while initializing the proxy supplier.
      */
