@@ -72,8 +72,6 @@ public class Store extends Information implements DbEntity {
     private AtomicInteger bidIds;
     @Transient
     private ArrayList<Bid> bids;
-    @Transient
-    private ArrayList<Bid> approvedBids;
     private String imgUrl;
     @Transient
     private ArrayList<PurchasePolicy> purchasePolicies;
@@ -101,7 +99,6 @@ public class Store extends Information implements DbEntity {
         this.isActive = true;
         discounts = new ArrayList<>();
         bids = new ArrayList<>();
-        approvedBids = new ArrayList<>();
         bidIds = new AtomicInteger();
         Dao.save(this);
         appHistory = new AppHistory(storeId, creatorNode);
@@ -129,7 +126,6 @@ public class Store extends Information implements DbEntity {
         this.imgUrl = imgUrl;
         bidIds = new AtomicInteger();
         bids = new ArrayList<>();
-        approvedBids = new ArrayList<>();
         Dao.save(this);
         appHistory = new AppHistory(storeId, creatorNode);
         this.inventory = new Inventory(storeId);
@@ -174,6 +170,13 @@ public class Store extends Information implements DbEntity {
         return bids;
     }
     public ArrayList<Discount> getDiscounts(){return this.discounts;}
+
+    public List<String> getDiscountsContent(){
+        List<String> ans = new ArrayList<>();
+        for(Discount d : discounts)
+            ans.add(d.getContent());
+        return ans;
+    }
 
     public void answerQuestion(int messageID, String answer) throws Exception {
         Question msg = questions.get(messageID);
@@ -586,7 +589,7 @@ public class Store extends Information implements DbEntity {
         json.put("img", getImgUrl());
         json.put("roles", infosToJson(getRoles()));
         json.put("bids", infosToJson(getBids()));
-        json.put("discounts",infosToJson(getDiscounts()));
+        json.put("discounts", getDiscountsContent());
         json.put("purchasePolicies",getPurchasePolicies());
         return json;
     }
@@ -621,17 +624,15 @@ public class Store extends Information implements DbEntity {
                 (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct));
         bids.add(b);
         user.addBid(b);
-        return b.approvers;
+        return b.getApprovers();
     }
 
     public Bid answerBid(int bidId,String userName, int prodId, boolean ans) throws Exception {
         for(Bid bid : this.bids){
-            if(bid.bidId == bidId && bid.isPending()){
+            if(bid.getBidId() == bidId && bid.isPending()){
                 if(ans){
                     bid.approveBid(userName);
                     if(bid.isApproved()){
-                        bids.remove(bid);
-                        approvedBids.add(bid);
                         return bid;
                     }
                     return null;
@@ -646,9 +647,9 @@ public class Store extends Information implements DbEntity {
 
     public List<String> counterBid(int bidId, double counterOffer, String userName) throws Exception {
         for(Bid bid : this.bids){
-            if(bid.bidId == bidId){
+            if(bid.getBidId() == bidId){
                 bid.counterBid(counterOffer,userName);
-                List<String> ans = new ArrayList<>(bid.approvers);
+                List<String> ans = new ArrayList<>(bid.getApprovers());
                 ans.add(bid.getUser().getName());
                 return ans;
             }
@@ -658,7 +659,7 @@ public class Store extends Information implements DbEntity {
 
     public Bid editBid(int bidId, double price, int quantity) throws Exception {
         for(Bid bid: this.bids){
-            if(bid.bidId == bidId){
+            if(bid.getBidId() == bidId){
                 bid.editBid(price,quantity);
                 return bid;
             }
@@ -722,7 +723,7 @@ public class Store extends Information implements DbEntity {
     public int getBidClient(int bidId) throws Exception {
         for (Bid bid : bids)
         {
-            if (bid.bidId == bidId){return bid.user.getId();}
+            if (bid.getBidId() == bidId){return bid.getUser().getId();}
         }
         throw new Exception("cant find bid Id");
     }
@@ -730,14 +731,14 @@ public class Store extends Information implements DbEntity {
     public List<String> getApprovers(int bidId) throws Exception {
         for (Bid bid : bids)
         {
-            if (bid.bidId == bidId){return bid.approvers;}
+            if (bid.getBidId() == bidId){return bid.getApprovers();}
         }
         throw new Exception("bid doesnt exist");
     }
 
     public void clientAcceptCounter(int bidId) {
         for (Bid bid : bids){
-            if (bid.bidId == bidId){bid.clientAcceptCounter();}
+            if (bid.getBidId() == bidId){bid.clientAcceptCounter();}
         }
     }
 
@@ -758,7 +759,6 @@ public class Store extends Information implements DbEntity {
 
         storeOrders = new ConcurrentHashMap<>();
         bids = new ArrayList<>();
-        approvedBids = new ArrayList<>();
         purchasePolicies = new ArrayList<>();
         discounts = new ArrayList<>();
         discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
@@ -819,6 +819,13 @@ public class Store extends Information implements DbEntity {
     public void addCompositeDiscount(JSONObject req) throws Exception {
         CompositeDataObject dis = discountFactory.parseCompositeDiscount(req);
         addDiscount(dis,req.get("content").toString());
+    }
+
+    public Bid getBid(int bidId) throws Exception{
+        for(Bid b : bids)
+            if(b.getBidId() == bidId)
+                return b;
+        throw new Exception("the id given does not belong to any bid in store");
     }
 
 //    public void clientAcceptCounter(int bidId) {

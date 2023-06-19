@@ -31,9 +31,7 @@ export interface editBidParams {
 export interface buyProductInBidParams {
     userId: number;
     storeId: number;
-    productId: number;
-    price: Number;
-    quantity: number;
+    bidId: number;
     details: buyCartParams;
 }
 export interface clientAnswerParams {

@@ -144,10 +144,14 @@ const Personal = () => {
                                         time: {bid.time}
                                     </Typography>
                                     {
+                                        bid.state === status.Completed ?
+                                        <>
+                                        <Alert severity="success">Completed</Alert>
+                                        </> :
                                         bid.state === status.Approved ?
                                             <>
-                                                <Alert severity="success">approved</Alert>
-                                                <Button onClick={() => navigate(`${bid.bidId}/makePurchase`)}>enter details and meake purchase</Button>
+                                                <Alert severity="info">approved</Alert>
+                                                <Button onClick={() => navigate(`${bid.bidId}/makePurchase`)}>enter details and make purchase</Button>
                                             </> :
                                             bid.state === status.Pending ?
                                                 <Alert severity="info">pending</Alert> :

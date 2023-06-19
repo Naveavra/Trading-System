@@ -7,20 +7,27 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "approves")
-public class ApprovedDto implements DbEntity {
+public class ApproverDto implements DbEntity {
 
     @Id
     public int bidId;
 
     @Id
+    public int storeId;
+
+    @Id
     public String manager;
 
-    public ApprovedDto(){
+    public boolean approved;
+
+    public ApproverDto(){
     }
 
-    public ApprovedDto(int bidId, String manager){
+    public ApproverDto(int bidId, int storeId, String manager, boolean approved){
         this.bidId = bidId;
+        this.storeId = storeId;
         this.manager = manager;
+        this.approved = approved;
     }
 
 

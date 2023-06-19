@@ -6,12 +6,27 @@
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="merging code">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_15_06_2023_14_18__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_15_06_2023_14_18__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_06_2023_19_19__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_06_2023_19_19__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_18_06_2023_19_20__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_18_06_2023_19_20__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/ApprovedDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/ApproverDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/MarketInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/messageRelated/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/BuyCartForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/BuyCartForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/storePages/RegularBids.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/storePages/RegularBids.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/types/requestTypes/bidTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/types/requestTypes/bidTypes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/types/systemTypes/Bid.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/types/systemTypes/Bid.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/BiddingCenter/intex.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/BiddingCenter/intex.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Personal/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Personal/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Shop/Visitor/visitor.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Shop/Visitor/visitor.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../config.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -209,7 +224,7 @@
       <workItem from="1687079555190" duration="12164000" />
       <workItem from="1687155489402" duration="1285000" />
       <workItem from="1687158769895" duration="885000" />
-      <workItem from="1687160066327" duration="9425000" />
+      <workItem from="1687160066327" duration="19067000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -305,7 +320,7 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/market/Market.java</url>
-          <line>628</line>
+          <line>631</line>
           <option name="timeStamp" value="191" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
@@ -323,6 +338,11 @@
           <line>629</line>
           <option name="timeStamp" value="233" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
+          <line>685</line>
+          <option name="timeStamp" value="234" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
@@ -332,6 +352,11 @@
         <PinnedItemInfo parentTag="spark.Request" memberName="matchedPath" />
       </pinned-members>
     </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="((HashMap)request.map).entrySet().toArray()[2]" custom="java.util.HashMap" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/code$UserControllerTest_checkNewImp.ic" NAME="UserControllerTest.checkNewImp Coverage Results" MODIFIED="1686279744864" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

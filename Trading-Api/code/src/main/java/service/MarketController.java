@@ -256,7 +256,12 @@ public class MarketController {
 //        Store s = storectrl.getActiveStore(storeId);
 //        s.createBid(prodId);
 //    }
-    
+
+    public Bid getBid(int storeId, int bidId) throws Exception{
+        Store s = getStore(storeId);
+        return s.getBid(bidId);
+    }
+
     public List<String> placeBid(int storeId, Member user, int prodId, double price,int quantity) throws Exception {
         Store s = storectrl.getActiveStore(storeId);
         return s.placeBid(user,prodId,price,quantity);
@@ -278,12 +283,12 @@ public class MarketController {
         return s.counterBid(bidId,counterOffer,userName);
     }
 
-    public List<String> editBid(int storeId, int bidId, double price, int quantity) throws Exception {
-        Store s = storectrl.getActiveStore(storeId);
-        Bid bid = s.editBid(bidId,price,quantity);
-        return bid.approvers;
-        //send a message to all shop owners and people who need to approve this bid.
-    }
+//    public List<String> editBid(int storeId, int bidId, double price, int quantity) throws Exception {
+//        Store s = storectrl.getActiveStore(storeId);
+//        Bid bid = s.editBid(bidId,price,quantity);
+//        return bid.getApprovers();
+//        //send a message to all shop owners and people who need to approve this bid.
+//    }
 
     public void addPurchaseConstraint(int storeId, String purchasePolicy,String content)throws Exception {
         Store s = storectrl.getActiveStore(storeId);
