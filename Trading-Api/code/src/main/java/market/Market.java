@@ -1085,9 +1085,7 @@ public class Market implements MarketInterface {
                 addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been approved, please continue for payment");
                 Set<Integer> usersInStore = marketController.getStoreCreatorsOwners(storeId);
                 for (int creatorId : usersInStore)
-                {
                     addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "bid number : " + bidId + " was approved by all.");
-                }
             }
             if (!answer) {
                 addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been declined.");

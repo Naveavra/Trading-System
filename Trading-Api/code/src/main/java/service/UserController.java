@@ -251,7 +251,8 @@ public class UserController {
         Member m = getActiveMember(userId);
         String notify = "a complaint has been submitted";
         Notification notification = new Notification(NotificationOpcode.GET_ADMIN_DATA, notify);
-        for(Admin a : getAdminsFromDb())
+        getAdminsFromDb();
+        for(Admin a : admins.values())
             a.addNotification(notification);
         Complaint complaint = m.writeComplaint(messageIds.getAndIncrement(), orderId, comment);
         complaints.put(complaint.getMessageId(), complaint);
@@ -485,7 +486,8 @@ public class UserController {
 
     public List<PurchaseHistory> getUsersInformation() {
         List<PurchaseHistory> membersInformation = new LinkedList<>();
-        for(Member m : getMembersFromDb()){
+        getMembersFromDb();
+        for(Member m : memberList.values()){
             PurchaseHistory history = m.getUserPurchaseHistory();
             membersInformation.add(history);
         }
@@ -583,7 +585,8 @@ public class UserController {
     public HashMap<Integer, Admin> getAdmins(int adminId) throws Exception{
         getActiveAdmin(adminId);
         HashMap<Integer, Admin> list = new HashMap<>();
-        for (Admin a : getAdminsFromDb()) {
+        getAdminsFromDb();
+        for (Admin a : admins.values()) {
             list.put(a.getId(), a);
         }
         return list;
@@ -623,7 +626,8 @@ public class UserController {
     }
 
     public int getAdminSize() {
-        return getAdminsFromDb().size();
+        getAdminsFromDb();
+        return admins.size();
     }
 
     //database
@@ -646,20 +650,24 @@ public class UserController {
         throw new Exception("the id does not belong to any complaint");
     }
 
-    private List<Member> getMembersFromDb() {
-        List<Member> memberDto = SubscriberDao.getAllMembers();
-        for(Member m : memberDto)
-            if(!memberList.containsKey(m.getId()))
-                memberList.put(m.getId(), m);
-        return new ArrayList<>(memberList.values());
+    private void getMembersFromDb() {
+        if(memberList == null) {
+            memberList = new ConcurrentHashMap<>();
+            List<Member> memberDto = SubscriberDao.getAllMembers();
+            for (Member m : memberDto)
+                if (!memberList.containsKey(m.getId()))
+                    memberList.put(m.getId(), m);
+        }
     }
 
-    private List<Admin> getAdminsFromDb() {
-        List<Admin> adminsDto = SubscriberDao.getAllAdmins();
-        for(Admin a : adminsDto)
-            if(!admins.containsKey(a.getId()))
-                admins.put(a.getId(), a);
-        return new ArrayList<>(admins.values());
+    private void getAdminsFromDb() {
+        if(admins == null) {
+            admins = new ConcurrentHashMap<>();
+            List<Admin> adminsDto = SubscriberDao.getAllAdmins();
+            for (Admin a : adminsDto)
+                if (!admins.containsKey(a.getId()))
+                    admins.put(a.getId(), a);
+        }
     }
 
 }

@@ -5,23 +5,24 @@ import database.dtos.AppointmentDto;
 import database.dtos.CategoryDto;
 import domain.store.product.Product;
 import domain.store.storeManagement.AppHistory;
+import domain.store.storeManagement.Bid;
 import domain.store.storeManagement.Store;
 import utils.Pair;
 
-import java.awt.event.PaintEvent;
 import java.util.*;
-import java.util.jar.JarEntry;
 
 public class StoreDao {
     private static HashMap<Integer, Store> storesMap = new HashMap<>();
     private static boolean stores = false;
     private static HashMap<Integer, HashMap<Integer, Product>> productsMap = new HashMap<>();
-    private static HashMap<Integer, Boolean> products = new HashMap<>();
+    private static Set<Integer> products = new HashSet<>();
     private static HashMap<Integer, HashMap<String, Set<Integer>>> categoryMap = new HashMap<>();
-    private static HashMap<Integer, HashMap<String, Boolean>> categories = new HashMap<>();
-    private static HashMap<Integer, Boolean> allCategories = new HashMap<>();
+    private static HashMap<Integer, Set<String>> categories = new HashMap<>();
+    private static Set<Integer> allCategories = new HashSet<>();
     private static HashMap<Integer, AppHistory> appointmentMap = new HashMap<>();
-    private static HashMap<Integer, Boolean> appointments = new HashMap<>();
+    private static Set<Integer> appointments = new HashSet<>();
+    private static HashMap<Integer, HashMap<Integer, Bid>> bidMap = new HashMap<>();
+    private static Set<Integer> bids = new HashSet<>();
     public static void saveStore(Store s){
         Dao.save(s);
     }
@@ -32,9 +33,6 @@ public class StoreDao {
         Store s = (Store) Dao.getById(Store.class, storeId);
         if(s != null){
             storesMap.put(s.getStoreId(), s);
-            products.put(s.getStoreId(), false);
-            appointments.put(s.getStoreId(), false);
-            categories.put(s.getStoreId(), new HashMap<>());
             s.initialParams();
         }
         return s;
@@ -47,9 +45,6 @@ public class StoreDao {
         Store s = (Store) Dao.getByParam(Store.class, "Store", "storeName = '%s' ");
         if(s != null){
             storesMap.put(s.getStoreId(), s);
-            products.put(s.getStoreId(), false);
-            appointments.put(s.getStoreId(), false);
-            categories.put(s.getStoreId(), new HashMap<>());
             s.initialParams();
         }
         return s;
@@ -70,6 +65,10 @@ public class StoreDao {
 
     public static void removeStore(int storeId){
         Dao.removeIf("Store", String.format("storeId = %d", storeId));
+        removeProducts(storeId);
+        removeAppointments(storeId);
+        MessageDao.removeStoreMessages(storeId);
+        removeBids(storeId);
         storesMap.remove(storeId);
     }
 
@@ -109,7 +108,7 @@ public class StoreDao {
     }
 
     public static List<Product> getProducts(int storeId){
-        if(!products.containsKey(storeId) || !products.get(storeId)){
+        if(!products.contains(storeId)){
             if(!productsMap.containsKey(storeId))
                 productsMap.put(storeId, new HashMap<>());
             List<? extends DbEntity> productsDto = Dao.getListById(Product.class, storeId, "Product", "storeId");
@@ -118,7 +117,7 @@ public class StoreDao {
                     productsMap.get(storeId).put(p.productId, p);
                     p.initialParams();
                 }
-            products.put(storeId, true);
+            products.add(storeId);
         }
         return new ArrayList<>(productsMap.get(storeId).values());
     }
@@ -135,6 +134,15 @@ public class StoreDao {
         }
     }
 
+    public static void removeProducts(int storeId) {
+        Dao.removeIf("Product", String.format("storeId = %d", storeId));
+        products.remove(storeId);
+        productsMap.remove(storeId);
+        Dao.removeIf("CategoryDto", String.format("storeId = %d", storeId));
+        categories.remove(storeId);
+        categoryMap.remove(storeId);
+    }
+
     //categories
 
     public static void saveCategory(CategoryDto categoryDto){
@@ -143,11 +151,11 @@ public class StoreDao {
 
     public static List<Integer> getCategoryProducts(int storeId, String categoryName){
         if(categories.containsKey(storeId))
-            if(categories.get(storeId).get(categoryName))
+            if(categories.get(storeId).contains(categoryName))
                 return new ArrayList<>(categoryMap.get(storeId).get(categoryName));
 
         if(!categories.containsKey(storeId))
-            categories.put(storeId, new HashMap<>());
+            categories.put(storeId, new HashSet<>());
 
         if(!categoryMap.containsKey(storeId))
             categoryMap.put(storeId, new HashMap<>());
@@ -159,12 +167,13 @@ public class StoreDao {
         for(CategoryDto categoryDto : (List<CategoryDto>) categoryDtos)
             categoryMap.get(storeId).get(categoryName).add(categoryDto.getProductId());
 
-        categories.get(storeId).put(categoryName, true);
+        categories.get(storeId).add(categoryName);
         return new ArrayList<>(categoryMap.get(storeId).get(categoryName));
     }
 
     public static HashMap<String, Set<Integer>> getAllCategories(int storeId){
-        if(!allCategories.containsKey(storeId) || !allCategories.get(storeId)){
+        if(!allCategories.contains(storeId)){
+
             if(!categoryMap.containsKey(storeId))
                 categoryMap.put(storeId, new HashMap<>());
 
@@ -175,7 +184,7 @@ public class StoreDao {
                     categoryMap.get(storeId).put(categoryDto.getCategoryName(), new HashSet<>());
                 categoryMap.get(storeId).get(categoryDto.getCategoryName()).add(categoryDto.getProductId());
             }
-            allCategories.put(storeId,true);
+            allCategories.add(storeId);
         }
         return categoryMap.get(storeId);
     }
@@ -204,7 +213,7 @@ public class StoreDao {
     }
 
     public static AppHistory getAppHistory(int storeId, int creatorId){
-        if(!appointments.containsKey(storeId) || !appointments.get(storeId)){
+        if(!appointments.contains(storeId)){
             if(!appointmentMap.containsKey(storeId))
                 appointmentMap.put(storeId, new AppHistory(storeId, new Pair<>(SubscriberDao.getMember(creatorId),
                         SubscriberDao.getRole(creatorId, storeId))));
@@ -222,7 +231,7 @@ public class StoreDao {
                         }catch (Exception ignored){}
                     }
             }
-            appointments.put(storeId, true);
+            appointments.add(storeId);
         }
         return appointmentMap.get(storeId);
     }
@@ -238,4 +247,67 @@ public class StoreDao {
             }catch (Exception ignored){}
         }
     }
+
+    public static void removeAppointments(int storeId) {
+        Dao.removeIf("AppointmentDto", String.format("storeId = %d", storeId));
+        appointments.remove(storeId);
+        appointmentMap.remove(storeId);
+    }
+
+
+    //bids
+    public static void saveBid(Bid bid){
+        Dao.save(bid);
+    }
+
+    public static Bid getBid(int storeId, int bidId){
+        if(!bidMap.containsKey(storeId))
+            bidMap.put(storeId, new HashMap<>());
+
+        if(bidMap.get(storeId).containsKey(bidId))
+            return bidMap.get(storeId).get(bidId);
+
+        Bid bid = (Bid) Dao.getByParam(Bid.class, "Bid",
+                String.format("bidId = %d AND storeId = %d", bidId, storeId));
+        if(bid != null){
+            bidMap.get(storeId).put(bid.getBidId(), bid);
+            bid.initialParams();
+        }
+        return bid;
+    }
+
+    public static List<Bid> getBids(int storeId){
+        if(!bids.contains(storeId)){
+
+            if(!bidMap.containsKey(storeId))
+                bidMap.put(storeId, new HashMap<>());
+
+            List<? extends DbEntity> bidsDto = Dao.getByParamList(Bid.class, "Bid", String.format("storeId = %d", storeId));
+            for(Bid b : (List<Bid>) bidsDto) {
+
+                if (bidMap.get(storeId).containsKey(b.getBidId())) {
+                    bidMap.get(storeId).put(b.getBidId(), b);
+                    b.initialParams();
+                }
+            }
+            bids.add(storeId);
+        }
+        return new ArrayList<>(bidMap.get(storeId).values());
+    }
+
+    public static void removeBid(int storeId, int bidId){
+        Dao.removeIf("Bid", String.format("bidId = %d AND storeId = %d", bidId, storeId));
+        if(bidMap.containsKey(storeId))
+            bidMap.get(storeId).remove(bidId);
+    }
+
+    public static void removeBids(int storeId){
+        Dao.removeIf("Bid", String.format("storeId = %d", storeId));
+        bids.remove(storeId);
+        bidMap.remove(storeId);
+    }
+
+
+    //purchaseConstraints
+
 }

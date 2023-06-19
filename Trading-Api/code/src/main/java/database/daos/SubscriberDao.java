@@ -13,22 +13,20 @@ import utils.infoRelated.ProductInfo;
 import utils.infoRelated.Receipt;
 import utils.messageRelated.Notification;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class SubscriberDao {
     private static HashMap<Integer, Member> membersMap = new HashMap<>();
     private static boolean members = false;
     private static HashMap<Integer, Admin> adminsMap = new HashMap<>();
     private static boolean admins = false;
-    private static HashMap<Integer, Boolean> notifications = new HashMap<>();
+    private static Set<Integer> notifications = new HashSet<>();
     private static HashMap<Integer, HashMap<Integer, UserState>> rolesMap = new HashMap<>();
-    private static HashMap<Integer, Boolean> roles = new HashMap<>();
+    private static Set<Integer> roles = new HashSet<>();
     private static HashMap<Integer, ShoppingCart> cartsMap = new HashMap<>();
-    private static HashMap<Integer, Boolean> carts = new HashMap<>();
+    private static Set<Integer> carts = new HashSet<>();
     private static HashMap<Integer, PurchaseHistory> purchasesMap = new HashMap<>();
-    private static HashMap<Integer, Boolean> purchases = new HashMap<>();
+    private static Set<Integer> purchases = new HashSet<>();
 
     public static void saveSubscriber(Subscriber s){
         Dao.save(s);
@@ -40,10 +38,6 @@ public class SubscriberDao {
         Member m = (Member) Dao.getById(Member.class, id);
         if(m != null) {
             membersMap.put(m.getId(), m);
-            notifications.put(m.getId(), false);
-            roles.put(m.getId(), false);
-            carts.put(m.getId(), false);
-            purchases.put(m.getId(), false);
             m.initialParams();
         }
         return m;
@@ -56,10 +50,6 @@ public class SubscriberDao {
         Member m = (Member) Dao.getByParam(Member.class, "Member", String.format("email = '%s' ", name));
         if(m != null) {
             membersMap.put(m.getId(), m);
-            notifications.put(m.getId(), false);
-            roles.put(m.getId(), false);
-            carts.put(m.getId(), false);
-            purchases.put(m.getId(), false);
             m.initialParams();
         }
         return m;
@@ -97,7 +87,6 @@ public class SubscriberDao {
         Admin a = (Admin) Dao.getById(Admin.class, id);
         if(a != null) {
             adminsMap.put(a.getId(), a);
-            notifications.put(a.getId(), false);
             a.initialParams();
         }
         return a;
@@ -110,7 +99,6 @@ public class SubscriberDao {
         Admin a = (Admin) Dao.getByParam(Admin.class, "Admin", String.format("email = '%s' ", name));
         if(a != null) {
             adminsMap.put(a.getId(), a);
-            notifications.put(a.getId(), false);
             a.initialParams();
         }
         return a;
@@ -147,17 +135,17 @@ public class SubscriberDao {
         Dao.save(n);
     }
     public static List<Notification> getNotifications(int subId){
-        if(!notifications.containsKey(subId) || !notifications.get(subId)) {
+        if(!notifications.contains(subId)) {
             List<? extends DbEntity> notifics = Dao.getListById(Notification.class, subId, "Notification", "subId");
             Dao.removeIf("Notification", String.format("subId = %d", subId));
-            notifications.put(subId, true);
+            notifications.add(subId);
             return (List<Notification>) notifics;
         }
         return new ArrayList<>();
     }
 
     public static void removeNotification(int id){
-        Dao.removeIf("Notification", String.format("notificationId = %d", id));
+        Dao.removeIf("Notification", String.format("id = %d", id));
     }
 
     //roles
@@ -182,7 +170,7 @@ public class SubscriberDao {
     }
 
     public static List<UserState> getRoles(int userId){
-        if(!roles.containsKey(userId) || !roles.get(userId)){
+        if(!roles.contains(userId)){
             if(!rolesMap.containsKey(userId))
                 rolesMap.put(userId, new HashMap<>());
             List<? extends DbEntity> rolesTmp = Dao.getListById(UserState.class, userId, "UserState", "userId");
@@ -191,7 +179,7 @@ public class SubscriberDao {
                     rolesMap.get(userId).put(state.getStoreId(), state);
                     state.initialParams();
                 }
-            roles.put(userId, true);
+            roles.add(userId);
         }
         return new ArrayList<>(rolesMap.get(userId).values());
     }
@@ -246,7 +234,7 @@ public class SubscriberDao {
     }
 
     public static ShoppingCart getCart(int userId){
-        if(!carts.containsKey(userId) || !carts.get(userId)){
+        if(!carts.contains(userId)){
             if(!cartsMap.containsKey(userId))
                 cartsMap.put(userId, new ShoppingCart());
             List<? extends DbEntity> dtos = Dao.getListById(CartDto.class, userId, "CartDto", "memberId");
@@ -260,7 +248,7 @@ public class SubscriberDao {
                     }
                 }
             }
-            carts.put(userId, true);
+            carts.add(userId);
         }
         return cartsMap.get(userId);
     }
@@ -292,7 +280,7 @@ public class SubscriberDao {
     }
 
     public static PurchaseHistory getReceipts(int userId){
-        if(!purchases.containsKey(userId) || !purchases.get(userId)){
+        if(!purchases.contains(userId)){
             if(!purchasesMap.containsKey(userId))
                 purchasesMap.put(userId, new PurchaseHistory(userId));
             List<? extends DbEntity> receiptsDto = Dao.getListById(Receipt.class, userId, "Receipt", "memberId");
@@ -301,7 +289,7 @@ public class SubscriberDao {
                     purchasesMap.get(userId).addPurchaseMade(receipt);
                     receipt.initialParams();
                 }
-            purchases.put(userId, true);
+            purchases.add(userId);
         }
         return purchasesMap.get(userId);
     }

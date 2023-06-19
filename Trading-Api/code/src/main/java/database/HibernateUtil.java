@@ -1,11 +1,9 @@
 package database;
 
-import database.dtos.AppointmentDto;
-import database.dtos.CartDto;
-import database.dtos.CategoryDto;
-import database.dtos.ReceiptDto;
+import database.dtos.*;
 import domain.states.*;
 import domain.store.product.Product;
+import domain.store.storeManagement.Bid;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import market.Admin;
@@ -60,6 +58,11 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(Store.class);
                 configuration.addAnnotatedClass(Product.class);
                 configuration.addAnnotatedClass(CategoryDto.class);
+                configuration.addAnnotatedClass(ConstraintDto.class);
+                configuration.addAnnotatedClass(DiscountDto.class);
+
+                configuration.addAnnotatedClass(Bid.class);
+                configuration.addAnnotatedClass(ApprovedDto.class);
 
                 configuration.addAnnotatedClass(Event.class);
 
