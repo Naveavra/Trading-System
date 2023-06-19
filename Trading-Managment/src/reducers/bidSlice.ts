@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { bidApi } from "../api/bidApi";
 import { ApiError } from "../types/apiTypes";
-import { addBidParams, answerBidParams, buyProductInBidParams, counterBidParams, editBidParams } from "../types/requestTypes/bidTypes";
+import { addBidParams, answerBidParams, buyProductInBidParams, clientAnswerParams, counterBidParams, editBidParams } from "../types/requestTypes/bidTypes";
 
 interface BidState {
     isLoading: boolean;
@@ -71,7 +71,17 @@ export const buyProductInBid = createAsyncThunk<
             .then((res) => thunkAPI.fulfillWithValue(res as string))
             .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
     });
-
+    export const answerOnCounter = createAsyncThunk<
+    string,
+    clientAnswerParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/answerOnCounter`,
+    async (params, thunkAPI) => {
+        return bidApi.clientAnswer(params)
+            .then((res) => thunkAPI.fulfillWithValue(res as string))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
 
 const { reducer: bidReducer, actions: bidActions } = createSlice({
     name: reducerName,
@@ -137,6 +147,17 @@ const { reducer: bidReducer, actions: bidActions } = createSlice({
             state.message = payload;
         });
         builder.addCase(buyProductInBid.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = payload?.message.data ?? "error during edit bid";
+        });
+        builder.addCase(answerOnCounter.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(answerOnCounter.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.message = payload;
+        });
+        builder.addCase(answerOnCounter.rejected, (state, { payload }) => {
             state.isLoading = false;
             state.error = payload?.message.data ?? "error during edit bid";
         });

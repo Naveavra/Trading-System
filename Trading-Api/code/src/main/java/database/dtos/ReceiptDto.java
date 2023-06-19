@@ -1,10 +1,12 @@
 package database.dtos;
 
+import database.DbEntity;
+import database.daos.Dao;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "receiptsProducts")
-public class ReceiptDto {
+public class ReceiptDto implements DbEntity {
 
     @Id
     private int orderId;
@@ -54,5 +56,9 @@ public class ReceiptDto {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public void initialParams() {
     }
 }

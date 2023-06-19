@@ -1,5 +1,5 @@
 
-import database.Dao;
+import database.daos.Dao;
 import domain.states.StoreCreator;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
@@ -26,14 +26,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         static Pair<Member, UserState> node4;
         static Pair<Member, UserState> node5;
         static AppHistory root;
-        Member m0 = new Member(0, "eli@gmail.com", "123Aaa", "24/02/2002");
-        Member m1 = new Member(1, "eli2@gmail.com", "123Aaa", "24/02/2002");
-        Member m2 = new Member(2, "eli3@gmail.com", "123Aaa", "24/02/2002");
-        Member m3 = new Member(3, "eli4@gmail.com", "123Aaa", "24/02/2002");
-        Member m4 = new Member(4, "eli5@gmail.com", "123Aaa", "24/02/2002");
-        Member m5 = new Member(5, "eli6@gmail.com", "123Aaa", "24/02/2002");
+        Member m0;
+        Member m1;
+        Member m2;
+        Member m3;
+        Member m4;
+        Member m5;
         @BeforeEach
         public void setup() {
+            Dao.setForTests(true);
+            m0 = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
+            m1 = new Member(3, "eli2@gmail.com", "123Aaa", "24/02/2002");
+            m2 = new Member(4, "eli3@gmail.com", "123Aaa", "24/02/2002");
+            m3 = new Member(5, "eli4@gmail.com", "123Aaa", "24/02/2002");
+            m4 = new Member(6, "eli5@gmail.com", "123Aaa", "24/02/2002");
+            m5 = new Member(7, "eli6@gmail.com", "123Aaa", "24/02/2002");
             node0 = new Pair<>(m0, new StoreCreator(m0.getId(), m0.getName(), null));
             node1 = new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null));
             node2 = new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null));
@@ -41,12 +48,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
             node4 = new Pair<>(m4, new StoreOwner(m4.getId(), m4.getName(), null));
             node5 = new Pair<>(m5, new StoreOwner(m5.getId(), m5.getName(), null));
             root = new AppHistory(0, node0);
-            Dao.setForTests(true);
         }
 
         @Test
         void getNodeExists() {
-            Assertions.assertNotNull(root.getNode(0));
+            Assertions.assertNotNull(root.getNode(m0.getId()));
 
         }
 
@@ -55,11 +61,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
             AppHistory appHistory = new AppHistory(0, new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
 
             Exception exception = assertThrows(Exception.class, () -> {
-                appHistory.addNode(1, new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
-                appHistory.addNode(2, new Pair<>(m3, new StoreManager(m3.getId(), m3.getName(), null)));
-                appHistory.addNode(3, new Pair<>(m4, new StoreManager(m4.getId(), m4.getName(), null)));
-                appHistory.addNode(4, new Pair<>(m5, new StoreOwner(m5.getId(), m5.getName(), null)));
-                appHistory.addNode(5, new Pair<>(m1, new StoreManager(m1.getId(), m1.getName(), null)));
+                appHistory.addNode(m1.getId(), new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
+                appHistory.addNode(m2.getId(), new Pair<>(m3, new StoreManager(m3.getId(), m3.getName(), null)));
+                appHistory.addNode(m3.getId(), new Pair<>(m4, new StoreManager(m4.getId(), m4.getName(), null)));
+                appHistory.addNode(m4.getId(), new Pair<>(m5, new StoreOwner(m5.getId(), m5.getName(), null)));
+                appHistory.addNode(m5.getId(), new Pair<>(m1, new StoreManager(m1.getId(), m1.getName(), null)));
             });
             String expectedMessage = "circular appointment";
             String actualMessage = exception.getMessage();
@@ -70,17 +76,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         @Test
         void testGetNode() throws Exception {
             AppHistory appHistory = new AppHistory(0, new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
-            appHistory.addNode(1, new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
-            AppHistory.Node node = appHistory.getNode(2);
+            appHistory.addNode(m1.getId(), new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
+            AppHistory.Node node = appHistory.getNode(m2.getId());
             assertNotNull(node);
-            assertEquals(node.getData().getFirst().getId(), 2);
+            assertEquals(node.getData().getFirst().getId(), m2.getId());
             assertEquals(node.getData().getSecond().getRole(), Role.Manager);
         }
 
 
         @Test
         void getNodeNotExists() {
-            Assertions.assertNull(root.getNode(2));
+            Assertions.assertNull(root.getNode(1));
 
         }
 
@@ -130,24 +136,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         @Test
         void testRemoveChild() throws Exception {
             AppHistory appHistory = new AppHistory(0, new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
-            appHistory.addNode(1, new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
-            appHistory.removeChild(2);
-            assertFalse(appHistory.isChild(1, 2));
+            appHistory.addNode(m1.getId(), new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
+            appHistory.removeChild(m2.getId());
+            assertFalse(appHistory.isChild(m1.getId(), m2.getId()));
         }
 
         @Test
         void testIsChild() throws Exception {
             AppHistory appHistory = new AppHistory(0, new Pair<>(m1, new StoreOwner(m1.getId(), m1.getName(), null)));
-            appHistory.addNode(1, new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
-            assertTrue(appHistory.isChild(1, 2));
-            assertFalse(appHistory.isChild(2, 1));
+            appHistory.addNode(m1.getId(), new Pair<>(m2, new StoreManager(m2.getId(), m2.getName(), null)));
+            assertTrue(appHistory.isChild(m1.getId(), m2.getId()));
+            assertFalse(appHistory.isChild(m2.getId(), m1.getId()));
         }
 
         @Test
         void removeLeafNode() throws Exception {
             root.addNode(node0.getFirst().getId(), node3);
             HashSet<Integer> dismissed = (HashSet<Integer>) root.removeChild(node3.getFirst().getId());
-            assertTrue(dismissed.contains(3));
+            assertTrue(dismissed.contains(m3.getId()));
         }
 
         @Test

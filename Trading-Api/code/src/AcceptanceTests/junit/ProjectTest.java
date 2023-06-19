@@ -7,7 +7,7 @@ import java.util.List;
 import bridge.Bridge;
 import bridge.Driver;
 import data.*;
-import database.Dao;
+import database.daos.Dao;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

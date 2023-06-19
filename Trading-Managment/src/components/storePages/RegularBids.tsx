@@ -54,6 +54,10 @@ const RegularBids = () => {
                                         <Alert severity="success">approved</Alert> :
                                         bid.state === status.Pending ?
                                             <Alert severity="info">pending</Alert> :
+                                             bid.state === status.Counter ?
+                                            <>
+                                                <Alert severity="info">counter</Alert>
+                                            </> :
                                             <Alert severity="error">rejected</Alert>
                                     }                                </CardContent>
                                 <CardActions>

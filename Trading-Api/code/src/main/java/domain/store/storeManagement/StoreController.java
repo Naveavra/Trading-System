@@ -1,6 +1,6 @@
 package domain.store.storeManagement;
 
-import database.Dao;
+import database.daos.StoreDao;
 import domain.store.discount.AbstractDiscount;
 import domain.store.discount.discountDataObjects.DiscountDataObject;
 import domain.store.discount.discountDataObjects.PredicateDataObject;
@@ -8,7 +8,6 @@ import domain.store.discount.predicates.DiscountPredicate;
 import domain.user.Basket;
 import domain.user.Member;
 import domain.user.ShoppingCart;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.json.JSONObject;
 import utils.infoRelated.ProductInfo;
 import utils.Filter.ProductFilter;
@@ -29,13 +28,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StoreController {
 
     public ConcurrentHashMap<Integer, Store> storeList; //storeid, Store
-    AtomicInteger storescounter;
+    private AtomicInteger storeIds;
     AtomicInteger productIDs = new AtomicInteger(0);
     ConcurrentHashMap<Integer, Product> products; //for fast access
 
     public StoreController() {
+        storeIds = new AtomicInteger(0);
         storeList = new ConcurrentHashMap<>();
-        storescounter = new AtomicInteger(0);
         products = new ConcurrentHashMap<>();
     }
 
@@ -90,13 +89,13 @@ public class StoreController {
     }
 
     public Store openStore(String desc, Member user) {
-        Store store = new Store(storescounter.getAndIncrement(), desc, user);
+        Store store = new Store(storeIds.getAndIncrement(), desc, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
 
     public Store openStore(String name, String desc, String img, Member user) {
-        Store store = new Store(storescounter.getAndIncrement(), name, desc, img, user);
+        Store store = new Store(storeIds.getAndIncrement(), name, desc, img, user);
         storeList.put(store.getStoreId(), store);
         return store;
     }
@@ -203,7 +202,7 @@ public class StoreController {
     public Store getStore(int storeId) throws Exception{
         if(storeList.containsKey(storeId))
             return storeList.get(storeId);
-        Store s = (Store) Dao.getById(Store.class, storeId);
+        Store s = StoreDao.getStore(storeId);
         if(s != null) {
             storeList.put(s.getStoreId(), s);
             return s;
@@ -213,9 +212,8 @@ public class StoreController {
 
 
     public Store createNewStore(Member creator, String description) {
-        Store store = new Store(storescounter.get(), description, creator);
-        int storeid = storescounter.getAndIncrement();
-        storeList.put(storeid, store);
+        Store store = new Store(storeIds.getAndIncrement(), description, creator);
+        storeList.put(store.getStoreId(), store);
         return store;
     }
 
@@ -290,7 +288,7 @@ public class StoreController {
         Store store = getStore(storeId);
         if(store != null){
             storeList.remove(storeId);
-            Dao.removeIf("Store", String.format("storeId = %d", storeId));
+            StoreDao.removeStore(storeId);
             return store.getUsersInStore();
         }
         else
@@ -385,7 +383,6 @@ public class StoreController {
     public void setStoreAttributes(int storeId, String name, String description, String img) throws Exception{
         Store s = getStore(storeId);
         s.setStoreAttributes(name, description, img);
-        Dao.save(s);
     }
     public ArrayList<PredicateDataObject> parsePredicateData(ArrayList<String> predData){
         ArrayList<PredicateDataObject> predicates = new ArrayList<>();
@@ -407,14 +404,13 @@ public class StoreController {
         if (Objects.equals(discountType.toLowerCase(), "product")){discountTypeEnum = AbstractDiscount.discountTypes.Product;}
         if (Objects.equals(discountType.toLowerCase(), "category")){discountTypeEnum = AbstractDiscount.discountTypes.Category;}
         s.addDiscount(new DiscountDataObject(percentage,discountTypeEnum,prodId, discountedCategory, parsePredicateData(new ArrayList<>(predicatesLst))));
-
     }
 
     public int getStoreId(String storeName) throws Exception{
         for(Store s : storeList.values())
             if(s.getName().equals(storeName))
                 return s.getStoreId();
-        Store s = (Store) Dao.getByParam(Store.class, "Store", String.format("storeName = %s", storeName));
+        Store s = StoreDao.getStore(storeName);
         if(s != null) {
             storeList.put(s.getStoreId(), s);
             return s.getStoreId();
@@ -425,9 +421,10 @@ public class StoreController {
 
     //database
     public void getStoresFromDb(){
-        List<Store> stores = (List<Store>) Dao.getAllInTable("Store");
-        for(Store s : stores) {
-            if(!storeList.containsKey(s.getStoreId()))
+        if(storeList == null) {
+            storeList = new ConcurrentHashMap<>();
+            List<Store> stores = StoreDao.getAllStores();
+            for (Store s : stores)
                 storeList.put(s.getStoreId(), s);
         }
     }

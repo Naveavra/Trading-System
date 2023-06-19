@@ -1,0 +1,66 @@
+{
+  "commands": [
+    {
+      "command": "REGISTER",
+      "params": {
+        "userName": "U1@gmail.com",
+        "password": "U1123Aaa",
+        "birthday": "22/02/2002"
+      }
+    },
+    {
+      "command": "REGISTER",
+      "params": {
+        "userName": "U2@gmail.com",
+        "password": "U2123Aaa",
+        "birthday": "22/02/2002"
+      }
+    },
+    {
+      "command": "REGISTER",
+      "params": {
+        "userName": "U3@gmail.com",
+        "password": "U3123Aaa",
+        "birthday": "22/02/2002"
+      }
+    },
+    {
+      "command": "LOGIN",
+      "params": {
+        "userName": "U1@gmail.com",
+        "password": "U1123Aaa"
+      }
+    },
+    {
+      "command": "OPEN_STORE",
+      "params": {
+        "userId": "2",
+        "name": "S1",
+        "img": "https://images.pexels.com/photos/9060352/pexels-photo-9060352.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        "description": "good store"
+      }
+    },
+    {
+      "command": "APPOINT_STORE_OWNER",
+      "params": {
+        "userId": "2",
+        "storeId": "0",
+        "emailOfUser": "U2@gmail.com"
+      }
+    },
+    {
+      "command": "APPOINT_STORE_OWNER",
+      "params": {
+        "userId": "2",
+        "storeId": "0",
+        "emailOfUser": "U3@gmail.com"
+      }
+    },
+    {
+      "command": "LOGOUT",
+      "params": {
+        "userId": "2"
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 package market;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.states.Permissions;
 import domain.store.storeManagement.AppHistory;
 import domain.user.Member;
@@ -77,6 +77,13 @@ public class Market implements MarketInterface {
         marketController = new MarketController();
 
         userAuth = new UserAuth();
+//        TODO
+//        try {
+//            proxyPayment = new ProxyPayment(payment);
+//            proxySupplier = new ProxySupplier(supply);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
 
         try {
             proxyPayment = new ProxyPayment(new ESConfig());
@@ -1139,9 +1146,9 @@ public class Market implements MarketInterface {
                 userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a counter bid was placed in store: " + storeId + " for bid: " + bidId));
             addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "a counter bid was placed in store: " + storeId + " for bid: " + bidId);
-            return logAndRes(Event.LogStatus.Success, "user answer with counter bid",
+            return logAndRes(Event.LogStatus.Success, "u answer with counter bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
-                    "user answer with counter bid", null, null);
+                    "u answer with counter bid", null, null);
     } catch (Exception ex) {
         return new Response<>(null, "could not answer bid", ex.getMessage());
     }
@@ -1453,7 +1460,5 @@ public class Market implements MarketInterface {
         return new Pair<>(userController, marketController);
 
     }
-
-
 
 }

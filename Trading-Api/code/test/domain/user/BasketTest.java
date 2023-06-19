@@ -1,13 +1,11 @@
 package domain.user;
 
-import database.Dao;
+import database.daos.Dao;
 import domain.store.product.Product;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.infoRelated.ProductInfo;
-
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,12 +18,12 @@ class BasketTest {
 
     @BeforeEach
     void setUp() {
+        Dao.setForTests(true);
         basket = new Basket(0);
         apple = new Product(0, 0, "apple", "red apple");
         p =  new ProductInfo(0, apple, 10);
         banana = new Product(0, 1, "banana", "yellow banana");
         p2 =  new ProductInfo(0, banana, 10);
-        Dao.setForTests(true);
     }
 
     //product - int prod_id, String _name, String desc

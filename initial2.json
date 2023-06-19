@@ -1,0 +1,114 @@
+{
+  "commands": [
+    {
+      "command": "ADD_ADMIN",
+      "params": {
+        "adminId": "1",
+        "token": "token",
+        "email": "U1@gmail.com",
+        "password": "U1123@gmail.com"
+      }
+    },
+    {
+      "command": "REGISTER",
+      "params": {
+        "userName": "U2@gmail.com",
+        "password": "U2123Aaa",
+        "birthday": "22/02/2002"
+      }
+    },
+    {
+      "command": "REGISTER",
+      "params": {
+        "userName": "U3@gmail.com",
+        "password": "U3123Aaa",
+        "birthday": "22/02/2002"
+      }
+    },
+    {
+      "command": "REGISTER",
+      "params": {
+        "userName": "U4@gmail.com",
+        "password": "U4123Aaa",
+        "birthday": "22/02/2002"
+      }
+    },
+    {
+      "command": "REGISTER",
+      "params": {
+        "userName": "U5@gmail.com",
+        "password": "U5123Aaa",
+        "birthday": "22/02/2002"
+      }
+    },
+    {
+      "command": "REGISTER",
+      "params": {
+        "userName": "U6@gmail.com",
+        "password": "U6123Aaa",
+        "birthday": "22/02/2002"
+      }
+    },
+    {
+      "command": "LOGIN",
+      "params": {
+        "userName": "U2@gmail.com",
+        "password": "U2123Aaa"
+      }
+    },
+    {
+      "command": "OPEN_STORE",
+      "params": {
+        "userId": "2",
+        "name": "S1",
+        "img": "https://example.com/store-image.jpg",
+        "description": "Store S1 description"
+      }
+    },
+    {
+      "command": "ADD_ITEM_TO_STORE",
+      "params": {
+        "userId": "2",
+        "token": "token",
+        "storeId": "0",
+        "categories": ["snacks","teasty"],
+        "name": "BAMBA",
+        "description": "snack from peanut butter",
+        "price": "30",
+        "quantity": "20",
+        "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Bamba_snack.jpg/1200px-Bamba_snack.jpg"
+      }
+    },
+    {
+      "command": "APPOINT_STORE_MANAGER",
+      "params": {
+        "userId": "2",
+        "token": "token",
+        "managerToAppoint": "U3@gmail.com",
+        "storeId": "0"
+      }
+    },
+    {
+      "command": "APPOINT_STORE_OWNER",
+      "params": {
+        "userId": "2",
+        "storeId": "0",
+        "emailOfUser": "U4@gmail.com"
+      }
+    },
+    {
+      "command": "APPOINT_STORE_OWNER",
+      "params": {
+        "userId": "2",
+        "storeId": "0",
+        "emailOfUser": "U5@gmail.com"
+      }
+    },
+    {
+      "command": "LOGOUT",
+      "params": {
+        "userId": "2"
+      }
+    }
+  ]
+}

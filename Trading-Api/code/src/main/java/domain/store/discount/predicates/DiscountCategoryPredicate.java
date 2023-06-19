@@ -17,11 +17,12 @@ public class DiscountCategoryPredicate extends DiscountPredicate {
     private int quantity;
     private GetCategoriesOperation getCategories;
 
-    public DiscountCategoryPredicate(String category,int quantity,PredicateTypes type, GetCategoriesOperation op){
+    public DiscountCategoryPredicate(String category,int quantity,PredicateTypes type, GetCategoriesOperation op, int storeId){
         this.category = category;
         this.quantity = quantity;
         this.type = type;
         this.getCategories = op;
+        this.storeId = storeId;
     }
     @Override
     public boolean checkPredicate(Order order) {

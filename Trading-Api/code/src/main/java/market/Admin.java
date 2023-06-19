@@ -1,5 +1,6 @@
 package market;
 
+import database.daos.Dao;
 import domain.user.Subscriber;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -26,8 +27,8 @@ public class Admin extends Subscriber {
     public Admin(){
         setControllers();
     }
-    public Admin(int adminId, String email, String password){
-        super(adminId, email, password);
+    public Admin(int id, String email, String password){
+        super(id, email, password);
         Pair<UserController, MarketController> controllers = Market.getControllers();
         userController = controllers.getFirst();
         marketController = controllers.getSecond();
@@ -72,5 +73,14 @@ public class Admin extends Subscriber {
 
     @Override
     public void checkPermission(Action action, int storeId) throws Exception {
+    }
+
+    public void saveAdmin() {
+        Dao.save(this);
+    }
+
+    @Override
+    public void initialParams() {
+        initialNotificationsFromDb();
     }
 }

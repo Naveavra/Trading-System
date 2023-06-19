@@ -1,5 +1,6 @@
 package server.Config;
 
+import database.HibernateUtil;
 import market.Admin;
 import org.hibernate.cfg.Environment;
 import org.json.JSONException;
@@ -58,7 +59,11 @@ public class ConfigParser {
      */
     public static ConfigParser getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("ConfigParser instance has not been initialized with a config file path.");
+            String configFilePath = "../../config.json";
+            System.out.println(configFilePath);
+            instance = new ConfigParser(configFilePath);
+            HibernateUtil.createDrop = true;
+
         }
         return instance;
     }
@@ -215,7 +220,7 @@ public class ConfigParser {
         JSONObject adminConfig = jsonConfig.getJSONObject("Admin");
         String adminEmail = adminConfig.getString("EMAIL");
         String adminPassword = adminConfig.getString("PASSWORD");
-        initialAdmin = new Admin(ADMIN_START_ID, adminEmail, adminPassword);
+        initialAdmin = new Admin(1, adminEmail, adminPassword);
     }
 
     /**

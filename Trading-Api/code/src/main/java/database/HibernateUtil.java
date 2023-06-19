@@ -1,11 +1,9 @@
 package database;
 
-import database.dtos.AppointmentDto;
-import database.dtos.CartDto;
-import database.dtos.CategoryDto;
-import database.dtos.ReceiptDto;
+import database.dtos.*;
 import domain.states.*;
 import domain.store.product.Product;
+import domain.store.storeManagement.Bid;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import market.Admin;
@@ -21,16 +19,20 @@ import utils.infoRelated.Receipt;
 import utils.messageRelated.*;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 
 public class HibernateUtil {
     private static SessionFactory sessionFactory;
     private static Properties settings = ConfigParser.getInstance().getDBSetting();
+    public static boolean createDrop = false;
     public static SessionFactory getSessionFactory(){
         if(sessionFactory == null){
             try{
                 Configuration configuration = new Configuration();
-                settings.put(Environment.HBM2DDL_AUTO, "create-drop");
+                if(createDrop)
+                    settings.put(Environment.HBM2DDL_AUTO, "create-drop");
+                java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.WARNING);
                 configuration.setProperties(settings);
                 //TODO: add all tables needed to here
                 configuration.addAnnotatedClass(Member.class);
@@ -56,6 +58,11 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(Store.class);
                 configuration.addAnnotatedClass(Product.class);
                 configuration.addAnnotatedClass(CategoryDto.class);
+                configuration.addAnnotatedClass(ConstraintDto.class);
+                configuration.addAnnotatedClass(DiscountDto.class);
+
+                configuration.addAnnotatedClass(Bid.class);
+                configuration.addAnnotatedClass(ApprovedDto.class);
 
                 configuration.addAnnotatedClass(Event.class);
 
@@ -79,4 +86,5 @@ public class HibernateUtil {
         return isConnected;
 
     }
+
 }
