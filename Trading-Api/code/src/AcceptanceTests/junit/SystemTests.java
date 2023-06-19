@@ -4,6 +4,7 @@ import data.UserInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import service.ExternalService.Payment.MockPaymentService;
 import service.ExternalService.Payment.PaymentAdapter;
 import service.ExternalService.Supplier.MockSupplyService;
@@ -66,7 +67,24 @@ public class SystemTests extends ProjectTest{
     private void assertGoodAddExternalSupplierService(int adminId, String esName)
     {
         assertNotAvailableSupplierService(esName);
+        assertPossibleSupplierService(adminId, esName);
         assertTrue(addExternalSupplierService(adminId, esName));
+        assertAvailableSupplierService(esName);
+    }
+
+    @Test
+    private void assertGoodRemoveExternalSupplierService(int adminId, String esName)
+    {
+        assertAvailableSupplierService(esName);
+        assertTrue(removeExternalSupplierService(adminId, esName));
+        assertNotAvailableSupplierService(esName);
+    }
+
+    @Test
+    private void assertBadRemoveExternalSupplierService(int adminId, String esName)
+    {
+        assertAvailableSupplierService(esName);
+        assertFalse(removeExternalSupplierService(adminId, esName));
         assertAvailableSupplierService(esName);
     }
 
@@ -133,56 +151,45 @@ public class SystemTests extends ProjectTest{
     }
 
     //Remove external Service - Supplier:
-    //TODO: Continue from there
     @Test
     public void testRemoveExternalSupplierService(){
         int adminId = this.mainAdmin.getAdminId();
-        List<String>  availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(!availableSupplierServices.contains(externalSupplierServices[1]));
-        assertTrue(addExternalSupplierService(adminId, externalSupplierServices[1]));
-        availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertTrue(availableSupplierServices.contains(externalSupplierServices[1]));
-        assertTrue(this.removeExternalSupplierService(adminId, externalSupplierServices[1]));
-        availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(!availableSupplierServices.contains(externalSupplierServices[1]));
+        assertGoodAddExternalSupplierService(adminId, MOCK_ES_NAME);
+        assertAvailableSupplierService(MOCK_ES_NAME);
+        assertTrue(removeExternalSupplierService(adminId, MOCK_ES_NAME));
+        assertNotAvailableSupplierService(MOCK_ES_NAME);
     }
 
     @Test
     public void testRemoveAllExternalSupplierService(){
         int adminId = this.mainAdmin.getAdminId();
-        List<String>  availableSupplierServices = this.getAvailableExternalSupplierService();
+        assertGoodAddExternalSupplierService(adminId, MOCK_ES_NAME);
+        List<String> availableSupplierServices = this.getAvailableExternalSupplierService();
         assertNotNull(availableSupplierServices);
-        assertTrue(availableSupplierServices.contains(externalSupplierServices[0]));
-        assertEquals(1, availableSupplierServices.size());
-        assertFalse(this.removeExternalSupplierService(adminId, externalSupplierServices[0]));
+        for (int i = 0; i < availableSupplierServices.size() - 1; i++)
+        {
+            assertGoodRemoveExternalSupplierService(adminId, availableSupplierServices.get(i));
+        }
         availableSupplierServices = this.getAvailableExternalSupplierService();
         assertNotNull(availableSupplierServices);
-        assertTrue(availableSupplierServices.contains(externalSupplierServices[0]));
+        assertEquals(1, availableSupplierServices.size());
+        assertBadRemoveExternalSupplierService(adminId, availableSupplierServices.get(0));
     }
 
     @Test
     public void testRemoveUnExistExternalSupplierService(){
         int adminId = this.mainAdmin.getAdminId();
-        List<String>  availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(!availableSupplierServices.contains(externalSupplierServices[1]));
-        assertFalse(this.removeExternalSupplierService(adminId, externalSupplierServices[1]));
+        assertPossibleSupplierService(adminId, MOCK_ES_NAME);
+        assertNotAvailableSupplierService(MOCK_ES_NAME);
+        assertFalse(removeExternalSupplierService(adminId, MOCK_ES_NAME));
     }
 
     @Test
     public void testNotAdminRemoveExternalSupplierService(){
         int adminId = this.mainAdmin.getAdminId();
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
-        assertTrue(addExternalSupplierService(adminId, externalSupplierServices[1]));
-        List<String>  availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(availableSupplierServices.contains(externalSupplierServices[1]));
-        assertFalse(this.removeExternalSupplierService(uid, externalSupplierServices[1]));
-        availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(availableSupplierServices.contains(externalSupplierServices[1]));
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
+        assertGoodAddExternalSupplierService(adminId, MOCK_ES_NAME);
+        assertBadRemoveExternalSupplierService(ui.getUserId(), MOCK_ES_NAME);
     }
 
     //Add external Service - Supplier:
@@ -190,49 +197,39 @@ public class SystemTests extends ProjectTest{
     @Test
     public void testAddExternalSupplierService(){
         int adminId = this.mainAdmin.getAdminId();
-        assertTrue(addExternalSupplierService(adminId, externalSupplierServices[1]));
-        List<String>  availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(availableSupplierServices.contains(externalSupplierServices[1]));
+        assertGoodAddExternalSupplierService(adminId, MOCK_ES_NAME);
     }
 
     @Test
     public void testAddExistExternalSupplierService(){
         int adminId = this.mainAdmin.getAdminId();
-        assertTrue(addExternalSupplierService(adminId, externalSupplierServices[1]));
-        List<String>  availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(availableSupplierServices.contains(externalSupplierServices[1]));
-        assertFalse(addExternalSupplierService(adminId, externalSupplierServices[1]));
+        assertGoodAddExternalSupplierService(adminId, MOCK_ES_NAME);
+        assertFalse(addExternalSupplierService(adminId, MOCK_ES_NAME));
+        assertAvailableSupplierService(MOCK_ES_NAME);
     }
 
     @Test
     public void testAddIllegalExternalSupplierService(){
         int adminId = this.mainAdmin.getAdminId();
-        List<String>  availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(!availableSupplierServices.contains(ERROR));
-        assertFalse(this.addExternalSupplierService(adminId, ERROR));
-        availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(!availableSupplierServices.contains(ERROR));
+        assertNotPossibleSupplierService(adminId, ERROR);
+        assertFalse(addExternalSupplierService(adminId, ERROR));
+        assertNotPossibleSupplierService(adminId, ERROR);
+        assertNotAvailableSupplierService(ERROR);
     }
 
     @Test
     public void testNotAdminAddExternalSupplierService(){
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
-        List<String>  availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(!availableSupplierServices.contains(externalSupplierServices[1]));
-        assertFalse(addExternalSupplierService(uid, externalSupplierServices[1]));
-        availableSupplierServices = this.getAvailableExternalSupplierService();
-        assertNotNull(availableSupplierServices);
-        assertTrue(!availableSupplierServices.contains(externalSupplierServices[1]));
+        int adminId = this.mainAdmin.getAdminId();
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
+        assertPossibleSupplierService(adminId, MOCK_ES_NAME);
+        assertNotAvailableSupplierService(MOCK_ES_NAME);
+        assertFalse(addExternalSupplierService(ui.getUserId(), MOCK_ES_NAME));
+        assertNotAvailableSupplierService(MOCK_ES_NAME);
     }
 
 
     //Remove external Service - Payment:
-
+    //TODO: Continue
     @Test
     public void testReplaceExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();

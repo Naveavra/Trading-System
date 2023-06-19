@@ -101,7 +101,7 @@ public class ESSupply extends ExternalService implements SupplierAdapter {
             throw new Exception("Failed to order supplies: " + e.getMessage());
         }
         if (!(MIN_TRANSACTION_ID <= result && result <= MAX_TRANSACTION_ID)) {
-            throw new Exception("The supply transaction failed!");
+            throw new Exception("The supply transaction failed check your details!");
         }
         return result;
     }
@@ -133,7 +133,7 @@ public class ESSupply extends ExternalService implements SupplierAdapter {
             throw new Exception("Failed to cancel the supply transaction: " + e.getMessage());
         }
         if (result == FAILED) {
-            throw new Exception("Failed to cancel the supply transaction!");
+            throw new Exception("Failed to cancel the supply transaction check your details!");
         }
     }
 }

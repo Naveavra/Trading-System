@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="merging code">
+    <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="Ready for merge from main to me">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_15_06_2023_14_18__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_15_06_2023_14_18__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_06_2023_19_19__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_06_2023_19_19__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_18_06_2023_19_20__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_18_06_2023_19_20__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ESSupply.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ExternalService/Supplier/ESSupply.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../config.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,29 +47,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Git.Branch.Popup.ShowAllRemotes&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;last_directory_selection&quot;: &quot;C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test/server&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/bench/Desktop/Trading-System-addingLazyLoadDb (1)/Trading-System-addingLazyLoadDb/Trading-Api/code&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Git.Branch.Popup.ShowAllRemotes": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "last_directory_selection": "C:/Users/chais/Documents/BGU/Year C/S B/WorkshopSE/Git-Repo/Trading-System/Trading-Api/code/test/server",
+    "last_opened_file_path": "C:/Users/bench/Desktop/Trading-System-addingLazyLoadDb (1)/Trading-System-addingLazyLoadDb/Trading-Api/code",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -83,7 +81,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.runServer">
+  <component name="RunManager" selected="JUnit.SystemTests">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -100,61 +98,81 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AppHistoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="AppHistoryTest" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="junit.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AppHistoryTest.getNodeNotExists" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="AppHistoryTest" />
-      <option name="METHOD_NAME" value="getNodeNotExists" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MemberTest.purchaseMade" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemTests.testAddExistExternalSupplierService" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="domain.user.*" />
+          <option name="PATTERN" value="junit.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="domain.user" />
-      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
-      <option name="METHOD_NAME" value="purchaseMade" />
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
+      <option name="METHOD_NAME" value="testAddExistExternalSupplierService" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.writeReview" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemTests.testAddIllegalExternalSupplierService" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="domain.user.*" />
+          <option name="PATTERN" value="junit.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="domain.user" />
-      <option name="MAIN_CLASS_NAME" value="domain.user.MemberTest" />
-      <option name="METHOD_NAME" value="writeReview" />
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
+      <option name="METHOD_NAME" value="testAddIllegalExternalSupplierService" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemTests.testNotAdminRemoveExternalSupplierService" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
-      <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="junit.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
+      <option name="METHOD_NAME" value="testNotAdminRemoveExternalSupplierService" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SystemTests.testRemoveUnExistExternalSupplierService" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="junit.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.SystemTests" />
+      <option name="METHOD_NAME" value="testRemoveUnExistExternalSupplierService" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -162,19 +180,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
-      <item itemvalue="JUnit.AppHistoryTest" />
-      <item itemvalue="JUnit.AppHistoryTest.getNodeNotExists" />
-      <item itemvalue="JUnit.MemberTest.purchaseMade" />
-      <item itemvalue="JUnit.MemberTest.writeReview" />
-      <item itemvalue="JUnit.test in work1" />
+      <item itemvalue="JUnit.SystemTests" />
+      <item itemvalue="JUnit.SystemTests.testAddExistExternalSupplierService" />
+      <item itemvalue="JUnit.SystemTests.testAddIllegalExternalSupplierService" />
+      <item itemvalue="JUnit.SystemTests.testNotAdminRemoveExternalSupplierService" />
+      <item itemvalue="JUnit.SystemTests.testRemoveUnExistExternalSupplierService" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.test in work1" />
-        <item itemvalue="JUnit.AppHistoryTest.getNodeNotExists" />
-        <item itemvalue="JUnit.AppHistoryTest" />
-        <item itemvalue="JUnit.MemberTest.writeReview" />
-        <item itemvalue="JUnit.MemberTest.purchaseMade" />
+        <item itemvalue="JUnit.SystemTests" />
+        <item itemvalue="JUnit.SystemTests.testAddIllegalExternalSupplierService" />
+        <item itemvalue="JUnit.SystemTests.testAddExistExternalSupplierService" />
+        <item itemvalue="JUnit.SystemTests.testRemoveUnExistExternalSupplierService" />
+        <item itemvalue="JUnit.SystemTests.testNotAdminRemoveExternalSupplierService" />
       </list>
     </recent_temporary>
   </component>
