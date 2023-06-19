@@ -388,7 +388,8 @@ public class Market implements MarketInterface {
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
             proxyPayment.makePurchase(payment, getStorePaymentDetails(cart), totalPrice);
             proxySupplier.orderSupplies(supplier, cart);
-            userController.addNotification(userId, new Notification(NotificationOpcode.GET_CLIENT_DATA, "your purchase has been approved"));
+            if (!userController.isGuest(userId))
+                userController.addNotification(userId, new Notification(NotificationOpcode.GET_CLIENT_DATA, "your purchase has been approved"));
             return getReceiptResponse(userId, ans);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),

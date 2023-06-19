@@ -9,9 +9,7 @@ import utils.Pair;
 import java.util.*;
 
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.BlockingQueue;
 
 import static spark.Spark.*;
 
@@ -419,7 +417,6 @@ public class Server {
             toSparkRes(res, api.makePurchase(userId, getPaymentDetails(request), getSupplierDetails(request)));
             return res.body();
         });
-      
         get("api/services/payments", (req, res) ->{
             toSparkRes(res, api.getPaymentAvailableServices());
             return res.body();
@@ -428,7 +425,20 @@ public class Server {
             toSparkRes(res, api.getSupplierAvailableServices());
             return res.body();
         });
-      
+        get("api/admin/services/payments", (req, res) ->{
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.getPaymentPossibleServices(adminId, token));
+            return res.body();
+        });
+        get("api/admin/services/suppliers", (req, res) ->{
+            JSONObject request = new JSONObject(req.body());
+            int adminId = Integer.parseInt(request.get("adminId").toString());
+            String token = req.headers("Authorization");
+            toSparkRes(res, api.getSupplierPossibleServices(adminId, token));
+            return res.body();
+        });
         delete("api/cart/:id", (req, res) ->
         {
             //delete cart

@@ -427,11 +427,18 @@ public class API {
         return fromResToPair(res);
     }
 
+    public Pair<Boolean, JSONObject> getPaymentPossibleServices(int adminId, String token) {
+        Response<List<Object>> res = market.getPaymentServicePossible(adminId, token);
+        return fromResToPairListPre(res);
+    }
 
+    public Pair<Boolean, JSONObject> getSupplierPossibleServices(int adminId, String token) {
+        Response<List<Object>> res = market.getSupplierServicePossible(adminId, token);
+        return fromResToPairListPre(res);
+    }
 
     public Pair<Boolean, JSONObject> getSupplierAvailableServices() {
         Response<List<Object>> res = market.getSupplierServiceAvailable();
-
         return fromResToPairListPre(res);
     }
 
@@ -572,4 +579,6 @@ public class API {
     public Pair<Boolean, JSONObject> addCompositeDiscount(String token, String body) throws Exception {
         return fromResToPair(market.addCompositeDiscount(token,body));
     }
+
+
 }
