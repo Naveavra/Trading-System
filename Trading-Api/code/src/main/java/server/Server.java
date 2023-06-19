@@ -711,7 +711,7 @@ public class Server {
            int storeId = Integer.parseInt(request.get("storeId").toString());
            int userId = Integer.parseInt(request.get("userId").toString());
            String purchasePolicy = request.get("purchasePolicy").toString();
-           toSparkRes(res, api.addShoppingRule(token, storeId, userId, purchasePolicy));
+           toSparkRes(res, api.addShoppingRule(token, storeId, userId, purchasePolicy,req.body()));
            return res.body();
         });
         delete("api/shoppingRule", (req, res) ->{

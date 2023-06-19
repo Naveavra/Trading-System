@@ -1380,11 +1380,11 @@ public class Market implements MarketInterface {
         }
     }
     @Override
-    public Response addShoppingRule(int userId, String token, int storeId, String purchasePolicy){
+    public Response addShoppingRule(int userId, String token, int storeId, String purchasePolicy,String content){
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.addPurchaseConstraint, storeId);
-            marketController.addPurchaseConstraint(storeId, purchasePolicy);
+            marketController.addPurchaseConstraint(storeId, purchasePolicy,content);
             return logAndRes(Event.LogStatus.Success, "Member added shopping constraint " + userId + " has successfully entered",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     purchasePolicy, null, null);

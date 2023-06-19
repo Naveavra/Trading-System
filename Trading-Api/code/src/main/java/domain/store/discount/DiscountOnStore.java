@@ -1,8 +1,10 @@
 package domain.store.discount;
 
 import domain.user.Basket;
+import utils.infoRelated.Information;
 import utils.orderRelated.Order;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DiscountOnStore extends AbstractDiscount {
@@ -26,4 +28,5 @@ public class DiscountOnStore extends AbstractDiscount {
 
         return newPrice;
     }
+
 }

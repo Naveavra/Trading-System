@@ -1,11 +1,16 @@
 package domain.store.discount;
 
+import domain.store.discount.compositeDiscountTypes.AbstractDiscountComposite;
 import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
 import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.discount.predicates.DiscountPredicate;
 import domain.store.discount.predicates.PredicateFactory;
+import org.json.JSONObject;
+import utils.infoRelated.Information;
 
-public abstract class AbstractDiscount implements Discount{
+import java.util.ArrayList;
+
+public abstract class AbstractDiscount extends Discount{
     public enum discountTypes{Product,Category,Store}
 
     //same for all discounts
@@ -14,6 +19,7 @@ public abstract class AbstractDiscount implements Discount{
     private int storeId;
     private double percentage;
     public DiscountPredicate predicate = null; //if not null it's a conditional discount.
+    public String description;
 
 
     private String discountedCategory; //used in discountOnCategory
@@ -61,6 +67,14 @@ public abstract class AbstractDiscount implements Discount{
     public int getDiscountID() {
         return this.discountID;
     }
+    @Override
+    public String getDescription(){
+        return this.description;
+    }
+    @Override
+    public void setDescription(String desc){
+        this.description=desc;
+    }
     // Getters
     public DiscountPredicate getPred(){
         return predicate;
@@ -82,6 +96,13 @@ public abstract class AbstractDiscount implements Discount{
 
     public String getDiscountedCategory() {
         return discountedCategory;
+    }
+
+    @Override
+    public JSONObject toJson(){
+        JSONObject obj = new JSONObject();
+        obj.put("description",getDescription());
+        return obj;
     }
 
 
