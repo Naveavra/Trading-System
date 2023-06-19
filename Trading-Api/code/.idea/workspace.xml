@@ -209,7 +209,7 @@
       <workItem from="1687079555190" duration="12164000" />
       <workItem from="1687155489402" duration="1285000" />
       <workItem from="1687158769895" duration="885000" />
-      <workItem from="1687160066327" duration="1118000" />
+      <workItem from="1687160066327" duration="9425000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -319,14 +319,9 @@
           <option name="timeStamp" value="205" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>445</line>
-          <option name="timeStamp" value="231" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java</url>
-          <line>93</line>
-          <option name="timeStamp" value="232" />
+          <url>file://$PROJECT_DIR$/src/main/java/service/UserController.java</url>
+          <line>629</line>
+          <option name="timeStamp" value="233" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

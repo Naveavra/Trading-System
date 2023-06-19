@@ -101,15 +101,15 @@ public class UserController {
         Admin a = null;
         Member m = null;
         try {
-            a = getAdmin(id);
-            if(a != null)
-                return a;
-        }catch (Exception ignored){
-        }
-        try{
             m = getMember(id);
             if(m != null)
                 return m;
+        }catch (Exception ignored){
+        }
+        try{
+            a = getAdmin(id);
+            if(a != null)
+                return a;
         }catch (Exception e){
         }
         throw new Exception("the id given does not belong to any user");
@@ -271,6 +271,11 @@ public class UserController {
     public synchronized void addNotification(String userEmail, Notification notification) throws Exception{
         Subscriber s = getSubscriber(userEmail);
         s.addNotification(notification);
+    }
+
+    public synchronized void addNotificationToAdmins(Notification notification){
+        for(Admin a : admins.values())
+            a.addNotification(notification);
     }
 
     public Notification getNotification(int userId) throws Exception {

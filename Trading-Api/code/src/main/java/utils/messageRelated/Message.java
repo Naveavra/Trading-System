@@ -39,12 +39,15 @@ public abstract class Message extends Information implements DbEntity {
     public Member getSender() {
         return sender;
     }
+    public int getSenderId() {
+        return senderId;
+    }
 
     public String getContent() {
         return content;
     }
 
-    public Integer getMessageId() {
+    public int getMessageId() {
         return messageId;
     }
 
@@ -77,5 +80,4 @@ public abstract class Message extends Information implements DbEntity {
         if(sender == null)
             sender = SubscriberDao.getMember(senderId);
     }
-
 }

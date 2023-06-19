@@ -3,6 +3,8 @@ package database.daos;
 import database.DbEntity;
 import database.dtos.AppointmentDto;
 import database.dtos.CategoryDto;
+import database.dtos.ConstraintDto;
+import database.dtos.DiscountDto;
 import domain.store.product.Product;
 import domain.store.storeManagement.AppHistory;
 import domain.store.storeManagement.Bid;
@@ -23,6 +25,10 @@ public class StoreDao {
     private static Set<Integer> appointments = new HashSet<>();
     private static HashMap<Integer, HashMap<Integer, Bid>> bidMap = new HashMap<>();
     private static Set<Integer> bids = new HashSet<>();
+    private static HashMap<Integer, HashMap<Integer, ConstraintDto>> constraintMap = new HashMap<>();
+    private static Set<Integer> constraints = new HashSet<>();
+    private static HashMap<Integer, HashMap<Integer, DiscountDto>> discountsMap = new HashMap<>();
+    private static Set<Integer> discounts = new HashSet<>();
     public static void saveStore(Store s){
         Dao.save(s);
     }
@@ -69,6 +75,8 @@ public class StoreDao {
         removeAppointments(storeId);
         MessageDao.removeStoreMessages(storeId);
         removeBids(storeId);
+        removeConstraints(storeId);
+        removeDiscounts(storeId);
         storesMap.remove(storeId);
     }
 
@@ -309,5 +317,85 @@ public class StoreDao {
 
 
     //purchaseConstraints
+    public static void saveConstraint(ConstraintDto constraintDto){
+        Dao.save(constraintDto);
+    }
 
+    public static ConstraintDto getConstraint(int storeId, int constraintId){
+        if(!constraintMap.containsKey(storeId))
+            constraintMap.put(storeId, new HashMap<>());
+        if(constraintMap.containsKey(storeId))
+            if(constraintMap.get(storeId).containsKey(constraintId))
+                return constraintMap.get(storeId).get(constraintId);
+        ConstraintDto constraintDto = (ConstraintDto) Dao.getByParam(ConstraintDto.class, "ConstraintDto",
+                String.format("constraintId = %d AND storeId = %d", constraintId, storeId));
+        if(constraintDto != null)
+            constraintMap.get(storeId).put(constraintId, constraintDto);
+        return constraintDto;
+    }
+    public static List<ConstraintDto> getConstraints(int storeId){
+        if(!constraintMap.containsKey(storeId))
+            constraintMap.put(storeId, new HashMap<>());
+        if(!constraints.contains(storeId)){
+            List<? extends DbEntity> constraintDtos = Dao.getListById(ConstraintDto.class, storeId, "ConstraintDto", "storeId");
+            for(ConstraintDto constraintDto : (List<ConstraintDto>) constraintDtos)
+                if(!constraintMap.get(storeId).containsKey(constraintDto.getConstraintId()))
+                    constraintMap.get(storeId).put(constraintDto.getConstraintId(), constraintDto);
+            constraints.add(storeId);
+        }
+        return new ArrayList<>(constraintMap.get(storeId).values());
+    }
+
+    public static void removeConstraint(int storeId, int constraintId){
+        Dao.removeIf("ConstraintDto", String.format("storeId = %d AND constraintId = %d", storeId, constraintId));
+        if(constraintMap.containsKey(storeId))
+            constraintMap.get(storeId).remove(constraintId);
+    }
+
+    public static void removeConstraints(int storeId){
+        Dao.removeIf("ConstraintDto", String.format("storeId = %d", storeId));
+        constraintMap.remove(storeId);
+    }
+
+    //discounts
+    public static void saveDiscount(DiscountDto discountDto){
+        Dao.save(discountDto);
+    }
+
+    public static DiscountDto getDiscount(int storeId, int discountId){
+        if(!discountsMap.containsKey(storeId))
+            discountsMap.put(storeId, new HashMap<>());
+        if(discountsMap.get(storeId).containsKey(discountId))
+            return discountsMap.get(storeId).get(discountId);
+
+        DiscountDto discountDto = (DiscountDto) Dao.getByParam(DiscountDto.class, "DiscountDto",
+                String.format("discountId = %d AND  storeId = %d", discountId, storeId));
+        if(discountDto != null)
+            discountsMap.get(storeId).put(discountId, discountDto);
+        return discountDto;
+    }
+
+    public static List<DiscountDto> getDiscounts(int storeId){
+        if(!discountsMap.containsKey(storeId))
+            discountsMap.put(storeId, new HashMap<>());
+        if(discounts.contains(storeId)){
+            List<? extends DbEntity> discountDtos = Dao.getListById(DiscountDto.class, storeId, "DiscountDto", "storeId");
+            for(DiscountDto dto : (List<DiscountDto>) discountDtos)
+                if(!discountsMap.get(storeId).containsKey(dto.getDiscountId()))
+                    discountsMap.get(storeId).put(dto.getDiscountId(), dto);
+            discounts.add(storeId);
+        }
+        return new ArrayList<>(discountsMap.get(storeId).values());
+    }
+
+    public static void removeDiscount(int storeId, int discountId){
+        Dao.removeIf("DiscountDto", String.format("discountId = %d AND storeId = %d", discountId, storeId));
+        if(discountsMap.containsKey(storeId))
+            discountsMap.get(storeId).remove(discountId);
+    }
+
+    public static void removeDiscounts(int storeId){
+        Dao.removeIf("DiscountDto", String.format("storeId = %d", storeId));
+        discountsMap.remove(storeId);
+    }
 }
