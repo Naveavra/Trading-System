@@ -1,7 +1,7 @@
 package database.daos;
 
 import database.DbEntity;
-import database.dtos.AppointmentDto;
+import database.dtos.Appointment;
 import database.dtos.CategoryDto;
 import database.dtos.ConstraintDto;
 import database.dtos.DiscountDto;
@@ -198,24 +198,24 @@ public class StoreDao {
     }
 
     //appointments
-    public static void saveAppointment(AppointmentDto appointmentDto){
-        Dao.save(appointmentDto);
+    public static void saveAppointment(Appointment appointment){
+        Dao.save(appointment);
     }
 
     public static AppHistory.Node getNode(int storeId, int userId, int creatorId){
         if(appointmentMap.containsKey(storeId))
             if (appointmentMap.get(storeId).getNode(userId) != null)
                 return appointmentMap.get(storeId).getNode(userId);
-        List<? extends DbEntity> appointmentsDto = Dao.getListByCompositeKey(AppointmentDto.class, storeId, userId,
+        List<? extends DbEntity> appointmentsDto = Dao.getListByCompositeKey(Appointment.class, storeId, userId,
                 "AppointmentDto", "storeId", "fatherId");
         if(!appointmentMap.containsKey(storeId))
             appointmentMap.put(storeId, new AppHistory(storeId, new Pair<>(SubscriberDao.getMember(creatorId), SubscriberDao.getRole(creatorId, storeId))));
         try {
             appointmentMap.get(storeId).addNode(creatorId, new Pair<>(SubscriberDao.getMember(userId), SubscriberDao.getRole(userId, storeId)));
-            for (AppointmentDto appointmentDto : (List<AppointmentDto>) appointmentsDto)
-                if(!appointmentMap.get(storeId).isChild(appointmentDto.getFatherId(), appointmentDto.getChildId()))
-                    appointmentMap.get(storeId).addNode(userId, new Pair<>(SubscriberDao.getMember(appointmentDto.getChildId()),
-                            SubscriberDao.getRole(appointmentDto.getChildId(), storeId)));
+            for (Appointment appointment : (List<Appointment>) appointmentsDto)
+                if(!appointmentMap.get(storeId).isChild(appointment.getFatherId(), appointment.getChildId()))
+                    appointmentMap.get(storeId).addNode(userId, new Pair<>(SubscriberDao.getMember(appointment.getChildId()),
+                            SubscriberDao.getRole(appointment.getChildId(), storeId)));
         }catch (Exception ignored){}
         return appointmentMap.get(storeId).getNode(userId);
     }
@@ -225,17 +225,17 @@ public class StoreDao {
             if(!appointmentMap.containsKey(storeId))
                 appointmentMap.put(storeId, new AppHistory(storeId, new Pair<>(SubscriberDao.getMember(creatorId),
                         SubscriberDao.getRole(creatorId, storeId))));
-            List<? extends DbEntity> appointmentsDto = Dao.getListById(AppointmentDto.class, storeId,
+            List<? extends DbEntity> appointmentsDto = Dao.getListById(Appointment.class, storeId,
                     "AppointmentDto", "storeId");
             List<Integer> fathers = new ArrayList<>();
             fathers.add(creatorId);
             while(fathers.size() > 0){
                 int id = fathers.remove(0);
-                for(AppointmentDto appointmentDto : (List<AppointmentDto>) appointmentsDto)
-                    if(appointmentDto.getFatherId() == id) {
+                for(Appointment appointment : (List<Appointment>) appointmentsDto)
+                    if(appointment.getFatherId() == id) {
                         try {
-                            appointmentMap.get(storeId).addNode(id, new Pair<>(SubscriberDao.getMember(appointmentDto.getChildId()),
-                                    SubscriberDao.getRole(appointmentDto.getChildId(), storeId)));
+                            appointmentMap.get(storeId).addNode(id, new Pair<>(SubscriberDao.getMember(appointment.getChildId()),
+                                    SubscriberDao.getRole(appointment.getChildId(), storeId)));
                         }catch (Exception ignored){}
                     }
             }
@@ -244,11 +244,11 @@ public class StoreDao {
         return appointmentMap.get(storeId);
     }
 
-    public static void removeAppointment(int storeId, int childId){
-        Dao.removeIf("AppointmentDto", String.format("storeId = %d AND childId = %d",
-                storeId, childId));
-        Dao.removeIf("AppointmentDto", String.format("storeId = %d AND fatherId = %d",
-                storeId, childId));
+    public static void removeAppointment(int storeId, int childId, String childName){
+        Dao.removeIf("Appointment", String.format("storeId = %d AND childName = '%s' ",
+                storeId, childName));
+        Dao.removeIf("Appointment", String.format("storeId = %d AND fatherName = '%s' ",
+                storeId, childName));
         if(appointmentMap.containsKey(storeId)) {
             try {
                 appointmentMap.get(storeId).removeChild(childId);

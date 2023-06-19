@@ -320,9 +320,9 @@ public class UserController {
     public synchronized void appointOwner(int ownerId, String appointedEmail, int storeId) throws Exception {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
-        owner.appointToOwner(appointed, storeId);
-        Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "you have been appointed to owner in store: " + storeId);
-        appointed.addNotification(notify);
+        List<String> creators = owner.appointToOwner(appointed, storeId);
+        for(String creator : creators)
+            addNotification(creator, new Notification(NotificationOpcode.GET_STORE_DATA, "a new owner appointment was added to store: " + storeId));
     }
 
 
@@ -349,9 +349,9 @@ public class UserController {
     public synchronized void appointManager(int ownerId, String appointedEmail, int storeId) throws Exception {
         Member owner = getActiveMember(ownerId);
         Member appointed = getMember(appointedEmail);
-        owner.appointToManager(appointed, storeId);
-        Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, "you have been appointed to manager in store: " + storeId);
-        appointed.addNotification(notify);
+        List<String> owners = owner.appointToManager(appointed, storeId);
+        for(String ownerName : owners)
+            addNotification(ownerName, new Notification(NotificationOpcode.GET_STORE_DATA, "a new manager appointment was added to store: " + storeId));
     }
 
     public synchronized void fireManager(int ownerId, int appointedId, int storeId) throws Exception {

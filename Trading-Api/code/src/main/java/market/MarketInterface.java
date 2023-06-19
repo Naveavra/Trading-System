@@ -153,6 +153,8 @@ public interface MarketInterface {
     public Response clientAcceptCounter(String token, int bidId, int storeId);
 
     public Response addCompositeDiscount(String token, String body) throws Exception;
+
+    Response<String> answerAppointment(int userId, String token, int storeId, String fatherName, String childName, String ans);
 }
 
 

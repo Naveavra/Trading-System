@@ -8,7 +8,7 @@ export interface StoreInfo {
     creatorId: number;
     img: string;
     discounts: string[];
-    shoppingRules: string[];
+    purchasePolicies: string[];
 }
 export const emptyStoreInfo: StoreInfo = {
     storeId: 0,
@@ -19,5 +19,5 @@ export const emptyStoreInfo: StoreInfo = {
     creatorId: 0,
     img: '',
     discounts: [],
-    shoppingRules: []
+    purchasePolicies: []
 };
