@@ -2,6 +2,7 @@ package domain.store.discount;
 
 import domain.store.product.Product;
 import domain.user.Basket;
+import utils.infoRelated.Information;
 import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
 
@@ -32,4 +33,5 @@ public class DiscountOnCategory extends AbstractDiscount {
         }
         return newPrice;
     }
+
 }

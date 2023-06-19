@@ -83,39 +83,39 @@ const Visitor: React.FC = () => {
             <Card sx={{ minWidth: 275 }}>
                 <Box display={"flex"}>
                     <>
-                        <Card sx={{ minWidth: 275 }}>
+                        <Card sx={{ minWidth: 275, width: '50%' }}>
                             <CardContent>
-                                <Typography variant="h4" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 84, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif', textDecoration: 'underline' }}>
+                                <Typography variant="h4" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 35, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif', textDecoration: 'underline' }}>
                                     about us
                                 </Typography >
                                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
 
                                 </Typography>
                                 <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >
-                                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 73, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
+                                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 35, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
                                         {store.description}
                                     </Typography >
                                 </Box>
                                 <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >
-                                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 73, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
-                                        store discounts
+                                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
+                                        store discounts:
                                     </Typography >
                                     {store.discounts?.map((discount) => {
                                         return (
-                                            <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 73, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
-                                                {discount}
+                                            <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 10, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
+                                                {discount?.description}
                                             </Typography >
                                         )
                                     })}
                                 </Box>
                                 <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap', flexBasis: 4, gap: '16px' }} >
-                                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 73, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
-                                        store shopping rules
+                                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
+                                        store shopping rules:
                                     </Typography >
-                                    {store.shoppingRules?.map((shopRule) => {
+                                    {store.purchasePolicies?.map((shopRule) => {
                                         return (
-                                            <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 73, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
-                                                {shopRule}
+                                            <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 10, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
+                                                <h3>&#x2022;{shopRule} </h3>
                                             </Typography >
                                         )
                                     })}

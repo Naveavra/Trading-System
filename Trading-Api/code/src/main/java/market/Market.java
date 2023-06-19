@@ -327,6 +327,24 @@ public class Market implements MarketInterface {
         }
     }
 
+    @Override
+    public Response addCompositeDiscount(String token, String body) throws Exception {
+        int userId = -1;
+        try {
+            JSONObject request = new JSONObject(body);
+            userId = Integer.parseInt(request.get("userId").toString());
+            userAuth.checkUser(userId, token);
+            marketController.addCompositeDiscount(body);
+            return logAndRes(Event.LogStatus.Success, "user added a composite discount successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),"Added a composite discount",null,null);
+        }
+        catch (Exception e){
+            return logAndRes(Event.LogStatus.Fail, "User failed to add a composite discount " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    null, "add composite discount failed", e.getMessage());
+        }
+    }
+
     private Response<Receipt> getReceiptResponse(int userId, Pair<Receipt, Set<Integer>> ans) throws Exception {
         Receipt receipt = ans.getFirst();
         Set<Integer> creatorIds = ans.getSecond();
@@ -1023,12 +1041,13 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst) {
+    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType,
+                                          String discountedCategory, List<String> predicatesLst,String content) {
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.changeDiscountPolicy, storeId);
             marketController.changeRegularDiscount(storeId, prodId, percentage, discountType,
-                    discountedCategory, predicatesLst);
+                    discountedCategory, predicatesLst,content);
             return logAndRes(Event.LogStatus.Success, "user changed discount successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user changed discount policy", null, null);
@@ -1361,11 +1380,11 @@ public class Market implements MarketInterface {
         }
     }
     @Override
-    public Response addShoppingRule(int userId, String token, int storeId, String purchasePolicy){
+    public Response addShoppingRule(int userId, String token, int storeId, String purchasePolicy,String content){
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.addPurchaseConstraint, storeId);
-            marketController.addPurchaseConstraint(storeId, purchasePolicy);
+            marketController.addPurchaseConstraint(storeId, purchasePolicy,content);
             return logAndRes(Event.LogStatus.Success, "Member added shopping constraint " + userId + " has successfully entered",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     purchasePolicy, null, null);

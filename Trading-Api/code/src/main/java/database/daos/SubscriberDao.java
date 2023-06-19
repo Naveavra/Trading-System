@@ -75,10 +75,18 @@ public class SubscriberDao {
     }
 
     public static void removeMember(String name){
-        Dao.removeIf("Member", String.format("email = '%s' ", name));
+        int id = -1;
         for(Member m : membersMap.values())
             if(m.getName().equals(name))
-                membersMap.remove(m.getId());
+                id = m.getId();
+        membersMap.remove(id);
+        Dao.removeIf("Member", String.format("email = '%s' ", name));
+        removeRoles(id);
+        MessageDao.removeMemberMessage(id);
+        removeNotifications(id);
+        removeCart(id);
+        removePurchases(id);
+
     }
 
     public static Admin getAdmin(int id){
@@ -148,6 +156,10 @@ public class SubscriberDao {
         Dao.removeIf("Notification", String.format("id = %d", id));
     }
 
+    public static void removeNotifications(int subId) {
+        Dao.removeIf("Notification", String.format("subId = %d", subId));
+    }
+
     //roles
 
     public static void saveRole(UserState state){
@@ -188,6 +200,12 @@ public class SubscriberDao {
         Dao.removeIf("UserState", String.format("userId = %d AND storeId = %d", userId, storeId));
         if(rolesMap.containsKey(userId))
             rolesMap.get(userId).remove(storeId);
+    }
+
+    private static void removeRoles(int userId) {
+        Dao.removeIf("UserState", String.format("userId = %d", userId));
+        rolesMap.remove(userId);
+        roles.remove(userId);
     }
 
     //carts
@@ -256,6 +274,7 @@ public class SubscriberDao {
     public static void removeCart(int userId){
         Dao.removeIf("CartDto", String.format("memberId = %d", userId));
         cartsMap.remove(userId);
+        carts.remove(userId);
     }
 
 
@@ -298,5 +317,11 @@ public class SubscriberDao {
         Dao.removeIf("Receipt", String.format("receiptId = %d AND memberId = %d", orderId, userId));
         if(purchasesMap.containsKey(userId))
             purchasesMap.get(userId).removeReceipt(orderId);
+    }
+
+    public static void removePurchases(int userId) {
+        Dao.removeIf("Receipt", String.format("memberId = %d", userId));
+        purchasesMap.remove(userId);
+        purchases.remove(userId);
     }
 }

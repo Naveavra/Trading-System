@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../../redux/store";
 
 import AlertDialog from "../../Dialog/AlertDialog";
 import { answerBidFormValues } from "../../../types/formsTypes";
-import { clearStoreError } from "../../../reducers/storesSlice";
+import { clearStoreError, getStore } from "../../../reducers/storesSlice";
 
 import { Dialog, Box, Grid, TextField, Typography, Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
@@ -41,7 +41,8 @@ const AnswerBid = () => {
     }
     //maybe take it from params
     const handleOnClose = useCallback(() => {
-        navigate('/dashboard/store/superior');
+        navigate('/dashboard/store/superior/bids');
+        dispatch(getStore({ userId: userId, storeId: storeId }));
     }, []);
     const handleOnSubmit = () => {
         form.setValue('userId', userId);

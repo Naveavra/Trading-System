@@ -1,7 +1,9 @@
 package domain.store.purchase;
+import org.json.JSONObject;
+import utils.infoRelated.Information;
 import utils.orderRelated.Order;
 
-public abstract class PurchasePolicy {
+public abstract class PurchasePolicy extends Information {
     public enum limiters{Min,Max,Exact}
     public enum policyTypes{Basket,Category,DateTime,Item,User};
     public enum policyComposeTypes{PolicyAnd,PolicyOr,PolicyConditioning}
@@ -11,6 +13,7 @@ public abstract class PurchasePolicy {
     public int storeID;
     public PurchasePolicy next;
     public policyComposeTypes composeType;
+    public String description;
 
     public abstract boolean validate(Order order) throws Exception;
     public String getContent(){
@@ -35,5 +38,20 @@ public abstract class PurchasePolicy {
             case PolicyAnd ->  res && next.validate(order);
             case PolicyConditioning -> next.validate(order);
         };
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public JSONObject toJson(){
+        JSONObject obj = new JSONObject();
+        obj.put("description",getDescription());
+        return obj;
     }
 }

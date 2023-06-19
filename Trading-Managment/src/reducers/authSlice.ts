@@ -317,20 +317,22 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.token = "";
             state.userId = 0;
             state.userName = '';
+            state.isAdmin = false;
             window.localStorage.removeItem(localStorage.auth.token.name);
             window.localStorage.removeItem(localStorage.auth.userId.name);
             window.localStorage.removeItem(localStorage.auth.userName.name);
+            window.localStorage.removeItem(localStorage.auth.isAdmin.name);
             state.token = "";
             state.userId = 0;
             state.userName = '';
             state.message = payload;
-            debugger;
             // window.localStorage.removeItem(localStorage.auth.isAdmin.name);
         });
         builder.addCase(logout.rejected, (state, { payload }) => {
             state.token = "";
             state.userId = 0;
             state.userName = '';
+            state.isAdmin = false;
             state.isLogoutLoading = false;
             state.error = payload?.message.data ?? "error during logout";
         });
@@ -355,7 +357,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(getNotifications.fulfilled, (state, { payload }) => {
             state.isLoading = false;
-            debugger;
             const arr: MyNotification[] = [payload];
             //state.opcode = arr[0].opcode;
             state.notifications = state.notifications.concat(arr);
@@ -370,7 +371,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.error = null;
         });
         builder.addCase(getClientData.fulfilled, (state, { payload }) => {
-            debugger;
             state.isLoading = false;
             state.userName = payload.userName;
             state.isAdmin = payload.isAdmin;

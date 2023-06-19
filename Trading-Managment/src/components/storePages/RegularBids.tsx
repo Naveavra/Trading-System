@@ -8,6 +8,7 @@ import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { useEffect } from "react";
 import { getStore } from "../../reducers/storesSlice";
+
 const RegularBids = () => {
     const dispatch = useAppDispatch();
     const userId = useAppSelector((state) => state.auth.userId);
@@ -19,6 +20,7 @@ const RegularBids = () => {
     useEffect(() => {
         dispatch(getStore({ userId: userId, storeId: store.storeId }));
     }, []);
+
 
     return (
         <>
@@ -45,26 +47,41 @@ const RegularBids = () => {
                                         current offer: {String(bid.offer)}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        amount: {bid.quantity}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                         product price: {bid.product.price}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                         time: {bid.time}
                                     </Typography>
-                                    {bid.state === status.Approved ?
-                                        <Alert severity="success">approved</Alert> :
-                                        bid.state === status.Pending ?
-                                            <Alert severity="info">pending</Alert> :
-                                             bid.state === status.Counter ?
-                                            <>
-                                                <Alert severity="info">counter</Alert>
-                                            </> :
-                                            <Alert severity="error">rejected</Alert>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        need to approve:
+                                    </Typography>
+                                    {bid.approvers.map((approver, index) => {
+                                        return (
+                                            <Typography sx={{ fontSize: 14, ml: 5 }} color="text.secondary" gutterBottom key={index}>
+                                                {approver}
+                                            </Typography>
+                                        )
+                                    })}
+                                    {
+                                        bid.state === status.Approved ?
+                                            <Alert severity="success">approved</Alert> :
+                                            bid.state === status.Counter ?
+                                                <>
+                                                    <Alert severity="info">counter</Alert>
+                                                </> :
+                                                bid.state === status.Pending ?
+                                                    <Alert severity="info">pending</Alert> :
+                                                    <Alert severity="error">rejected</Alert>
                                     }                                </CardContent>
                                 <CardActions>
                                     {actions.filter((action) => action === Action.updateProduct).length > 0 ?
                                         <>
                                             <IconButton onClick={() => navigate(`${store.storeId}/${bid.product.productId}/${bid.bidId}/answerBid`)}>
                                                 <QuestionAnswerIcon />
+
                                             </IconButton>
                                             <IconButton onClick={() => navigate(`${store.storeId}/${bid.product.productId}/${bid.bidId}/counterBid`)}>
                                                 <WalletIcon />

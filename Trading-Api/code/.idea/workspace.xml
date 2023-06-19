@@ -5,19 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="merging code">
-      <change afterPath="$PROJECT_DIR$/src/main/java/database/dtos/ApprovedDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/MessageDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/MessageDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/SubscriberDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/SubscriberDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/ConstraintDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/ConstraintDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/DiscountDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/DiscountDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/discount/DiscountFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/discount/DiscountFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/StoreInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/StoreInfo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +25,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/../.." value="addingLazyLoadDb" />
+        <entry key="$PROJECT_DIR$/../.." value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
@@ -215,7 +206,7 @@
       <workItem from="1687079555190" duration="12164000" />
       <workItem from="1687155489402" duration="1285000" />
       <workItem from="1687158769895" duration="885000" />
-      <workItem from="1687160066327" duration="1118000" />
+      <workItem from="1687160066327" duration="9425000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -325,17 +316,44 @@
           <option name="timeStamp" value="205" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>445</line>
-          <option name="timeStamp" value="231" />
+          <url>file://$PROJECT_DIR$/src/main/java/service/UserController.java</url>
+          <line>629</line>
+          <option name="timeStamp" value="233" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/domain/user/Subscriber.java</url>
-          <line>93</line>
-          <option name="timeStamp" value="232" />
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/discount/DiscountFactory.java</url>
+          <line>110</line>
+          <option name="timeStamp" value="234" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/discount/DiscountFactory.java</url>
+          <line>178</line>
+          <option name="timeStamp" value="236" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java</url>
+          <line>197</line>
+          <option name="timeStamp" value="237" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java</url>
+          <line>199</line>
+          <option name="timeStamp" value="238" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/discount/DiscountFactory.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="239" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="spark.Request" memberName="servletRequest" />
+        <PinnedItemInfo parentTag="spark.Request" memberName="params" />
+        <PinnedItemInfo parentTag="spark.Request" memberName="matchedPath" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/code$UserControllerTest_checkNewImp.ic" NAME="UserControllerTest.checkNewImp Coverage Results" MODIFIED="1686279744864" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

@@ -16,8 +16,8 @@ import { useEffect } from "react";
 const Personal = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const userId = useAppSelector((state) => state.auth.userId);
 
+    const userId = useAppSelector((state) => state.auth.userId);
     const email = useAppSelector((state) => state.auth.userName);
     const age = useAppSelector((state) => state.auth.age);
     const name = email.split('@')[0];
@@ -25,6 +25,7 @@ const Personal = () => {
 
     const orders = useAppSelector((state) => state.auth.purchaseHistory);
     const bids = useAppSelector((state) => state.auth.bids);
+    console.log(bids);
 
     const userMessage = useAppSelector((state) => state.auth.message);
     const userError = useAppSelector((state) => state.auth.error);
@@ -37,7 +38,10 @@ const Personal = () => {
         dispatch(setWatchedOrder(orderId));
         navigate(`order/${orderId}`)
     };
-    useEffect(() => {dispatch(getClientData({userId:userId}))})
+    useEffect(() => {
+        dispatch(getClientData({ userId: userId }))
+    }, []);
+
     return (
         <>
             <Bar3 headLine={"this is your personal data"} />
@@ -115,10 +119,8 @@ const Personal = () => {
             <Box sx={{ display: "flex", width: '100%', mb: 2 }}>
                 {
                     bids?.map((bid, index) => {
-                        debugger;
-                        console.log(bid);
                         return (
-                            <Card sx={{ width: 350, mt: 5, ml: 3 }} key={index}>
+                            <Card sx={{ width: 200, mt: 5, ml: 3 }} key={index}>
                                 <CardContent>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                         bidId:  {bid.bidId}
@@ -133,32 +135,39 @@ const Personal = () => {
                                         current offer: {String(bid.offer)}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        amount: {bid.quantity}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                         product price: {bid.product.price}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                         time: {bid.time}
                                     </Typography>
-                                    {bid.state === status.Approved ?
-                                        <>
-                                            <Alert severity="success">approved</Alert>
-                                            <Button onClick={() => navigate(`${bid.bidId}/makePurchase`)}>enter details and meake purchase</Button>
-                                        </> :
-                                        bid.state === status.Pending ?
-                                            <Alert severity="info">pending</Alert> :
-                                        bid.state === status.Counter ?
-                                        <>
-                                            <Alert severity="info">counter</Alert>
-                                            <Button onClick={() => {
-                                                dispatch(answerOnCounter({bidId:bid.bidId,storeId:bid.storeId}))
+                                    {
+                                        bid.state === status.Approved ?
+                                            <>
+                                                <Alert severity="success">approved</Alert>
+                                                <Button onClick={() => navigate(`${bid.bidId}/makePurchase`)}>enter details and meake purchase</Button>
+                                            </> :
+                                            bid.state === status.Pending ?
+                                                <Alert severity="info">pending</Alert> :
+                                                bid.state === status.Counter ?
+                                                    <>
+                                                        <Alert severity="info">counter</Alert>
+                                                        <Button onClick={() => {
+                                                            dispatch(answerOnCounter({ bidId: bid.bidId, storeId: bid.storeId }));
+                                                            dispatch(getClientData({ userId: userId }));
 
-                                            }}>approved store offer</Button>
-                                            <Button onClick={() => {
-                                                navigate(`${bid.storeId}/${bid.product.productId}/${bid.bidId}/EditBid`);
-                                        }
-                                                }>counter offer</Button>
-                                        </> :
-                                            <Alert severity="error">reject</Alert>
-                                    }                                </CardContent>
+                                                        }}>approved store offer</Button>
+                                                        <Button onClick={() => {
+                                                            navigate(`${bid.storeId}/${bid.product.productId}/${bid.bidId}/EditBid`);
+                                                        }
+                                                        }>counter offer</Button>
+                                                    </>
+                                                    :
+                                                    <Alert severity="error">reject</Alert>
+                                    }
+                                </CardContent>
                                 <CardActions>
                                 </CardActions>
                             </Card>
