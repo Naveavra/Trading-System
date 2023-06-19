@@ -2,6 +2,8 @@ package bridge;
 
 import data.*;
 import org.json.JSONObject;
+import service.ExternalService.Payment.PaymentAdapter;
+import service.ExternalService.Supplier.SupplierAdapter;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Role;
 
@@ -85,24 +87,31 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int addExternalSupplierService(int admin, String esSupplier) {
+    public boolean addExternalSupplierService(int admin, String esSupplier) {
         if (real != null)
             return real.addExternalSupplierService(admin, esSupplier);
-        return -1;
+        return false;
     }
 
     @Override
-    public int removeExternalSupplierService(int admin, String es) {
+    public boolean addExternalSupplierService(int adminId, String esSupplier, SupplierAdapter supplierAdapter) {
+        if (real != null)
+            return real.addExternalSupplierService(adminId, esSupplier, supplierAdapter);
+        return false;
+    }
+
+    @Override
+    public boolean removeExternalSupplierService(int admin, String es) {
         if (real != null)
             return real.removeExternalSupplierService(admin, es);
-        return -1;
+        return false;
     }
 
     @Override
-    public int replaceExternalSupplierService(int admin, String esSupplier) {
+    public boolean replaceExternalSupplierService(int admin, String esSupplier) {
         if (real != null)
             return real.replaceExternalSupplierService(admin, esSupplier);
-        return -1;
+        return false;
     }
 
     @Override
@@ -120,24 +129,38 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int addExternalPaymentService(int admin, String esPayment) {
+    public boolean addExternalPaymentService(int admin, String esPayment) {
         if (real != null)
             return real.addExternalPaymentService(admin, esPayment);
-        return -1;
+        return false;
     }
 
     @Override
-    public int removeExternalPaymentService(int admin, String es) {
+    public boolean addExternalPaymentService(int adminId, String esPayment, PaymentAdapter paymentAdapter) {
+        if (real != null)
+            return real.addExternalPaymentService(adminId, esPayment, paymentAdapter);
+        return false;
+    }
+
+    @Override
+    public boolean removeExternalPaymentService(int admin, String es) {
         if (real != null)
             return real.removeExternalPaymentService(admin, es);
-        return -1;
+        return false;
     }
 
     @Override
-    public int replaceExternalPaymentService(int admin, String esPayment) {
+    public boolean replaceExternalPaymentService(int admin, String esPayment) {
         if (real != null)
             return real.replaceExternalPaymentService(admin, esPayment);
-        return -1;
+        return false;
+    }
+
+    @Override
+    public List<String> getPaymentServicesPossibleOptions(int adminId) {
+        if (real != null)
+            return real.getPaymentServicesPossibleOptions(adminId);
+        return null;
     }
 
     @Override

@@ -3,6 +3,7 @@ package market;
 import domain.store.storeManagement.Store;
 import domain.user.PurchaseHistory;
 import org.json.JSONObject;
+import service.ExternalService.Payment.PaymentAdapter;
 import utils.infoRelated.Information;
 import utils.infoRelated.LoginInformation;
 import utils.Response;
@@ -117,6 +118,9 @@ public interface MarketInterface {
     Response getPaymentServiceAvailable();
 
     public Response addPaymentService(int adminId, String token, String paymentService);
+
+    Response<String> addPaymentService(int adminId, String token, String esPayment, PaymentAdapter paymentAdapter);
+
     public Response removePaymentService(int adminId, String token, String paymentService);
 
     public Response setSupplierService(int adminId, String token, String supplierService);

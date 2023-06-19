@@ -22,6 +22,17 @@ public class ProxyPayment implements PaymentAdapter {
 
     private final Map<String, PaymentAdapter> paymentServices;
 
+
+    /**
+     * Constructs a ProxyPayment instance with an initial payment service.
+     *
+     * @throws Exception If an error occurs during initialization.
+     */
+    public ProxyPayment() throws Exception {
+        this.paymentServices = new HashMap<>();
+        loadConfig(new ESConfig());
+    }
+
     /**
      * Constructs a ProxyPayment instance with an initial payment service.
      *

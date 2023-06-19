@@ -412,7 +412,6 @@ public class API {
     public Pair<Boolean, JSONObject> watchMarketStatus(int adminId, String token)
     {
         Response<MarketInfo> res = market.watchMarketStatus(adminId, token);
-        // TODO: cast this to json
         return fromResToPairInfo(res);
     }
 
