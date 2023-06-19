@@ -339,7 +339,7 @@ public class Server {
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
             String catStr = request.get("category").toString();
-            String[] arr = catStr.substring(1, catStr.length() - 1).split(",");
+            String[] arr = catStr.split(",");
             List<String> categories = new ArrayList<>(Arrays.asList(arr));
             String name = request.get("name").toString();
             String description = request.get("description").toString();

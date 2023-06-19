@@ -29,13 +29,16 @@ class StoreTest {
 
     Order orderA, orderB;
     ProductInfo p, p2;
-    Member creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
-    Member worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2002");
-    Member worker2 = new Member(4, "eli2@gmail.com", "123Aaa", "24/02/2002");
+    Member creator;
+    Member worker;
+    Member worker2;
 
     @BeforeEach
     void setUp() throws Exception {
         Dao.setForTests(true);
+        creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
+        worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2002");
+        worker2 = new Member(4, "eli2@gmail.com", "123Aaa", "24/02/2002");
         store = new Store(0, "candy shop", creator);
         List<String> categories = new ArrayList<>();
         store.addNewProduct("gum", "gumigun", new AtomicInteger(0), 10, 3, categories);
@@ -45,15 +48,16 @@ class StoreTest {
         store.appointUser(creator.getId(), worker, new StoreManager(worker.getId(), worker.getName(), null));
         store.appointUser(worker.getId(), worker2, new StoreManager(worker2.getId(), worker2.getName(), null));
         member = new Member(5, "lala@gmail.com", "aA12345", "31/08/2022");
-        ShoppingCart cart = new ShoppingCart();
+        ShoppingCart cart1 = new ShoppingCart();
+        ShoppingCart cart2 = new ShoppingCart();
         p = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(0), 10);
         p2 = new ProductInfo(store.getStoreId(), store.getInventory().getProduct(1), 10);
-        cart.addProductToCart(1, p, 5);
-        cart.addProductToCart(1, p2, 10);
-        orderA = new Order(0, worker2, cart);
-        orderB = new Order(1,worker2,cart);
-        store.addOrder(orderA);
-        store.addOrder(orderB);
+        cart1.addProductToCart(store.getStoreId(), p, 5);
+        cart2.addProductToCart(store.getStoreId(), p2, 10);
+        orderA = new Order(0, member, cart1);
+        orderB = new Order(1,member,cart2);
+        store.addOrder(cart1, 0, member);
+        store.addOrder(cart2, 1, member);
 //        ShoppingCart mockCart = mock(ShoppingCart.class);
 //        Basket mockBasket = mock(Basket.class);
 
