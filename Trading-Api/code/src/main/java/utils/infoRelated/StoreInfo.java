@@ -1,6 +1,8 @@
 package utils.infoRelated;
 
 import database.dtos.Appointment;
+import domain.store.discount.Discount;
+import domain.store.purchase.PurchasePolicy;
 import domain.store.storeManagement.Bid;
 import org.json.JSONObject;
 
@@ -15,11 +17,13 @@ public class StoreInfo extends Information{
     private int creatorId;
     private double rating;
     private String imgUrl;
+    private List<Discount> discounts;
+    private List<PurchasePolicy> purchases;
 
     private List<Bid> bids; // only open bids
     private List<Appointment> appointments;
     public StoreInfo(int storeId, String name, String description, boolean isActive, int creatorId, double rating, String url,
-                     List<Bid> bids, List<Appointment> appointments) {
+                     List<Bid> bids, List<Appointment> appointments, List<Discount> discounts, List<PurchasePolicy> purchases) {
         this.storeId = storeId;
         storeName = name;
         this.description = description;
@@ -29,6 +33,8 @@ public class StoreInfo extends Information{
         imgUrl = url;
         this.bids = bids;
         this.appointments = appointments;
+        this.discounts = discounts;
+        this.purchases = purchases;
     }
 
     public int getStoreId(){
@@ -54,6 +60,12 @@ public class StoreInfo extends Information{
     public String getUrl(){return imgUrl;}
 
     public List<Bid> getBids(){return bids;}
+    public List<Discount> getDiscounts(){
+        return discounts;
+    }
+    public List<PurchasePolicy> getPurchases(){
+        return purchases;
+    }
 
 
     @Override
@@ -68,6 +80,8 @@ public class StoreInfo extends Information{
         json.put("img", getUrl());
         json.put("bids", infosToJson(bids));
         json.put("appointments", infosToJson(appointments));
+        json.put("discounts",infosToJson(getDiscounts()));
+        json.put("purchasePolicies",infosToJson(getPurchases()));
         return json;
     }
 }

@@ -151,6 +151,15 @@ public class DiscountFactory {
         return root;
     }
 
+    public void parse(String data,ArrayList<Discount> discounts){
+        JSONObject dataObj = new JSONObject(data);
+        try {
+            JSONArray arr = dataObj.getJSONArray("discountNodes");
+            discounts.add(createDiscount(parseCompositeDiscount(dataObj)));
+        } catch (Exception e) {
+            discounts.add(createDiscount(parseRegularDiscount(dataObj)));
+        }
+    }
     private LogicalDiscountComposite.xorDecidingRules getXorDecidingRule(String s){
         return switch (s){
             case "MinDiscountValue" -> LogicalDiscountComposite.xorDecidingRules.MinDiscountValue;
@@ -174,19 +183,31 @@ public class DiscountFactory {
         };
     }
     public DiscountDataObject parseRegularDiscount(JSONObject request){
-        int storeId = Integer.parseInt(request.get("storeId").toString());
-        int userId = Integer.parseInt(request.get("userId").toString());
+        // int storeId = Integer.parseInt(request.get("storeId").toString());
+     //   int userId = Integer.parseInt(request.get("userId").toString());
         int percentage =  Integer.parseInt(request.get("percentage").toString());
         String discountType = request.get("discountType").toString();
         int prodId = Integer.parseInt(request.get("prodId").toString());
         String discountedCategory = request.get("discountedCategory").toString();
         String predicates = request.get("predicates").toString();
-        JSONObject predicatesJson = new JSONObject(request.get("predicates"));
-        List<String> predicatesLst =null;
+        JSONArray predicatesJson = request.getJSONArray("predicates");
+        List<String[]> predicatesLst =new ArrayList<>();
         if (!predicates.equals("null")) {
-            String[] arr = predicates.substring(1, predicates.length() - 1).split(",");
-            predicatesLst =new ArrayList<>(Arrays.asList(arr));
+            if(!predicatesJson.equals("[]")){
+            for (int i = 0; i < predicatesJson.length(); i++) {
+                JSONObject predicateObject = predicatesJson.getJSONObject(i);
+                String predType = predicateObject.getString("predType");
+                String params = predicateObject.getString("params");
+                String composore = predicateObject.getString("composore");
+                String[] arr = {predType, params, composore};
+                predicatesLst.add(arr);
+            }                //predicates.substring(1, predicates.length() - 1).split(",");
+            }
         }
+//        if (!predicates.equals("null")) {
+//            String[] arr = predicates.substring(1, predicates.length() - 1).split(",");
+//            predicatesLst =new ArrayList<>(Arrays.asList(arr));
+//        }
 //        Store s = getActiveStore(storeId);
         AbstractDiscount.discountTypes discountTypeEnum = AbstractDiscount.discountTypes.Store;
         if (Objects.equals(discountType.toLowerCase(), "product")){discountTypeEnum = AbstractDiscount.discountTypes.Product;}
@@ -195,15 +216,21 @@ public class DiscountFactory {
         return obj;
     }
 
-    public ArrayList<PredicateDataObject> parsePredicateData(ArrayList<String> predData){
+    public ArrayList<PredicateDataObject> parsePredicateData(ArrayList<String[]> predData){
         ArrayList<PredicateDataObject> predicates = new ArrayList<>();
-        for(String data : predData){
-            JSONObject dataJson = new JSONObject(data);
-            String predTypeStr = dataJson.getString("predType");
+        for(String[] data : predData){
+//            JSONObject dataJson = new JSONObject(data);
+//            String predTypeStr = dataJson.getString("predType");
+//            DiscountPredicate.PredicateTypes predType = DiscountPredicate.PredicateTypes.valueOf(predTypeStr);
+//            String params = dataJson.getString("params");
+//            String composureStr = dataJson.getString("composore");
+//            DiscountPredicate.composore composore = DiscountPredicate.composore.valueOf(composureStr);
+//
+            String predTypeStr = data[0];
             DiscountPredicate.PredicateTypes predType = DiscountPredicate.PredicateTypes.valueOf(predTypeStr);
-            String params = dataJson.getString("params");
-            String composureStr = dataJson.getString("composore");
-            DiscountPredicate.composore composore = DiscountPredicate.composore.valueOf(composureStr);
+            String params = data[1];
+            String composoreStr = data[2];
+            DiscountPredicate.composore composore = DiscountPredicate.composore.valueOf(composoreStr);
             predicates.add(new PredicateDataObject(predType,params,composore));
         }
         return predicates;

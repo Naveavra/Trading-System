@@ -167,7 +167,7 @@ public class StoreController {
                 return null;
             }
             storeOwnersIDS.add(store.getCreator());
-            store.addOrder(order);
+            store.addOrder(shoppingCart, order.getOrderId(), order.getUser());
         }
         return storeOwnersIDS;
     }
@@ -180,7 +180,7 @@ public class StoreController {
                 return null;
             }
             storeOwnersIDS.add(store.getCreator());
-            store.addOrder(order);
+            store.addOrder(shoppingCart, order.getOrderId(), order.getUser());
         }
         return storeOwnersIDS;
     }

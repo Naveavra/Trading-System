@@ -22,6 +22,8 @@ import domain.store.purchase.PurchasePolicyDataObject;
 import domain.store.purchase.PurchasePolicyFactory;
 import domain.user.Basket;
 import domain.user.Member;
+import domain.user.ShoppingCart;
+import domain.user.User;
 import jakarta.persistence.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -202,10 +204,10 @@ public class Store extends Information implements DbEntity {
     public synchronized void addDiscount(CompositeDataObject discountData,String content) throws Exception {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
-            dis.setDescription(new JSONObject(content).get("description").toString());
+            dis.setDescription(content);
             dis.setContent(content);
             discounts.add(dis);
-            Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
+            StoreDao.saveDiscount(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
         }
     }
 
@@ -294,8 +296,20 @@ public class Store extends Information implements DbEntity {
         throw new Exception("order doesnt exist");
     }
 
-    public void addOrder(Order order){
-        storeOrders.put(order.getOrderId(), order);
+    public void addOrder(ShoppingCart cart, int orderId, User user) throws Exception {
+        ShoppingCart newCart = new ShoppingCart();
+        for (Basket basket : cart.getBaskets())
+        {
+            if (basket.getStoreId() == storeId)
+            {
+                for (ProductInfo p : basket.getProductList())
+                {
+                    cart.addProductToCart(storeId, p, p.quantity);
+                }
+                Order order = new Order(orderId, user, cart);
+                storeOrders.put(orderId, order);
+            }
+        }
     }
 
     /**
@@ -562,7 +576,7 @@ public class Store extends Information implements DbEntity {
 
     public StoreInfo getStoreInformation() {
         StoreInfo info = new StoreInfo(storeId, storeName, storeDescription, isActive, creator.getId(), getStoreRating(),
-                imgUrl, bids, appointments);
+                imgUrl, bids, appointments, discounts, purchasePolicies);
         return info;
     }
 
@@ -610,15 +624,11 @@ public class Store extends Information implements DbEntity {
         json.put("roles", infosToJson(getRoles()));
         json.put("bids", infosToJson(getBids()));
         json.put("discounts", getDiscountsContent());
-        json.put("purchasePolicies",getPurchasePolicies());
+        json.put("purchasePolicies",infosToJson(getPurchasePolicies()));
         json.put("appointments", infosToJson(appointments));
         return json;
     }
 
-
-    public ArrayList<DiscountOnItem> test(){
-        return null;
-    }
 
     public void setStoreAttributes(String name, String description, String img) {
         if(!description.equals("null"))
@@ -840,16 +850,23 @@ public class Store extends Information implements DbEntity {
 
     public void addCompositeDiscount(JSONObject req) throws Exception {
         CompositeDataObject dis = discountFactory.parseCompositeDiscount(req);
-        addDiscount(dis,req.get("content").toString());
+        addDiscount(dis,req.get("description").toString());
     }
-
+    public void parsePurchasePolicy(String content) throws Exception {
+        JSONObject obj = new JSONObject(content);
+        String purchasePolicy = obj.get("purchasePolicy").toString();
+        addPurchasePolicy(purchasePolicy,content);
+    }
+    public void parseDiscounts(String content){
+        discountFactory.parse(content,discounts);
+    }
+  
     public Bid getBid(int bidId) throws Exception{
         for(Bid b : bids)
             if(b.getBidId() == bidId)
                 return b;
         throw new Exception("the id given does not belong to any bid in store");
     }
-
 //    public void clientAcceptCounter(int bidId) {
 //        Member user;
 //        int prodId;
