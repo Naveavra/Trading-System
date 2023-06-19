@@ -1,46 +1,66 @@
 package domain.store.storeManagement;
 
-import data.ProductInfo;
+import database.DbEntity;
+import database.daos.Dao;
+import database.daos.StoreDao;
+import database.dtos.ApprovedDto;
 import domain.store.product.Product;
 import domain.user.Member;
+import jakarta.persistence.*;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "bids")
+public class Bid extends Information implements DbEntity {
 
-public class Bid extends Information {
 
-
-
-
-    public enum status {Declined,Approved,Pending, Counter};
+    public enum status {Declined,Approved,Pending, Counter}
+    @Id
     public int bidId;
+    @Id
+    public int storeId;
+    @Transient
+    public Product product;
+    @Id
+    public int productId;
     public double offer; //how much user has offered for Product.
     public int quantity; //how much does he want to buy.
-    public Product product;
+
     public status approved;
-    public LocalDateTime bidTime;
+    public String bidTime;
+
+    @Transient
     public Member user;
+
+    public int userId;
+    @Transient
     public ArrayList<String> approveCount;
+    @Transient
     public ArrayList<String> approvers;
-    public String counter;
-    public Bid(int id,Member user, Product p, double offer, int quantity, ArrayList<String> approvers){
+    public String counterOffer;
+    public Bid(int id,Member user, int storeId, Product p, double offer, int quantity, ArrayList<String> approvers){
         this.bidId = id;
         this.offer = offer;
         this.quantity = quantity;
+        this.storeId = storeId;
         this.product = p;
+        if(p != null)
+            productId = p.getID();
         this.user = user;
+        if(user != null)
+            userId = user.getId();
         this.approved = status.Pending;
-        this.bidTime = LocalDateTime.now();
+        this.bidTime = LocalDateTime.now().toString();
         this.approvers = approvers;
         approveCount = new ArrayList<>();
-        counter = "";
-    };
+        counterOffer = "";
+        StoreDao.saveBid(this);
+    }
     public void approveBid(String userName) throws Exception {
         if(!approvers.contains(userName)){
             throw new Exception("User cannot approve this bid, "+userName);
@@ -49,6 +69,7 @@ public class Bid extends Information {
             throw new Exception("User cannot approve the same bid twice");
         }
         approveCount.add(userName);
+        Dao.save(new ApprovedDto(bidId, userName));
         if(approveCount.size() == approvers.size())
             this.approved = status.Approved;
     }
@@ -62,8 +83,8 @@ public class Bid extends Information {
         approved = status.Pending;
     }
     public void counterBid(double offer,String userName) throws Exception {
-        if(Objects.equals(counter, "")) {
-            counter = userName;
+        if(Objects.equals(counterOffer, "")) {
+            counterOffer = userName;
             this.offer = offer;
             this.approved = status.Counter;
             approveCount = new ArrayList<>();
@@ -74,7 +95,7 @@ public class Bid extends Information {
     }
 
     public void editBid(double offer,int quantity){
-        counter ="";
+        counterOffer ="";
         this.offer = offer;
         this.quantity = quantity;
         this.approved = status.Pending;
@@ -89,6 +110,7 @@ public class Bid extends Information {
     public Product getProduct() {
         return product;
     }
+    public int getProductId(){return productId;}
     public int getQuantity(){
         return quantity;
     }
@@ -103,18 +125,18 @@ public class Bid extends Information {
         return approved == status.Pending;
     }
     public void setApprovers(ArrayList<String> approversNames){
-        this.approvers = approvers;
+        this.approvers = approversNames;
     }
 
     public status getState(){return this.approved;}
 
-    public LocalDateTime getBidTime() {
+    public String getBidTime() {
         return bidTime;
     }
     public ArrayList<String> getApprovers(){return this.approvers;}
 
-    public String getCounter() {
-        return counter;
+    public String getCounterOffer() {
+        return counterOffer;
     }
 
     @Override
@@ -126,10 +148,16 @@ public class Bid extends Information {
         jsonObject.put("quantity", getQuantity());
         jsonObject.put("user", getUser().getId());
         jsonObject.put("state", getState().toString());
-        jsonObject.put("time", getBidTime().toString());
+        jsonObject.put("time", getBidTime());
         jsonObject.put("approvers", getApprovers());
-        jsonObject.put("count", getCounter());
+        jsonObject.put("count", getCounterOffer());
         return jsonObject;
+    }
+
+
+    @Override
+    public void initialParams() {
+
     }
 
 }

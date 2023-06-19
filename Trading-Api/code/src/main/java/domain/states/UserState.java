@@ -33,7 +33,7 @@ public abstract class UserState extends Information implements DbEntity {
 
     @Enumerated(EnumType.STRING)
     protected Role role;
-    @Transient
+
     protected boolean isActive;
 
     public UserState(){

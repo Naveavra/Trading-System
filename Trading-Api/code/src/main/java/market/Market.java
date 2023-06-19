@@ -46,14 +46,14 @@ public class Market implements MarketInterface {
         marketController = new MarketController();
 
         userAuth = new UserAuth();
-        try {
-            proxyPayment = new ProxyPayment(payment);
-            proxySupplier = new ProxySupplier(supply);
-        } catch (Exception e) {
-            // Handle the exception appropriately (e.g., log the error, terminate the program)
-            System.out.println("Error with the connection to the external service: " + e.getMessage());
-            System.exit(1); // Terminate the program
-        }
+//        try {
+//            proxyPayment = new ProxyPayment(payment);
+//            proxySupplier = new ProxySupplier(supply);
+//        } catch (Exception e) {
+//            // Handle the exception appropriately (e.g., log the error, terminate the program)
+//            System.out.println("Error with the connection to the external service: " + e.getMessage());
+//            System.exit(1); // Terminate the program
+//        }
 
         marketInfo = new MarketInfo();
 
@@ -1085,9 +1085,7 @@ public class Market implements MarketInterface {
                 addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been approved, please continue for payment");
                 Set<Integer> usersInStore = marketController.getStoreCreatorsOwners(storeId);
                 for (int creatorId : usersInStore)
-                {
                     addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "bid number : " + bidId + " was approved by all.");
-                }
             }
             if (!answer) {
                 addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been declined.");

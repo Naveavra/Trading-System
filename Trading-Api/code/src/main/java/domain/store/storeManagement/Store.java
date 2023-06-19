@@ -6,6 +6,8 @@ import database.daos.MessageDao;
 import database.daos.StoreDao;
 import database.daos.SubscriberDao;
 import database.dtos.AppointmentDto;
+import database.dtos.ConstraintDto;
+import database.dtos.DiscountDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.discount.Discount;
@@ -70,7 +72,6 @@ public class Store extends Information implements DbEntity {
     @Transient
     private ArrayList<Bid> approvedBids;
     private String imgUrl;
-//    private domain.store.purchase.PurchasePolicy2Delete purchasePolicy;
     @Transient
     private ArrayList<PurchasePolicy> purchasePolicies;
     @Transient
@@ -184,12 +185,15 @@ public class Store extends Information implements DbEntity {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
             discounts.add(dis);
+            //TODO: check if need to add here to db
+            Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
         }
     }
     public synchronized void addDiscount(CompositeDataObject discountData) throws Exception {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
             discounts.add(dis);
+            Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
         }
     }
 
@@ -599,7 +603,7 @@ public class Store extends Information implements DbEntity {
             if(bid.getUser().getId() == user.getId() && bid.getProduct().getID() == prodId)
                 throw new Exception("Cannot place a bid on the same item more than once.");
         }
-        Bid b = new Bid(bidIds.getAndIncrement(),user,inventory.getProduct(prodId),price,quantity,
+        Bid b = new Bid(bidIds.getAndIncrement(),user,storeId,inventory.getProduct(prodId),price,quantity,
                 (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct));
         bids.add(b);
         user.addBid(b);
@@ -670,7 +674,10 @@ public class Store extends Information implements DbEntity {
                 head = prev;
         }
         if(head!=null){
-            purchasePolicies.add(factory.createPolicy(head));
+            PurchasePolicy policy = factory.createPolicy(head);
+            purchasePolicies.add(policy);
+            //TODO: need to check if is ok by nave/miki
+            Dao.save(new ConstraintDto(storeId, policy.getId(), policy.getContent()));
             return;
         }
         throw new Exception("Something went wrong when creating the policy, please contact us if the problem persists.\nYours truly, the developers A-team");

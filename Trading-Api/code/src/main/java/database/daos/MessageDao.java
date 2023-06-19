@@ -3,20 +3,18 @@ package database.daos;
 import database.DbEntity;
 import utils.messageRelated.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class MessageDao {
 
     private static HashMap<Integer, Complaint> complaintMap = new HashMap<>();
     private static boolean complaints = false;
     private static HashMap<Integer, HashMap<Integer, StoreReview>> storeReviewMap = new HashMap<>();
-    private static HashMap<Integer, Boolean> storeReviews = new HashMap<>();
+    private static Set<Integer> storeReviews = new HashSet<>();
     private static HashMap<Integer, HashMap<Integer, HashMap<Integer, ProductReview>>> productReviewMap = new HashMap<>();
-    private static HashMap<Integer, HashMap<Integer, Boolean>> productReviews = new HashMap<>();
+    private static HashMap<Integer, Set<Integer>> productReviews = new HashMap<>();
     private static HashMap<Integer, HashMap<Integer, Question>> questionMap = new HashMap<>();
-    private static HashMap<Integer, Boolean> questions = new HashMap<>();
+    private static Set<Integer> questions = new HashSet<>();
 
 
     public static void saveMessage(Message m){
@@ -28,8 +26,10 @@ public class MessageDao {
         if(complaintMap.containsKey(messageId))
             return complaintMap.get(messageId);
         Complaint complaint = (Complaint) Dao.getById(Complaint.class, messageId);
-        if(complaint != null)
+        if(complaint != null) {
             complaintMap.put(complaint.getMessageId(), complaint);
+            complaint.initialParams();
+        }
         return complaint;
     }
 
@@ -37,7 +37,10 @@ public class MessageDao {
         if(!complaints) {
             List<? extends DbEntity> complaintsDto = Dao.getAllInTable("Complaint");
             for (Complaint complaint : (List<Complaint>) complaintsDto)
-                complaintMap.put(complaint.getMessageId(), complaint);
+                if(!complaintMap.containsKey(complaint.getMessageId())) {
+                    complaintMap.put(complaint.getMessageId(), complaint);
+                    complaint.initialParams();
+                }
             complaints = true;
         }
         return new ArrayList<>(complaintMap.values());
@@ -55,23 +58,27 @@ public class MessageDao {
 
         StoreReview review = (StoreReview) Dao.getById(StoreReview.class, messageId);
         if(review != null) {
-            if(storeReviews.containsKey(storeId))
+            if(storeReviewMap.containsKey(storeId))
                 storeReviewMap.put(storeId, new HashMap<>());
             storeReviewMap.get(storeId).put(review.getMessageId(), review);
+            review.initialParams();
         }
         return review;
     }
 
     public static List<StoreReview> getStoreReviews(int storeId){
-        if(!storeReviews.containsKey(storeId) || !storeReviews.get(storeId)) {
+        if(!storeReviews.contains(storeId)) {
             if (!storeReviewMap.containsKey(storeId))
                 storeReviewMap.put(storeId, new HashMap<>());
 
             List<? extends DbEntity> reviewsDto = Dao.getListById(StoreReview.class, storeId, "StoreReview", "storeId");
             for (StoreReview review : (List<StoreReview>) reviewsDto) {
-                storeReviewMap.get(storeId).put(review.getMessageId(), review);
+                if(!storeReviewMap.get(storeId).containsKey(review.getMessageId())) {
+                    storeReviewMap.get(storeId).put(review.getMessageId(), review);
+                    review.initialParams();
+                }
             }
-            storeReviews.put(storeId, true);
+            storeReviews.add(storeId);
         }
         return new ArrayList<>(storeReviewMap.get(storeId).values());
     }
@@ -92,30 +99,35 @@ public class MessageDao {
         if(review != null) {
             if(productReviewMap.containsKey(storeId))
                 productReviewMap.put(storeId, new HashMap<>());
-
             if(productReviewMap.get(storeId).containsKey(productId))
                 productReviewMap.get(storeId).put(productId, new HashMap<>());
 
             productReviewMap.get(storeId).get(productId).put(review.getMessageId(), review);
+            review.initialParams();
         }
         return review;
     }
 
     public static List<ProductReview> getProductReviews(int storeId, int productId){
-            if(!productReviews.containsKey(storeId) || !productReviews.get(storeId).containsKey(productId)
-                    || !productReviews.get(storeId).get(productId)) {
+        if(!productReviews.containsKey(storeId))
+            productReviews.put(storeId, new HashSet<>());
 
-                if (!productReviewMap.containsKey(storeId))
-                    productReviewMap.put(storeId, new HashMap<>());
-                if(!productReviewMap.get(storeId).containsKey(productId))
-                    productReviewMap.get(storeId).put(productId, new HashMap<>());
+        if(!productReviews.get(storeId).contains(productId)) {
+            if (!productReviewMap.containsKey(storeId))
+                productReviewMap.put(storeId, new HashMap<>());
+            if(!productReviewMap.get(storeId).containsKey(productId))
+                productReviewMap.get(storeId).put(productId, new HashMap<>());
 
-                List<? extends DbEntity> reviewDto = Dao.getListByCompositeKey(ProductReview.class, storeId, productId,
-                        "ProductReview", "storeId", "productId");
-                for (ProductReview review : (List<ProductReview>) reviewDto) {
+            List<? extends DbEntity> reviewDto = Dao.getListByCompositeKey(ProductReview.class, storeId, productId,
+                    "ProductReview", "storeId", "productId");
+            for (ProductReview review : (List<ProductReview>) reviewDto) {
+                if(!productReviewMap.get(storeId).get(productId).containsKey(review.getMessageId())) {
                     productReviewMap.get(storeId).get(productId).put(review.getMessageId(), review);
+                    review.initialParams();
                 }
             }
+            productReviews.get(storeId).add(productId);
+        }
         return new ArrayList<>(productReviewMap.get(storeId).get(productId).values());
     }
 
@@ -140,19 +152,23 @@ public class MessageDao {
             if(!questionMap.containsKey(storeId))
                 questionMap.put(storeId, new HashMap<>());
             questionMap.get(storeId).put(question.getMessageId(), question);
+            question.initialParams();
         }
         return question;
     }
 
     public static List<Question> getQuestions(int storeId){
-        if(!questions.containsKey(storeId) || !questions.get(storeId)) {
+        if(!questions.contains(storeId)) {
             if(!questionMap.containsKey(storeId))
                 questionMap.put(storeId, new HashMap<>());
             List<? extends DbEntity> questionDto = Dao.getListById(Question.class, storeId, "Question", "storeId");
             for (Question question : (List<Question>) questionDto)
-                questionMap.get(storeId).put(question.getMessageId(), question);
+                if(!questionMap.get(storeId).containsKey(question.getMessageId())) {
+                    questionMap.get(storeId).put(question.getMessageId(), question);
+                    question.initialParams();
+                }
 
-            questions.put(storeId, true);
+            questions.add(storeId);
         }
         return new ArrayList<>(questionMap.get(storeId).values());
     }
@@ -160,5 +176,17 @@ public class MessageDao {
     public static void removeQuestion(int messageId){
         Dao.removeIf("Question", String.format("messageId = %d", messageId));
         questionMap.remove(messageId);
+    }
+
+    public static void removeStoreMessages(int storeId) {
+        Dao.removeIf("StoreReview", String.format("storeId = %d", storeId));
+        storeReviews.remove(storeId);
+        storeReviewMap.remove(storeId);
+        Dao.removeIf("ProductReview", String.format("storeId = %d", storeId));
+        productReviews.remove(storeId);
+        productReviewMap.remove(storeId);
+        Dao.removeIf("Question", String.format("storeId = %d", storeId));
+        questions.remove(storeId);
+        questionMap.remove(storeId);
     }
 }

@@ -404,7 +404,6 @@ public class StoreController {
         if (Objects.equals(discountType.toLowerCase(), "product")){discountTypeEnum = AbstractDiscount.discountTypes.Product;}
         if (Objects.equals(discountType.toLowerCase(), "category")){discountTypeEnum = AbstractDiscount.discountTypes.Category;}
         s.addDiscount(new DiscountDataObject(percentage,discountTypeEnum,prodId, discountedCategory, parsePredicateData(new ArrayList<>(predicatesLst))));
-
     }
 
     public int getStoreId(String storeName) throws Exception{
@@ -422,9 +421,12 @@ public class StoreController {
 
     //database
     public void getStoresFromDb(){
-        List<Store> stores = StoreDao.getAllStores();
-        for(Store s : stores)
-            storeList.put(s.getStoreId(), s);
+        if(storeList == null) {
+            storeList = new ConcurrentHashMap<>();
+            List<Store> stores = StoreDao.getAllStores();
+            for (Store s : stores)
+                storeList.put(s.getStoreId(), s);
+        }
     }
 
     public Set<Integer> getStoreCreatorsOwners(int storeId) throws Exception {

@@ -52,6 +52,7 @@ public class Dao {
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
                 transaction = session.beginTransaction();
                 o = (DbEntity) session.get(c, id);
+                //o.initialParams();
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -72,8 +73,8 @@ public class Dao {
                 String sql = String.format("FROM %s WHERE %s", entityName, param);
                 Query<DbEntity> query = session.createQuery(sql, c);
                 o = query.uniqueResult();
-                if(o!= null)
-                    o.initialParams();
+//                if(o!= null)
+//                    o.initialParams();
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -94,8 +95,8 @@ public class Dao {
                 String sql = String.format("FROM %s WHERE %s", entityName, param);
                 Query<DbEntity> query = session.createQuery(sql, c);
                 list = query.list();
-                for(DbEntity db : list)
-                    db.initialParams();
+//                for(DbEntity db : list)
+//                    db.initialParams();
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -116,8 +117,8 @@ public class Dao {
                 String sql = String.format("FROM %s", entityName);
                 Query<DbEntity> query = session.createQuery(sql);
                 list = query.list();
-                for(DbEntity db : list)
-                    db.initialParams();
+//                for(DbEntity db : list)
+//                    db.initialParams();
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -138,8 +139,8 @@ public class Dao {
                 String sql = String.format("FROM %s WHERE %s = %d", entityName, param, id);
                 Query<DbEntity> query = session.createQuery(sql, c);
                 list = query.list();
-                for(DbEntity db : list)
-                    db.initialParams();
+//                for(DbEntity db : list)
+//                    db.initialParams();
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -160,8 +161,8 @@ public class Dao {
                 String sql = String.format("FROM %s WHERE %s = %d and %s = %d", entityName, param1, id1, param2, id2);
                 Query<DbEntity> query = session.createQuery(sql, c);
                 list = query.list();
-                for(DbEntity db : list)
-                    db.initialParams();
+//                for(DbEntity db : list)
+//                    db.initialParams();
                 transaction.commit();
             } catch (Exception e) {
                 System.out.println(e.getMessage());

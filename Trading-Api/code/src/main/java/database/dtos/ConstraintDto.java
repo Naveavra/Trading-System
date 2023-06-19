@@ -1,9 +1,10 @@
 package database.dtos;
+import database.DbEntity;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "constraints")
-public class ConstraintDto {
+public class ConstraintDto implements DbEntity {
 
     @Id
     private int constraintId;
@@ -39,5 +40,9 @@ public class ConstraintDto {
 
     public void setStoreId(int storeId) {
         this.storeId = storeId;
+    }
+
+    @Override
+    public void initialParams() {
     }
 }

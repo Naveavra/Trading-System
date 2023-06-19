@@ -19,7 +19,7 @@ public class Server {
     public static API api;
     static ConnectedThread connectedThread;
     static ConcurrentHashMap<Integer, Boolean> connected = new ConcurrentHashMap<>();
-    private static ConfigParser configs;
+    public static ConfigParser configs;
     private static InitialParser initialConfigs;
 
 
@@ -81,8 +81,7 @@ public class Server {
             System.out.println("load initial file...");
             initialConfigs = InitialParser.getInstance(initialPath);
 
-            api = new API(configs);
-            initialConfigs.initUseCases(api);
+            initialConfigs.initUseCases();
             initServer();
         }
         else{
