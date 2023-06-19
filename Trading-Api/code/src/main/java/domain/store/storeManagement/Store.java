@@ -606,10 +606,6 @@ public class Store extends Information implements DbEntity {
     }
 
 
-    public ArrayList<DiscountOnItem> test(){
-        return null;
-    }
-
     public void setStoreAttributes(String name, String description, String img) {
         if(!description.equals("null"))
             setStoreDescription(description);
@@ -834,7 +830,14 @@ public class Store extends Information implements DbEntity {
         CompositeDataObject dis = discountFactory.parseCompositeDiscount(req);
         addDiscount(dis,req.get("description").toString());
     }
-
+    public void parsePurchasePolicy(String content) throws Exception {
+        JSONObject obj = new JSONObject(content);
+        String purchasePolicy = obj.get("purchasePolicy").toString();
+        addPurchasePolicy(purchasePolicy,content);
+    }
+    public void parseDiscounts(String content){
+        discountFactory.parse(content,discounts);
+    }
 //    public void clientAcceptCounter(int bidId) {
 //        Member user;
 //        int prodId;
