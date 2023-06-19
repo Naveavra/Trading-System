@@ -1,0 +1,27 @@
+{
+    "Test": true,
+    "Database": {
+      "DB_DRIVER": "com.mysql.cj.jdbc.Driver",
+      "DB_URL": "jdbc:mysql://localhost:3306/sadnaDB",
+      "DB_USER": "root",
+      "DB_PASS": "sadna11B",
+      "DB_SHOW_SQL": "true",
+      "DB_CURRENT_SESSION_CONTEXT_CLASS": "thread",
+      "DB_HBM2DDL_AUTO": "update"
+    },
+    "ExternalService": {
+      "Payment": {
+      },
+      "Supply": {
+      }
+    },
+    "Server_Back": {
+    "IP": "127.0.0.1",
+    "Port": 4567
+    },
+    "Admin": {
+      "EMAIL": "admin@gmail.com",
+      "PASSWORD": "Admin123"
+    }
+  }
+  

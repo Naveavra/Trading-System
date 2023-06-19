@@ -10,6 +10,9 @@ import market.Market;
 import java.util.*;
 
 import org.json.JSONObject;
+import server.Config.ConfigParser;
+import service.ExternalService.Payment.PaymentAdapter;
+import service.ExternalService.Supplier.SupplierAdapter;
 import utils.infoRelated.*;
 import utils.Response;
 import utils.messageRelated.Notification;
@@ -28,7 +31,8 @@ public class BridgeImplement implements Bridge {
     @Override
     public boolean initTradingSystem() {
         //mainAdmin = new Admin(1, "admin@gmail.com", "admin1A");
-        this.market = new Market(mainAdmin);
+        ConfigParser cp = ConfigParser.getInstance("..\\..\\config.json");
+        this.market = new Market(mainAdmin, cp.getPaymentConfig(), cp.getSupplyConfig());
         token = market.addTokenForTests();
         return true;
     }
@@ -113,30 +117,27 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int addExternalSupplierService(int admin, String esSupplier) {
+    public boolean addExternalSupplierService(int admin, String esSupplier) {
         Response<String> res = market.addSupplierService(admin,token, esSupplier);
-        if (res != null && !res.errorOccurred()) {
-            return 1;
-        }
-        return -1;
+        return res != null && !res.errorOccurred();
     }
 
     @Override
-    public int removeExternalSupplierService(int admin, String es) {
+    public boolean addExternalSupplierService(int adminId, String esSupplier, SupplierAdapter supplierAdapter) {
+        Response<String> res = market.addSupplierService(adminId, token, esSupplier, supplierAdapter);
+        return res != null && !res.errorOccurred();
+    }
+
+    @Override
+    public boolean removeExternalSupplierService(int admin, String es) {
         Response<String> res = market.removeSupplierService(admin, token, es);
-        if (res != null && !res.errorOccurred()) {
-            return 1;
-        }
-        return -1;
+        return res != null && !res.errorOccurred();
     }
 
     @Override
-    public int replaceExternalSupplierService(int admin, String esSupplier) {
+    public boolean replaceExternalSupplierService(int admin, String esSupplier) {
         Response<String> res = market.setSupplierService(admin, token, esSupplier);
-        if (res != null && !res.errorOccurred()) {
-            return 1;
-        }
-        return -1;
+        return res != null && !res.errorOccurred();
     }
 
     @Override
@@ -158,30 +159,36 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int addExternalPaymentService(int admin, String esPayment) {
+    public boolean addExternalPaymentService(int admin, String esPayment) {
         Response<String> res = market.addPaymentService(admin,token, esPayment);
-        if (res != null && !res.errorOccurred()) {
-            return 1;
-        }
-        return -1;
+        return res != null && !res.errorOccurred();
     }
 
     @Override
-    public int removeExternalPaymentService(int admin, String es) {
+    public boolean addExternalPaymentService(int adminId, String esPayment, PaymentAdapter paymentAdapter) {
+        Response<String> res = market.addPaymentService(adminId, token, esPayment, paymentAdapter);
+        return res != null && !res.errorOccurred();
+    }
+
+    @Override
+    public boolean removeExternalPaymentService(int admin, String es) {
         Response<String> res = market.removePaymentService(admin,token, es);
-        if (res != null && !res.errorOccurred()) {
-            return 1;
-        }
-        return -1;
+        return res != null && !res.errorOccurred();
     }
 
     @Override
-    public int replaceExternalPaymentService(int admin, String esPayment) {
+    public boolean replaceExternalPaymentService(int admin, String esPayment) {
         Response<String> res = market.setPaymentService(admin,token, esPayment);
+        return res != null && !res.errorOccurred();
+    }
+
+    @Override
+    public List<String> getPaymentServicesPossibleOptions(int adminId) {
+        Response<List<String>> res = market.getPaymentServicesPossibleOptions(adminId, token);
         if (res != null && !res.errorOccurred()) {
-            return 1;
+            return res.getValue();
         }
-        return -1;
+        return null;
     }
 
     @Override
@@ -329,7 +336,7 @@ public class BridgeImplement implements Bridge {
 
     @Override
     public PermissionInfo getManagerPermissionInStore(int user, int store, int manager) {
-        Response<Info> res = market.checkWorkerStatus(user, token, manager, store); //TODO : market.seeStoreHistory(user, store);
+        Response<Info> res = market.checkWorkerStatus(user, token, manager, store);
         if(res != null && !res.errorOccurred())
         {
             return new PermissionInfo(res.getValue().getActions());

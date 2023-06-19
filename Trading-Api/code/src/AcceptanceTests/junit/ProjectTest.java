@@ -11,6 +11,8 @@ import database.daos.Dao;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import service.ExternalService.Payment.PaymentAdapter;
+import service.ExternalService.Supplier.SupplierAdapter;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Role;
 
@@ -39,7 +41,7 @@ public abstract class ProjectTest{
     protected ProductInfo pi5s4;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp(){
         Dao.setForTests(true);
         this.bridge = Driver.getBridge();
         setUpTradingSystem();
@@ -323,33 +325,48 @@ public abstract class ProjectTest{
         return bridge.getProductInStore(storeId);
     }
 
-    public int addExternalPaymentService(int adminId, String esPayment)
+    public boolean addExternalPaymentService(int adminId, String esPayment)
     {
         return bridge.addExternalPaymentService(adminId, esPayment);
     }
 
-    public int removeExternalPaymentService(int adminId, String esPayment)
+    public boolean addExternalPaymentService(int adminId, String esPayment, PaymentAdapter paymentAdapter)
+    {
+        return bridge.addExternalPaymentService(adminId, esPayment, paymentAdapter);
+    }
+
+    public boolean removeExternalPaymentService(int adminId, String esPayment)
     {
         return bridge.removeExternalPaymentService(adminId, esPayment);
     }
 
-    public int replaceExternalPaymentService(int adminId, String esPayment)
+    public List<String> getPaymentServicesPossibleOptions(int adminId)
+    {
+        return bridge.getPaymentServicesPossibleOptions(adminId);
+    }
+
+    public boolean replaceExternalPaymentService(int adminId, String esPayment)
     {
         return bridge.replaceExternalPaymentService(adminId, esPayment);
     }
 
-    public int addExternalSupplierService(int adminId, String esSupplier)
+    public boolean addExternalSupplierService(int adminId, String esSupplier)
     {
         return bridge.addExternalSupplierService(adminId, esSupplier);
     }
 
+    public boolean addExternalSupplierService(int adminId, String esSupplier, SupplierAdapter supplierAdapter)
+    {
+        return bridge.addExternalSupplierService(adminId, esSupplier, supplierAdapter);
+    }
 
-    public int removeExternalSupplierService(int adminId, String esSupplier)
+
+    public boolean removeExternalSupplierService(int adminId, String esSupplier)
     {
         return bridge.removeExternalSupplierService(adminId, esSupplier);
     }
 
-    public int replaceExternalSupplierService(int adminId, String esSupplier)
+    public boolean replaceExternalSupplierService(int adminId, String esSupplier)
     {
         return bridge.replaceExternalSupplierService(adminId, esSupplier);
     }

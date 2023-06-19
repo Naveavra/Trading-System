@@ -10,6 +10,8 @@ import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
 import org.json.JSONObject;
 import server.Config.ESConfig;
+import service.ExternalService.Payment.PaymentAdapter;
+import service.ExternalService.Supplier.SupplierAdapter;
 import service.security.UserAuth;
 import service.ExternalService.Supplier.ProxySupplier;
 import service.UserController;
@@ -47,13 +49,19 @@ public class Market implements MarketInterface {
         marketController = new MarketController();
 
         userAuth = new UserAuth();
+
         try {
-            proxyPayment = new ProxyPayment(payment);
-            proxySupplier = new ProxySupplier(supply);
+            proxyPayment = new ProxyPayment(new ESConfig());
         } catch (Exception e) {
-            // Handle the exception appropriately (e.g., log the error, terminate the program)
-            System.out.println("Error with the connection to the external service: " + e.getMessage());
-            System.exit(1); // Terminate the program
+            System.out.println("Error with the connection to the external payment service: " + e.getMessage());
+            System.exit(-1);
+        }
+
+        try {
+            proxySupplier = new ProxySupplier(new ESConfig());
+        } catch (Exception e) {
+            System.out.println("Error with the connection to the external supplier service: " + e.getMessage());
+            System.exit(-1);
         }
 
         marketInfo = new MarketInfo();
@@ -78,6 +86,18 @@ public class Market implements MarketInterface {
 //            throw new RuntimeException(e);
 //        }
 
+        try {
+            proxyPayment = new ProxyPayment(new ESConfig());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+        try {
+            proxySupplier = new ProxySupplier(new ESConfig());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
         marketInfo = new MarketInfo();
 
         actionIds = Permissions.getActionIds();
@@ -1126,7 +1146,9 @@ public class Market implements MarketInterface {
                 addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been approved, please continue for payment");
                 Set<Integer> usersInStore = marketController.getStoreCreatorsOwners(storeId);
                 for (int creatorId : usersInStore)
+                {
                     addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "bid number : " + bidId + " was approved by all.");
+                }
             }
             if (!answer) {
                 addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been declined.");
@@ -1277,6 +1299,19 @@ public class Market implements MarketInterface {
     }
 
     @Override
+    public Response<String> addPaymentService(int adminId, String token, String esPayment, PaymentAdapter paymentAdapter) {
+        try{
+            userAuth.checkUser(adminId, token);
+            userController.getActiveAdmin(adminId);
+            proxyPayment.addPaymentService(esPayment, paymentAdapter);
+            return new Response("Add payment service to: " + esPayment + " success", null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Add Payment Service", "Add payment service fail: " + e.getMessage());
+        }
+    }
+
+    @Override
     public Response removePaymentService(int adminId, String token, String paymentService) {
         Admin admin = null;
         try{
@@ -1326,6 +1361,17 @@ public class Market implements MarketInterface {
         }
     }
 
+    public Response<List<String>> getPaymentServicesPossibleOptions(int adminId, String token) {
+        try{
+            userAuth.checkUser(adminId, token);
+            userController.getActiveAdmin(adminId);
+            return new Response( proxyPayment.getPaymentServicesPossibleOptions(), null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Get All possible Payment Services", "Get All possible Payment Services fail: " + e.getMessage());
+        }
+    }
+
     @Override
     public Response addSupplierService(int adminId, String token, String supplierService) {
         try{
@@ -1333,6 +1379,18 @@ public class Market implements MarketInterface {
             userController.getActiveAdmin(adminId);
             proxySupplier.addSupplierService(supplierService);
             return new Response("Add supplier service to: " + supplierService + " success", null, null);
+        }
+        catch (Exception e){
+            return new Response(null, "Add Supplier Service", "Add supplier service fail: " + e.getMessage());
+        }
+    }
+
+    public Response<String> addSupplierService(int adminId, String token, String esSupplier, SupplierAdapter supplierAdapter) {
+        try{
+            userAuth.checkUser(adminId, token);
+            userController.getActiveAdmin(adminId);
+            proxySupplier.addSupplierService(esSupplier, supplierAdapter);
+            return new Response("Add supplier service to: " + esSupplier + " success", null, null);
         }
         catch (Exception e){
             return new Response(null, "Add Supplier Service", "Add supplier service fail: " + e.getMessage());

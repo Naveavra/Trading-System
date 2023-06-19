@@ -306,7 +306,7 @@ public class Store extends Information implements DbEntity {
             {
                 for (ProductInfo p : basket.getProductList())
                 {
-                    cart.addProductToCart(storeId, p, p.quantity);
+                    newCart.addProductToCart(storeId, p, p.quantity);
                 }
                 Order order = new Order(orderId, user, cart);
                 storeOrders.put(orderId, order);
