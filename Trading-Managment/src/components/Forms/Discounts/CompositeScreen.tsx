@@ -50,7 +50,11 @@ const CompositeScreen = () => {
             <Box display='flex'>
                 <Button sx={{ mt: 2, mr: 2 }} variant="contained" onClick={handleRegular}>add regular discount</Button>
                 <Button sx={{ mt: 2, ml: 2 }} variant="contained" onClick={handleComosite}>add composite discount</Button>
-                <Button sx={{ mt: 2, ml: 2 }} variant="contained" onClick={() => dispatch(reset())}>reset</Button>
+                <Button sx={{ mt: 2, ml: 2 }} variant="contained" onClick={() => {
+                    dispatch(reset());
+                    setNodes([]);
+                    setEdges([]);
+                }}>reset</Button>
                 <Button sx={{ mt: 2, ml: 2 }} variant="contained" onClick={() => {
                     dispatch(addCompositeDiscount({
                         storeId: storeId,
@@ -59,7 +63,11 @@ const CompositeScreen = () => {
                         discountNodes: nodes,
                         discountEdges: edges
                     }));
+
                     dispatch(reset());
+                    setNodes([]);
+                    setEdges([]);
+                    navigate('/dashboard/store/superior');
                 }}>submit</Button>
             </Box >
             <div style={{ width: '100vw', height: '100vh' }}>

@@ -78,6 +78,7 @@ export const addCompositeDiscount = createAsyncThunk<
 >(
     `${reducerName}/postCompositeDiscount`,
     async (formData, thunkApi) => {
+        debugger;
         return discountApi.postCompositeDiscount(formData)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
