@@ -150,10 +150,10 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public int replaceExternalPaymentService(int admin, String esPayment) {
+    public boolean replaceExternalPaymentService(int admin, String esPayment) {
         if (real != null)
             return real.replaceExternalPaymentService(admin, esPayment);
-        return -1;
+        return false;
     }
 
     @Override

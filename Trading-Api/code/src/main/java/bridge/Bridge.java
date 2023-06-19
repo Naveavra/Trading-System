@@ -193,12 +193,12 @@ public interface Bridge {
     /**
      * System external payment service management - replace external service
      *
-     * @param admin admin Id
+     * @param admin     admin Id
      * @param esPayment external payment service
-     * @return If succeed returns 1. Otherwise,
-     *         return -1.
+     * @return If succeed returns `true`. Otherwise,
+     * return `false`.
      */
-    int replaceExternalPaymentService(int admin, String esPayment);
+    boolean replaceExternalPaymentService(int admin, String esPayment);
 
     /**
      * System external payment service management - getting all possible external service

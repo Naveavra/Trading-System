@@ -345,7 +345,7 @@ public abstract class ProjectTest{
         return bridge.getPaymentServicesPossibleOptions(adminId);
     }
 
-    public int replaceExternalPaymentService(int adminId, String esPayment)
+    public boolean replaceExternalPaymentService(int adminId, String esPayment)
     {
         return bridge.replaceExternalPaymentService(adminId, esPayment);
     }

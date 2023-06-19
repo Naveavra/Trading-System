@@ -177,12 +177,9 @@ public class BridgeImplement implements Bridge {
     }
 
     @Override
-    public int replaceExternalPaymentService(int admin, String esPayment) {
+    public boolean replaceExternalPaymentService(int admin, String esPayment) {
         Response<String> res = market.setPaymentService(admin,token, esPayment);
-        if (res != null && !res.errorOccurred()) {
-            return 1;
-        }
-        return -1;
+        return res != null && !res.errorOccurred();
     }
 
     @Override

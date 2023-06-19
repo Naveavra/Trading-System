@@ -64,6 +64,63 @@ public class SystemTests extends ProjectTest{
     }
 
     @Test
+    private void assertGoodAddExternalPaymentService(int adminId, String esName)
+    {
+        assertNotAvailablePaymentService(esName);
+        assertPossiblePaymentService(adminId, esName);
+        assertTrue(addExternalPaymentService(adminId, esName));
+        assertAvailablePaymentService(esName);
+    }
+
+    @Test
+    private void assertGoodRemoveExternalPaymentService(int adminId, String esName)
+    {
+        assertAvailablePaymentService(esName);
+        assertTrue(removeExternalPaymentService(adminId, esName));
+        assertNotAvailablePaymentService(esName);
+    }
+
+    @Test
+    private void assertBadRemoveExternalPaymentService(int adminId, String esName)
+    {
+        assertAvailablePaymentService(esName);
+        assertFalse(removeExternalPaymentService(adminId, esName));
+        assertAvailablePaymentService(esName);
+    }
+
+    @Test
+    private void assertAvailablePaymentService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalPaymentService();
+        assertNotNull(availableServices);
+        assertTrue(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertNotAvailablePaymentService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalPaymentService();
+        assertNotNull(availableServices);
+        assertFalse(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertPossiblePaymentService(int adminId, String esName)
+    {
+        List<String> possibleServices = getPossibleExternalPaymentService(adminId);
+        assertNotNull(possibleServices);
+        assertTrue(possibleServices.contains(esName));
+    }
+
+    @Test
+    private void assertNotPossiblePaymentService(int adminId, String esName)
+    {
+        List<String> possibleServices = getPossibleExternalPaymentService(adminId);
+        assertNotNull(possibleServices);
+        assertFalse(possibleServices.contains(esName));
+    }
+
+    @Test
     private void assertGoodAddExternalSupplierService(int adminId, String esName)
     {
         assertNotAvailableSupplierService(esName);
@@ -86,13 +143,6 @@ public class SystemTests extends ProjectTest{
         assertAvailableSupplierService(esName);
         assertFalse(removeExternalSupplierService(adminId, esName));
         assertAvailableSupplierService(esName);
-    }
-
-    @Test
-    public void testReplaceExternalSupplierService(){
-        int adminId = this.mainAdmin.getAdminId();
-        assertGoodAddExternalSupplierService(adminId, MOCK_ES_NAME);
-        assertTrue(replaceExternalSupplierService(adminId, externalSupplierServices[1]));
     }
 
     @Test
@@ -125,6 +175,13 @@ public class SystemTests extends ProjectTest{
         List<String> possibleServices = getPossibleExternalSupplierService(adminId);
         assertNotNull(possibleServices);
         assertFalse(possibleServices.contains(esName));
+    }
+
+    @Test
+    public void testReplaceExternalSupplierService(){
+        int adminId = this.mainAdmin.getAdminId();
+        assertGoodAddExternalSupplierService(adminId, MOCK_ES_NAME);
+        assertTrue(replaceExternalSupplierService(adminId, MOCK_ES_NAME));
     }
 
     @Test
@@ -228,93 +285,78 @@ public class SystemTests extends ProjectTest{
     }
 
 
+//-------------------------------------------------------------------------------------
     //Remove external Service - Payment:
-    //TODO: Continue
     @Test
     public void testReplaceExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();
-        List<String> paymentES = this.getPaymentServicesPossibleOptions(adminId);
-        assertNotNull(paymentES);
-        assertTrue(this.addExternalPaymentService(adminId, externalPaymentServices[1]));
-        List<String>  availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertTrue(availablePaymentServices.contains(externalPaymentServices[1]));
-        int status = this.replaceExternalPaymentService(adminId, externalPaymentServices[1]);
-        assertTrue(status > 0);
+        assertGoodAddExternalPaymentService(adminId, MOCK_ES_NAME);
+        assertTrue(replaceExternalPaymentService(adminId, MOCK_ES_NAME));
     }
 
     @Test
-    public void testReplaceExternalPaymentServiceToUnAvailable(){
+    public void testReplaceExternalPaymentServiceToNotAvailable(){
         int adminId = this.mainAdmin.getAdminId();
-        int status = this.replaceExternalPaymentService(adminId, externalPaymentServices[1]);
-        assertTrue(status < 0);
+        assertNotAvailablePaymentService(MOCK_ES_NAME);
+        assertFalse(replaceExternalPaymentService(adminId, MOCK_ES_NAME));
     }
 
     @Test
     public void testReplaceExternalPaymentServiceToUnExist(){
         int adminId = this.mainAdmin.getAdminId();
-        int status = this.replaceExternalPaymentService(adminId, "ERROR");
-        assertTrue(status < 0);
+        assertNotPossiblePaymentService(adminId, ERROR);
+        assertFalse(replaceExternalPaymentService(adminId, ERROR));
     }
+
     @Test
     public void testNotAdminReplaceExternalPaymentService(){
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
         int adminId = this.mainAdmin.getAdminId();
-        assertTrue(this.addExternalPaymentService(adminId, externalPaymentServices[1]));
-        int status = this.replaceExternalPaymentService(uid, externalPaymentServices[1]);
-        assertTrue(status < 0);
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
+        assertGoodLogin(ui);
+        assertGoodAddExternalPaymentService(adminId, MOCK_ES_NAME);
+        assertFalse(replaceExternalPaymentService(ui.getUserId(), MOCK_ES_NAME));
     }
 
     //Remove external Service - Payment:
-
     @Test
     public void testRemoveExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();
-        List<String>  availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertNotNull(availablePaymentServices);
-        assertTrue(!availablePaymentServices.contains(externalPaymentServices[1]));
-        assertTrue(this.addExternalPaymentService(adminId, externalPaymentServices[1]));
-        availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertTrue(availablePaymentServices.contains(externalPaymentServices[1]));
-        assertTrue(this.removeExternalPaymentService(adminId, externalPaymentServices[1]));
-        availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertNotNull(availablePaymentServices);
-        assertTrue(!availablePaymentServices.contains(externalPaymentServices[1]));
+        assertGoodAddExternalPaymentService(adminId, MOCK_ES_NAME);
+        assertAvailablePaymentService(MOCK_ES_NAME);
+        assertTrue(removeExternalPaymentService(adminId, MOCK_ES_NAME));
+        assertNotAvailablePaymentService(MOCK_ES_NAME);
     }
 
     @Test
     public void testRemoveAllExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();
-        List<String>  availablePaymentServices = this.getAvailableExternalPaymentService();
+        assertGoodAddExternalPaymentService(adminId, MOCK_ES_NAME);
+        List<String> availablePaymentServices = this.getAvailableExternalPaymentService();
         assertNotNull(availablePaymentServices);
-        assertTrue(availablePaymentServices.contains(externalPaymentServices[0]));
-        assertEquals(1, availablePaymentServices.size());
-        assertFalse(this.removeExternalPaymentService(adminId, externalPaymentServices[0]));
+        for (int i = 0; i < availablePaymentServices.size() - 1; i++)
+        {
+            assertGoodRemoveExternalPaymentService(adminId, availablePaymentServices.get(i));
+        }
         availablePaymentServices = this.getAvailableExternalPaymentService();
         assertNotNull(availablePaymentServices);
-        assertTrue(availablePaymentServices.contains(externalPaymentServices[0]));
+        assertEquals(1, availablePaymentServices.size());
+        assertBadRemoveExternalPaymentService(adminId, availablePaymentServices.get(0));
     }
 
     @Test
     public void testRemoveUnExistExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();
-        List<String>  availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertNotNull(availablePaymentServices);
-        assertTrue(!availablePaymentServices.contains(externalPaymentServices[1]));
-        assertTrue(this.removeExternalPaymentService(adminId, externalPaymentServices[1]));
+        assertPossiblePaymentService(adminId, MOCK_ES_NAME);
+        assertNotAvailablePaymentService(MOCK_ES_NAME);
+        assertFalse(removeExternalPaymentService(adminId, MOCK_ES_NAME));
     }
 
     @Test
     public void testNotAdminRemoveExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
-        assertTrue(this.addExternalPaymentService(adminId, externalPaymentServices[1]));
-        List<String>  availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertNotNull(availablePaymentServices);
-        assertTrue(availablePaymentServices.contains(externalPaymentServices[1]));
-        assertFalse(this.removeExternalPaymentService(uid, externalPaymentServices[1]));
-        availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertNotNull(availablePaymentServices);
-        assertTrue(availablePaymentServices.contains(externalPaymentServices[1]));
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
+        assertGoodAddExternalPaymentService(adminId, MOCK_ES_NAME);
+        assertBadRemoveExternalPaymentService(ui.getUserId(), MOCK_ES_NAME);
     }
 
     //Add external Service - Payment:
@@ -322,44 +364,34 @@ public class SystemTests extends ProjectTest{
     @Test
     public void testAddExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();
-        assertTrue(this.addExternalPaymentService(adminId, externalPaymentServices[1]));
-        List<String> availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertNotNull(availablePaymentServices);
-        assertTrue(availablePaymentServices.contains(externalPaymentServices[1]));
+        assertGoodAddExternalPaymentService(adminId, MOCK_ES_NAME);
     }
 
     @Test
     public void testAddExistExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();
-        assertTrue(this.addExternalPaymentService(adminId, externalPaymentServices[1]));
-        List<String>  availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertTrue(availablePaymentServices.contains(externalPaymentServices[1]));
-        assertFalse(this.addExternalPaymentService(adminId, externalPaymentServices[1]));
+        assertGoodAddExternalPaymentService(adminId, MOCK_ES_NAME);
+        assertFalse(addExternalPaymentService(adminId, MOCK_ES_NAME));
+        assertAvailablePaymentService(MOCK_ES_NAME);
     }
 
     @Test
     public void testAddIllegalExternalPaymentService(){
         int adminId = this.mainAdmin.getAdminId();
-        List<String>  availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertNotNull(availablePaymentServices);
-        assertFalse(availablePaymentServices.contains(ERROR));
-        assertFalse(this.addExternalPaymentService(adminId, ERROR));
-        availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertNotNull(availablePaymentServices);
-        assertFalse(availablePaymentServices.contains(ERROR));
+        assertNotPossiblePaymentService(adminId, ERROR);
+        assertFalse(addExternalPaymentService(adminId, ERROR));
+        assertNotPossiblePaymentService(adminId, ERROR);
+        assertNotAvailablePaymentService(ERROR);
     }
 
     @Test
     public void testNotAdminAddExternalPaymentService(){
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
-        List<String>  availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertNotNull(availablePaymentServices);
-        assertTrue(!availablePaymentServices.contains(externalPaymentServices[1]));
-        assertFalse(this.addExternalPaymentService(uid, externalPaymentServices[1]));
-//        assertTrue(status < 0);
-        availablePaymentServices = this.getAvailableExternalPaymentService();
-        assertNotNull(availablePaymentServices);
-        assertFalse(availablePaymentServices.contains(externalPaymentServices[1]));
+        int adminId = this.mainAdmin.getAdminId();
+        UserInfo ui = this.users_dict.get(users[0][USER_EMAIL]);
+        assertPossiblePaymentService(adminId, MOCK_ES_NAME);
+        assertNotAvailablePaymentService(MOCK_ES_NAME);
+        assertFalse(addExternalPaymentService(ui.getUserId(), MOCK_ES_NAME));
+        assertNotAvailablePaymentService(MOCK_ES_NAME);
     }
 
     //Init System:
