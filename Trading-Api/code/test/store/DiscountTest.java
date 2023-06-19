@@ -95,14 +95,14 @@ public class DiscountTest {
         predicates.add(p1);
         //Discounts
         DiscountDataObject d1 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Store,0,"",predicates);
-        s1.addDiscount(d1);
+        s1.addDiscount(d1,"");
     }
 
     void categoryDiscountSetup(){
         DiscountDataObject d1 = new DiscountDataObject(50,AbstractDiscount.discountTypes.Category,0,Yellow,new ArrayList<>());
-        s1.addDiscount(d1);
+        s1.addDiscount(d1,"");
         DiscountDataObject d2 = new DiscountDataObject(50,AbstractDiscount.discountTypes.Category,0,Bananas,new ArrayList<>());
-        s2.addDiscount(d2);
+        s2.addDiscount(d2,"");
     }
 
     void itemDiscountSetup(){
@@ -114,15 +114,15 @@ public class DiscountTest {
         predicates.add(p2);
 
         DiscountDataObject d1 = new DiscountDataObject(percentage,AbstractDiscount.discountTypes.Product,s1Product1ID,"",new ArrayList<>());
-        s1.addDiscount(d1);
+        s1.addDiscount(d1,"");
 
         DiscountDataObject d2 = new DiscountDataObject(percentage,AbstractDiscount.discountTypes.Product,s2Product2ID,"",predicates);
-        s2.addDiscount(d2);
+        s2.addDiscount(d2,"");
 
         PredicateDataObject p1 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumFromCategory,minNumFromCategoryParams,And);
         predicates.add(p1);
         DiscountDataObject d3 = new DiscountDataObject(percentage,AbstractDiscount.discountTypes.Product,s2Product1ID,"",predicates);
-        s2.addDiscount(d3);
+        s2.addDiscount(d3,"");
     }
 
     void composeDiscountsSetup() throws Exception {
@@ -134,7 +134,7 @@ public class DiscountTest {
         discounts1.add(d1);
         discounts1.add(d2);
         CompositeDataObject logical1 = new CompositeDataObject(percent50,null, LogicalDiscountComposite.logical.Or,null,discounts1,null);
-        s1.addDiscount(logical1);
+        s1.addDiscount(logical1,"");
     }
 
     @Test
@@ -226,7 +226,7 @@ public class DiscountTest {
         int prod3Quantity = 1;
         PredicateDataObject predicate = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinPrice,minPriceParams,null);
         DiscountDataObject discount = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product1ID,"",new ArrayList<>(Arrays.asList(predicate)));
-        s1.addDiscount(discount);
+        s1.addDiscount(discount,"");
         ShoppingCart cart = new ShoppingCart();
         //added 2 bananas, 20 before discount
         cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(), inv1.getProduct(s1Product1ID),prod1InitialQuantity),prod1InitialQuantity);
@@ -249,7 +249,7 @@ public class DiscountTest {
         DiscountDataObject dis1 = new DiscountDataObject(percentage1, AbstractDiscount.discountTypes.Category,0,Bananas,null);
         DiscountDataObject dis2 = new DiscountDataObject(percentage2, AbstractDiscount.discountTypes.Category,0,Electronics,null);
         CompositeDataObject composite = new CompositeDataObject(percentage1,null, LogicalDiscountComposite.logical.Xor, LogicalDiscountComposite.xorDecidingRules.MaxDiscountValue,new ArrayList<>(Arrays.asList(dis1,dis2)),null);
-        s1.addDiscount(composite);
+        s1.addDiscount(composite,"");
 
         ShoppingCart cart = new ShoppingCart();
         cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1Quantity),prod1Quantity); //price = 20 -> 10 after
@@ -279,7 +279,7 @@ public class DiscountTest {
         PredicateDataObject pred2 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,minNumOfItemParams2,null);
         DiscountDataObject dis2 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product3ID,"",new ArrayList<>(Arrays.asList(pred2)));
         CompositeDataObject composite = new CompositeDataObject(50,null, LogicalDiscountComposite.logical.And, null,new ArrayList<>(Arrays.asList(dis1,dis2)),null);
-        s1.addDiscount(composite);
+        s1.addDiscount(composite,"");
 
         ShoppingCart cart = new ShoppingCart();
         cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1QuantityInitial),prod1QuantityInitial);
@@ -310,7 +310,7 @@ public class DiscountTest {
         PredicateDataObject pred2 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,minNumOfItemParams2,null);
         DiscountDataObject dis2 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Category,s1Product2ID,Bananas,new ArrayList<>(Arrays.asList(pred2)));
         CompositeDataObject composite = new CompositeDataObject(50,null, LogicalDiscountComposite.logical.Or, null,new ArrayList<>(Arrays.asList(dis1,dis2)),null);
-        s1.addDiscount(composite);
+        s1.addDiscount(composite,"");
 
         ShoppingCart cart = new ShoppingCart();
         cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),quantity),quantity);
@@ -339,7 +339,7 @@ public class DiscountTest {
         PredicateDataObject pred1 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinPrice,minPriceParams, null);
         PredicateDataObject pred2 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,minNumOfItemParams,And);
         DiscountDataObject dis = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Category,0,Bananas,new ArrayList<>(Arrays.asList(pred1,pred2)));
-        s1.addDiscount(dis);
+        s1.addDiscount(dis,"");
 
         ShoppingCart cart = new ShoppingCart();
         cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1InitialQuantity),prod1InitialQuantity); //20
@@ -365,7 +365,7 @@ public class DiscountTest {
         DiscountDataObject d1 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product1ID,"",null);
         DiscountDataObject d2 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product2ID,"",null);
         CompositeDataObject comp = new CompositeDataObject(percentage, NumericDiscountComposite.numeric.Max,null,null,new ArrayList<>(Arrays.asList(d1,d2)),null);
-        s1.addDiscount(comp);
+        s1.addDiscount(comp,"");
 
         ShoppingCart cart = new ShoppingCart();
         cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1Quantity),prod1Quantity); //30
@@ -387,7 +387,7 @@ public class DiscountTest {
         DiscountDataObject d1 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Category,s1Product1ID,"Bananas",null);
         DiscountDataObject d2 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Store,s1Product2ID,"",null);
         CompositeDataObject comp = new CompositeDataObject(percentage, NumericDiscountComposite.numeric.Addition,null,null,new ArrayList<>(Arrays.asList(d1,d2)),null);
-        s1.addDiscount(comp);
+        s1.addDiscount(comp,"");
 
         ShoppingCart cart = new ShoppingCart();
         cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1Quantity),prod1Quantity); //30 ->27 ->

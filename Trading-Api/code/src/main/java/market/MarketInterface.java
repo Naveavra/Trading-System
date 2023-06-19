@@ -131,7 +131,7 @@ public interface MarketInterface {
 
     Response<List<? extends Information>> getComplaints(int userId, String token);
 
-    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst);
+    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst,String content);
 
     public Response placeBid(String token, int userId, int storeId, int prodId, double price,int quantity);
 
@@ -148,6 +148,8 @@ public interface MarketInterface {
     public Response puchaseBid(String token, int userId, int storeId, int prodId, double price, int quantity, JSONObject paymentDetails, JSONObject supplierDetails);
 
     public Response clientAcceptCounter(String token, int bidId, int storeId);
+
+    public Response addCompositeDiscount(String token, String body) throws Exception;
 }
 
 

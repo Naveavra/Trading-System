@@ -10,6 +10,8 @@ import utils.orderRelated.Order;
 import java.util.HashMap;
 
 public interface Discount {
+    void setContent(String content);
+
     enum DiscountTypes {Regular,Composite};
     /**
      * returns the amount needs to be subtracted

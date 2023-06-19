@@ -52,6 +52,10 @@ public abstract class AbstractDiscount implements Discount{
     public void addDiscount(Discount dis){}
 
     @Override
+    public void setContent(String content){
+        this.content =content;
+    }
+    @Override
     public String getContent(){return this.content;}
     @Override
     public int getDiscountID() {

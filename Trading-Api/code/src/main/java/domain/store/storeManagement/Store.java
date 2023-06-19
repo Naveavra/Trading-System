@@ -181,17 +181,19 @@ public class Store extends Information implements DbEntity {
             throw new Exception("the id given does not belong to any question that was sent to store");
     }
 
-    public synchronized void addDiscount(DiscountDataObject discountData){
+    public synchronized void addDiscount(DiscountDataObject discountData,String content){
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
+            dis.setContent(content);
             discounts.add(dis);
             //TODO: check if need to add here to db
             Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
         }
     }
-    public synchronized void addDiscount(CompositeDataObject discountData) throws Exception {
+    public synchronized void addDiscount(CompositeDataObject discountData,String content) throws Exception {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
+            dis.setContent(content);
             discounts.add(dis);
             Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
         }
@@ -770,6 +772,11 @@ public class Store extends Information implements DbEntity {
         for (Bid bid : bids){
             if (bid.bidId == bidId){bid.clientAcceptCounter();}
         }
+    }
+
+    public void addCompositeDiscount(JSONObject req) throws Exception {
+        CompositeDataObject dis = discountFactory.parseCompositeDiscount(req);
+        addDiscount(dis,req.get("content").toString());
     }
 
 //    public void clientAcceptCounter(int bidId) {
