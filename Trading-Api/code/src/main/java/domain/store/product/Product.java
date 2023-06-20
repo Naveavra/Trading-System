@@ -38,22 +38,25 @@ public class Product implements DbEntity{
      * @param _name String
      * @param desc String
      */
-    public Product(int storeId, int prod_id, String _name, String desc){
+    public Product(int storeId, int prod_id, String _name, String desc, int price, int quantity){
         this.storeId = storeId;
         productId = prod_id;
         name = _name;
         description = desc;
-        price = 0;
+        this.price = price;
+        this.quantity = quantity;
         categories = new ArrayList<>();
         reviews = new ArrayList<>();
+        StoreDao.saveProduct(this);
     }
 
-    public Product(int storeId, int prod_id, String _name, String desc, String imgUrl){
+    public Product(int storeId, int prod_id, String _name, String desc, String imgUrl, int price, int quantity){
         this.storeId = storeId;
         productId = prod_id;
         name = _name;
         description = desc;
-        price = 0;
+        this.price = price;
+        this.quantity = quantity;
         categories = new ArrayList<>();
         this.imgUrl = imgUrl;
         reviews = new ArrayList<>();
@@ -80,6 +83,7 @@ public class Product implements DbEntity{
     public void setQuantity(int amount) throws Exception{
         if(quantity + amount>=0){
             quantity += amount;
+            StoreDao.saveProduct(this);
         }else {
             throw new Exception("Invalid Quantity: New quantity for product <= 0.");
         }
@@ -87,6 +91,7 @@ public class Product implements DbEntity{
     public void replaceQuantity(int newQuantity) throws Exception{
         if(newQuantity>0){
             quantity = newQuantity;
+            StoreDao.saveProduct(this);
         }else {
             throw new Exception("Invalid Quantity: New quantity for product <= 0.");
         }
@@ -105,7 +110,7 @@ public class Product implements DbEntity{
      * @return new deep copy of the product.
      */
     public synchronized Product clone() {
-        Product clone = new Product(storeId, productId,name,description);
+        Product clone = new Product(storeId, productId,name,description, price, quantity);
         try {
             clone.setPrice(price);
         }catch (Exception e){

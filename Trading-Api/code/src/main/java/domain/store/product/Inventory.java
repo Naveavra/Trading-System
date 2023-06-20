@@ -40,9 +40,7 @@ public class Inventory{
         Product p = null;
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
-            p = new Product(storeId, id,name,description, "");
-            p.setPrice(price);
-            p.replaceQuantity(quantity);
+            p = new Product(storeId, id,name,description, "", price, quantity);
             productList.put(id,p);
             addToCategories(id, categories);
         }
@@ -54,11 +52,13 @@ public class Inventory{
     public synchronized Product addProduct(String name, String description, AtomicInteger prod_id,
                                            int price, int quantity, String img, List<String> categories) throws Exception {
         Product p = null;
+        if(price < 0)
+            throw new Exception("the price of a product cannot be negative");
+        if(quantity < 0)
+            throw new Exception("the quantity of a product cannot be negative");
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
-            p = new Product(storeId,id,name,description, img);
-            p.setPrice(price);
-            p.replaceQuantity(quantity);
+            p = new Product(storeId, id, name, description, img, price, quantity);
             productList.put(id,p);
             addToCategories(id, categories);
         }

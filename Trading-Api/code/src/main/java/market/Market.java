@@ -1,5 +1,6 @@
 package market;
 
+import database.HibernateUtil;
 import database.daos.Dao;
 import domain.states.Permissions;
 import domain.store.storeManagement.AppHistory;
@@ -8,6 +9,8 @@ import domain.user.Member;
 import domain.user.StringChecks;
 import domain.user.PurchaseHistory;
 import domain.user.ShoppingCart;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.json.JSONObject;
 import server.Config.ESConfig;
 import service.ExternalService.Payment.PaymentAdapter;
@@ -136,7 +139,9 @@ public class Market implements MarketInterface {
 
     @Override
     public Response<String> register(String email, String pass, String birthday) {
-        try {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
             String hashedPassword = userAuth.hashPassword(email, pass);
             userController.register(email, pass, hashedPassword, birthday);
             marketInfo.addRegisteredCount();
@@ -1434,6 +1439,8 @@ public class Market implements MarketInterface {
     //atomic function to log and get response
     public Response logAndRes(Event.LogStatus state, String content, String time, String userName,
                               Object value, String errorTi , String errorMsg) {
+        if(errorMsg != null && errorMsg.contains("Error calling"))
+            errorMsg = "the db is down at the moment so this function is not possible";
         Event event = new Event(state, content, time, userName);
         logger.log(event);
         Dao.save(event);

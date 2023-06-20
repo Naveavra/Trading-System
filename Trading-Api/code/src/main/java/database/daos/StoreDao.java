@@ -21,8 +21,10 @@ public class StoreDao {
     private static HashMap<Integer, HashMap<String, Set<Integer>>> categoryMap = new HashMap<>();
     private static HashMap<Integer, Set<String>> categories = new HashMap<>();
     private static Set<Integer> allCategories = new HashSet<>();
-    private static HashMap<Integer, AppHistory> appointmentMap = new HashMap<>();
+    private static HashMap<Integer, HashMap<String, Appointment>> appointmentMap = new HashMap<>();
     private static Set<Integer> appointments = new HashSet<>();
+    private static HashMap<Integer, AppHistory> appMap = new HashMap<>();
+    private static Set<Integer> app = new HashSet<>();
     private static HashMap<Integer, HashMap<Integer, Bid>> bidMap = new HashMap<>();
     private static Set<Integer> bids = new HashSet<>();
     private static HashMap<Integer, HashMap<Integer, ConstraintDto>> constraintMap = new HashMap<>();
@@ -203,30 +205,32 @@ public class StoreDao {
     }
 
     public static AppHistory.Node getNode(int storeId, int userId, int creatorId){
-        if(appointmentMap.containsKey(storeId))
-            if (appointmentMap.get(storeId).getNode(userId) != null)
-                return appointmentMap.get(storeId).getNode(userId);
+        if(appMap.containsKey(storeId))
+            if (appMap.get(storeId).getNode(userId) != null)
+                return appMap.get(storeId).getNode(userId);
         List<? extends DbEntity> appointmentsDto = Dao.getListByCompositeKey(Appointment.class, storeId, userId,
                 "AppointmentDto", "storeId", "fatherId");
-        if(!appointmentMap.containsKey(storeId))
-            appointmentMap.put(storeId, new AppHistory(storeId, new Pair<>(SubscriberDao.getMember(creatorId), SubscriberDao.getRole(creatorId, storeId))));
+        if(!appMap.containsKey(storeId))
+            appMap.put(storeId, new AppHistory(storeId, new Pair<>(SubscriberDao.getMember(creatorId), SubscriberDao.getRole(creatorId, storeId))));
         try {
-            appointmentMap.get(storeId).addNode(creatorId, new Pair<>(SubscriberDao.getMember(userId), SubscriberDao.getRole(userId, storeId)));
+            appMap.get(storeId).addNode(creatorId, new Pair<>(SubscriberDao.getMember(userId), SubscriberDao.getRole(userId, storeId)));
             for (Appointment appointment : (List<Appointment>) appointmentsDto)
-                if(!appointmentMap.get(storeId).isChild(appointment.getFatherId(), appointment.getChildId()))
-                    appointmentMap.get(storeId).addNode(userId, new Pair<>(SubscriberDao.getMember(appointment.getChildId()),
+                if(!appMap.get(storeId).isChild(appointment.getFatherId(), appointment.getChildId())) {
+                    appointment.initialParams();
+                    appMap.get(storeId).addNode(userId, new Pair<>(SubscriberDao.getMember(appointment.getChildId()),
                             SubscriberDao.getRole(appointment.getChildId(), storeId)));
+                }
         }catch (Exception ignored){}
-        return appointmentMap.get(storeId).getNode(userId);
+        return appMap.get(storeId).getNode(userId);
     }
 
     public static AppHistory getAppHistory(int storeId, int creatorId){
-        if(!appointments.contains(storeId)){
-            if(!appointmentMap.containsKey(storeId))
-                appointmentMap.put(storeId, new AppHistory(storeId, new Pair<>(SubscriberDao.getMember(creatorId),
+        if(!app.contains(storeId)){
+            if(!appMap.containsKey(storeId))
+                appMap.put(storeId, new AppHistory(storeId, new Pair<>(SubscriberDao.getMember(creatorId),
                         SubscriberDao.getRole(creatorId, storeId))));
             List<? extends DbEntity> appointmentsDto = Dao.getListById(Appointment.class, storeId,
-                    "AppointmentDto", "storeId");
+                    "Appointment", "storeId");
             List<Integer> fathers = new ArrayList<>();
             fathers.add(creatorId);
             while(fathers.size() > 0){
@@ -234,14 +238,34 @@ public class StoreDao {
                 for(Appointment appointment : (List<Appointment>) appointmentsDto)
                     if(appointment.getFatherId() == id) {
                         try {
-                            appointmentMap.get(storeId).addNode(id, new Pair<>(SubscriberDao.getMember(appointment.getChildId()),
+                            appointment.initialParams();
+                            appMap.get(storeId).addNode(id, new Pair<>(SubscriberDao.getMember(appointment.getChildId()),
                                     SubscriberDao.getRole(appointment.getChildId(), storeId)));
                         }catch (Exception ignored){}
                     }
             }
-            appointments.add(storeId);
+            app.add(storeId);
         }
-        return appointmentMap.get(storeId);
+        return appMap.get(storeId);
+    }
+
+    public static Appointment getAppointment(int storeId, String childName){
+        if(!appointmentMap.containsKey(storeId))
+            appointmentMap.put(storeId, new HashMap<>());
+
+        if(appointmentMap.get(storeId).containsKey(childName))
+            return appointmentMap.get(storeId).get(childName);
+
+        Appointment appointment = (Appointment) Dao.getByParam(Appointment.class, "Appointment",
+                String.format("storeId = %d AND childName= '%s' ", storeId, childName));
+        if(appointment != null) {
+            appointmentMap.get(storeId).put(childName, appointment);
+            appointment.initialParams();
+        }
+        return appointment;
+    }
+    public static List<Appointment> getAppointments(int storeId) {
+        return new ArrayList<>();
     }
 
     public static void removeAppointment(int storeId, int childId, String childName){
@@ -249,17 +273,20 @@ public class StoreDao {
                 storeId, childName));
         Dao.removeIf("Appointment", String.format("storeId = %d AND fatherName = '%s' ",
                 storeId, childName));
-        if(appointmentMap.containsKey(storeId)) {
+        Dao.removeIf("AppApproved", String.format("storeId = %d AND childId = %d", storeId, childId));
+        Dao.removeIf("AppApproved", String.format("storeId = %d AND fatherId = %d", storeId, childId));
+        if(appMap.containsKey(storeId)) {
             try {
-                appointmentMap.get(storeId).removeChild(childId);
+                appMap.get(storeId).removeChild(childId);
             }catch (Exception ignored){}
         }
     }
 
     public static void removeAppointments(int storeId) {
-        Dao.removeIf("AppointmentDto", String.format("storeId = %d", storeId));
-        appointments.remove(storeId);
-        appointmentMap.remove(storeId);
+        Dao.removeIf("Appointment", String.format("storeId = %d", storeId));
+        Dao.removeIf("AppApproved", String.format("storeId = %d", storeId));
+        app.remove(storeId);
+        appMap.remove(storeId);
     }
 
 
@@ -305,12 +332,14 @@ public class StoreDao {
 
     public static void removeBid(int storeId, int bidId){
         Dao.removeIf("Bid", String.format("bidId = %d AND storeId = %d", bidId, storeId));
+        Dao.removeIf("ApproverDto", String.format("storeId = %d AND bidId = %d", storeId, bidId));
         if(bidMap.containsKey(storeId))
             bidMap.get(storeId).remove(bidId);
     }
 
     public static void removeBids(int storeId){
         Dao.removeIf("Bid", String.format("storeId = %d", storeId));
+        Dao.removeIf("ApproverDto", String.format("storeId = %d", storeId));
         bids.remove(storeId);
         bidMap.remove(storeId);
     }

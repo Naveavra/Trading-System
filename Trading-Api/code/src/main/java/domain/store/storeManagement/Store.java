@@ -331,6 +331,13 @@ public class Store extends Information implements DbEntity {
     {
         String joblessName = appHistory.getNode(joblessuser).getData().getFirst().getName();
         Set<Integer> ans = new HashSet<>(appHistory.removeChild(joblessuser));
+        appointments.removeIf(app -> app.getFatherId() == joblessuser || app.getChildId() == joblessuser);
+        for(Appointment app : appointments)
+            if(app.containsInApprove(joblessName))
+                app.removeApprover(joblessName);
+        for(Bid bid: bids)
+            if(bid.containsInApprove(joblessName))
+                bid.removeApprover(joblessName);
         StoreDao.removeAppointment(storeId, joblessuser, joblessName);
         return ans;
     }
@@ -791,7 +798,6 @@ public class Store extends Information implements DbEntity {
         getConstraintsFromDb();
         getDiscountsFromDb();
 
-        appointments = new ArrayList<>();
         storeOrders = new ConcurrentHashMap<>();
         bids = new ArrayList<>();
         purchasePolicies = new ArrayList<>();
@@ -809,6 +815,8 @@ public class Store extends Information implements DbEntity {
     private void getAppHistoryFromDb(){
         if(appHistory == null)
             appHistory = StoreDao.getAppHistory(storeId, creatorId);
+        if(appointments == null)
+            appointments = StoreDao.getAppointments(storeId);
     }
 
     private void getInventoryFromDb(){
