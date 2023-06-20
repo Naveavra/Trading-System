@@ -4,6 +4,7 @@ import { Message, Question, Review } from "./Message";
 import { Order } from "./Order";
 import { Product } from "./Product";
 import { RoleInStore, StoreRoleEnum } from "./StoreRole";
+import { WaitingAppointment } from "./WaitingAppointment";
 
 export interface Store {
     storeId: number;
@@ -22,6 +23,7 @@ export interface Store {
     bids: Bid[];
     discounts: string[];
     purchasePolicies: string[];
+    appointments: WaitingAppointment[];
     //todo add purchase and discount policy
 }
 export const emptyStore: Store = {
@@ -40,7 +42,8 @@ export const emptyStore: Store = {
     appHistory: [],
     bids: [],
     discounts: [],
-    shopingRules: []
+    purchasePolicies: [],
+    appointments: []
 }
 //    inventory: { id: number, product: { categories: string[], description: string, name: string, price: number, productId: number, quantity: number, img: string, rating: { value: number, content: string }[], reviewNumber: number } }[];
 //    storeOrders: { orderId: number, totalPrice: number, productsInStores: { storeId: number, products: { productId: number, quantity: number }[][] }, userId: number }[];

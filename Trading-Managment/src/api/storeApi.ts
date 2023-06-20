@@ -1,5 +1,5 @@
 import { ApiResponseListData, ApiResponse } from "../types/apiTypes";
-import { AnswerQuestionParams, AppointUserParams, DeleteStoreParams, GetStoreProducts, GetStoresParams, PatchStoreParams, PostStoreParams, WriteQuestionParams, WriteReviewOnProductParams, WriteReviewParams, fireUserParams, getAppointmentsHistoryParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
+import { AnswerQuestionParams, AppointUserParams, DeleteStoreParams, GetStoreProducts, GetStoresParams, PatchStoreParams, PostStoreParams, WaitingAppointmentParams, WriteQuestionParams, WriteReviewOnProductParams, WriteReviewParams, fireUserParams, getAppointmentsHistoryParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
 import { Product } from "../types/systemTypes/Product";
 import { Store } from "../types/systemTypes/Store";
 import { StoreInfo } from "../types/systemTypes/StoreInfo";
@@ -53,4 +53,7 @@ export const storeApi =
 
     writeReviewOnProduct: (params: WriteReviewOnProductParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/stores/products/reviews/write`, params)),
+
+    answerOnWaitingAppointment: (params: WaitingAppointmentParams): Promise<ApiResponse<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/appointments/answer`, params)),
 }   

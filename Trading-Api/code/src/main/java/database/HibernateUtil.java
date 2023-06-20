@@ -53,7 +53,9 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(StoreCreator.class);
                 configuration.addAnnotatedClass(StoreOwner.class);
                 configuration.addAnnotatedClass(Permission.class);
-                configuration.addAnnotatedClass(AppointmentDto.class);
+                configuration.addAnnotatedClass(Appointment.class);
+                configuration.addAnnotatedClass(AppApproved.class);
+
 
                 configuration.addAnnotatedClass(Store.class);
                 configuration.addAnnotatedClass(Product.class);

@@ -686,6 +686,21 @@ public class Market implements MarketInterface {
     }
 
     @Override
+    public Response<String> answerAppointment(int userId, String token, int storeId, String fatherName, String childName, String ans) {
+        try{
+            userAuth.checkUser(userId, token);
+            marketController.answerAppointment(userController.getUserName(userId), storeId, fatherName, childName, ans);
+            return logAndRes(Event.LogStatus.Success, "user answered appointment successfully",
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    "user answered appointment successfully", null, null);
+        }catch (Exception e){
+            return logAndRes(Event.LogStatus.Fail, "answer appointment faild because " + e.getMessage(),
+                    StringChecks.curDayString(), userController.getUserName(userId),
+                    null, "answer appointment failed", e.getMessage());
+        }
+    }
+
+    @Override
     public Response<String> changeStoreInfo(int userId, String token, int storeId, String name, String description,
                                             String img, String isActive) {
         try {

@@ -76,3 +76,10 @@ export interface WriteReviewOnProductParams {
     rating: number;
     content: string;
 };
+export interface WaitingAppointmentParams {
+    userId: number;
+    storeId: number;
+    fatherName: string;
+    childName: string;
+    answer: boolean;
+}

@@ -479,6 +479,17 @@ public class API {
         return fromResToPair(res);
     }
 
+    public Pair<Boolean, JSONObject> addCompositeDiscount(String token, String body) throws Exception {
+        return fromResToPair(market.addCompositeDiscount(token,body));
+    }
+
+    public Pair<Boolean, JSONObject> answerAppointment(int userId, String token, int storeId, String fatherName,
+                                                       String childName, String ans) {
+        Response<String> res = market.answerAppointment(userId, token, storeId, fatherName, childName, ans);
+        return fromResToPair(res);
+
+    }
+
     //for actions to actionString
     private void getActionStrings(){
         actionStrings.put(Action.addProduct.toString(), 0);
@@ -575,10 +586,5 @@ public class API {
     public String getTokenForTest() {
         return market.addTokenForTests();
     }
-
-    public Pair<Boolean, JSONObject> addCompositeDiscount(String token, String body) throws Exception {
-        return fromResToPair(market.addCompositeDiscount(token,body));
-    }
-
 
 }

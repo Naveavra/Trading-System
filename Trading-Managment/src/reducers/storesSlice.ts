@@ -2,7 +2,7 @@ import { Action, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiError, ApiListData, ApiResponse } from "../types/apiTypes";
 
 import { storeApi } from "../api/storeApi";
-import { AnswerQuestionParams, AppointUserParams, DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams, WriteQuestionParams, WriteReviewOnProductParams, WriteReviewParams, fireUserParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
+import { AnswerQuestionParams, AppointUserParams, DeleteStoreParams, GetStoresParams, PatchStoreParams, PostStoreParams, WaitingAppointmentParams, WriteQuestionParams, WriteReviewOnProductParams, WriteReviewParams, fireUserParams, patchPermissionsParams } from "../types/requestTypes/storeTypes";
 import { Store, emptyStore } from "../types/systemTypes/Store";
 import { StoreInfo, emptyStoreInfo } from "../types/systemTypes/StoreInfo";
 import { store } from "../redux/store";
@@ -206,6 +206,18 @@ export const writeQuestion = createAsyncThunk<
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
     });
 
+export const answerOnWaitingAppointment = createAsyncThunk<
+    string,
+    WaitingAppointmentParams,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/appointments/answer`,
+    async (params, thunkApi) => {
+        return storeApi.answerOnWaitingAppointment(params)
+            .then((res) => thunkApi.fulfillWithValue(res as string))
+            .catch((res) => thunkApi.rejectWithValue(res as ApiError))
+    });
+
 
 const { reducer: storesReducer, actions: storesActions } = createSlice({
     name: reducerName,
@@ -402,7 +414,18 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.storeState.isLoading = false;
             state.storeState.responseData = payload;
         });
-
+        builder.addCase(answerOnWaitingAppointment.pending, (state) => {
+            state.storeState.isLoading = true;
+            state.storeState.error = null;
+        });
+        builder.addCase(answerOnWaitingAppointment.rejected, (state, { payload }) => {
+            state.storeState.error = payload?.message.data ?? "error during getStore";
+            state.storeState.isLoading = false;
+        });
+        builder.addCase(answerOnWaitingAppointment.fulfilled, (state, { payload }) => {
+            state.storeState.isLoading = false;
+            state.storeState.responseData = payload;
+        });
     }
 });
 

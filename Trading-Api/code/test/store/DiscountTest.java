@@ -1,5 +1,6 @@
 package store;
 
+import database.daos.Dao;
 import domain.store.discount.AbstractDiscount;
 import domain.store.discount.DiscountFactory;
 import domain.store.discount.compositeDiscountTypes.LogicalDiscountComposite;
@@ -44,11 +45,14 @@ public class DiscountTest {
     Store s2;
     Inventory inv1;
     Inventory inv2;
-    Member creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
-    Member worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2002");
+    Member creator;
+    Member worker;
 
     @BeforeEach
     void setUp() throws Exception{
+        Dao.setForTests(true);
+        creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
+        worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2002");
         AtomicInteger inventoryIds1 = new AtomicInteger();
         AtomicInteger inventoryIds2 = new AtomicInteger();
         storeCtrl = new StoreController();

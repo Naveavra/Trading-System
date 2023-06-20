@@ -12,6 +12,7 @@ import WorkersStatus from "../../../../components/storePages/WorkersStatus";
 import RegularBids from "../../../../components/storePages/RegularBids";
 import AnswerBid from "../../../../components/Forms/Bids/AnswerBid";
 import CounterBid from "../../../../components/Forms/Bids/CounterBid";
+import AppointmentAgreement from "../../../../components/storePages/AppointmentAgreement";
 
 export const SuperiorPagesShopRoutes = [
     <Route key="routes" path="superior">
@@ -28,6 +29,7 @@ export const SuperiorPagesShopRoutes = [
         <Route path="checkworkersstatus" element={<WorkersStatus />} />
         <Route path="bids/:storeId/:productId/:bidId/counterBid" element={<CounterBid />} />
         <Route path="bids/:storeId/:productId/:bidId/answerBid" element={<AnswerBid />} />
+        <Route path="appointments" element={<AppointmentAgreement />} />
     </Route>
 
 ]
