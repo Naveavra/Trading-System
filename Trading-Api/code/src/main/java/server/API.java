@@ -587,4 +587,8 @@ public class API {
         return market.addTokenForTests();
     }
 
+    public Pair<Boolean, JSONObject> removeDiscount(String token, int userId, int storeId, int discountId) throws Exception {
+        Response<String> res = market.removeDiscount(token,userId,storeId,discountId);
+        return fromResToPair(res);
+    }
 }

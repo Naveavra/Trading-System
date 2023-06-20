@@ -909,16 +909,23 @@ public class Store extends Information implements DbEntity {
     }
 
     public void removeConstraint(int constraintId){
-
-
-        StoreDao.removeConstraint(storeId, constraintId);
+        for(PurchasePolicy policy: purchasePolicies){
+            if(policy.getId() == constraintId) {
+                purchasePolicies.remove(policy);
+                StoreDao.removeConstraint(storeId, constraintId);
+            }
+        }
     }
 
-    public void removeDiscount(int discountId){
-
-
-        StoreDao.removeDiscount(storeId, discountId);
-
+    public void removeDiscount(int discountId) throws Exception {
+        for(Discount dis: discounts){
+            if(dis.getDiscountID() == discountId) {
+                discounts.remove(dis);
+                StoreDao.removeDiscount(storeId, discountId);
+                return;
+            }
+        }
+        throw new Exception("Discount ID doesn't exist Homeie");
     }
 
 //    public void clientAcceptCounter(int bidId) {
