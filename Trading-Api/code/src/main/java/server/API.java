@@ -496,8 +496,8 @@ public class API {
         actionStrings.put(Action.removeProduct.toString(), 1);
         actionStrings.put(Action.updateProduct.toString(), 2);
         actionStrings.put(Action.changeStoreDetails.toString(), 3);
-        actionStrings.put(Action.changePurchasePolicy.toString(),4);
-        actionStrings.put(Action.changeDiscountPolicy.toString(),5);
+        actionStrings.put(Action.deletePurchasePolicy.toString(),4);
+        actionStrings.put(Action.deleteDiscountPolicy.toString(),5);
         actionStrings.put(Action.addPurchaseConstraint.toString(), 6);
         actionStrings.put(Action.addDiscountConstraint.toString(),7);
         actionStrings.put(Action.viewMessages.toString(),8);

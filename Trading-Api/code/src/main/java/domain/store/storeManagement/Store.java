@@ -638,7 +638,7 @@ public class Store extends Information implements DbEntity {
         json.put("img", getImgUrl());
         json.put("roles", infosToJson(getRoles()));
         json.put("bids", infosToJson(getBids()));
-        json.put("discounts", getDiscountsContent());
+        json.put("discounts", infosToJson(getDiscounts()));
         json.put("purchasePolicies",infosToJson(getPurchasePolicies()));
         json.put("appointments", infosToJson(appointments));
         return json;

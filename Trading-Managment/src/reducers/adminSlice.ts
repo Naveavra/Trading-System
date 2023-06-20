@@ -9,6 +9,8 @@ import { SystemStatus, emptySystemStatus } from "../types/systemTypes/SystemStat
 interface AdminState {
     isLoading: boolean;
     error: string | null;
+    paymentsResponseData: string[];
+    suppliersResponseData: string[];
     logRecords: LogRecord[];
     complaints: Complaint[];
     status: SystemStatus;
@@ -18,6 +20,8 @@ const reducerName = 'adminSlice';
 const initialState: AdminState = {
     logRecords: [],
     complaints: [],
+    paymentsResponseData: [],
+    suppliersResponseData: [],
     status: emptySystemStatus,
     isLoading: false,
     error: null,
@@ -138,6 +142,28 @@ export const updateService = createAsyncThunk<
             .then((res) => thunkAPI.fulfillWithValue(res as string))
             .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
     });
+export const getSuppliersToAdd = createAsyncThunk<
+    string[],
+    number,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/getSuppliersToAdd`,
+    async (adminId, thunkAPI) => {
+        return adminApi.getAdminPaymenysService(adminId)
+            .then((res) => thunkAPI.fulfillWithValue(res as string[]))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
+export const getPaymentsToAdd = createAsyncThunk<
+    string[],
+    number,
+    { rejectValue: ApiError }
+>(
+    `${reducerName}/getPaymentsToAdd`,
+    async (adminId, thunkAPI) => {
+        return adminApi.getAdminPaymenysService(adminId)
+            .then((res) => thunkAPI.fulfillWithValue(res as string[]))
+            .catch((err) => thunkAPI.rejectWithValue(err as ApiError));
+    });
 
 const { reducer: adminReducer, actions: authActions } = createSlice({
     name: reducerName,
@@ -253,7 +279,28 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
             state.isLoading = false;
             state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during update service") : payload?.message.data ?? "error during update service";
         });
-
+        builder.addCase(getPaymentsToAdd.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(getPaymentsToAdd.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.paymentsResponseData = payload;
+        });
+        builder.addCase(getPaymentsToAdd.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during get payments to add") : payload?.message.data ?? "error during get payments to add";
+        });
+        builder.addCase(getSuppliersToAdd.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(getSuppliersToAdd.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.suppliersResponseData = payload;
+        });
+        builder.addCase(getSuppliersToAdd.rejected, (state, { payload }) => {
+            state.isLoading = false;
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error get suppliers to addt") : payload?.message.data ?? "error get suppliers to add";
+        });
     }
 });
 export const { clearAdminMsg, clearAdminError } = authActions;

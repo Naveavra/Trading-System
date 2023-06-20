@@ -5,6 +5,7 @@ import domain.store.discount.discountFunctionalInterface.GetCategoriesOperation;
 import domain.store.discount.discountFunctionalInterface.GetProductOperation;
 import domain.store.discount.predicates.DiscountPredicate;
 import domain.user.Basket;
+import org.json.JSONObject;
 import utils.infoRelated.Information;
 import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
@@ -32,6 +33,13 @@ public abstract class Discount extends Information {
     public abstract void setContent(String content);
     public abstract void setDescription(String desc);
     public abstract String getDescription();
+    @Override
+    public JSONObject toJson(){
+        JSONObject res = new JSONObject();
+        res.put("id",getDiscountID());
+        res.put("content",getDescription());
+        return res;
+    }
 //    public void getDiscount(ArrayList<? extends Information> infos);
 
 }

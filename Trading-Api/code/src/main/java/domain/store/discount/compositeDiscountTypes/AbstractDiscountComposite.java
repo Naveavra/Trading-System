@@ -82,11 +82,6 @@ public abstract class AbstractDiscountComposite  extends Discount {
     public void setDescription(String desc){
         this.description=desc;
     }
-    @Override
-    public JSONObject toJson(){
-        JSONObject obj = new JSONObject();
-        obj.put("description",getDescription());
-        return obj;
-    }
+
 
 }
