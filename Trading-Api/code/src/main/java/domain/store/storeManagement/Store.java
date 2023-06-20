@@ -27,6 +27,7 @@ import domain.user.User;
 import jakarta.persistence.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.mockito.internal.matchers.Or;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.*;
@@ -802,11 +803,11 @@ public class Store extends Information implements DbEntity {
         getConstraintsFromDb();
         getDiscountsFromDb();
 
-        storeOrders = new ConcurrentHashMap<>();
-        bids = new ArrayList<>();
-        purchasePolicies = new ArrayList<>();
-        discounts = new ArrayList<>();
-        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
+//        storeOrders = new ConcurrentHashMap<>();
+//        bids = new ArrayList<>();
+//        purchasePolicies = new ArrayList<>();
+//        discounts = new ArrayList<>();
+//        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
     }
 
 
@@ -850,11 +851,17 @@ public class Store extends Information implements DbEntity {
 
     private void getOrdersFromDb() {
         if(storeOrders == null){
-
+            storeOrders = new ConcurrentHashMap<>();
+            List<Order> orders = StoreDao.getOrders(storeId);
+            for(Order order : orders)
+                storeOrders.put(order.getOrderId(), order);
         }
     }
 
     private void getBidsFromDb() {
+        if(bids == null){
+            bids = (ArrayList<Bid>) StoreDao.getBids(storeId);
+        }
     }
 
     private void getConstraintsFromDb() {
@@ -899,6 +906,19 @@ public class Store extends Information implements DbEntity {
             if(b.getBidId() == bidId)
                 return b;
         throw new Exception("the id given does not belong to any bid in store");
+    }
+
+    public void removeConstraint(int constraintId){
+
+
+        StoreDao.removeConstraint(storeId, constraintId);
+    }
+
+    public void removeDiscount(int discountId){
+
+
+        StoreDao.removeDiscount(storeId, discountId);
+
     }
 
 //    public void clientAcceptCounter(int bidId) {

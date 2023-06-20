@@ -283,19 +283,21 @@ public class SubscriberDao {
         Dao.save(receipt);
     }
 
+    public static Receipt getReceipt(int orderId){
+        Receipt receipt = (Receipt) Dao.getById(Receipt.class, orderId);
+        if(receipt!= null) {
+            if(!purchasesMap.containsKey(receipt.getMemberId()))
+                purchasesMap.put(receipt.getMemberId(), new PurchaseHistory(receipt.getMemberId()));
+            purchasesMap.get(receipt.getMemberId()).addPurchaseMade(receipt);
+            receipt.initialParams();
+        }
+        return receipt;
+    }
     public static Receipt getReceipt(int userId, int orderId){
         if(purchasesMap.containsKey(userId))
             if(purchasesMap.get(userId).checkOrderOccurred(orderId))
                 return purchasesMap.get(userId).getReceipt(orderId);
-
-        Receipt receipt = (Receipt) Dao.getById(Receipt.class, orderId);
-        if(receipt!= null) {
-            if(!purchasesMap.containsKey(userId))
-                purchasesMap.put(userId, new PurchaseHistory(userId));
-            purchasesMap.get(userId).addPurchaseMade(receipt);
-            receipt.initialParams();
-        }
-        return receipt;
+        return getReceipt(orderId);
     }
 
     public static PurchaseHistory getReceipts(int userId){

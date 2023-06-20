@@ -18,6 +18,8 @@ public class Receipt extends Information implements DbEntity {
 
     @Id
     private int orderId;
+    @Transient
+    private Member member;
 
     private int memberId;
     @Transient
@@ -37,8 +39,12 @@ public class Receipt extends Information implements DbEntity {
         SubscriberDao.saveReceipt(this);
     }
 
-    public void setMemberId(int memberId){
-        this.memberId = memberId;
+    public Member getMember(){
+        return member;
+    }
+    public void setMember(Member member){
+        this.member = member;
+        this.memberId = member.getId();
     }
     public int getOrderId(){
         return orderId;
@@ -64,6 +70,7 @@ public class Receipt extends Information implements DbEntity {
 
     @Override
     public void initialParams() {
+        getMemberFromDb();
         List<? extends DbEntity> prods = Dao.getListById(ReceiptDto.class, orderId,
                 "ReceiptDto", "orderId");
         ShoppingCart tmpCart = new ShoppingCart();
@@ -76,5 +83,10 @@ public class Receipt extends Information implements DbEntity {
             }
             products = tmpCart;
         }
+    }
+
+    public void getMemberFromDb(){
+        if(member == null)
+            member = SubscriberDao.getMember(memberId);
     }
 }

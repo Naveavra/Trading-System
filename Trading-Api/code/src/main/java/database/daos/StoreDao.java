@@ -1,15 +1,18 @@
 package database.daos;
 
 import database.DbEntity;
-import database.dtos.Appointment;
-import database.dtos.CategoryDto;
-import database.dtos.ConstraintDto;
-import database.dtos.DiscountDto;
+import database.dtos.*;
 import domain.store.product.Product;
 import domain.store.storeManagement.AppHistory;
 import domain.store.storeManagement.Bid;
 import domain.store.storeManagement.Store;
+import domain.user.Basket;
+import domain.user.ShoppingCart;
+import org.mockito.internal.matchers.Or;
 import utils.Pair;
+import utils.infoRelated.ProductInfo;
+import utils.infoRelated.Receipt;
+import utils.orderRelated.Order;
 
 import java.util.*;
 
@@ -31,6 +34,8 @@ public class StoreDao {
     private static Set<Integer> constraints = new HashSet<>();
     private static HashMap<Integer, HashMap<Integer, DiscountDto>> discountsMap = new HashMap<>();
     private static Set<Integer> discounts = new HashSet<>();
+    private static HashMap<Integer, HashMap<Integer, Order>> storeOrderMap = new HashMap<>();
+    private static Set<Integer> storeOrders = new HashSet<>();
     public static void saveStore(Store s){
         Dao.save(s);
     }
@@ -265,7 +270,17 @@ public class StoreDao {
         return appointment;
     }
     public static List<Appointment> getAppointments(int storeId) {
-        return new ArrayList<>();
+        if(!appointmentMap.containsKey(storeId))
+            appointmentMap.put(storeId, new HashMap<>());
+        if(!appointments.contains(storeId)){
+            List<? extends DbEntity> appointmentsDto = Dao.getListById(Appointment.class, storeId,
+                    "Appointment", "storeId");
+            for(Appointment appointment : (List<Appointment>) appointmentsDto)
+                if(!appointmentMap.get(storeId).containsKey(appointment.getChildName()))
+                    appointmentMap.get(storeId).put(appointment.getChildName(), appointment);
+            appointments.add(storeId);
+        }
+        return new ArrayList<>(appointmentMap.get(storeId).values());
     }
 
     public static void removeAppointment(int storeId, int childId, String childName){
@@ -426,5 +441,59 @@ public class StoreDao {
     public static void removeDiscounts(int storeId){
         Dao.removeIf("DiscountDto", String.format("storeId = %d", storeId));
         discountsMap.remove(storeId);
+    }
+
+
+    //storeOrders
+    public static Order getStoreOrder(int storeId, int orderId){
+        if(!storeOrderMap.containsKey(storeId))
+            storeOrderMap.put(storeId, new HashMap<>());
+
+        if(storeOrderMap.get(storeId).containsKey(orderId))
+            storeOrderMap.get(storeId).get(orderId);
+        Order order = null;
+        Receipt receipt = SubscriberDao.getReceipt(orderId);
+        if(receipt != null){
+            receipt.initialParams();
+            ShoppingCart cart = new ShoppingCart();
+            if(receipt.getCart().hasStore(storeId)) {
+                for (ProductInfo p : receipt.getCart().getBasket(storeId).getContent()) {
+                    try {
+                        cart.addProductToCart(storeId, p, p.getQuantity());
+                    }catch (Exception ignored){}
+                }
+                order = new Order(receipt.getMember().getId(), receipt.getMember(), cart);
+                storeOrderMap.get(storeId).put(orderId, order);
+            }
+        }
+        return order;
+    }
+
+
+    public static List<Order> getOrders(int storeId){
+        if(!storeOrderMap.containsKey(storeId))
+            storeOrderMap.put(storeId, new HashMap<>());
+        if(!storeOrders.contains(storeId)) {
+            List<? extends DbEntity> receipts = Dao.getListById(ReceiptDto.class, storeId, "ReceiptDto", "storeId");
+            HashMap<Integer, ShoppingCart> newOrders = new HashMap<>();
+            for(ReceiptDto receiptDto : (List<ReceiptDto>) receipts){
+                if(!storeOrderMap.get(storeId).containsKey(receiptDto.getOrderId())){
+                    if(!newOrders.containsKey(receiptDto.getOrderId()))
+                        newOrders.put(receiptDto.getOrderId(), new ShoppingCart());
+                    try {
+                        newOrders.get(receiptDto.getOrderId()).addProductToCart(receiptDto.getStoreId(),
+                                getProduct(receiptDto.getStoreId(), receiptDto.getProductId()).getProductInfo(),
+                                receiptDto.getQuantity());
+                    }catch (Exception ignored){}
+                }
+            }
+
+            for(int orderId : newOrders.keySet()){
+                Order order = new Order(orderId, null, newOrders.get(orderId));
+                storeOrderMap.get(storeId).put(orderId, order);
+            }
+            storeOrders.add(storeId);
+        }
+        return new ArrayList<>(storeOrderMap.get(storeId).values());
     }
 }
