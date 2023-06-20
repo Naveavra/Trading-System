@@ -8,11 +8,11 @@ import { SystemStatus, emptySystemStatus } from "../types/systemTypes/SystemStat
 
 interface AdminState {
     isLoading: boolean;
-    error: string;
+    error: string | null;
     logRecords: LogRecord[];
     complaints: Complaint[];
     status: SystemStatus;
-    msg: string;
+    msg: string | null;
 }
 const reducerName = 'adminSlice';
 const initialState: AdminState = {
@@ -20,8 +20,8 @@ const initialState: AdminState = {
     complaints: [],
     status: emptySystemStatus,
     isLoading: false,
-    error: '',
-    msg: '',
+    error: null,
+    msg: null,
 }
 
 export const getLogger = createAsyncThunk<
@@ -160,7 +160,7 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         });
         builder.addCase(getLogger.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during get logger";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during get logger") : payload?.message.data ?? "error during get logger";
         });
         builder.addCase(appointAdmin.pending, (state) => {
             state.isLoading = true;
@@ -171,7 +171,7 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         });
         builder.addCase(appointAdmin.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during appoint admin";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during appoint admin") : payload?.message.data ?? "error during  appoint admin";
         });
         builder.addCase(getComplaints.pending, (state) => {
             state.isLoading = true;
@@ -182,7 +182,7 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         });
         builder.addCase(getComplaints.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during get complaints";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during get complaints") : payload?.message.data ?? "error during get complaints";
         });
         builder.addCase(answerComplaint.pending, (state) => {
             state.isLoading = true;
@@ -193,7 +193,7 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         });
         builder.addCase(answerComplaint.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during answer complaint";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during answer complaint") : payload?.message.data ?? "error during answer complaint";
         });
         builder.addCase(adminResign.pending, (state) => {
             state.isLoading = true;
@@ -206,7 +206,8 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         builder.addCase(adminResign.rejected, (state, { payload }) => {
             console.log(payload);
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during admin resign";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during admin resign") : payload?.message.data ?? "error during admin resign";
+
         });
         builder.addCase(closeStorePerminently.pending, (state) => {
             state.isLoading = true;
@@ -217,7 +218,7 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         });
         builder.addCase(closeStorePerminently.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during close store perminently";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during close store perminently") : payload?.message.data ?? "error during close store perminently";
         });
         builder.addCase(removeUser.pending, (state) => {
             state.isLoading = true;
@@ -228,7 +229,7 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         });
         builder.addCase(removeUser.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during remove user";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during remove user") : payload?.message.data ?? "error during remove user";
         });
         builder.addCase(getMarketStatus.pending, (state) => {
             state.isLoading = true;
@@ -239,7 +240,7 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         });
         builder.addCase(getMarketStatus.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during market status";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during market status") : payload?.message.data ?? "error during market status";
         });
         builder.addCase(updateService.pending, (state) => {
             state.isLoading = true;
@@ -250,7 +251,7 @@ const { reducer: adminReducer, actions: authActions } = createSlice({
         });
         builder.addCase(updateService.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during update service";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during update service") : payload?.message.data ?? "error during update service";
         });
 
     }

@@ -52,7 +52,7 @@ export const patchProduct = createAsyncThunk<
 >(
     `${reducerName}/patch`,
     async (formData, thunkApi) => {
-        debugger;
+
         const data = removeEmptyValues(formData);
         return productsApi.patchProduct(data)
             .then((res) => thunkApi.fulfillWithValue(res as string))
@@ -91,7 +91,7 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
             state.error = null;
         },
         clearProductError: (state) => {
-            state.error = null;
+            state.productState.error = null;
         },
         setWatchedProductInfo: (state, action) => {
             state.productState.watchedProduct = state.responseData?.find((product) => product.productId === action.payload) ?? EmptyProduct;
@@ -104,34 +104,30 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
         //getproducts
         builder.addCase(getProducts.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(getProducts.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
             state.isLoading = false;
             state.responseData = payload;
-            state.error = null;
         });
         builder.addCase(getProducts.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during getProducts";
+            state.error = state.error ? (state.error + " , " + payload?.message.data ?? "error during getProducts") : payload?.message.data ?? "error during getProducts";
         });
         //patchProduct
         builder.addCase(patchProduct.pending, (state) => {
             state.productState.isLoading = true;
-            state.productState.error = null;
         });
         builder.addCase(patchProduct.fulfilled, (state, { payload }) => {
             state.productState.isLoading = false;
             state.productState.responseData = payload;
         });
         builder.addCase(patchProduct.rejected, (state, { payload }) => {
-            state.productState.error = payload?.message.data ?? "error during patchProducts";
+            state.productState.error = state.productState.error ? (state.productState.error + ' , ' + payload?.message.data ?? "error during patchProducts") : payload?.message.data ?? "error during patchProducts";
             state.productState.isLoading = false;
         });
         //postProduct
         builder.addCase(postProduct.pending, (state) => {
             state.productState.isLoading = true;
-            state.productState.error = null;
         });
         builder.addCase(postProduct.fulfilled, (state, { payload }) => {
             state.productState.isLoading = false;
@@ -139,24 +135,20 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
         });
         builder.addCase(postProduct.rejected, (state, { payload }) => {
             state.productState.isLoading = false;
-            state.productState.error = payload?.message.data ?? "error during postProduct";
+            state.productState.error = state.productState.error ? (state.productState.error + ' , ' + payload?.message.data ?? "error during patchProducts") : payload?.message.data ?? "error during postProduct";
         });
         //deleteProduct
         builder.addCase(deleteProduct.pending, (state) => {
             state.productState.isLoading = true;
-            state.productState.error = null;
         });
         builder.addCase(deleteProduct.fulfilled, (state, { payload }) => {
             state.productState.isLoading = false;
             state.productState.responseData = payload;
         });
         builder.addCase(deleteProduct.rejected, (state, { payload }) => {
-            state.productState.error = payload?.message.data ?? "error during deleteProduct";
+            state.productState.error = state.productState.error ? (state.productState.error + ' , ' + payload?.message.data ?? "error during patchProducts") : payload?.message.data ?? "error during deleteProduct";
             state.productState.isLoading = false;
         });
-
-
-
     }
 });
 

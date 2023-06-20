@@ -58,7 +58,7 @@ export const patchStore = createAsyncThunk<
 >(
     `${reducerName}/patch`,
     async (formData, thunkApi) => {
-        debugger;
+
         const data = removeEmptyValues(formData);
         return storeApi.patchStore(data)
             .then((res) => thunkApi.fulfillWithValue(res as string))
@@ -230,7 +230,7 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.storeState.error = null;
         },
         setWhatchedStoreInfo: (state, action) => {
-            debugger;
+
             state.storeState.wahtchedStoreInfo = state.storeInfoResponseData.find((storeInfo) => storeInfo.storeId === action.payload) ?? emptyStoreInfo;
         },
         clearStoresResponse: (state, action) => {
@@ -255,7 +255,6 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         //postStore
         builder.addCase(postStore.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(postStore.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -263,38 +262,35 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         builder.addCase(postStore.rejected, (state, { payload }) => {
             state.storeState.isLoading = false;
-            state.storeState.error = payload?.message.data ?? "error during postStore";
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during postStore") : payload?.message.data ?? "error during postStore";
         });
         //patchStore
         builder.addCase(patchStore.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(patchStore.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
             state.storeState.responseData = payload;
         });
         builder.addCase(patchStore.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during patchStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during patchStore") : payload?.message.data ?? "error during patchStore";
         });
         //delete store
         builder.addCase(deleteStore.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(deleteStore.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
             state.storeState.responseData = payload;
         });
         builder.addCase(deleteStore.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during deleteStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during deleteStore") : payload?.message.data ?? "error during deleteStore";
         });
         //get store
         builder.addCase(getStore.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(getStore.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -302,12 +298,11 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         //appointManager
         builder.addCase(appointManager.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during getStore") : payload?.message.data ?? "error during getStore";
         });
         builder.addCase(appointManager.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(appointManager.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -315,12 +310,11 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         //appointOwner
         builder.addCase(appointOwner.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during appointOwner") : payload?.message.data ?? "error during appointOwner";
         });
         builder.addCase(appointOwner.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(appointOwner.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -328,12 +322,11 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         //fireOwner
         builder.addCase(fireOwner.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during fireOwner") : payload?.message.data ?? "error during fireOwner";
         });
         builder.addCase(fireOwner.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(fireOwner.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -341,12 +334,11 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         //fireManager
         builder.addCase(fireManager.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during fireManager") : payload?.message.data ?? "error during fireManager";
         });
         builder.addCase(fireManager.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(fireManager.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -355,11 +347,10 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         //patchPermmision
         builder.addCase(patchPermissions.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(patchPermissions.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during patchPermissions") : payload?.message.data ?? "error during patchPermissions";
         });
         builder.addCase(patchPermissions.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -368,11 +359,10 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         //answerQuestion
         builder.addCase(answerQuestion.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(answerQuestion.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during answerQuestion") : payload?.message.data ?? "error during answerQuestion";
         });
         builder.addCase(answerQuestion.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -380,11 +370,10 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         builder.addCase(writeReview.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(writeReview.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during writeReview") : payload?.message.data ?? "error during writeReview";
         });
         builder.addCase(writeReview.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -392,11 +381,10 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         builder.addCase(writeQuestion.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(writeQuestion.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during writeQuestion") : payload?.message.data ?? "error during writeQuestion";
         });
         builder.addCase(writeQuestion.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -404,11 +392,10 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         builder.addCase(writeReviewOnProduct.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(writeReviewOnProduct.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during writeReviewOnProduct") : payload?.message.data ?? "error during writeReviewOnProduct";
         });
         builder.addCase(writeReviewOnProduct.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;
@@ -416,11 +403,10 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
         });
         builder.addCase(answerOnWaitingAppointment.pending, (state) => {
             state.storeState.isLoading = true;
-            state.storeState.error = null;
         });
         builder.addCase(answerOnWaitingAppointment.rejected, (state, { payload }) => {
-            state.storeState.error = payload?.message.data ?? "error during getStore";
             state.storeState.isLoading = false;
+            state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during answerOnWaitingAppointment") : payload?.message.data ?? "error during answerOnWaitingAppointment";
         });
         builder.addCase(answerOnWaitingAppointment.fulfilled, (state, { payload }) => {
             state.storeState.isLoading = false;

@@ -119,70 +119,61 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         //getcart
         builder.addCase(getCart.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
-        builder.addCase(getCart.fulfilled, (state, { payload }) => { //payload is what we get back from the function 
+        builder.addCase(getCart.fulfilled, (state, { payload }) => {
             state.isLoading = false;
             console.log("cart!!!", payload);
             state.responseData = payload;
-            state.error = null;
         });
         builder.addCase(getCart.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during getCart";
+            state.error = state.error ? (state.error + payload?.message.data ?? "error during getCart") : payload?.message.data ?? "error during getCart";
         });
         //patchcart
         builder.addCase(patchCart.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(patchCart.fulfilled, (state, { payload }) => {
             state.isLoading = false;
             state.basketState.responseData = payload;
-            state.error = null;
         });
         builder.addCase(patchCart.rejected, (state, { payload }) => {
-            state.error = payload?.message.data ?? "error during patchCart";
+            state.error = state.error ? (state.error + payload?.message.data ?? "error during getCart") : payload?.message.data ?? "error during patchCart";
             state.isLoading = false;
         });
         //addToCart
         builder.addCase(addToCart.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(addToCart.fulfilled, (state, { payload }) => {
             state.basketState.responseData = payload;
-            state.error = null;
         });
         builder.addCase(addToCart.rejected, (state, { payload }) => {
-            state.error = payload?.message.data ?? "error during addCart";
             state.isLoading = false;
+            state.error = state.error ? (state.error + payload?.message.data ?? "error during add to Cart") : payload?.message.data ?? "error during addToCart";
         });
         //deleteProduct
         builder.addCase(deleteCart.pending, (state) => {
             state.basketState.isLoading = true;
-            state.basketState.error = null;
         });
         builder.addCase(deleteCart.fulfilled, (state, { payload }) => {
             state.basketState.isLoading = false;
             state.basketState.responseData = payload;
         });
         builder.addCase(deleteCart.rejected, (state, { payload }) => {
-            state.basketState.error = payload?.message.data ?? "error during deleteCart";
+            state.basketState.error = state.basketState.error ? (state.basketState.error + payload?.message.data ?? "error during deleteCart") : payload?.message.data ?? "error during deleteCart";
             state.basketState.isLoading = false;
         });
         //buy cart
         builder.addCase(buyCart.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(buyCart.fulfilled, (state, { payload }) => {
             state.isLoading = false;
             state.basketState.responseData = payload;
-            state.error = null;
         });
         builder.addCase(buyCart.rejected, (state, { payload }) => {
-            state.error = payload?.message.data ?? "error during buyCart";
+            state.error = state.error ? (state.error + payload?.message.data ?? "error during buyCart") : payload?.message.data ?? "error during buyCart";
             state.isLoading = false;
         });
     }

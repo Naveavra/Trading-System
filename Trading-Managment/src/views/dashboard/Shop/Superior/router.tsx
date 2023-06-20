@@ -16,7 +16,7 @@ import AnswerBid from "../../../../components/Forms/Bids/AnswerBid";
 export const SuperiorShopRoutes =
     <Route key="routes" path="superior" element={<Superior />}>
         <Route path="addProduct" element={<AddEditProductForm mode={'add'} />} />
-        <Route path="editProduct" element={<AddEditProductForm mode={'edit'} />} />
+        <Route path=":productId/editProduct" element={<AddEditProductForm mode={'edit'} />} />
         <Route path="appointManager" element={<AppointUser role={'manager'} />} />
         <Route path="appointOwner" element={<AppointUser role={'owner'} />} />
         <Route path="fireManager" element={<FireUser role={'manager'} />} />

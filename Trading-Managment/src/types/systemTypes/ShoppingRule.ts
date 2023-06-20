@@ -35,6 +35,7 @@ export interface DateTimeRule extends rule {
 export interface UserRule extends rule {
     ageLimit: number;
     productId: number;
+    category: string;
     limiter: 'Min' | 'Max';
     ComposeRule?: ComposeRule;
 };

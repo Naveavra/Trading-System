@@ -81,7 +81,7 @@ const AppointmentAgreement = () => {
                                     }
                                 </CardContent>
                                 <CardActions>
-                                    {!appointment.status && appointment.notApproved.includes(userName) && (appointment.role === StoreRoleEnum.MANAGER && actions.includes(Action.appointManager) ||appointment.role === StoreRoleEnum.OWNER && actions.includes(Action.appointOwner)) ?
+                                    {!appointment.status && appointment.notApproved.includes(userName) && ((appointment.role === StoreRoleEnum.MANAGER && actions.includes(Action.appointManager)) || (appointment.role === StoreRoleEnum.OWNER && actions.includes(Action.appointOwner))) ?
                                         <>
                                             <IconButton onClick={() => {
                                                 dispatch(answerOnWaitingAppointment({ userId: userId, storeId: store.storeId, fatherName: appointment.memane, childName: appointment.memune, answer: true })).then(() => {
