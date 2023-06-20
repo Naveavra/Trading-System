@@ -54,4 +54,8 @@ public abstract class PurchasePolicy extends Information {
         obj.put("description",getDescription());
         return obj;
     }
+    @Override
+    public String toString(){
+        return description;
+    }
 }

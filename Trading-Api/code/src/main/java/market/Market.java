@@ -1469,7 +1469,7 @@ public class Market implements MarketInterface {
             marketController.addPurchaseConstraint(storeId, purchasePolicy,content);
             return logAndRes(Event.LogStatus.Success, "Member added shopping constraint " + userId + " has successfully entered",
                     StringChecks.curDayString(), userController.getUserName(userId),
-                    purchasePolicy, null, null);
+                    purchasePolicy.toString(), null, null);
         }catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "cant add shopping rule because: " + e.getMessage(),
                     StringChecks.curDayString(), "user"+userId,
