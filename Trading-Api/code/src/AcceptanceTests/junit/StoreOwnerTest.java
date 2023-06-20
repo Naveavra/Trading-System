@@ -165,13 +165,17 @@ public class StoreOwnerTest extends ProjectTest{
     {
         List<Notification> notifications = this.getNotifications(ui.getUserId());
         assertEquals(1, notifications.size());
-        String n1 = notifications.get(0).toString();
+        String n1 = notifications.get(0).getNotification();
         assertTrue(n1.contains(notificationMsg));
     }
 
     @Test
     private void except2NotificationAtLogin(UserInfo ui, String notificationMsg)
     {
+//        List<Notification> notifications = this.getNotifications(ui.getUserId());
+//        assertEquals(1, notifications.size());
+//        String n1 = notifications.get(0).getNotification();
+//        assertTrue(n1.contains(notificationMsg));
         LoginData data = isGoodLoginWithData(ui);
         List<String> notifications = data.getNotifications();
         assertEquals(1, notifications.size());
@@ -636,7 +640,7 @@ public class StoreOwnerTest extends ProjectTest{
         clearNotification(appointManager);
         int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
         assertTrue(status > 0);
-        except2Notification(appointManager, "you have been appointed to manager in store: " + storeId);
+        except2Notification(appointManager, "you have been appointed to Manager in store: " + storeId);
     }
 
     @Test
@@ -650,7 +654,7 @@ public class StoreOwnerTest extends ProjectTest{
         isGoodLogout(appointManager);
         int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
         assertTrue(status > 0);
-        except2NotificationAtLogin(appointManager, "you have been appointed to manager in store: " + storeId);
+        except2NotificationAtLogin(appointManager, "the value of the notification is: you have been appointed to Manager in store: " + storeId);
     }
 
     @Test
@@ -732,7 +736,7 @@ public class StoreOwnerTest extends ProjectTest{
         clearNotification(appointOwner);
         int status = this.appointmentOwnerInStore(storeOwner.getUserId(), storeId, appointOwner.getEmail());
         assertTrue(status > 0);
-        except2Notification(appointOwner, "you have been appointed to owner in store: " + storeId);
+        except2Notification(appointOwner, "you have been appointed to Owner in store: " + storeId);
     }
 
     @Test
@@ -746,7 +750,7 @@ public class StoreOwnerTest extends ProjectTest{
         isGoodLogout(appointOwner);
         int status = this.appointmentOwnerInStore(storeOwner.getUserId(), storeId, appointOwner.getEmail());
         assertTrue(status > 0);
-        except2NotificationAtLogin(appointOwner, "you have been appointed to owner in store: " + storeId);
+        except2NotificationAtLogin(appointOwner, "you have been appointed to Owner in store: " + storeId);
     }
 
     @Test
