@@ -47,7 +47,6 @@ public class Product implements DbEntity{
         this.quantity = quantity;
         categories = new ArrayList<>();
         reviews = new ArrayList<>();
-        StoreDao.saveProduct(this);
     }
 
     public Product(int storeId, int prod_id, String _name, String desc, String imgUrl, int price, int quantity){

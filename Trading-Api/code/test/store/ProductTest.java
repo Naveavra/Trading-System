@@ -15,17 +15,16 @@ public class ProductTest {
     void testSetAndReplaceQuantity_positiveInputAndAddition() throws Exception
     {
         Product p = new Product(0, 1,"Watermelon","7kg of pure,red, juicy love that will never betray you.", 50, 50);
-        p.setQuantity(5);
-        assertEquals(5,p.getQuantity());
+        assertEquals(50,p.getQuantity());
         p.setQuantity(10);
-        assertEquals(15,p.getQuantity());
+        assertEquals(60,p.getQuantity());
     }
 
     @Test
     void testSetAndReplaceQuantity_negativeInput()
     {
         Product p = new Product(0,1,"Avocado","Weird green sphere that everyone seems to pretend that they love.", 50, 50);
-        assertThrows(Exception.class,()->{p.setQuantity(-5);});
+        assertThrows(Exception.class,()->{p.setQuantity(-51);});
         assertThrows(Exception.class,()->{p.replaceQuantity(-5);});
         try{
             p.setQuantity(-5);

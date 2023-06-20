@@ -38,6 +38,7 @@ import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.stateRelated.Action;
+import utils.stateRelated.Role;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -284,6 +285,9 @@ public class Store extends Information implements DbEntity {
         }
     }
 
+    public void canAppointUser(int father, Member appointed, Role role) throws Exception{
+        appHistory.canAddNode(father, appointed, role);
+    }
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
         Pair<Member, UserState> node = new Pair<>(newUser, role);
         appHistory.addNode(userinchargeid, node);
@@ -854,9 +858,27 @@ public class Store extends Information implements DbEntity {
     }
 
     private void getConstraintsFromDb() {
+        if(purchasePolicies == null) {
+            purchasePolicies = new ArrayList<>();
+            List<ConstraintDto> constraintDtos = StoreDao.getConstraints(storeId);
+            for (ConstraintDto constraintDto : constraintDtos) {
+                try {
+                    parsePurchasePolicy(constraintDto.getContent());
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
     }
 
     private void getDiscountsFromDb() {
+        if(discounts == null){
+            discounts = new ArrayList<>();
+            discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
+            List<DiscountDto> discountDtos = StoreDao.getDiscounts(storeId);
+            for(DiscountDto discountDto : discountDtos)
+                parseDiscounts(discountDto.getContent());
+        }
     }
 
     public void addCompositeDiscount(JSONObject req) throws Exception {
@@ -878,6 +900,7 @@ public class Store extends Information implements DbEntity {
                 return b;
         throw new Exception("the id given does not belong to any bid in store");
     }
+
 //    public void clientAcceptCounter(int bidId) {
 //        Member user;
 //        int prodId;

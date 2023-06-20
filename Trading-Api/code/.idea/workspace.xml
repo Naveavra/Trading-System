@@ -4,30 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bb606f76-3d46-4321-b24a-31cf656c61ab" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/AppApproved.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/AppApproved.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/ApproverDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/ApproverDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/OrderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/OrderTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/domain/user/BasketTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/BasketTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/domain/user/GuestTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/GuestTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/domain/user/ShoppingCartTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/domain/user/ShoppingCartTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/store/ProductTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/ProductTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="bb606f76-3d46-4321-b24a-31cf656c61ab" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
@@ -54,6 +42,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Git.Branch.Popup.ShowAllRemotes": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
@@ -65,7 +54,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.AcceptanceTests in work1">
+  <component name="RunManager" selected="Application.Server">
     <configuration name="Server" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -78,6 +67,54 @@
       <module name="work1" />
       <option name="TEST_OBJECT" value="directory" />
       <dir value="$PROJECT_DIR$/src/AcceptanceTests" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProductTest.testSetAndReplaceQuantity_negativeInput" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="store.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="store" />
+      <option name="MAIN_CLASS_NAME" value="store.ProductTest" />
+      <option name="METHOD_NAME" value="testSetAndReplaceQuantity_negativeInput" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProductTest.testSetAndReplaceQuantity_positiveInputAndAddition" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="store.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="store" />
+      <option name="MAIN_CLASS_NAME" value="store.ProductTest" />
+      <option name="METHOD_NAME" value="testSetAndReplaceQuantity_positiveInputAndAddition" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StoreOwnerTest.testAppointmentExistOwnerInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="junit.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.StoreOwnerTest" />
+      <option name="METHOD_NAME" value="testAppointmentExistOwnerInStore" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -105,13 +142,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.Server" />
+      <item itemvalue="JUnit.ProductTest.testSetAndReplaceQuantity_negativeInput" />
+      <item itemvalue="JUnit.ProductTest.testSetAndReplaceQuantity_positiveInputAndAddition" />
+      <item itemvalue="JUnit.StoreOwnerTest.testAppointmentExistOwnerInStore" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
       <item itemvalue="JUnit.test in work1" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.AcceptanceTests in work1" />
         <item itemvalue="JUnit.test in work1" />
+        <item itemvalue="JUnit.AcceptanceTests in work1" />
+        <item itemvalue="JUnit.StoreOwnerTest.testAppointmentExistOwnerInStore" />
+        <item itemvalue="JUnit.ProductTest.testSetAndReplaceQuantity_positiveInputAndAddition" />
+        <item itemvalue="JUnit.ProductTest.testSetAndReplaceQuantity_negativeInput" />
       </list>
     </recent_temporary>
   </component>
@@ -124,7 +167,7 @@
       <option name="presentableId" value="Default" />
       <updated>1687206259853</updated>
       <workItem from="1687206261541" duration="8218000" />
-      <workItem from="1687270298772" duration="1606000" />
+      <workItem from="1687270298772" duration="6396000" />
     </task>
     <servers />
   </component>
@@ -136,13 +179,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>316</line>
+          <line>314</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/market/Market.java</url>
-          <line>866</line>
-          <option name="timeStamp" value="5" />
+          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java</url>
+          <line>771</line>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

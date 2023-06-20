@@ -25,7 +25,7 @@ const Cart = () => {
     };
     useEffect(() => {
         dispatch(getCart({ userId: userId }));
-    }, [products]);
+    }, []);
 
     return (
         <>
