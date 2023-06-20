@@ -80,7 +80,7 @@ public class StoreManagerTests extends ProjectTest{
         assertTrue(removeProduct(userId, storeId, pi.getProductId()));
         List<ProductInfo> post = getProductInStore(storeId);
         assertNotNull(post);
-        assertProductNotInList(pi.getProductId(), pre);
+        assertProductNotInList(pi.getProductId(), post);
     }
 
     @Test
