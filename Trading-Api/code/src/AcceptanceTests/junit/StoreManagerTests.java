@@ -266,4 +266,47 @@ public class StoreManagerTests extends ProjectTest{
         assertBadProductRemoving(appointManager.getUserId(), storeId, pi);
     }
 
+//    TODO:
+//    @Test
+//    public void UpdateProductWithPermission()
+//    {
+//        ProductInfo pi = createProduct5();
+//        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+//        UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
+//        int storeId = stores.get(0).getStoreId();
+//        assertGoodLogin(storeOwner);
+//        assertGoodLogin(appointManager);
+//        // Appoint Manager
+//        assertGoodManagerAppoint(storeOwner, appointManager, storeId);
+//        // Add permissions:
+//        assertGoodAddPermission(storeOwner, appointManager, storeId, Action.addProduct);
+//        assertGoodAddPermission(storeOwner, appointManager, storeId, Action.updateProduct);
+//        // Add product:
+//        assertGoodProductAdding(storeOwner.getUserId(), storeId, pi);
+//        // Remove product
+//        assertGoodProductRemoving(appointManager.getUserId(), storeId, pi);
+//    }
+//
+//    @Test
+//    public void UpdateProductWithoutPermission()
+//    {
+//        ProductInfo pi = createProduct5();
+//        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+//        UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
+//        int storeId = stores.get(0).getStoreId();
+//        assertGoodLogin(storeOwner);
+//        assertGoodLogin(appointManager);
+//        // Appoint Manager
+//        assertGoodManagerAppoint(storeOwner, appointManager, storeId);
+//        // Add permissions:
+//        assertGoodAddPermission(storeOwner, appointManager, storeId, Action.addProduct);
+//        assertGoodAddPermission(storeOwner, appointManager, storeId, Action.removeProduct);
+//        // Add product:
+//        assertGoodProductAdding(storeOwner.getUserId(), storeId, pi);
+//        // Remove permission add product:
+//        assertGoodRemovePermission(storeOwner, appointManager, storeId, Action.removeProduct);
+//        // Remove product
+//        assertBadProductRemoving(appointManager.getUserId(), storeId, pi);
+//    }
+
 }
