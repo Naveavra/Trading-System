@@ -16,22 +16,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SystemTests extends ProjectTest{
 
-    private final String MOCK_ES_NAME = "Mock";
+//    private final String MOCK_ES_NAME = "Mock";
     private final String ERROR = "ERROR";
-    private PaymentAdapter paymentMockAdapter;
-    private SupplierAdapter supplyMockAdapter;
-    private String[] externalPaymentServices = {"WSEP", "Mock"};
-    private String[] externalSupplierServices = {"WSEP", "Mock"};
+//    private PaymentAdapter paymentMockAdapter;
+//    private SupplierAdapter supplyMockAdapter;
+
     @Override
     @BeforeEach
     public void setUp(){
         super.setUp();
-        paymentMockAdapter = new MockPaymentService();
-        supplyMockAdapter = new MockSupplyService();
-        assertTrue(addExternalPaymentService(mainAdmin.getAdminId(), MOCK_ES_NAME, paymentMockAdapter));
-        assertTrue(removeExternalPaymentService(mainAdmin.getAdminId(), MOCK_ES_NAME));
-        assertTrue(addExternalSupplierService(mainAdmin.getAdminId(), MOCK_ES_NAME, supplyMockAdapter));
-        assertTrue(removeExternalSupplierService(mainAdmin.getAdminId(), MOCK_ES_NAME));
+//        paymentMockAdapter = new MockPaymentService();
+//        supplyMockAdapter = new MockSupplyService();
+//        assertTrue(addExternalPaymentService(mainAdmin.getAdminId(), MOCK_ES_NAME, paymentMockAdapter));
+//        assertTrue(removeExternalPaymentService(mainAdmin.getAdminId(), MOCK_ES_NAME));
+//        assertTrue(addExternalSupplierService(mainAdmin.getAdminId(), MOCK_ES_NAME, supplyMockAdapter));
+//        assertTrue(removeExternalSupplierService(mainAdmin.getAdminId(), MOCK_ES_NAME));
     }
 
     @Override

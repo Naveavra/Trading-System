@@ -385,10 +385,11 @@ public class Market implements MarketInterface {
         try {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
-            Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
             proxyPayment.makePurchase(payment, getStorePaymentDetails(cart), totalPrice);
             proxySupplier.orderSupplies(supplier, cart);
-            userController.addNotification(userId, new Notification(NotificationOpcode.GET_CLIENT_DATA, "your purchase has been approved"));
+            Pair<Receipt, Set<Integer>> ans = marketController.purchaseProducts(cart, userController.getUser(userId), totalPrice);
+            if (!userController.isGuest(userId))
+                userController.addNotification(userId, new Notification(NotificationOpcode.GET_CLIENT_DATA, "your purchase has been approved"));
             return getReceiptResponse(userId, ans);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
@@ -877,6 +878,7 @@ public class Market implements MarketInterface {
     public Response<String> deleteProduct(int userId, String token, int storeId, int productId) {
         try {
             userAuth.checkUser(userId, token);
+            userController.checkPermission(userId, Action.removeProduct, storeId);
             marketController.deleteProduct(storeId, productId);
             return logAndRes(Event.LogStatus.Success, "Delete product successful",
                     StringChecks.curDayString(), userController.getUserName(userId),

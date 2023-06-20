@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +24,8 @@ public class GuestTest extends ProjectTest{
     @BeforeEach
     public void setUp() {
         super.setUp();
+        assertGoodAddExternalPaymentService(mainAdmin.getAdminId(), MOCK_ES_NAME);
+        assertGoodAddExternalSupplierService(mainAdmin.getAdminId(), MOCK_ES_NAME);
         this.goodProduct0 = createProduct0();
         this.goodProduct1 = createProduct1();
     }
@@ -36,6 +39,75 @@ public class GuestTest extends ProjectTest{
 //    public Response removeProductFromCart(int userId,  int storeId, int productId);
 //    public Response changeQuantityInCart(int userId, int storeId, int productId, int change);
 //    public Response getStoreDescription(int storeId);
+    @Test
+    private void assertGoodAddExternalPaymentService(int adminId, String esName)
+    {
+        assertNotAvailablePaymentService(esName);
+        assertPossiblePaymentService(adminId, esName);
+        assertTrue(addExternalPaymentService(adminId, esName));
+        assertAvailablePaymentService(esName);
+    }
+
+
+    @Test
+    private void assertAvailablePaymentService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalPaymentService();
+        assertNotNull(availableServices);
+        assertTrue(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertNotAvailablePaymentService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalPaymentService();
+        assertNotNull(availableServices);
+        assertFalse(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertPossiblePaymentService(int adminId, String esName)
+    {
+        List<String> possibleServices = getPossibleExternalPaymentService(adminId);
+        assertNotNull(possibleServices);
+        assertTrue(possibleServices.contains(esName));
+    }
+
+    @Test
+    private void assertGoodAddExternalSupplierService(int adminId, String esName)
+    {
+        assertNotAvailableSupplierService(esName);
+        assertPossibleSupplierService(adminId, esName);
+        assertTrue(addExternalSupplierService(adminId, esName));
+        assertAvailableSupplierService(esName);
+    }
+
+
+
+
+    @Test
+    private void assertAvailableSupplierService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalSupplierService();
+        assertNotNull(availableServices);
+        assertTrue(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertNotAvailableSupplierService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalSupplierService();
+        assertNotNull(availableServices);
+        assertFalse(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertPossibleSupplierService(int adminId, String esName)
+    {
+        List<String> possibleServices = getPossibleExternalSupplierService(adminId);
+        assertNotNull(possibleServices);
+        assertTrue(possibleServices.contains(esName));
+    }
 
     /**
      * Guest:
@@ -158,6 +230,47 @@ public class GuestTest extends ProjectTest{
         assertNotEquals(ERROR, status);
     }
 
+    @Test
+    public void testPurchaseCartUnAvailableESPayment(){
+        GuestInfo buyer = new GuestInfo();
+        UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        //Login
+        buyer.setId(enterSystem());
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        //Add product to cart
+        int status = addProductToCart(buyer.getId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
+        assertTrue(status > -1);
+        //Check the cart:
+        CartInfo ci = getCart(buyer.getId());
+        assertNotNull(ci);
+        assertTrue(ci.getCountOfProduct() > 0);
+        //Turn to fail service
+        paymentMockAdapter.setFailMock(true);
+        //make purchase
+        status  = makePurchase(buyer.getId(), payment, supplier);
+        assertEquals(ERROR, status);
+    }
+
+    @Test
+    public void testPurchaseCartUnAvailableESSupplier(){
+        GuestInfo buyer = new GuestInfo();
+        UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        //Login
+        buyer.setId(enterSystem());
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        //Add product to cart
+        int status = addProductToCart(buyer.getId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
+        assertTrue(status > -1);
+        //Check the cart:
+        CartInfo ci = getCart(buyer.getId());
+        assertNotNull(ci);
+        assertTrue(ci.getCountOfProduct() > 0);
+        //Turn to fail service
+        supplyMockAdapter.setFailMock(true);
+        //make purchase
+        status  = makePurchase(buyer.getId(), payment, supplier);
+        assertEquals(ERROR, status);
+    }
 
     @Test
     public void testPurchaseCartNoAtSameTime(){
