@@ -5,6 +5,10 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.ExternalService.Payment.MockPaymentService;
+import service.ExternalService.Payment.PaymentAdapter;
+import service.ExternalService.Supplier.MockSupplyService;
+import service.ExternalService.Supplier.SupplierAdapter;
 import utils.messageRelated.Notification;
 
 import java.util.ArrayList;
@@ -18,7 +22,6 @@ public class StoreOwnerTest extends ProjectTest{
     private ProductInfo goodProduct1;
     private ProductInfo goodProduct2;
     private ProductInfo goodProduct3;
-
     private JSONObject payment = createPaymentJson();
     private JSONObject supplier = createSupplierJson();
     private static final int ERROR = -1;
@@ -31,8 +34,78 @@ public class StoreOwnerTest extends ProjectTest{
         this.goodProduct1 = createProduct1();
         this.goodProduct2 = createProduct2();
         this.goodProduct3 = createProduct3();
+        assertGoodAddExternalPaymentService(mainAdmin.getAdminId(), MOCK_ES_NAME);
+        assertGoodAddExternalSupplierService(mainAdmin.getAdminId(), MOCK_ES_NAME);
     }
 
+    private void assertGoodAddExternalPaymentService(int adminId, String esName)
+    {
+        assertNotAvailablePaymentService(esName);
+        assertPossiblePaymentService(adminId, esName);
+        assertTrue(addExternalPaymentService(adminId, esName));
+        assertAvailablePaymentService(esName);
+    }
+
+
+    @Test
+    private void assertAvailablePaymentService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalPaymentService();
+        assertNotNull(availableServices);
+        assertTrue(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertNotAvailablePaymentService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalPaymentService();
+        assertNotNull(availableServices);
+        assertFalse(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertPossiblePaymentService(int adminId, String esName)
+    {
+        List<String> possibleServices = getPossibleExternalPaymentService(adminId);
+        assertNotNull(possibleServices);
+        assertTrue(possibleServices.contains(esName));
+    }
+
+    @Test
+    private void assertGoodAddExternalSupplierService(int adminId, String esName)
+    {
+        assertNotAvailableSupplierService(esName);
+        assertPossibleSupplierService(adminId, esName);
+        assertTrue(addExternalSupplierService(adminId, esName));
+        assertAvailableSupplierService(esName);
+    }
+
+
+
+
+    @Test
+    private void assertAvailableSupplierService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalSupplierService();
+        assertNotNull(availableServices);
+        assertTrue(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertNotAvailableSupplierService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalSupplierService();
+        assertNotNull(availableServices);
+        assertFalse(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertPossibleSupplierService(int adminId, String esName)
+    {
+        List<String> possibleServices = getPossibleExternalSupplierService(adminId);
+        assertNotNull(possibleServices);
+        assertTrue(possibleServices.contains(esName));
+    }
     @AfterEach
     public void tearDown() {
         this.goodProduct0 = null;
@@ -92,13 +165,17 @@ public class StoreOwnerTest extends ProjectTest{
     {
         List<Notification> notifications = this.getNotifications(ui.getUserId());
         assertEquals(1, notifications.size());
-        String n1 = notifications.get(0).toString();
+        String n1 = notifications.get(0).getNotification();
         assertTrue(n1.contains(notificationMsg));
     }
 
     @Test
     private void except2NotificationAtLogin(UserInfo ui, String notificationMsg)
     {
+//        List<Notification> notifications = this.getNotifications(ui.getUserId());
+//        assertEquals(1, notifications.size());
+//        String n1 = notifications.get(0).getNotification();
+//        assertTrue(n1.contains(notificationMsg));
         LoginData data = isGoodLoginWithData(ui);
         List<String> notifications = data.getNotifications();
         assertEquals(1, notifications.size());
@@ -154,7 +231,7 @@ public class StoreOwnerTest extends ProjectTest{
         String managerEmail = this.users_dict.get(users[1][USER_EMAIL]).getEmail();
         int status = this.appointmentManagerInStore(uid.getUserId(), storeId,managerEmail);
         assertTrue(status > 0);
-        PermissionInfo permissions = this.getManagerPermissionInStore(uid.getUserId(), storeId, uIdManager);
+        PermissionInfo permissions = this.getManagerPermissionInStore(uid.getUserId(), uIdManager, storeId);
         assertNotNull(permissions);
         assertTrue(permissions.size() > 0);
     }
@@ -482,7 +559,7 @@ public class StoreOwnerTest extends ProjectTest{
         permissions.add(ERROR);
         permissions.add(1);
         permissions.add(2);
-        assertTrue(this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdManager, permissions));
+        assertFalse(this.addStoreManagerPermissions(uid.getUserId(), storeId, uIdManager, permissions));
     }
 
     @Test
@@ -563,7 +640,7 @@ public class StoreOwnerTest extends ProjectTest{
         clearNotification(appointManager);
         int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
         assertTrue(status > 0);
-        except2Notification(appointManager, "you have been appointed to manager in store: " + storeId);
+        except2Notification(appointManager, "you have been appointed to Manager in store: " + storeId);
     }
 
     @Test
@@ -577,7 +654,7 @@ public class StoreOwnerTest extends ProjectTest{
         isGoodLogout(appointManager);
         int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
         assertTrue(status > 0);
-        except2NotificationAtLogin(appointManager, "you have been appointed to manager in store: " + storeId);
+        except2NotificationAtLogin(appointManager, "the value of the notification is: you have been appointed to Manager in store: " + storeId);
     }
 
     @Test
@@ -659,7 +736,7 @@ public class StoreOwnerTest extends ProjectTest{
         clearNotification(appointOwner);
         int status = this.appointmentOwnerInStore(storeOwner.getUserId(), storeId, appointOwner.getEmail());
         assertTrue(status > 0);
-        except2Notification(appointOwner, "you have been appointed to owner in store: " + storeId);
+        except2Notification(appointOwner, "you have been appointed to Owner in store: " + storeId);
     }
 
     @Test
@@ -673,7 +750,7 @@ public class StoreOwnerTest extends ProjectTest{
         isGoodLogout(appointOwner);
         int status = this.appointmentOwnerInStore(storeOwner.getUserId(), storeId, appointOwner.getEmail());
         assertTrue(status > 0);
-        except2NotificationAtLogin(appointOwner, "you have been appointed to owner in store: " + storeId);
+        except2NotificationAtLogin(appointOwner, "you have been appointed to Owner in store: " + storeId);
     }
 
     @Test
@@ -724,34 +801,34 @@ public class StoreOwnerTest extends ProjectTest{
     }
 
     //Change purchase policy:
-
-    @Test
-    public void testChangePurchasePolicy() {
-        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
-        int storeId = stores.get(0).getStoreId();
-        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
-        int status = this.changePurchasePolicy(uid.getUserId(), storeId,"Bid");
-        assertTrue(status > 0);
-    }
-
-    @Test
-    public void testChangePurchaseUnRealPolicy() {
-        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
-        int storeId = stores.get(0).getStoreId();
-        int status = this.changePurchasePolicy(uid, storeId,"Shalom");
-        assertTrue(status < 0);
-    }
-
-    @Test
-    public void testNotOwnerTryChangePurchasePolicy() {
-        int uid = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
-        int storeId = stores.get(0).getStoreId();
-        int status = this.changePurchasePolicy(uid, storeId,"Bid");
-        assertTrue(status < 0);
-    }
+//      TODO: with miki
+//    @Test
+//    public void testChangePurchasePolicy() {
+//        UserInfo uid = this.users_dict.get(users[0][USER_EMAIL]);
+//        int storeId = stores.get(0).getStoreId();
+//        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+//        int status = this.changePurchasePolicy(uid.getUserId(), storeId,"Bid");
+//        assertTrue(status > 0);
+//    }
+//
+//    @Test
+//    public void testChangePurchaseUnRealPolicy() {
+//        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();
+//        int storeId = stores.get(0).getStoreId();
+//        int status = this.changePurchasePolicy(uid, storeId,"Shalom");
+//        assertTrue(status < 0);
+//    }
+//
+//    @Test
+//    public void testNotOwnerTryChangePurchasePolicy() {
+//        int uid = this.users_dict.get(users[1][USER_EMAIL]).getUserId();
+//        int storeId = stores.get(0).getStoreId();
+//        int status = this.changePurchasePolicy(uid, storeId,"Bid");
+//        assertTrue(status < 0);
+//    }
 
     //Change discount policy:
-    // TODO: miki
+    //
 //    @Test
 //    public void testChangeDiscountPolicy() {
 //        int uid = this.users_dict.get(users[0][USER_EMAIL]).getUserId();

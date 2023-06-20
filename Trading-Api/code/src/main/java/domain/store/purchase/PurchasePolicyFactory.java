@@ -71,23 +71,23 @@ public class PurchasePolicyFactory {
     }
 
     public PurchasePolicyDataObject parseDateTime(JSONObject policy, PurchasePolicyDataObject prev) {
-        String timeType = policy.getString("timeType");
+        String timeType = policy.get("timeType").toString();
         int[] timeLimit = null;
         int[] dateLimit = null;
         switch (timeType){
             case "Time Limit" -> {
-                String[] time =  policy.getString("timeLimit").split(":");
+                String[] time =  policy.get("timeLimit").toString().split(":");
                 timeLimit = new int[]{Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2])};
             }
             case "Date Limit" -> {
-                String[] date = policy.getString("timeLimit").split("/");
+                String[] date = policy.get("timeLimit").toString().split("/");
                 dateLimit = new int[]{Integer.parseInt(date[0]),Integer.parseInt(date[1]),Integer.parseInt(date[2])};
             }
         }
-        String category = policy.getString("category");
-        PurchasePolicy.limiters limiter = getLimiter(policy.getString("limiter"));
-        PurchasePolicy.policyTypes type = getPolicyType(policy.getString("type"));
-        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.getString("compose"));
+        String category = policy.get("category").toString();
+        PurchasePolicy.limiters limiter = getLimiter(policy.get("limiter").toString());
+        PurchasePolicy.policyTypes type = getPolicyType(policy.get("type").toString());
+        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.get("compose").toString());
         PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyIds.getAndIncrement(),storeId,policy.toString(),limiter,
                 -1,-1,category,-1,dateLimit,timeLimit,null,compose,type);
         if (prev != null){
@@ -101,10 +101,10 @@ public class PurchasePolicyFactory {
     }
 
     public PurchasePolicyDataObject parseBasket(JSONObject policy, PurchasePolicyDataObject prev) {
-        int productId = Integer.parseInt(policy.getString("productId"));
-        int amount = Integer.parseInt(policy.getString("amount"));
-        PurchasePolicy.policyTypes type = getPolicyType(policy.getString("type"));
-        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.getString("composore"));
+        int productId = Integer.parseInt(policy.get("productId").toString());
+        int amount = Integer.parseInt(policy.get("amount").toString());
+        PurchasePolicy.policyTypes type = getPolicyType(policy.get("type").toString());
+        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.get("composore").toString());
         int[] nullVal = null;
         PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyIds.getAndIncrement(),storeId,policy.toString(),null,productId,
                 -1,"" ,amount,nullVal,nullVal,null,compose,type);
@@ -119,14 +119,22 @@ public class PurchasePolicyFactory {
     }
 
     public PurchasePolicyDataObject parseUser(JSONObject policy, PurchasePolicyDataObject prev) {
-        int productId = Integer.parseInt(policy.getString("productId"));
-        int ageLimit = Integer.parseInt(policy.getString("ageLimit"));
-        PurchasePolicy.limiters limiter = getLimiter(policy.getString("limiter"));
-        PurchasePolicy.policyTypes type = getPolicyType(policy.getString("type"));
-        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.getString("composore"));
+        int productId = Integer.parseInt(policy.get("productId").toString());
+        String category = policy.get("category").toString();
+        int ageLimit = Integer.parseInt(policy.get("ageLimit").toString());
+        PurchasePolicy.limiters limiter = getLimiter(policy.get("limiter").toString());
+        PurchasePolicy.policyTypes type = getPolicyType(policy.get("type").toString());
+        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.get("composore").toString());
         int[] nullVal = null;
-        PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyIds.getAndIncrement(),storeId,policy.toString(),limiter,productId,
-                ageLimit,"",-1,nullVal,nullVal,null,compose,type);
+        PurchasePolicyDataObject dataObj;
+        if(!Objects.equals(category, "")){
+            dataObj = new PurchasePolicyDataObject(policyIds.getAndIncrement(),storeId,policy.toString(),limiter,-1,
+                    ageLimit,category,-1,nullVal,nullVal,null,compose,type);
+        }
+        else {
+            dataObj = new PurchasePolicyDataObject(policyIds.getAndIncrement(), storeId, policy.toString(), limiter, productId,
+                    ageLimit, "", -1, nullVal, nullVal, null, compose, type);
+        }
         if (prev != null){
             prev.next = dataObj;
             prev = null;
@@ -138,11 +146,11 @@ public class PurchasePolicyFactory {
     }
 
     public PurchasePolicyDataObject parseCategory(JSONObject policy, PurchasePolicyDataObject prev) {
-        String category = policy.getString("category");
-        int amount = Integer.parseInt(policy.getString("amount"));
-        PurchasePolicy.limiters limiter = getLimiter(policy.getString("limiter"));
-        PurchasePolicy.policyTypes type = getPolicyType(policy.getString("type"));
-        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.getString("composore"));
+        String category = policy.get("category").toString();
+        int amount = Integer.parseInt(policy.get("amount").toString());
+        PurchasePolicy.limiters limiter = getLimiter(policy.get("limiter").toString());
+        PurchasePolicy.policyTypes type = getPolicyType(policy.get("type").toString());
+        PurchasePolicy.policyComposeTypes compose = getPolicyCompose(policy.get("composore").toString());
         int[] nullVal = null;
         PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyIds.getAndIncrement(),storeId,policy.toString(),limiter,-1,
                 -1,category,amount,nullVal,nullVal,null,compose,type);

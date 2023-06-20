@@ -50,6 +50,12 @@ public class UserController {
         throw new Exception("the id given does not belong to any user");
     }
 
+    public boolean isGuest(int guestId)
+    {
+        return guestList.containsKey(guestId);
+    }
+
+
     public Guest getGuest(int id) throws Exception{
         if(guestList.containsKey(id))
             return guestList.get(id);

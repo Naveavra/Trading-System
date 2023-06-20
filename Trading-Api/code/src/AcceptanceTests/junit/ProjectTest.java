@@ -5,13 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import bridge.Bridge;
-import bridge.Driver;
+import bridge.*;
 import data.*;
 import database.daos.Dao;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import service.ExternalService.Payment.MockPaymentService;
 import service.ExternalService.Payment.PaymentAdapter;
+import service.ExternalService.Supplier.MockSupplyService;
 import service.ExternalService.Supplier.SupplierAdapter;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Role;
@@ -21,11 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class ProjectTest{
     private Bridge bridge;
-
+    protected final String MOCK_ES_NAME = "Mock";
+    protected MockPaymentService paymentMockAdapter;
+    protected MockSupplyService supplyMockAdapter;
     // SetUp information
-
-    // Init System:
-
 
     // Store, admin, appointment
     AdminInfo mainAdmin = new AdminInfo(1,"admin@gmail.com", "admin1A");
@@ -48,6 +49,12 @@ public abstract class ProjectTest{
         setUpAdmins();
         setUpUsers();
         setUpStores();
+        paymentMockAdapter = new MockPaymentService();
+        supplyMockAdapter = new MockSupplyService();
+        assertTrue(addExternalPaymentService(mainAdmin.getAdminId(), MOCK_ES_NAME, paymentMockAdapter));
+        assertTrue(removeExternalPaymentService(mainAdmin.getAdminId(), MOCK_ES_NAME));
+        assertTrue(addExternalSupplierService(mainAdmin.getAdminId(), MOCK_ES_NAME, supplyMockAdapter));
+        assertTrue(removeExternalSupplierService(mainAdmin.getAdminId(), MOCK_ES_NAME));
     }
 
     @AfterEach
@@ -114,7 +121,7 @@ public abstract class ProjectTest{
     protected JSONObject createPaymentJson()
     {
         JSONObject payment = new JSONObject();
-        payment.put("payment_service", "WSEP");
+        payment.put("payment_service", MOCK_ES_NAME);
         payment.put("cardNumber", "123456789");
         payment.put("month", "01");
         payment.put("year", "30");
@@ -127,7 +134,7 @@ public abstract class ProjectTest{
     protected  JSONObject createSupplierJson()
     {
         JSONObject supplier = new JSONObject();
-        supplier.put("supply_service", "WSEP");
+        supplier.put("supply_service", MOCK_ES_NAME);
         supplier.put("name", "Israel Visceral");
         supplier.put("address", "Reger 17");
         supplier.put("city", "Beer Sheva");

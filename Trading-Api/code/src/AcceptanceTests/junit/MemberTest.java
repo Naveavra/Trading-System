@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,6 +51,77 @@ public class MemberTest extends ProjectTest{
     @BeforeEach
     public void setUp() {
         super.setUp();
+        assertGoodAddExternalPaymentService(mainAdmin.getAdminId(), MOCK_ES_NAME);
+        assertGoodAddExternalSupplierService(mainAdmin.getAdminId(), MOCK_ES_NAME);
+    }
+
+    private void assertGoodAddExternalPaymentService(int adminId, String esName)
+    {
+        assertNotAvailablePaymentService(esName);
+        assertPossiblePaymentService(adminId, esName);
+        assertTrue(addExternalPaymentService(adminId, esName));
+        assertAvailablePaymentService(esName);
+    }
+
+
+    @Test
+    private void assertAvailablePaymentService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalPaymentService();
+        assertNotNull(availableServices);
+        assertTrue(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertNotAvailablePaymentService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalPaymentService();
+        assertNotNull(availableServices);
+        assertFalse(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertPossiblePaymentService(int adminId, String esName)
+    {
+        List<String> possibleServices = getPossibleExternalPaymentService(adminId);
+        assertNotNull(possibleServices);
+        assertTrue(possibleServices.contains(esName));
+    }
+
+    @Test
+    private void assertGoodAddExternalSupplierService(int adminId, String esName)
+    {
+        assertNotAvailableSupplierService(esName);
+        assertPossibleSupplierService(adminId, esName);
+        assertTrue(addExternalSupplierService(adminId, esName));
+        assertAvailableSupplierService(esName);
+    }
+
+
+
+
+    @Test
+    private void assertAvailableSupplierService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalSupplierService();
+        assertNotNull(availableServices);
+        assertTrue(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertNotAvailableSupplierService(String esName)
+    {
+        List<String> availableServices = getAvailableExternalSupplierService();
+        assertNotNull(availableServices);
+        assertFalse(availableServices.contains(esName));
+    }
+
+    @Test
+    private void assertPossibleSupplierService(int adminId, String esName)
+    {
+        List<String> possibleServices = getPossibleExternalSupplierService(adminId);
+        assertNotNull(possibleServices);
+        assertTrue(possibleServices.contains(esName));
     }
 
     @Override
@@ -130,10 +202,58 @@ public class MemberTest extends ProjectTest{
         CartInfo ci = getCart(buyer.getUserId());
         assertNotNull(ci);
         assertTrue(ci.getCountOfProduct() > 0);
-        assertTrue(this.addExternalPaymentService(mainAdmin.getAdminId(), "Mock"));
+        //Change the external service to off
+        paymentMockAdapter.setFailMock(true);
         //make purchase
         status  = makePurchase(buyer.getUserId(), paymentMock, supplier);
         assertTrue(status < 0);
+    }
+
+    @Test
+    public void testPurchaseFromUnAvailableSSCartAndBuy(){
+        UserInfo buyer = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        //Login
+        buyer.setUserId(login(buyer.getEmail(), buyer.getPassword()));
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        //Add product to cart
+        int status = addProductToCart(buyer.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
+        assertTrue(status > -1);
+        //Check the cart:
+        CartInfo ci = getCart(buyer.getUserId());
+        assertNotNull(ci);
+        assertTrue(ci.getCountOfProduct() > 0);
+        //Change the external service to off
+        supplyMockAdapter.setFailMock(true);
+        //make purchase
+        status  = makePurchase(buyer.getUserId(), payment, supplierMock);
+        assertTrue(status < 0);
+    }
+
+    @Test
+    public void testPurchaseFromUnAvailablePSCartAndBuy(){
+        UserInfo buyer = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo uid = this.users_dict.get(users[1][USER_EMAIL]);//Owner of store 4
+        //Login
+        buyer.setUserId(login(buyer.getEmail(), buyer.getPassword()));
+        uid.setUserId(login(uid.getEmail(), uid.getPassword()));
+        //Add product to cart
+        int status = addProductToCart(buyer.getUserId(), stores.get(4).getStoreId(), pi5s4.getProductId(), 1);
+        assertTrue(status > -1);
+        //Check the cart:
+        CartInfo ci = getCart(buyer.getUserId());
+        assertNotNull(ci);
+        assertTrue(ci.getCountOfProduct() > 0);
+        //Change the external service to off
+        paymentMockAdapter.setFailMock(true);
+        //make purchase
+        status  = makePurchase(buyer.getUserId(), paymentMock, supplier);
+        assertTrue(status < 0);
+        //Change the external service to on
+        paymentMockAdapter.setFailMock(false);
+        //make purchase
+        status  = makePurchase(buyer.getUserId(), paymentMock, supplier);
+        assertTrue(status > 0);
     }
 
     @Test
@@ -150,10 +270,16 @@ public class MemberTest extends ProjectTest{
         CartInfo ci = getCart(buyer.getUserId());
         assertNotNull(ci);
         assertTrue(ci.getCountOfProduct() > 0);
-        assertTrue(addExternalSupplierService(mainAdmin.getAdminId(), "Mock"));
+        //Change the external service to off
+        supplyMockAdapter.setFailMock(true);
         //make purchase
         status  = makePurchase(buyer.getUserId(), payment, supplierMock);
         assertTrue(status < 0);
+        //Change the external service to on
+        supplyMockAdapter.setFailMock(false);
+        //make purchase
+        status  = makePurchase(buyer.getUserId(), payment, supplierMock);
+        assertTrue(status > 0);
     }
 
     @Test
