@@ -19,7 +19,6 @@ public class PurchaseHistory{
     }
 
     public void addPurchaseMade(Receipt receipt){
-        receipt.setMemberId(userId);
         Dao.save(receipt);
         purchaseHistory.put(receipt.getOrderId(), receipt);
     }

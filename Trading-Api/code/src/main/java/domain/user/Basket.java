@@ -1,5 +1,6 @@
 package domain.user;
 
+import database.daos.SubscriberDao;
 import domain.store.product.Product;
 import org.json.JSONObject;
 import utils.infoRelated.Information;

@@ -286,9 +286,9 @@ public class SubscriberDao {
     public static Receipt getReceipt(int orderId){
         Receipt receipt = (Receipt) Dao.getById(Receipt.class, orderId);
         if(receipt!= null) {
-            if(!purchasesMap.containsKey(receipt.getMemberId()))
-                purchasesMap.put(receipt.getMemberId(), new PurchaseHistory(receipt.getMemberId()));
-            purchasesMap.get(receipt.getMemberId()).addPurchaseMade(receipt);
+            if(!purchasesMap.containsKey(receipt.getMember().getId()))
+                purchasesMap.put(receipt.getMember().getId(), new PurchaseHistory(receipt.getMember().getId()));
+            purchasesMap.get(receipt.getMember().getId()).addPurchaseMade(receipt);
             receipt.initialParams();
         }
         return receipt;

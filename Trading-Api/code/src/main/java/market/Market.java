@@ -383,7 +383,7 @@ public class Market implements MarketInterface {
         marketInfo.addPurchaseCount();
         return logAndRes(Event.LogStatus.Success, "user made purchase",
                 StringChecks.curDayString(), userController.getUserName(userId),
-                "success make purchase , u can see the recipt in the personal area", null, null);
+                "success make purchase , u can see the receipt in the personal area", null, null);
     }
 
     @Override

@@ -121,7 +121,10 @@ public class Member extends Subscriber implements User{
 
     public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
         cart.changeQuantityInCart(storeId, product, change);
-        Dao.save(new CartDto(id, storeId, product.id, cart.getBasket(storeId).getProduct(product.getId()).getQuantity()));
+        if(cart.getBasket(storeId).hasProduct(product.id))
+            Dao.save(new CartDto(id, storeId, product.id, cart.getBasket(storeId).getProduct(product.getId()).getQuantity()));
+        else
+            SubscriberDao.removeCartProduct(id, storeId, product.id);
     }
 
     public List<ProductInfo> getCartContent() {
@@ -129,6 +132,7 @@ public class Member extends Subscriber implements User{
     }
 
     public void purchaseMade(Receipt receipt){
+        receipt.setMember(this);
         purchaseHistory.addPurchaseMade(receipt);
         SubscriberDao.removeCart(id);
         cart.emptyCart();
