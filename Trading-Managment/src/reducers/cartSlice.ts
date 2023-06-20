@@ -176,6 +176,18 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
             state.error = state.error ? (state.error + payload?.message.data ?? "error during buyCart") : payload?.message.data ?? "error during buyCart";
             state.isLoading = false;
         });
+        //remove from cart
+        builder.addCase(removeFromCart.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(removeFromCart.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.basketState.responseData = payload;
+        });
+        builder.addCase(removeFromCart.rejected, (state, { payload }) => {
+            state.error = state.error ? (state.error + payload?.message.data ?? "error during remove From Cart") : payload?.message.data ?? "error during removeFromCart";
+            state.isLoading = false;
+        });
     }
 });
 

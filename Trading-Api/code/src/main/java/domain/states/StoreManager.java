@@ -36,8 +36,8 @@ public class StoreManager extends UserState {
         addedActions.add(Action.seeStoreOrders);
         addedActions.add(Action.checkWorkersStatus);
         addedActions.add(Action.changeStoreDetails);
-        addedActions.add(Action.changePurchasePolicy);
-        addedActions.add(Action.changeDiscountPolicy);
+        addedActions.add(Action.deletePurchasePolicy);
+        addedActions.add(Action.deleteDiscountPolicy);
         addedActions.add(Action.addPurchaseConstraint);
         addedActions.add(Action.addDiscountConstraint);
         addedActions.add(Action.addProduct);
@@ -69,8 +69,8 @@ public class StoreManager extends UserState {
         addedActions.add(Action.seeStoreOrders);
         addedActions.add(Action.checkWorkersStatus);
         addedActions.add(Action.changeStoreDetails);
-        addedActions.add(Action.changePurchasePolicy);
-        addedActions.add(Action.changeDiscountPolicy);
+        addedActions.add(Action.deletePurchasePolicy);
+        addedActions.add(Action.deleteDiscountPolicy);
         addedActions.add(Action.addPurchaseConstraint);
         addedActions.add(Action.addDiscountConstraint);
         addedActions.add(Action.addProduct);

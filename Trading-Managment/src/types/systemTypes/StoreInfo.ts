@@ -1,3 +1,4 @@
+import { StoreDiscount, StorePurchasePolicy } from "./Store";
 
 export interface StoreInfo {
     storeId: number;
@@ -7,8 +8,8 @@ export interface StoreInfo {
     isActive: boolean;
     creatorId: number;
     img: string;
-    discounts: string[];
-    purchasePolicies: string[];
+    discounts: StoreDiscount[];
+    purchasePolicies: StorePurchasePolicy[];
 }
 export const emptyStoreInfo: StoreInfo = {
     storeId: 0,

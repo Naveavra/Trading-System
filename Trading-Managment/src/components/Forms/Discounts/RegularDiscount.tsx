@@ -76,8 +76,8 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
         if (tree) {
             dispatch(addRegularDiscountToSource({
                 source: sorce,
-                storeId: userId,
-                userId: storeId,
+                storeId: storeId,
+                userId: userId,
                 percentage: percentage,
                 discountType: discountType,
                 prodId: prodId,
@@ -89,8 +89,8 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
         }
         else {
             dispatch(addRegularDiscount({
-                storeId: userId,
-                userId: storeId,
+                storeId: storeId,
+                userId: userId,
                 description: description,
                 percentage: percentage,
                 discountType: discountType,

@@ -437,14 +437,14 @@ public class Server {
             toSparkRes(res, api.getSupplierAvailableServices());
             return res.body();
         });
-        get("api/admin/services/payments", (req, res) ->{
+        post("api/admin/services/payments", (req, res) ->{
             JSONObject request = new JSONObject(req.body());
             int adminId = Integer.parseInt(request.get("adminId").toString());
             String token = req.headers("Authorization");
             toSparkRes(res, api.getPaymentPossibleServices(adminId, token));
             return res.body();
         });
-        get("api/admin/services/suppliers", (req, res) ->{
+        post("api/admin/services/suppliers", (req, res) ->{
             JSONObject request = new JSONObject(req.body());
             int adminId = Integer.parseInt(request.get("adminId").toString());
             String token = req.headers("Authorization");
@@ -592,6 +592,7 @@ public class Server {
         // ------------------------Discount-------------------------------
         post("api/discounts/regular", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
+            String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int userId = Integer.parseInt(request.get("userId").toString());
             int percentage =  Integer.parseInt(request.get("percentage").toString());
@@ -606,7 +607,7 @@ public class Server {
                 String[] arr = predicates.substring(1, predicates.length() - 1).split(",");
                 predicatesLst =new ArrayList<>(Arrays.asList(arr));
             }
-            String token = req.headers("Authorization");
+
             toSparkRes(res, api.changeRegularDiscount(userId, token, storeId, prodId, percentage, discountType,
                     discountedCategory, predicatesLst,content));
             return res.body();

@@ -101,7 +101,7 @@ const Superior: React.FC = () => {
                         {store.discounts?.map((discount, index) => {
                             return (
                                 <Typography key={index} variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 10, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
-                                    {discount?.description}
+                                    {discount.content}
                                 </Typography >
                             )
                         })}
@@ -113,7 +113,7 @@ const Superior: React.FC = () => {
                         {store.purchasePolicies?.map((shopRule) => {
                             return (
                                 <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 10, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
-                                    {shopRule?.description}
+                                    {shopRule.content}
                                 </Typography >
                             )
                         })}

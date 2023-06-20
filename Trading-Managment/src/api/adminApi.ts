@@ -37,4 +37,9 @@ export const adminApi = {
     updateService: (credentials: updateServiceParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/admin/updateService', credentials)),
 
+    getAdminPaymenysService: (credentials: number): Promise<ApiResponseListData<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post('api/admin/services/payments', { adminId: credentials })),
+
+    getAdminSupplyService: (credentials: number): Promise<ApiResponseListData<string>> =>
+        apiErrorHandlerWrapper(getApiClient().post('api/admin/services/suppliers', { adminId: credentials })),
 }

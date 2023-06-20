@@ -51,7 +51,8 @@ public abstract class PurchasePolicy extends Information {
     @Override
     public JSONObject toJson(){
         JSONObject obj = new JSONObject();
-        obj.put("description",getDescription());
+        obj.put("id",getId());
+        obj.put("content",getDescription());
         return obj;
     }
     @Override

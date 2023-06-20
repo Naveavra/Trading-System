@@ -46,7 +46,6 @@ const Bar: React.FC<Props> = ({ headLine }) => {
             storeImg: store_images[index].storeImg,
         }
     }) : [];
-    console.log(stores)
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const handleLogout = async () => {

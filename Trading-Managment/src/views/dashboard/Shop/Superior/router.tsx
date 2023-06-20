@@ -12,6 +12,7 @@ import AddPurchasePolicy from "../../../../components/Forms/SuppingRules/AddPurc
 import MakeBid from "../../../../components/Forms/Bids/MakeBid";
 import CounterBid from "../../../../components/Forms/Bids/CounterBid";
 import AnswerBid from "../../../../components/Forms/Bids/AnswerBid";
+import DeletePolicy from "../../../../components/Forms/DeletePolicy";
 
 export const SuperiorShopRoutes =
     <Route key="routes" path="superior" element={<Superior />}>
@@ -26,11 +27,10 @@ export const SuperiorShopRoutes =
         <Route path="reopenStore" element={<OpenCloseStore />} />
         <Route path="changemanagerpermission" element={<UpdatePermissions />} />
         <Route path="regularDiscount" element={<RegularDiscount tree={false} />} />
-
+        <Route path="deletePurchasePolicy" element={<DeletePolicy policy={'rule'} />} />
+        <Route path="deleteDiscountPolicy" element={<DeletePolicy policy={'discount'} />} />
         <Route path="sendComplaint" element={<SendComplain />} />
         <Route path="addpurchaseconstraint" element={<AddPurchasePolicy />} />
         <Route path=":storeId/:productId/makeBid" element={<MakeBid opcode={2} />} />
-
-
     </Route>
     ;

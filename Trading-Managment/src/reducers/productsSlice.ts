@@ -131,7 +131,7 @@ const { reducer: productsReducer, actions: productsActions } = createSlice({
         });
         builder.addCase(postProduct.fulfilled, (state, { payload }) => {
             state.productState.isLoading = false;
-            state.productState.responseData = payload;
+            state.productState.responseData = "product added successfully";
         });
         builder.addCase(postProduct.rejected, (state, { payload }) => {
             state.productState.isLoading = false;
