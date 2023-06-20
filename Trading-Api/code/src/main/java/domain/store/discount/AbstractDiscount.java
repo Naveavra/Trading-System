@@ -98,12 +98,6 @@ public abstract class AbstractDiscount extends Discount{
         return discountedCategory;
     }
 
-    @Override
-    public JSONObject toJson(){
-        JSONObject obj = new JSONObject();
-        obj.put("description",getDescription());
-        return obj;
-    }
 
 
 //    public void setPercentage(double percentage) {

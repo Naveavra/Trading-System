@@ -78,8 +78,8 @@ public class Permissions {
         actionIds.put(1, Action.removeProduct);
         actionIds.put(2, Action.updateProduct);
         actionIds.put(3, Action.changeStoreDetails);
-        actionIds.put(4, Action.changePurchasePolicy);
-        actionIds.put(5, Action.changeDiscountPolicy);
+        actionIds.put(4, Action.deletePurchasePolicy);
+        actionIds.put(5, Action.deleteDiscountPolicy);
         actionIds.put(6, Action.addPurchaseConstraint);
         actionIds.put(7, Action.addDiscountConstraint);
         actionIds.put(8, Action.viewMessages);

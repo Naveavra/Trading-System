@@ -2,7 +2,6 @@ import { LoadingButton } from "@mui/lab";
 import { Dialog, Box, Grid, Typography, Button, TextField, SelectChangeEvent } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { clearStoreError } from "../../reducers/storesSlice";
-import error from "../Alerts/error";
 import AlertDialog from "../Dialog/AlertDialog";
 import SelectAutoWidth from "../Selectors/AutoWidth";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +9,7 @@ import { updateServiceFormValues } from "../../types/formsTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { useForm } from "react-hook-form";
 import { getPaymentsService, getSuppliers } from "../../reducers/paymentSlice";
-import { updateService } from "../../reducers/adminSlice";
+import { getPaymentsToAdd, getSuppliersToAdd, updateService } from "../../reducers/adminSlice";
 
 const UpdateServices = () => {
     const navigate = useNavigate();
@@ -27,6 +26,9 @@ const UpdateServices = () => {
     const suppliers = useAppSelector((state) => state.payment.suppliers);
     const payments = useAppSelector((state) => state.payment.paymentServices);
 
+    const suppliersToAdd = useAppSelector((state) => state.admin.suppliersResponseData);
+    const paymentsToAdd = useAppSelector((state) => state.admin.paymentsResponseData);
+
     const setPayment = () => {
         setService('payment');
     }
@@ -39,6 +41,8 @@ const UpdateServices = () => {
     useEffect(() => {
         dispatch(getPaymentsService());
         dispatch(getSuppliers());
+        dispatch(getSuppliersToAdd(userId));
+        dispatch(getPaymentsToAdd(userId));
     }, [])
     const handleOnClose = useCallback(() => {
         navigate('/dashboard/admin');
@@ -132,19 +136,21 @@ const UpdateServices = () => {
                             </Box> : null}
                         {action != '' ?
                             action === 'add' ?
-                                <Grid item xs={12}>
-                                    <TextField
-                                        sx={{ ml: 15 }}
-                                        required
-                                        id="outlined-required"
-                                        label={service === 'supplier' ? "supplier name" : "payment name"}
-                                        onChange={(e) => { setParam(e.target.value) }}
-                                    />
-                                </Grid>
-                                : service === 'supplier' ?
+                                service === 'supplier' ?
+                                    <Grid item xs={12}>
+                                        <SelectAutoWidth label={'available suppliers '} values={suppliersToAdd} labels={suppliersToAdd} value={param} handleChange={handleChange} />
+                                    </Grid>
+                                    :
+                                    <Grid item xs={12}>
+                                        <SelectAutoWidth label={'available payments '} values={paymentsToAdd} labels={paymentsToAdd} value={param} handleChange={handleChange} />
+                                    </Grid>
+                                :
+                                service === 'supplier' ?
                                     <Grid item xs={12}>
                                         <SelectAutoWidth label={'suppliers in system'} values={suppliers} labels={suppliers} value={param} handleChange={handleChange} />
-                                    </Grid> : <Grid item xs={12}>
+                                    </Grid>
+                                    :
+                                    <Grid item xs={12}>
                                         <SelectAutoWidth label={'payments in system'} values={payments} labels={payments} value={param} handleChange={handleChange} />
                                     </Grid>
 

@@ -234,7 +234,7 @@ public class UserController {
     public synchronized void openStore(int userId, Store store) throws Exception{
         Member m = getActiveMember(userId);
         m.openStore(store);
-        m.addNotification(new Notification(NotificationOpcode.GET_CLIENT_DATA, "successfully opened store"));
+        m.addNotification(new Notification(NotificationOpcode.GET_CLIENT_DATA, "null"));
     }
 
     public synchronized StoreReview writeReviewForStore(int orderId, int storeId, String content, int grading, int userId) throws Exception {

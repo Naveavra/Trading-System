@@ -26,25 +26,28 @@ const ProductInCart: React.FC<CardProps> = ({ item }) => {
         setQuantity(0);
     }
     const addProdut = () => {
-        setQuantity(quantity + 1);
+        //setQuantity(quantity + 1);
+        dispatch(addToCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: 1 }));
+        dispatch(getCart({ userId: userId }));
+        dispatch(getCart({ userId: userId }));
     }
 
     const handleRemoveFromCart = () => {
         //dispatch(removeFromCart(item.id))
-        setQuantity(quantity - 1);
+        //setQuantity(quantity - 1);
         dispatch(removeFromCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: 1 }));
         dispatch(getCart({ userId: userId }));
         dispatch(getCart({ userId: userId }));
     }
     const handleDelete = () => {
         //dispatch(removeFromCart(item.id))
-        dispatch(removeFromCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: quantity }));
+        dispatch(removeFromCart({ userId: userId, storeId: item.storeId, productId: item.productId, quantity: item.quantity }));
         setQuantity(0);
         dispatch(getCart({ userId: userId }));
         dispatch(getCart({ userId: userId }));
     }
     useEffect(() => {
-        setQuantity(item.quantity);
+        //setQuantity(item.quantity);
     }, [item.quantity, dispatch, item])
 
 
@@ -86,25 +89,16 @@ const ProductInCart: React.FC<CardProps> = ({ item }) => {
                     </IconButton>
                 </Box>
                 <Typography gutterBottom variant="h6" component="div" sx={{ ml: 3, mt: 1 }}>
-                    {quantity}
+                    {item.quantity}
                 </Typography>
                 <Box>
 
                     <Typography gutterBottom variant="h5" component="div" sx={{ marginLeft: 10 }}>
-                        {(item.price * (quantity)).toFixed(2)}$
+                        {(item.price * (item.quantity)).toFixed(2)}$
                     </Typography>
                 </Box>
             </CardActions>
-            <CardContent sx={{ height: 55 }} >
-                <CardActions>
-                    <IconButton onClick={handleAddToCart} sx={{ ml: 10 }}>
-                        <AddShoppingCartIcon />
-                        <Typography gutterBottom variant="h5" component="div" sx={{ ml: 2, mt: 1 }}>
-                            add to cart
-                        </Typography>
-                    </IconButton>
-                </CardActions>
-            </CardContent>
+
         </Card>
 
     );

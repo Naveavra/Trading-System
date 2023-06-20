@@ -25,7 +25,7 @@ export interface PatchProductsParams {
     img: string | null;
 }
 export interface DeleteProductsParams {
-    id: number; //userid
+    userId: number; //userid
     storeId: number;
     productId: number;
 }

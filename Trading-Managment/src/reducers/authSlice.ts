@@ -263,7 +263,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.storeRoles = payload.responseBody.storeRoles;
             state.storeNames = payload.responseBody.storeNames;
             state.storeImgs = payload.responseBody.storeImgs;
-            state.notifications = payload.responseBody.notifications;
+            state.notifications = payload.responseBody.notifications.filter((notification) => notification.content !== "null");
             state.permissions = payload.responseBody.permissions;
             state.purchaseHistory = payload.responseBody.purchaseHistory;
             if (payload.rememberMe) {
@@ -350,8 +350,12 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(getNotifications.fulfilled, (state, { payload }) => {
             state.isLoading = false;
-            const arr: MyNotification[] = [payload];
-            state.notifications = state.notifications.concat(arr);
+            console.log(payload);
+            debugger;
+            if (payload.content != "null") {
+                const arr: MyNotification[] = [payload];
+                state.notifications = state.notifications.concat(arr);
+            }
         });
         builder.addCase(getNotifications.rejected, (state, { payload }) => {
             state.isLoading = false;
