@@ -8,7 +8,10 @@ import ProductInCart from "../ProductInCart/ProductCart";
 import { useNavigate } from "react-router-dom";
 import Bar3 from "../Bars/Navbar/NavBar3";
 import { useEffect } from "react";
-import { getCart } from "../../reducers/cartSlice";
+import { clearCartError, clearCartMessage, clearCartsError, getCart } from "../../reducers/cartSlice";
+import { clearStoreError } from "../../reducers/storesSlice";
+import ErrorAlert from "../Alerts/error";
+import SuccessAlert from "../Alerts/success";
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -17,8 +20,11 @@ const Cart = () => {
     const userId = useAppSelector((state) => state.auth.userId);
     const cart = useAppSelector((state) => state.cart.responseData);
     const products = cart?.flat();
+    const systemProducts = useAppSelector((state) => state.product.responseData);
     const totalPrice = products?.reduce((acc, product) => acc + product.quantity * product.price, 0);
 
+    const cartError = useAppSelector((state) => state.cart.error);
+    const cartMessage = useAppSelector((state) => state.cart.basketState.responseData);
 
     const handlePayment = async () => {
         navigate("/dashboard/cart/payment");
@@ -30,6 +36,8 @@ const Cart = () => {
     return (
         <>
             <Bar3 headLine={"this is your cart"} />
+            {cartMessage ? <SuccessAlert message={cartMessage} onClose={() => { dispatch(clearCartMessage()) }} /> : null}
+            {cartError ? <ErrorAlert message={cartError} onClose={() => { dispatch(clearCartError()); dispatch(clearCartsError()) }} /> : null}
             <Typography variant="h4">Cart</Typography>
             <Typography variant="h6">Total: {totalPrice}</Typography>
             <Button onClick={handlePayment}>Pay</Button>

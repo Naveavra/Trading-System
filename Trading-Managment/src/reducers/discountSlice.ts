@@ -78,7 +78,7 @@ export const addCompositeDiscount = createAsyncThunk<
 >(
     `${reducerName}/postCompositeDiscount`,
     async (formData, thunkApi) => {
-        debugger;
+
         return discountApi.postCompositeDiscount(formData)
             .then((res) => thunkApi.fulfillWithValue(res as string))
             .catch((res) => thunkApi.rejectWithValue(res as ApiError))
@@ -145,7 +145,7 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             }
         },
         addPredicateToRegularDiscount: (state, { payload }) => {
-            debugger;
+
             //state.currentRegularDiscount.predicates.push({ predType: payload.predType, params: payload.params, composore: payload.composore });
             return {
                 ...state,
@@ -169,11 +169,45 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             }
         },
         setParamsToTmpPredicate: (state, { payload }) => {
+            function replaceFirstParam(inputString: string, newInput: string): string {
+                const params = inputString.split(',');
+                if (params.length >= 2) {
+                    params[0] = newInput;
+                }
+                return params.join(',');
+            }
+            const newParams = state.tmpPredicate.params.includes(',') ? replaceFirstParam(state.tmpPredicate.params, payload) : payload + ',';
             return {
                 ...state,
                 tmpPredicate: {
                     ...state.tmpPredicate,
-                    params: payload
+                    params: newParams
+                }
+            }
+        },
+        addParamsToTmpPredicate: (state, { payload }) => {
+            function replaceSecondParam(inputString: string, newInput: string): string {
+                const params = inputString.split(',');
+                if (params.length >= 2) {
+                    params[1] = newInput;
+                }
+                return params.join(',');
+            }
+            const newParams = replaceSecondParam(state.tmpPredicate.params, payload);
+            return {
+                ...state,
+                tmpPredicate: {
+                    ...state.tmpPredicate,
+                    params: newParams
+                }
+            }
+        },
+        removeFromPredicate: (state, { payload }) => {
+            return {
+                ...state,
+                tmpPredicate: {
+                    ...state.tmpPredicate,
+                    params: state.tmpPredicate.params.substring(0, state.tmpPredicate.params.length - 1)
                 }
             }
         },
@@ -200,11 +234,11 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             state.currentRegularDiscount = emptyRegularDiscount;
         },
         addFirstComposite: (state, { payload }) => {
-            debugger;
+
             console.log(payload);
             state.discountNodes.push({ id: '0', position: { x: 500, y: 100 }, data: { type: 'composite', label: `Id : 0 , precentage : ${payload.percentage} ,${payload.numericType == '' ? '' : `numericType: ${payload.numericType}`} , ${payload.composoreType == '' ? '' : `composoreType:${payload.composoreType}`} , ${payload.xorRule == '' ? '' : `xorDecidingRule: ${payload.xorRule}`} ,${payload.description == '' ? '' : `description: ${payload.description}`}`, description: payload.description, percentage: payload.percentage, numericType: payload.numericType, logicalType: payload.composoreType, xorDecidingRule: payload.xorRule } });
             state.level = 1;
-            debugger;
+
             console.log(state.discountNodes);
             console.log(state.discountNodes.find((node) => node.id === '0')?.position?.x);
             state.discountNodes.push({ id: '1', position: { x: (state.discountNodes.find((node) => node.id === '0')?.position?.x ?? 0) - ((200 * Math.pow(2, state.level - 1)) / 2), y: 150 * (state.level + 1) }, data: { ...emptyCompositeDiscount, label: '1' } });
@@ -247,16 +281,15 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             // state.discountEdges = [];
             // state.level = 0;
             // state.target = 0;
-            debugger;
+
             return initialState;
-            debugger;
+
         },
     },
     extraReducers: (builder) => {
         //getDiscounts
         builder.addCase(getDiscounts.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(getDiscounts.fulfilled, (state, { payload }) => {
             state.isLoading = false;
@@ -264,12 +297,11 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
         });
         builder.addCase(getDiscounts.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during getDiscounts";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during getDiscounts") : payload?.message.data ?? "error during getDiscounts";
         });
         //addRegularDiscount
         builder.addCase(addRegularDiscount.pending, (state) => {
             state.discountState.isLoading = true;
-            state.discountState.error = null;
         });
         builder.addCase(addRegularDiscount.fulfilled, (state, { payload }) => {
             state.discountState.isLoading = false;
@@ -277,12 +309,11 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
         });
         builder.addCase(addRegularDiscount.rejected, (state, { payload }) => {
             state.discountState.isLoading = false;
-            state.discountState.error = payload?.message.data ?? "error during addRegularDiscount";
+            state.discountState.error = state.discountState.error ? (state.discountState.error + ' , ' + payload?.message.data ?? "error during addRegularDiscount") : payload?.message.data ?? "error during addRegularDiscount";
         });
         //addCompositeDiscount
         builder.addCase(addCompositeDiscount.pending, (state) => {
             state.discountState.isLoading = true;
-            state.discountState.error = null;
         });
         builder.addCase(addCompositeDiscount.fulfilled, (state, { payload }) => {
             state.discountState.isLoading = false;
@@ -290,12 +321,11 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
         });
         builder.addCase(addCompositeDiscount.rejected, (state, { payload }) => {
             state.discountState.isLoading = false;
-            state.discountState.error = payload?.message.data ?? "error during addCompositeDiscount";
+            state.discountState.error = state.discountState.error ? (state.discountState.error + ' , ' + payload?.message.data ?? "error during addCompositeDiscount") : payload?.message.data ?? "error during addCompositeDiscount";
         });
         //deleteDiscount
         builder.addCase(deleteDiscount.pending, (state) => {
             state.discountState.isLoading = true;
-            state.discountState.error = null;
         });
         builder.addCase(deleteDiscount.fulfilled, (state, { payload }) => {
             state.discountState.isLoading = false;
@@ -303,7 +333,7 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
         });
         builder.addCase(deleteDiscount.rejected, (state, { payload }) => {
             state.discountState.isLoading = false;
-            state.discountState.error = payload?.message.data ?? "error during deleteDiscount";
+            state.discountState.error = state.discountState.error ? (state.discountState.error + ' , ' + payload?.message.data ?? "error during deleteDiscount") : payload?.message.data ?? "error during deleteDiscount";
         });
     },
 });
@@ -317,6 +347,8 @@ export const {
     addPredicateToRegularDiscount,
     setPredicateTypeToTmpPredicate,
     setParamsToTmpPredicate,
+    addParamsToTmpPredicate,
+    removeFromPredicate,
     setComposoreToTmpPredicate,
     clearTmpPredicate,
     clearDiscountError,

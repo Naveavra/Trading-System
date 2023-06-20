@@ -10,14 +10,12 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../.." value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -29,11 +27,6 @@
         <option name="useMavenConfig" value="true" />
       </MavenGeneralSettings>
     </option>
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="workspaceImportEnabled" value="true" />
-      </MavenImportingSettings>
-    </option>
   </component>
   <component name="ProjectId" id="2RRI2IB6NUbQqR6Kkyx5X92jkkz" />
   <component name="ProjectViewState">
@@ -42,20 +35,16 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Git.Branch.Popup.ShowAllRemotes": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RunManager" selected="Application.Server">
-    <configuration name="Server" type="Application" factoryName="Application" nameIsGenerated="true">
+    <configuration name="Server" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
       <option name="PROGRAM_PARAMETERS" value="&quot;..\..\config.json&quot; &quot;..\..\initial1.json&quot;" />
@@ -63,15 +52,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AcceptanceTests in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/src/AcceptanceTests" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ProductTest.testSetAndReplaceQuantity_negativeInput" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="PurchasePolicyTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -80,49 +61,8 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="store" />
-      <option name="MAIN_CLASS_NAME" value="store.ProductTest" />
-      <option name="METHOD_NAME" value="testSetAndReplaceQuantity_negativeInput" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ProductTest.testSetAndReplaceQuantity_positiveInputAndAddition" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="store.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="store" />
-      <option name="MAIN_CLASS_NAME" value="store.ProductTest" />
-      <option name="METHOD_NAME" value="testSetAndReplaceQuantity_positiveInputAndAddition" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="StoreOwnerTest.testAppointmentExistOwnerInStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="junit.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.StoreOwnerTest" />
-      <option name="METHOD_NAME" value="testAppointmentExistOwnerInStore" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/test" />
+      <option name="MAIN_CLASS_NAME" value="store.PurchasePolicyTests" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -142,19 +82,11 @@
     </configuration>
     <list>
       <item itemvalue="Application.Server" />
-      <item itemvalue="JUnit.ProductTest.testSetAndReplaceQuantity_negativeInput" />
-      <item itemvalue="JUnit.ProductTest.testSetAndReplaceQuantity_positiveInputAndAddition" />
-      <item itemvalue="JUnit.StoreOwnerTest.testAppointmentExistOwnerInStore" />
-      <item itemvalue="JUnit.AcceptanceTests in work1" />
-      <item itemvalue="JUnit.test in work1" />
+      <item itemvalue="JUnit.PurchasePolicyTests" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.test in work1" />
-        <item itemvalue="JUnit.AcceptanceTests in work1" />
-        <item itemvalue="JUnit.StoreOwnerTest.testAppointmentExistOwnerInStore" />
-        <item itemvalue="JUnit.ProductTest.testSetAndReplaceQuantity_positiveInputAndAddition" />
-        <item itemvalue="JUnit.ProductTest.testSetAndReplaceQuantity_negativeInput" />
+        <item itemvalue="JUnit.PurchasePolicyTests" />
       </list>
     </recent_temporary>
   </component>
@@ -166,8 +98,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1687206259853</updated>
-      <workItem from="1687206261541" duration="8218000" />
-      <workItem from="1687270298772" duration="9574000" />
+      <workItem from="1687206261541" duration="3101000" />
     </task>
     <servers />
   </component>
@@ -183,9 +114,34 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java</url>
-          <line>771</line>
+          <url>file://$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java</url>
+          <line>247</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/purchase/PurchasePolicyFactory.java</url>
+          <line>121</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java</url>
+          <line>718</line>
           <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/service/MarketController.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java</url>
+          <line>741</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/market/Market.java</url>
+          <line>386</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -48,7 +48,7 @@ const CompositeDiscount: React.FC<CompositeDiscountProps> = ({ first }) => {
     }
 
     const handleOnSubmit = () => {
-        debugger;
+
         if (first) {
             dispatch(addFirstComposite({
                 description: description,

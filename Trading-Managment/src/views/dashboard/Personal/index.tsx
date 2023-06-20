@@ -97,7 +97,7 @@ const Personal = () => {
                                         price:  {order.totalPrice}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        quntity:  {order.productsInStores?.length}
+                                        quantity:  {order.productsInStores?.length}
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
@@ -145,31 +145,31 @@ const Personal = () => {
                                     </Typography>
                                     {
                                         bid.state === status.Completed ?
-                                        <>
-                                        <Alert severity="success">Completed</Alert>
-                                        </> :
-                                        bid.state === status.Approved ?
                                             <>
-                                                <Alert severity="info">approved</Alert>
-                                                <Button onClick={() => navigate(`${bid.bidId}/makePurchase`)}>enter details and make purchase</Button>
+                                                <Alert severity="success">Completed</Alert>
                                             </> :
-                                            bid.state === status.Pending ?
-                                                <Alert severity="info">pending</Alert> :
-                                                bid.state === status.Counter ?
-                                                    <>
-                                                        <Alert severity="info">counter</Alert>
-                                                        <Button onClick={() => {
-                                                            dispatch(answerOnCounter({ bidId: bid.bidId, storeId: bid.storeId }));
-                                                            dispatch(getClientData({ userId: userId }));
+                                            bid.state === status.Approved ?
+                                                <>
+                                                    <Alert severity="info">approved</Alert>
+                                                    <Button onClick={() => navigate(`${bid.bidId}/makePurchase`)}>enter details and make purchase</Button>
+                                                </> :
+                                                bid.state === status.Pending ?
+                                                    <Alert severity="info">pending</Alert> :
+                                                    bid.state === status.Counter ?
+                                                        <>
+                                                            <Alert severity="info">counter</Alert>
+                                                            <Button onClick={() => {
+                                                                dispatch(answerOnCounter({ bidId: bid.bidId, storeId: bid.storeId }));
+                                                                dispatch(getClientData({ userId: userId }));
 
-                                                        }}>approved store offer</Button>
-                                                        <Button onClick={() => {
-                                                            navigate(`${bid.storeId}/${bid.product.productId}/${bid.bidId}/EditBid`);
-                                                        }
-                                                        }>counter offer</Button>
-                                                    </>
-                                                    :
-                                                    <Alert severity="error">reject</Alert>
+                                                            }}>approved store offer</Button>
+                                                            <Button onClick={() => {
+                                                                navigate(`${bid.storeId}/${bid.product.productId}/${bid.bidId}/EditBid`);
+                                                            }
+                                                            }>counter offer</Button>
+                                                        </>
+                                                        :
+                                                        <Alert severity="error">reject</Alert>
                                     }
                                 </CardContent>
                                 <CardActions>

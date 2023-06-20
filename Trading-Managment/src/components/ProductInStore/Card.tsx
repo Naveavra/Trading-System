@@ -49,7 +49,8 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
     }
     const handleDelete = () => {
         dispatch(deleteProduct({ id: userId, storeId: storeId, productId: item.productId }))
-        dispatch(getStore({ userId: userId, storeId: storeId }))
+        dispatch(getStore({ userId: userId, storeId: storeId }));
+        dispatch(getStore({ userId: userId, storeId: storeId }));
     }
     return (
         <Card className="h-100" sx={{ width: '50%', marginLeft: 'auto', mr: 10, mt: 2, flexBasis: '30%' }} >
@@ -86,16 +87,18 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
                         </IconButton>
                     ) : (
                         <>
-                            <IconButton onClick={addProdut}>
-                                <AddIcon />
-                            </IconButton>
+                            {quantity < item.quantity ?
+                                <IconButton onClick={addProdut}>
+                                    <AddIcon />
+                                </IconButton> : null}
+
                             <IconButton onClick={handleRemoveFromCart}>
                                 <RemoveIcon />
                             </IconButton>
                         </>
                     )}
                     {canEdit &&
-                        <IconButton onClick={() => navigate("editProduct")} >
+                        <IconButton onClick={() => navigate(`${item.productId}/editProduct`)} >
                             <EditIcon />
                         </IconButton>
                     }

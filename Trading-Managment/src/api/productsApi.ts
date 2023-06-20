@@ -19,7 +19,5 @@ export const productsApi =
         apiErrorHandlerWrapper(getApiClient().patch('api/products', params)),
 
     deleteProduct: (params: DeleteProductsParams): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().delete('api/products', {
-            params: params
-        }))
+        apiErrorHandlerWrapper(getApiClient().post('api/products/delete', params)),
 }   

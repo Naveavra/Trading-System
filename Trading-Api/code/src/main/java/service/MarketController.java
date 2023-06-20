@@ -44,6 +44,11 @@ public class MarketController {
         Order order = orderctrl.createNewOrder(user,shoppingCart, totalPrice);
         order.setStatus(Status.pending);
         Set<Integer> creatorIds = storectrl.purchaseProducts(shoppingCart, order);
+        //ziv change
+        if(creatorIds == null){
+            order.setStatus(Status.canceled);
+            throw new Exception("user violate store shopping's rule , purchase canceled");
+        }
         order.setStatus(Status.submitted);
         Receipt receipt = new Receipt(order.getOrderId(), shoppingCart, order.getTotalPrice());
         Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);

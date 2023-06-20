@@ -89,7 +89,6 @@ const { reducer: shoppingRuleReducer, actions: shoppingRuleActions } = createSli
         //addPurchasePolicy
         builder.addCase(addPurchasePolicy.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(addPurchasePolicy.fulfilled, (state, { payload }) => {
             state.isLoading = false;
@@ -97,12 +96,11 @@ const { reducer: shoppingRuleReducer, actions: shoppingRuleActions } = createSli
         })
         builder.addCase(addPurchasePolicy.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? 'Error during adding purchase policy';
+            state.error = state.error ? (state.error + payload?.message.data ?? 'Error during adding purchase policy') : (payload?.message.data ?? 'Error during adding purchase policy');
         });
         //deleteShoppingRule
         builder.addCase(deleteShoppingRule.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(deleteShoppingRule.fulfilled, (state, { payload }) => {
             state.isLoading = false;
@@ -110,7 +108,7 @@ const { reducer: shoppingRuleReducer, actions: shoppingRuleActions } = createSli
         });
         builder.addCase(deleteShoppingRule.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? 'Error during deleting purchase policy';
+            state.error = state.error ? (state.error + payload?.message.data ?? 'Error during deleting purchase policy') : (payload?.message.data ?? 'Error during deleting purchase policy');
         });
     }
 });
