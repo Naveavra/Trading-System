@@ -13,7 +13,7 @@ const LoginPage: React.FC = () => {
     const isLoggedIn = useAppSelector((state) => !!state.auth.token);
     const error = useAppSelector((state) => state.auth.error);
     const isAdmin = useAppSelector((state) => state.auth.isAdmin);
-    debugger;
+
     return (!isLoggedIn ?
 
         <>

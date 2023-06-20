@@ -329,7 +329,7 @@ public class Market implements MarketInterface {
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
                     StringChecks.curDayString(), userController.getUserName(userId),
-                    null, "make purchase failed", e.getMessage());
+                    "user cant make purchase " + e.getMessage(), "make purchase failed", e.getMessage());
         }
     }
 
@@ -374,10 +374,11 @@ public class Market implements MarketInterface {
         userController.purchaseMade(userId, receipt);
         for (int creatorId : creatorIds)
             addNotification(creatorId, NotificationOpcode.GET_STORE_DATA, "a new purchase was made in your store");
+        addNotification(userId, NotificationOpcode.GET_CLIENT_DATA, "your purchase has been approved");
         marketInfo.addPurchaseCount();
         return logAndRes(Event.LogStatus.Success, "user made purchase",
                 StringChecks.curDayString(), userController.getUserName(userId),
-                receipt, null, null);
+                "success make purchase , u can see the recipt in the personal area", null, null);
     }
 
     @Override
@@ -394,7 +395,7 @@ public class Market implements MarketInterface {
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
                     StringChecks.curDayString(), userController.getUserName(userId),
-                    null, "make purchase failed", e.getMessage());
+                    "user cant make purchase because "+ e.getMessage(), "make purchase failed", e.getMessage());
         }
     }
 
@@ -1469,7 +1470,7 @@ public class Market implements MarketInterface {
             marketController.addPurchaseConstraint(storeId, purchasePolicy,content);
             return logAndRes(Event.LogStatus.Success, "Member added shopping constraint " + userId + " has successfully entered",
                     StringChecks.curDayString(), userController.getUserName(userId),
-                    purchasePolicy.toString(), null, null);
+                   "success adding shopping rule", null, null);
         }catch (Exception e){
             return logAndRes(Event.LogStatus.Fail, "cant add shopping rule because: " + e.getMessage(),
                     StringChecks.curDayString(), "user"+userId,

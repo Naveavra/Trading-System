@@ -86,7 +86,6 @@ const DashboardPage: React.FC = () => {
             fetchNotification();
         },
         1: () => {
-            debugger;
             dispatch(getStore({ userId: userId, storeId: storeId }));
             fetchNotification();
         },

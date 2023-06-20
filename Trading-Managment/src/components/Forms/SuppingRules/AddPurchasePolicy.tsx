@@ -1,6 +1,4 @@
-
-
-import { Dialog, Box, Grid, Typography, Button, TextField } from "@mui/material";
+import { Dialog, Box, Grid, Typography, Button, TextField, SelectChangeEvent } from "@mui/material";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../../redux/store";
@@ -11,10 +9,14 @@ import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers';
+import { getStore } from "../../../reducers/storesSlice";
+import SelectAutoWidth from "../../Selectors/AutoWidth";
 
 const AddPurchasePolicy = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const userId = useAppSelector((state: RootState) => state.auth.userId);
+    const storeId = useAppSelector((state: RootState) => state.store.storeState.watchedStore.storeId);
 
     const [type, setType] = useState('');
     const [limiter, setLimiter] = useState('');
@@ -28,17 +30,19 @@ const AddPurchasePolicy = () => {
     const [timeLimit, setTimeLimit] = useState('');
     const [age, setAge] = useState(-1);
     const [composore, setComposore] = useState('');
+    const [usrCategory, setUsrCategory] = useState('');
 
     const [timeValue, settimeValue] = useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
+    const products = useAppSelector((state) => state.product.responseData);
+    const productsNames = useAppSelector((state) => state.product.responseData)?.filter((product) => product.storeId === storeId)?.map((product) => product.name) ?? [];
+    const [productName, setProductName] = useState('');
 
-    const userId = useAppSelector((state: RootState) => state.auth.userId);
-    const storeId = useAppSelector((state: RootState) => state.store.storeState.watchedStore.storeId);
     const purchasePolicy = useAppSelector((state: RootState) => state.shoppingRule.currentShoppingRule);
     const handleOnClose = useCallback(() => {
         navigate('/dashboard/store/superior');
         dispatch(clearTmpShopRule());
         dispatch(clearCurrentShoppingRules());
-        //dispatch(getStore({ userId: userId, storeId: storeId }));
+        dispatch(getStore({ userId: userId, storeId: storeId }));
     }, []);
     const handleMin = () => {
         setLimiter('Min');
@@ -49,6 +53,7 @@ const AddPurchasePolicy = () => {
 
     const handleType = (input: string) => {
         setType(input);
+        setProductName('');
     }
     const handleDescription = (input: string) => {
         setDescription(input);
@@ -67,7 +72,7 @@ const AddPurchasePolicy = () => {
                 dispatch(setTmpShopRule({ type: 'dateTime', category: category, timeLimit: timeLimit, timeType: timeType, limiter: limiter }));
                 break;
             case 'User':
-                dispatch(setTmpShopRule({ type: 'user', ageLimite: age, productId: productId, limiter: limiter }));
+                dispatch(setTmpShopRule({ type: 'user', ageLimit: age, productId: productId, limiter: limiter }));
                 break;
             case 'Basket':
                 dispatch(setTmpShopRule({ type: 'basket', productId: productId, amount: amount }));
@@ -97,7 +102,7 @@ const AddPurchasePolicy = () => {
                 dispatch(setTmpShopRule({ type: 'dateTime', category: category, timeLimit: timeLimit, timeType: timeType, limiter: limiter, composore: input }));
                 break;
             case 'User':
-                dispatch(setTmpShopRule({ type: 'user', ageLimite: age, productId: productId, limiter: limiter, composore: input }));
+                dispatch(setTmpShopRule({ type: 'user', ageLimit: age, productId: productId, category: usrCategory, limiter: limiter, composore: input }));
                 break;
             case 'Basket':
                 dispatch(setTmpShopRule({ type: 'basket', productId: productId, amount: amount, composore: input }));
@@ -160,7 +165,14 @@ const AddPurchasePolicy = () => {
             setTimeLimit(realTime);
         }
     }
-
+    const handleChangeProduct = (event: SelectChangeEvent) => {
+        setProductName(event.target.value as string);
+        debugger;
+        const pid = products?.find((product) => product.name === event.target.value && product.storeId == storeId)?.productId ?? -1;
+        setProductId(pid);
+        console.log(productId);
+        console.log(pid);
+    };
 
     return (
         <Dialog onClose={handleOnClose} open={true}>
@@ -284,7 +296,7 @@ const AddPurchasePolicy = () => {
                     : null}
                 {type === 'Item' ?
                     <>
-                        <Grid item xs={12}>
+                        {/* <Grid item xs={12}>
                             <TextField
                                 required
                                 sx={{ mt: 2, mb: 2 }}
@@ -292,6 +304,9 @@ const AddPurchasePolicy = () => {
                                 label="enter product id"
                                 onChange={(e) => { setProductId(parseInt(e.target.value)) }}
                             />
+                        </Grid> */}
+                        <Grid item xs={12}>
+                            <SelectAutoWidth label={'products in store'} values={productsNames} labels={productsNames} value={productName} handleChange={handleChangeProduct} />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -418,15 +433,21 @@ const AddPurchasePolicy = () => {
                                 onChange={(e) => { setAge(parseInt(e.target.value)) }}
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                sx={{ mt: 2, mb: 2 }}
-                                id="outlined-required"
-                                label="enter product id"
-                                onChange={(e) => { setProductId(parseInt(e.target.value)) }}
-                            />
-                        </Grid>
+                        <Box display="flex" alignItems="center" justifyContent="center">
+                            <Grid item xs={12} sx={{ mr: 2 }}>
+                                <SelectAutoWidth label={'products in store'} values={productsNames} labels={productsNames} value={productName} handleChange={handleChangeProduct} />
+                            </Grid>
+                            OR
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    sx={{ mt: 2, mb: 2, ml: 2 }}
+                                    id="outlined-required"
+                                    label="enter category"
+                                    onChange={(e) => { setUsrCategory(e.target.value) }}
+                                />
+                            </Grid>
+                        </Box>
                         <Button
                             fullWidth
                             variant="contained"
@@ -450,13 +471,7 @@ const AddPurchasePolicy = () => {
                 {type === 'Basket' ?
                     <>
                         <Grid item xs={12}>
-                            <TextField
-                                required
-                                sx={{ mt: 2, mb: 2 }}
-                                id="outlined-required"
-                                label="enter product id"
-                                onChange={(e) => { setProductId(parseInt(e.target.value)) }}
-                            />
+                            <SelectAutoWidth label={'products in store'} values={productsNames} labels={productsNames} value={productName} handleChange={handleChangeProduct} />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -470,7 +485,7 @@ const AddPurchasePolicy = () => {
                     </>
                     : null
                 }
-                {(category !== '' && amount !== -1) || (productId !== -1 && amount !== -1) || (category !== '' && timeType !== '') || (age !== -1 && productId !== -1) ?
+                {(category !== '' && amount !== -1) || (productId !== -1 && amount !== -1) || (category !== '' && timeType !== '') || ((age !== -1 && productId !== -1) || (age !== -1 && usrCategory !== '')) ?
                     <Box display={'flex'}>
                         <Button
                             type="submit"

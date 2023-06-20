@@ -8,7 +8,7 @@ const WorkersStatus = () => {
     const store = useAppSelector((state) => state.store.storeState.watchedStore);
     let list: PersonInfo[] = [];
     let realList: PersonInfo[] = [];
-    debugger;
+
     const workers = store.appHistory.forEach((person) => {
         list.push(person.memane);
         person.memoonim.forEach((worker) => {

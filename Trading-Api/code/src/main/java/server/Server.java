@@ -359,7 +359,7 @@ public class Server {
             toSparkRes(res, api.addProduct(userId, token, storeId, categories, name, description, price, quantity, img));
             return res.body();
         });
-        delete("api/products", (req, res) -> {
+        post("api/products/delete", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt(request.get("id").toString());
             String token = req.headers("Authorization");

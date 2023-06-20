@@ -11,8 +11,8 @@ interface BidState {
 const reducerName = 'bidSlice';
 const initialState: BidState = {
     isLoading: false,
-    error: '',
-    message: '',
+    error: null,
+    message: null,
 }
 
 export const addBid = createAsyncThunk<
@@ -105,7 +105,7 @@ const { reducer: bidReducer, actions: bidActions } = createSlice({
         });
         builder.addCase(addBid.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during add bid";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during add bid") : (payload?.message.data ?? "error during add bid");
         });
         builder.addCase(answerBid.pending, (state) => {
             state.isLoading = true;
@@ -116,7 +116,7 @@ const { reducer: bidReducer, actions: bidActions } = createSlice({
         });
         builder.addCase(answerBid.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during answer bid";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during answer bid") : (payload?.message.data ?? "error during answer bid");
         });
         builder.addCase(counterBid.pending, (state) => {
             state.isLoading = true;
@@ -127,7 +127,7 @@ const { reducer: bidReducer, actions: bidActions } = createSlice({
         });
         builder.addCase(counterBid.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during counter bid";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during counter bid") : (payload?.message.data ?? "error during counter bid");
         });
         builder.addCase(editBid.pending, (state) => {
             state.isLoading = true;
@@ -138,7 +138,7 @@ const { reducer: bidReducer, actions: bidActions } = createSlice({
         });
         builder.addCase(editBid.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during edit bid";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during edit bid") : (payload?.message.data ?? "error during edit bid");
         });
         builder.addCase(buyProductInBid.pending, (state) => {
             state.isLoading = true;
@@ -149,7 +149,7 @@ const { reducer: bidReducer, actions: bidActions } = createSlice({
         });
         builder.addCase(buyProductInBid.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during edit bid";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during buy product in bid") : (payload?.message.data ?? "error during buy product in bid");
         });
         builder.addCase(answerOnCounter.pending, (state) => {
             state.isLoading = true;
@@ -160,7 +160,7 @@ const { reducer: bidReducer, actions: bidActions } = createSlice({
         });
         builder.addCase(answerOnCounter.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during edit bid";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during answer on counter") : (payload?.message.data ?? "error during answer on counter");
         });
     }
 });

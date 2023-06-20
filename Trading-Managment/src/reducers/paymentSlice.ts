@@ -59,30 +59,26 @@ const { reducer: paymentReducer, actions: paymentActions } = createSlice({
         //
         builder.addCase(getSuppliers.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(getSuppliers.fulfilled, (state, { payload }) => { //payload is what we get back from the function
             state.isLoading = false;
             state.suppliers = payload;
-            state.error = null;
         });
         builder.addCase(getSuppliers.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during getSuppliers";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data) : (payload?.message.data ?? "error during getSuppliers");
         });
         //
         builder.addCase(getPaymentsService.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(getPaymentsService.fulfilled, (state, { payload }) => { //payload is what we get back from the function
             state.isLoading = false;
             state.paymentServices = payload;
-            state.error = null;
         });
         builder.addCase(getPaymentsService.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during getPaymentsService";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data) : (payload?.message.data ?? "error during getPaymentsService");
         });
     },
 });

@@ -52,7 +52,7 @@ const UpdatePermissions = () => {
         form.setValue('managerId', userToFireId);
         form.setValue('mode', mode);
         form.setValue('permissions', selectedActions);
-        debugger;
+
         console.log(form.getValues());
         dispatch(patchPermissions(form.getValues()));
         handleOnClose();

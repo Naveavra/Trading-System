@@ -21,11 +21,13 @@ interface Props {
 const AddEditProductForm: React.FC<Props> = ({ mode }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const params = useParams();
     const form = useForm<ProductFormValues>();
 
     const required = (() => { return mode === 'add' ? true : false })();
     const userId = useAppSelector((state) => state.auth.userId);
     const token = useAppSelector((state) => state.auth.token);
+    const productId = params?.productId;
     const error = useAppSelector((state) => state.store.storeState.error);
     const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
     const isLoading = useAppSelector((state) => state.product.isLoading)
@@ -45,16 +47,18 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
                 response = dispatch(postProduct(form.getValues()));
                 break;
             case 'edit':
+                form.setValue('productId', parseInt(productId ?? '-1'));
                 response = dispatch(patchProduct(form.getValues()));
                 break;
             default:
                 break;
         }
         handleOnClose();
-
     };
     const handleOnClose = useCallback(() => {
         navigate('/dashboard/store/superior');
+        dispatch(getStore({ userId: userId, storeId: storeId }));
+        dispatch(getProducts());
         dispatch(getStore({ userId: userId, storeId: storeId }));
         dispatch(getProducts());
     }, []);
@@ -106,26 +110,6 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
                         <Grid item xs={12}>
                             {/* <SelectAutoWidth label={label} values={types_names} labels={types_names} value={type} handleChange={handleSetType} /> */}
                         </Grid>
-                        {mode === 'edit' ?
-                            <Grid item xs={12}>
-                                <TextField
-                                    name="productId"
-                                    type="text"
-                                    fullWidth
-                                    label="product id"
-                                    sx={{ mt: 1, mb: 1 }}
-                                    inputProps={{
-                                        ...form.register('productId', {
-                                            required: {
-                                                value: mode === 'edit' ? true : false,
-                                                message: "product id is required"
-                                            }
-                                        })
-                                    }}
-                                    error={!!form.formState.errors['productId'] ?? false}
-                                    helperText={form.formState.errors['productId']?.message ?? undefined}
-                                />
-                            </Grid> : null}
                         <Grid item xs={12}>
                             <TextField
                                 name="name"

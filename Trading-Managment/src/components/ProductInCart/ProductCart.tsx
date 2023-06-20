@@ -72,12 +72,14 @@ const ProductInCart: React.FC<CardProps> = ({ item }) => {
             </CardContent>
             <CardActions >
                 <Box>
+
                     <IconButton onClick={addProdut}>
                         <AddIcon />
                     </IconButton>
-                    <IconButton onClick={handleRemoveFromCart}>
-                        <RemoveIcon />
-                    </IconButton>
+                    {item.quantity > 0 ?
+                        <IconButton onClick={handleRemoveFromCart}>
+                            <RemoveIcon />
+                        </IconButton> : null}
 
                     <IconButton onClick={handleDelete}>
                         <DeleteIcon />

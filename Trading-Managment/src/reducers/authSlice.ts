@@ -238,12 +238,10 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.notifications = [];
         },
         setWatchedOrder: (state, action) => {
-            debugger;
             state.whatchedOrder = state.purchaseHistory?.find((order) => order.orderId === action.payload) ?? emptyOrder;
         },
         resetAuth: (state) => {
-            debugger;
-            state = cleanState;
+            // state = cleanState;
             return cleanState;
         }
 
@@ -252,10 +250,8 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         //login
         builder.addCase(login.pending, (state) => {
             state.isLoginLoading = true;
-            state.error = null;
         });
         builder.addCase(login.fulfilled, (state, { payload }: PayloadAction<{ rememberMe: boolean, responseBody: TokenResponseBody }>) => {
-            debugger;
             state.isLoginLoading = false;
             state.token = payload.responseBody.token;
             state.userId = payload.responseBody.userId;
@@ -291,7 +287,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(login.rejected, (state, { payload }) => {
             state.isLoginLoading = false;
-            state.error = payload?.message.data ?? "error during login";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during register") : payload?.message.data ?? "error during register"; "error during login";
         });
         //register
         builder.addCase(register.pending, (state) => {
@@ -304,13 +300,12 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(register.rejected, (state, { payload }) => {
             state.isRegisterLoading = false;
-            state.error = payload?.message.data ?? "error during register";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during register") : payload?.message.data ?? "error during register";
             state.message = null;
         });
         //logout
         builder.addCase(logout.pending, (state) => {
             state.isLogoutLoading = true;
-            state.error = null;
         });
         builder.addCase(logout.fulfilled, (state, { payload }) => {
             state.isLogoutLoading = false;
@@ -326,7 +321,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.userId = 0;
             state.userName = '';
             state.message = payload;
-            // window.localStorage.removeItem(localStorage.auth.isAdmin.name);
         });
         builder.addCase(logout.rejected, (state, { payload }) => {
             state.token = "";
@@ -334,12 +328,11 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.userName = '';
             state.isAdmin = false;
             state.isLogoutLoading = false;
-            state.error = payload?.message.data ?? "error during logout";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during logout") : payload?.message.data ?? "error during logout";
         });
         //guest enter
         builder.addCase(guestEnter.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(guestEnter.fulfilled, (state, { payload }) => {
             state.isLoading = false;
@@ -349,26 +342,23 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(guestEnter.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during guest enter";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during guest enter") : payload?.message.data ?? "error during guest enter";
         });
         // get notifications
         builder.addCase(getNotifications.pending, (state) => {
-            state.error = null;
+            state.isLoading = true;
         });
         builder.addCase(getNotifications.fulfilled, (state, { payload }) => {
             state.isLoading = false;
             const arr: MyNotification[] = [payload];
-            //state.opcode = arr[0].opcode;
             state.notifications = state.notifications.concat(arr);
         });
         builder.addCase(getNotifications.rejected, (state, { payload }) => {
             state.isLoading = false;
-            // state.opcode = -1;
         });
         // get client data
         builder.addCase(getClientData.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(getClientData.fulfilled, (state, { payload }) => {
             state.isLoading = false;
@@ -387,12 +377,11 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(getClientData.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during get client data";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during get client data") : payload?.message.data ?? "error during get client data";
         });
         //send message
         builder.addCase(sendMessage.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(sendMessage.fulfilled, (state, { payload }) => {
             state.isLoading = false;
@@ -400,13 +389,12 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(sendMessage.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during send message";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during send message") : payload?.message.data ?? "error during send message";
         });
 
         //send complaint
         builder.addCase(sendComplaint.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(sendComplaint.fulfilled, (state, { payload }) => {
             state.isLoading = false;
@@ -414,13 +402,12 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(sendComplaint.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during send complaint";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during send complaint") : payload?.message.data ?? "error during send complaint";
         });
 
         //edit profile
         builder.addCase(editProfile.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(editProfile.fulfilled, (state, { payload }) => {
             state.isLoading = false;
@@ -428,12 +415,11 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(editProfile.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during edit profile";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during edit profile") : payload?.message.data ?? "error during edit profile";
         });
         //change password
         builder.addCase(changePassword.pending, (state) => {
             state.isLoading = true;
-            state.error = null;
         });
         builder.addCase(changePassword.fulfilled, (state, { payload }) => {
             state.isLoading = false;
@@ -441,7 +427,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(changePassword.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = payload?.message.data ?? "error during change password";
+            state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during change password") : payload?.message.data ?? "error during change password";
         });
     }
 });
