@@ -66,24 +66,35 @@ public class StoreManagerTests extends ProjectTest{
      **/
 
     @Test
-    private void isGoodLogin(UserInfo ui)
+    private void assertGoodLogin(UserInfo ui)
     {
         ui.setUserId(login(ui.getEmail(), ui.getPassword()));
         assertTrue(ui.getUserId() > 0);
     }
 
     @Test
-    private void badProductRemoving(int userId, int storeId, ProductInfo pi) {
+    private void assertGoodProductRemoving(int userId, int storeId, ProductInfo pi) {
+        List pre = getProductInStore(storeId);
+        assertNotNull(pre);
+        assertProductInList(pi, pre);
+        assertTrue(removeProduct(userId, storeId, pi.getProductId()));
+        List<ProductInfo> post = getProductInStore(storeId);
+        assertNotNull(post);
+        assertProductNotInList(pi.getProductId(), pre);
+    }
+
+    @Test
+    private void assertBadProductRemoving(int userId, int storeId, ProductInfo pi) {
         List pre = getProductInStore(storeId);
         assertNotNull(pre);
         assertFalse(removeProduct(userId, storeId, pi.getProductId()));
         List<ProductInfo> post = getProductInStore(storeId);
         assertNotNull(post);
-        productInList(pi, post);
+        assertProductInList(pi, post);
     }
 
     @Test
-    private void isGoodManagerAppoint(UserInfo storeOwner, UserInfo appointManager, int storeId)
+    private void assertGoodManagerAppoint(UserInfo storeOwner, UserInfo appointManager, int storeId)
     {
         int status = this.appointmentManagerInStore(storeOwner.getUserId(), storeId, appointManager.getEmail());
         assertTrue(status > 0);
@@ -112,7 +123,7 @@ public class StoreManagerTests extends ProjectTest{
     }
 
     @Test
-    private void isGoodRemovePermission(UserInfo storeOwner, UserInfo appointManager, int storeId, Action action)
+    private void assertGoodRemovePermission(UserInfo storeOwner, UserInfo appointManager, int storeId, Action action)
     {
         List<Integer> per2Remove = new ArrayList<>();
         per2Remove.add(action.ordinal());
@@ -123,7 +134,7 @@ public class StoreManagerTests extends ProjectTest{
     }
 
     @Test
-    private void isGoodAddPermission(UserInfo storeOwner, UserInfo appointManager, int storeId, Action action)
+    private void assertGoodAddPermission(UserInfo storeOwner, UserInfo appointManager, int storeId, Action action)
     {
         List<Integer> per2Add = new ArrayList<>();
         per2Add.add(action.ordinal());
@@ -134,7 +145,7 @@ public class StoreManagerTests extends ProjectTest{
     }
 
     @Test
-    private void goodProductAdding(int userId, int storeId, ProductInfo pi)
+    private void assertGoodProductAdding(int userId, int storeId, ProductInfo pi)
     {
         List pre = getProductInStore(storeId);
         assertNotNull(pre);
@@ -142,23 +153,23 @@ public class StoreManagerTests extends ProjectTest{
         assertTrue(pi.getProductId() > 0);
         List<ProductInfo> post = getProductInStore(storeId);
         assertNotNull(post);
-        productInList(pi, post);
+        assertProductInList(pi, post);
     }
 
     @Test
-    private void badProductAdding(int userId, int storeId, ProductInfo pi)
+    private void assertBadProductAdding(int userId, int storeId, ProductInfo pi)
     {
         List pre = getProductInStore(storeId);
         assertNotNull(pre);
         assertTrue(addProduct(userId, storeId, pi) < 0);
         List<ProductInfo> post = getProductInStore(storeId);
         assertNotNull(post);
-        productNotInList(pi.getProductId(), post);
+        assertProductNotInList(pi.getProductId(), post);
         assertEquals(pre.size(), post.size());
     }
 
     @Test
-    private void productInList(ProductInfo pi, List<ProductInfo> products)
+    private void assertProductInList(ProductInfo pi, List<ProductInfo> products)
     {
         boolean ans = false;
         for(ProductInfo product: products){
@@ -168,7 +179,7 @@ public class StoreManagerTests extends ProjectTest{
     }
 
     @Test
-    private void productNotInList(int productId, List<ProductInfo> products)
+    private void assertProductNotInList(int productId, List<ProductInfo> products)
     {
         boolean ans = false;
         for(ProductInfo product: products){
@@ -178,22 +189,59 @@ public class StoreManagerTests extends ProjectTest{
     }
 
     @Test
+    public void AddProductWithPermission()
+    {
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
+        int storeId = stores.get(0).getStoreId();
+        assertGoodLogin(storeOwner);
+        assertGoodLogin(appointManager);
+        // Appoint Manager
+        assertGoodManagerAppoint(storeOwner, appointManager, storeId);
+        // Add permission:
+        assertGoodAddPermission(storeOwner, appointManager, storeId, Action.addProduct);
+        // Add product:
+        ProductInfo pi = createProduct5();
+        assertGoodProductAdding(storeOwner.getUserId(), storeId, pi);
+    }
+
+    @Test
     public void AddProductWithoutPermission()
     {
         UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
         UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
-        isGoodLogin(storeOwner);
-        isGoodLogin(appointManager);
+        assertGoodLogin(storeOwner);
+        assertGoodLogin(appointManager);
         // Appoint Manager
-        isGoodManagerAppoint(storeOwner, appointManager, storeId);
+        assertGoodManagerAppoint(storeOwner, appointManager, storeId);
         // Add permission:
-        isGoodAddPermission(storeOwner, appointManager, storeId, Action.addProduct);
+        assertGoodAddPermission(storeOwner, appointManager, storeId, Action.addProduct);
         // Remove permission add product:
-        isGoodRemovePermission(storeOwner, appointManager, storeId, Action.addProduct);
+        assertGoodRemovePermission(storeOwner, appointManager, storeId, Action.addProduct);
         // Add product
         ProductInfo pi = createProduct5();
-        badProductAdding(appointManager.getUserId(), storeId, pi);
+        assertBadProductAdding(appointManager.getUserId(), storeId, pi);
+    }
+
+    @Test
+    public void RemoveProductWithPermission()
+    {
+        ProductInfo pi = createProduct5();
+        UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
+        UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
+        int storeId = stores.get(0).getStoreId();
+        assertGoodLogin(storeOwner);
+        assertGoodLogin(appointManager);
+        // Appoint Manager
+        assertGoodManagerAppoint(storeOwner, appointManager, storeId);
+        // Add permissions:
+        assertGoodAddPermission(storeOwner, appointManager, storeId, Action.addProduct);
+        assertGoodAddPermission(storeOwner, appointManager, storeId, Action.removeProduct);
+        // Add product:
+        assertGoodProductAdding(storeOwner.getUserId(), storeId, pi);
+        // Remove product
+        assertGoodProductRemoving(appointManager.getUserId(), storeId, pi);
     }
 
     @Test
@@ -203,20 +251,19 @@ public class StoreManagerTests extends ProjectTest{
         UserInfo storeOwner = this.users_dict.get(users[0][USER_EMAIL]);
         UserInfo appointManager = this.users_dict.get(users[1][USER_EMAIL]);
         int storeId = stores.get(0).getStoreId();
-        isGoodLogin(storeOwner);
-        isGoodLogin(appointManager);
+        assertGoodLogin(storeOwner);
+        assertGoodLogin(appointManager);
         // Appoint Manager
-        isGoodManagerAppoint(storeOwner, appointManager, storeId);
-        // Add permission:
-        isGoodAddPermission(storeOwner, appointManager, storeId, Action.removeProduct);
+        assertGoodManagerAppoint(storeOwner, appointManager, storeId);
+        // Add permissions:
+        assertGoodAddPermission(storeOwner, appointManager, storeId, Action.addProduct);
+        assertGoodAddPermission(storeOwner, appointManager, storeId, Action.removeProduct);
         // Add product:
-        goodProductAdding(storeOwner.getUserId(), storeId, pi);
+        assertGoodProductAdding(storeOwner.getUserId(), storeId, pi);
         // Remove permission add product:
-        isGoodRemovePermission(storeOwner, appointManager, storeId, Action.removeProduct);
+        assertGoodRemovePermission(storeOwner, appointManager, storeId, Action.removeProduct);
         // Remove product
-        badProductRemoving(appointManager.getUserId(), storeId, pi);
+        assertBadProductRemoving(appointManager.getUserId(), storeId, pi);
     }
-
-
 
 }

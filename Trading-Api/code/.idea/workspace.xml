@@ -6,15 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="dbf66b4e-3405-4063-b0e6-6ffa2c21ec03" name="Changes" comment="merging code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/GuestTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/GuestTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/MemberTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/MemberTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/ProjectTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/SystemTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +78,7 @@
       <recent name="server" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.junit in work1">
+  <component name="RunManager" selected="JUnit.StoreManagerTests.RemoveProductWithPermission">
     <configuration name="runServer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
       <module name="work1" />
@@ -103,7 +95,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GuestTest.testPurchaseCartSameTime" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="StoreManagerTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -112,29 +104,13 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.GuestTest" />
-      <option name="METHOD_NAME" value="testPurchaseCartSameTime" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MemberTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="work1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="junit.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.MemberTest" />
+      <option name="MAIN_CLASS_NAME" value="junit.StoreManagerTests" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.testPurchaseCart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="StoreManagerTests.AddProductWithPermission" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -143,14 +119,14 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.MemberTest" />
-      <option name="METHOD_NAME" value="testPurchaseCart" />
+      <option name="MAIN_CLASS_NAME" value="junit.StoreManagerTests" />
+      <option name="METHOD_NAME" value="AddProductWithPermission" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberTest.testPurchaseFromUnAvailablePSCartAndBuy" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="StoreManagerTests.RemoveProductWithPermission" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <extension name="coverage">
         <pattern>
@@ -159,8 +135,24 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="junit" />
-      <option name="MAIN_CLASS_NAME" value="junit.MemberTest" />
-      <option name="METHOD_NAME" value="testPurchaseFromUnAvailablePSCartAndBuy" />
+      <option name="MAIN_CLASS_NAME" value="junit.StoreManagerTests" />
+      <option name="METHOD_NAME" value="RemoveProductWithPermission" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StoreManagerTests.RemoveProductWithoutPermission" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="junit.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="junit" />
+      <option name="MAIN_CLASS_NAME" value="junit.StoreManagerTests" />
+      <option name="METHOD_NAME" value="RemoveProductWithoutPermission" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -177,19 +169,19 @@
     <list>
       <item itemvalue="Application.runServer" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
-      <item itemvalue="JUnit.GuestTest.testPurchaseCartSameTime" />
-      <item itemvalue="JUnit.MemberTest" />
-      <item itemvalue="JUnit.MemberTest.testPurchaseCart" />
-      <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailablePSCartAndBuy" />
+      <item itemvalue="JUnit.StoreManagerTests" />
+      <item itemvalue="JUnit.StoreManagerTests.AddProductWithPermission" />
+      <item itemvalue="JUnit.StoreManagerTests.RemoveProductWithPermission" />
+      <item itemvalue="JUnit.StoreManagerTests.RemoveProductWithoutPermission" />
       <item itemvalue="JUnit.junit in work1" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.StoreManagerTests.RemoveProductWithPermission" />
+        <item itemvalue="JUnit.StoreManagerTests" />
+        <item itemvalue="JUnit.StoreManagerTests.AddProductWithPermission" />
+        <item itemvalue="JUnit.StoreManagerTests.RemoveProductWithoutPermission" />
         <item itemvalue="JUnit.junit in work1" />
-        <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailablePSCartAndBuy" />
-        <item itemvalue="JUnit.MemberTest" />
-        <item itemvalue="JUnit.MemberTest.testPurchaseCart" />
-        <item itemvalue="JUnit.GuestTest.testPurchaseCartSameTime" />
       </list>
     </recent_temporary>
   </component>
@@ -225,7 +217,7 @@
       <workItem from="1687155489402" duration="1285000" />
       <workItem from="1687158769895" duration="885000" />
       <workItem from="1687160066327" duration="9425000" />
-      <workItem from="1687196751615" duration="10362000" />
+      <workItem from="1687196751615" duration="13686000" />
     </task>
     <task id="LOCAL-00001" summary="adding jdk">
       <created>1685879507188</created>
@@ -285,11 +277,6 @@
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java</url>
-          <line>216</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/service/ExternalService/WSEPServiceTest.java</url>
           <line>44</line>
           <option name="timeStamp" value="31" />
@@ -345,11 +332,6 @@
           <option name="timeStamp" value="241" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/service/UserController.java</url>
-          <line>372</line>
-          <option name="timeStamp" value="243" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/GuestTest.java</url>
           <line>228</line>
           <option name="timeStamp" value="244" />
@@ -373,6 +355,16 @@
           <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreOwnerTest.java</url>
           <line>557</line>
           <option name="timeStamp" value="252" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java</url>
+          <line>265</line>
+          <option name="timeStamp" value="253" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/AcceptanceTests/junit/StoreManagerTests.java</url>
+          <line>243</line>
+          <option name="timeStamp" value="256" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
