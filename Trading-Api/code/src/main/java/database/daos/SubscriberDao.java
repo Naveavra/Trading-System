@@ -244,7 +244,8 @@ public class SubscriberDao {
     }
 
     public static void removeCartProduct(int userId, int storeId, int productId){
-        Dao.removeIf("CartDto", String.format("memberId = %d AND storeId = %d AND productId = %d"));
+        Dao.removeIf("CartDto", String.format("memberId = %d AND storeId = %d AND productId = %d",
+                userId, storeId, productId));
         if(cartsMap.containsKey(userId))
             try {
                 cartsMap.get(userId).removeProductFromCart(storeId, productId);
