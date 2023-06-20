@@ -47,7 +47,6 @@ public class StoreController {
         int id = -1;
         if ((st = getStore(storeId)) != null) {
             Product p = st.addNewProduct(name, desc, productIDs,price,quantity, categories);
-            p.replaceQuantity(quantity);
             addToProducts(p.clone());
             id = p.getID();
         }
@@ -60,7 +59,6 @@ public class StoreController {
         int id = -1;
         if ((st = getStore(storeid)) != null) {
             Product p = st.addNewProduct(name, desc, productIDs,price,quantity, img, categories);
-            p.replaceQuantity(quantity);
             addToProducts(p.clone());
             id = p.getID();
         }

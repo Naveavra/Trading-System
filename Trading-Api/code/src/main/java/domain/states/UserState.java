@@ -90,6 +90,7 @@ public abstract class UserState extends Information implements DbEntity {
     public List<String> appointManager(Member appointed) throws Exception{
         checkPermission(Action.appointManager);
         List<String> approvers = new ArrayList<>(store.getAppHistory().getStoreWorkersWithPermission(Action.appointManager));
+        store.canAppointUser(userId, appointed, Role.Manager);
         Appointment appointment = new Appointment(store, userId, userName, appointed, Role.Manager, approvers);
         store.addAppointment(appointment);
         Dao.save(appointment);
@@ -105,6 +106,7 @@ public abstract class UserState extends Information implements DbEntity {
 
     public List<String> appointOwner(Member appointed) throws Exception{
         checkPermission(Action.appointOwner);
+        store.canAppointUser(userId, appointed, Role.Owner);
         List<String> approvers = new ArrayList<>(store.getAppHistory().getStoreWorkersWithPermission(Action.appointOwner));
         Appointment appointment = new Appointment(store, userId, userName, appointed, Role.Owner, approvers);
         store.addAppointment(appointment);

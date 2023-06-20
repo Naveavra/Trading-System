@@ -121,7 +121,7 @@ public class Member extends Subscriber implements User{
 
     public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
         cart.changeQuantityInCart(storeId, product, change);
-        SubscriberDao.updateCartProduct(id, storeId, product.getId(), cart.getBasket(storeId).getProduct(product.id).getQuantity());
+        Dao.save(new CartDto(id, storeId, product.id, cart.getBasket(storeId).getProduct(product.getId()).getQuantity()));
     }
 
     public List<ProductInfo> getCartContent() {

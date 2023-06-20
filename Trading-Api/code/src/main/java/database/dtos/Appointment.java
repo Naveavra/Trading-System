@@ -2,6 +2,8 @@ package database.dtos;
 
 import database.DbEntity;
 import database.daos.Dao;
+import database.daos.StoreDao;
+import database.daos.SubscriberDao;
 import domain.states.StoreManager;
 import domain.states.StoreOwner;
 import domain.states.UserState;
@@ -136,12 +138,19 @@ public class Appointment extends Information implements DbEntity {
             }catch (Exception ignored){}
         }
     }
-    @Override
-    public void initialParams() {
+
+    public boolean containsInApprove(String name){
+        for(String userName : approvers.keySet())
+            if(userName.equals(name))
+                return true;
+        return false;
     }
 
-
-    private List<String> getApprovedNames() {
+    public void removeApprover(String name) {
+        approvers.remove(name);
+        Dao.removeIf("AppApproved", String.format("storeId = %d AND approverName = '%s' ", storeId, name));
+    }
+    public List<String> getApprovedNames() {
         List<String> ans = new ArrayList<>();
         for(String name : approvers.keySet())
             if(approvers.get(name))
@@ -149,7 +158,7 @@ public class Appointment extends Information implements DbEntity {
         return ans;
     }
 
-    private List<String> getNotApproved() {
+    public List<String> getNotApproved() {
         List<String> ans = new ArrayList<>();
         for(String name : approvers.keySet())
             if(!approvers.get(name))
@@ -168,4 +177,33 @@ public class Appointment extends Information implements DbEntity {
         json.put("status", approved);
         return json;
     }
+
+    @Override
+    public void initialParams() {
+        getStoreFromDb();
+        getChildFromDb();
+        getApproversFromDb();
+    }
+
+    private void getStoreFromDb(){
+        if(store == null)
+            store = StoreDao.getStore(storeId);
+    }
+
+    private void getChildFromDb(){
+        if(child == null)
+            child = SubscriberDao.getMember(childName);
+    }
+
+    private void getApproversFromDb(){
+        if(approvers == null) {
+            approvers = new HashMap<>();
+            List<? extends DbEntity> approversDb = Dao.getByParamList(AppApproved.class, "AppApproved",
+                    String.format("storeId = %d AND fatherId = %d AND childId = %d", storeId, fatherId, child.getId()));
+            for (AppApproved appApproved : (List<AppApproved>) approversDb)
+                approvers.put(appApproved.getApproverName(), appApproved.isApproved());
+        }
+
+    }
+
 }

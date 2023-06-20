@@ -19,9 +19,9 @@ class GuestTest {
     @BeforeEach
     void setUp() {
         Dao.setForTests(true);
-        apple = new Product(0, 0, "apple", "red apple");
+        apple = new Product(0, 0, "apple", "red apple", 50, 50);
         p =  new ProductInfo(0, apple, 10);
-        banana = new Product(0, 1, "banana", "yellow banana");
+        banana = new Product(0, 1, "banana", "yellow banana", 50, 50);
         p2 =  new ProductInfo(0, banana, 10);
         guest = new Guest(2);
     }

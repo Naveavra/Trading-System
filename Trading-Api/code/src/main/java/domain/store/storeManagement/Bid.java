@@ -3,6 +3,7 @@ package domain.store.storeManagement;
 import database.DbEntity;
 import database.daos.Dao;
 import database.daos.StoreDao;
+import database.daos.SubscriberDao;
 import database.dtos.ApproverDto;
 import domain.store.product.Product;
 import domain.user.Member;
@@ -17,7 +18,6 @@ import java.util.*;
 @Entity
 @Table(name = "bids")
 public class Bid extends Information implements DbEntity{
-
     public enum status {Declined,Approved,Pending, Counter, Completed}
     @Id
     private int bidId;
@@ -37,6 +37,9 @@ public class Bid extends Information implements DbEntity{
     @Transient
     private HashMap<String, Boolean> approvers;
     private String counterOffer;
+
+    public Bid(){
+    }
     public Bid(int id,Member user, int storeId, Product p, double offer, int quantity, ArrayList<String> approvers){
         this.bidId = id;
         this.offer = offer;
@@ -137,6 +140,20 @@ public class Bid extends Information implements DbEntity{
     public String getBidTime() {
         return bidTime;
     }
+
+    public boolean containsInApprove(String name) {
+        for(String userName : approvers.keySet())
+            if(userName.equals(name))
+                return true;
+        return false;
+    }
+
+    public void removeApprover(String name) {
+        approvers.remove(name);
+        Dao.removeIf("ApproverDto", String.format("storeId = %d AND manager = '%s' ", storeId, name));
+    }
+
+
     public ArrayList<String> getApprovers(){return new ArrayList<>(this.approvers.keySet());}
     public List<String> getApproved(){
         List<String> ans = new ArrayList<>();
@@ -185,7 +202,30 @@ public class Bid extends Information implements DbEntity{
 
     @Override
     public void initialParams() {
+        getProductFromDb();
+        getUserFromDb();
+        getApproversFromDb();
 
+    }
+
+    private void getProductFromDb(){
+        if(product == null)
+            product = StoreDao.getProduct(storeId, productId);
+    }
+
+    private void getUserFromDb(){
+        if(user == null)
+            user = SubscriberDao.getMember(userId);
+    }
+
+    private void getApproversFromDb(){
+        if(approvers == null){
+            approvers = new HashMap<>();
+            List<? extends  DbEntity> approversDto = Dao.getByParamList(ApproverDto.class, "ApproverDto",
+                    String.format("storeId = %d AND bidId = %d", storeId, bidId));
+            for(ApproverDto approverDto : (List<ApproverDto>) approversDto)
+                approvers.put(approverDto.getManager(), approverDto.isApproved());
+        }
     }
 
 }

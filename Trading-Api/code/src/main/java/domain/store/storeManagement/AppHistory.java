@@ -94,6 +94,24 @@ public class AppHistory{
         usersInStore = new HashSet<>();
         usersInStore.add(creatorNode.getFirst().getId());
     }
+    public void canAddNode(int father, Member child, Role role) throws Exception{
+        Node childNode = root.findNode(child.getId());
+        Node fatherNode = root.findNode(father);
+        if (fatherNode != null) {
+            if (childNode != null) {
+                if (childNode.data.getSecond().getRole() == role) {
+                    throw new Exception("user already have a role in the store");
+                }
+                if (childNode.isAncestor(fatherNode, childNode)) {
+                    throw new Exception("circular appointment");
+                }
+            }
+            return;
+        }
+        throw new Exception("User cant appoint other users in the store");
+
+    }
+
     public boolean addNode(Integer father, Pair<Member, UserState> child) throws Exception {
         Node childNode = root.findNode(child.getFirst().getId());
         Node fatherNode = root.findNode(father);

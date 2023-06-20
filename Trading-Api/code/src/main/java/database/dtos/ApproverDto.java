@@ -6,19 +6,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "approves")
+@Table(name = "bidApproves")
 public class ApproverDto implements DbEntity {
-
     @Id
-    public int bidId;
-
+    private int bidId;
     @Id
-    public int storeId;
-
+    private int storeId;
     @Id
-    public String manager;
+    private String manager;
 
-    public boolean approved;
+    private boolean approved;
 
     public ApproverDto(){
     }
@@ -49,5 +46,21 @@ public class ApproverDto implements DbEntity {
 
     public void setManager(String manager) {
         this.manager = manager;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
     }
 }

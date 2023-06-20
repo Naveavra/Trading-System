@@ -27,6 +27,7 @@ import domain.user.User;
 import jakarta.persistence.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.mockito.internal.matchers.Or;
 import utils.Filter.FilterStrategy;
 import utils.Filter.ProductFilter;
 import utils.infoRelated.*;
@@ -38,6 +39,7 @@ import utils.messageRelated.StoreReview;
 import utils.orderRelated.Order;
 import domain.store.product.Product;
 import utils.stateRelated.Action;
+import utils.stateRelated.Role;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -284,6 +286,9 @@ public class Store extends Information implements DbEntity {
         }
     }
 
+    public void canAppointUser(int father, Member appointed, Role role) throws Exception{
+        appHistory.canAddNode(father, appointed, role);
+    }
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
         Pair<Member, UserState> node = new Pair<>(newUser, role);
         appHistory.addNode(userinchargeid, node);
@@ -331,6 +336,13 @@ public class Store extends Information implements DbEntity {
     {
         String joblessName = appHistory.getNode(joblessuser).getData().getFirst().getName();
         Set<Integer> ans = new HashSet<>(appHistory.removeChild(joblessuser));
+        appointments.removeIf(app -> app.getFatherId() == joblessuser || app.getChildId() == joblessuser);
+        for(Appointment app : appointments)
+            if(app.containsInApprove(joblessName))
+                app.removeApprover(joblessName);
+        for(Bid bid: bids)
+            if(bid.containsInApprove(joblessName))
+                bid.removeApprover(joblessName);
         StoreDao.removeAppointment(storeId, joblessuser, joblessName);
         return ans;
     }
@@ -791,12 +803,11 @@ public class Store extends Information implements DbEntity {
         getConstraintsFromDb();
         getDiscountsFromDb();
 
-        appointments = new ArrayList<>();
-        storeOrders = new ConcurrentHashMap<>();
-        bids = new ArrayList<>();
-        purchasePolicies = new ArrayList<>();
-        discounts = new ArrayList<>();
-        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
+//        storeOrders = new ConcurrentHashMap<>();
+//        bids = new ArrayList<>();
+//        purchasePolicies = new ArrayList<>();
+//        discounts = new ArrayList<>();
+//        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
     }
 
 
@@ -809,6 +820,8 @@ public class Store extends Information implements DbEntity {
     private void getAppHistoryFromDb(){
         if(appHistory == null)
             appHistory = StoreDao.getAppHistory(storeId, creatorId);
+        if(appointments == null)
+            appointments = StoreDao.getAppointments(storeId);
     }
 
     private void getInventoryFromDb(){
@@ -838,17 +851,41 @@ public class Store extends Information implements DbEntity {
 
     private void getOrdersFromDb() {
         if(storeOrders == null){
-
+            storeOrders = new ConcurrentHashMap<>();
+            List<Order> orders = StoreDao.getOrders(storeId);
+            for(Order order : orders)
+                storeOrders.put(order.getOrderId(), order);
         }
     }
 
     private void getBidsFromDb() {
+        if(bids == null){
+            bids = (ArrayList<Bid>) StoreDao.getBids(storeId);
+        }
     }
 
     private void getConstraintsFromDb() {
+        if(purchasePolicies == null) {
+            purchasePolicies = new ArrayList<>();
+            List<ConstraintDto> constraintDtos = StoreDao.getConstraints(storeId);
+            for (ConstraintDto constraintDto : constraintDtos) {
+                try {
+                    parsePurchasePolicy(constraintDto.getContent());
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
     }
 
     private void getDiscountsFromDb() {
+        if(discounts == null){
+            discounts = new ArrayList<>();
+            discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
+            List<DiscountDto> discountDtos = StoreDao.getDiscounts(storeId);
+            for(DiscountDto discountDto : discountDtos)
+                parseDiscounts(discountDto.getContent());
+        }
     }
 
     public void addCompositeDiscount(JSONObject req) throws Exception {
@@ -870,6 +907,20 @@ public class Store extends Information implements DbEntity {
                 return b;
         throw new Exception("the id given does not belong to any bid in store");
     }
+
+    public void removeConstraint(int constraintId){
+
+
+        StoreDao.removeConstraint(storeId, constraintId);
+    }
+
+    public void removeDiscount(int discountId){
+
+
+        StoreDao.removeDiscount(storeId, discountId);
+
+    }
+
 //    public void clientAcceptCounter(int bidId) {
 //        Member user;
 //        int prodId;
