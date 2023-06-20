@@ -93,7 +93,7 @@ public class DiscountFactory {
         }
         concreteDiscount.setOperations(getProdOp,getCategoryOp);
 
-        return discountData.predicates == null || discountData.predicates.isEmpty()? concreteDiscount : addPredicates(concreteDiscount,discountData);
+        return (discountData.predicates == null || discountData.predicates.isEmpty())? concreteDiscount : addPredicates(concreteDiscount,discountData);
     }
 
     private Discount addPredicates(Discount concreteDiscount, DiscountDataObject discountData) {

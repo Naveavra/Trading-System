@@ -614,29 +614,22 @@ public class Server {
         });
         post("api/discounts/composite", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
-            System.out.println(request);
-            System.out.println(req.body());
-//            int storeId = Integer.parseInt(request.get("storeId").toString());
-//            int userId = Integer.parseInt(request.get("userId").toString());
-//            int percentage =  Integer.parseInt(request.get("percentage").toString());
-//            String discountType = request.get("discountType").toString();
-//            int prodId = Integer.parseInt(request.get("prodId").toString());
-//            String discountedCategory = request.get("discountedCategory").toString();
-//            String predicates = request.get("predicates").toString();
-//            JSONObject predicatesJson = new JSONObject(request.get("predicates"));
-//            List<String> predicatesLst =null;
-//            if (!predicates.equals("null")) {
-//                String[] arr = predicates.substring(1, predicates.length() - 1).split(",");
-//                predicatesLst =new ArrayList<>(Arrays.asList(arr));
-//            }
-//            String token = req.headers("Authorization");
-//            toSparkRes(res, api.changeRegularDiscount(userId, token, storeId, prodId, percentage, discountType,
-//                    discountedCategory, predicatesLst));
+//            System.out.println(request);
+//            System.out.println(req.body());
             String token = req.headers("Authorization");
             toSparkRes(res,api.addCompositeDiscount(token,req.body()));
             return res.body();
         });
 
+        delete("api/discounts",(req,res)->{
+           JSONObject request = new JSONObject(req.body());
+           int userId = Integer.parseInt(request.get("userId").toString());
+           int storeId = Integer.parseInt(request.get("storeId").toString());
+           int discountId = Integer.parseInt(request.get("discountId").toString());
+           String token = req.headers("Authorization");
+           toSparkRes(res,api.removeDiscount(token,userId,storeId,discountId));
+           return res.body();
+        });
 
         // ------------------------Discount-------------------------------
 

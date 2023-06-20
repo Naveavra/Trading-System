@@ -1493,7 +1493,7 @@ public class Market implements MarketInterface {
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.addPurchaseConstraint, storeId);
-            marketController.deletePurchaseConstraint(userId, storeId, purchasePolicyId);
+            marketController.deletePurchaseConstraint(storeId, purchasePolicyId);
             addNotification(userId, NotificationOpcode.GET_STORE_DATA, "null");
             return logAndRes(Event.LogStatus.Success, "Member deleted shopping constraint " + userId + " has successfully entered",
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -1517,4 +1517,32 @@ public class Market implements MarketInterface {
 
     }
 
+    public Response removeDiscount(String token, int userId, int storeId, int discountId) {
+        try {
+            userAuth.checkUser(userId, token);
+            marketController.removeDiscount(storeId, discountId);
+            addNotification(userId,NotificationOpcode.GET_STORE_DATA,"null");
+            return logAndRes(Event.LogStatus.Success,"User removed a discount successfully, userId: "+userId,
+                    StringChecks.curDayString(),userController.getUserName(userId),
+                    discountId,null,null);
+        }
+        catch (Exception e){
+            return logAndRes(Event.LogStatus.Fail, "cant delete discount because: " + e.getMessage(),
+                StringChecks.curDayString(), "user"+userId,
+                null, "delete discount failed", e.getMessage());
+        }
+    }
+///try {
+//        userAuth.checkUser(userId, token);
+//        userController.checkPermission(userId, Action.addPurchaseConstraint, storeId);
+//        marketController.deletePurchaseConstraint(storeId, purchasePolicyId);
+//        addNotification(userId, NotificationOpcode.GET_STORE_DATA, "null");
+//        return logAndRes(Event.LogStatus.Success, "Member deleted shopping constraint " + userId + " has successfully entered",
+//                StringChecks.curDayString(), userController.getUserName(userId),
+//                purchasePolicyId, null, null);
+//    }catch (Exception e){
+//        return logAndRes(Event.LogStatus.Fail, "cant delete shopping rule because: " + e.getMessage(),
+//                StringChecks.curDayString(), "user"+userId,
+//                null, "delete shopping rule failed", e.getMessage());
+//    }
 }
