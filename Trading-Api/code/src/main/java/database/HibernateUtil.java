@@ -72,7 +72,9 @@ public class HibernateUtil {
                         .applySettings(configuration.getProperties()).build();
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             }catch (Exception e){
-                e.printStackTrace();
+                System.out.println("connection to db failed. check url given and if the connection is online");
+                System.exit(-1);
+
             }
         }
         return sessionFactory;
