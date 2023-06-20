@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bb606f76-3d46-4321-b24a-31cf656c61ab" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/purchase/UserPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/purchase/UserPolicy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
-    </list>
+    <list default="true" id="bb606f76-3d46-4321-b24a-31cf656c61ab" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

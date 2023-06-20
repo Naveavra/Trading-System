@@ -169,11 +169,45 @@ const { reducer: discountReducer, actions: discountActions } = createSlice({
             }
         },
         setParamsToTmpPredicate: (state, { payload }) => {
+            function replaceFirstParam(inputString: string, newInput: string): string {
+                const params = inputString.split(',');
+                if (params.length >= 2) {
+                    params[0] = newInput;
+                }
+                return params.join(',');
+            }
+            const newParams = state.tmpPredicate.params.includes(',') ? replaceFirstParam(state.tmpPredicate.params, payload) : payload + ',';
             return {
                 ...state,
                 tmpPredicate: {
                     ...state.tmpPredicate,
-                    params: payload
+                    params: newParams
+                }
+            }
+        },
+        addParamsToTmpPredicate: (state, { payload }) => {
+            function replaceSecondParam(inputString: string, newInput: string): string {
+                const params = inputString.split(',');
+                if (params.length >= 2) {
+                    params[1] = newInput;
+                }
+                return params.join(',');
+            }
+            const newParams = replaceSecondParam(state.tmpPredicate.params, payload);
+            return {
+                ...state,
+                tmpPredicate: {
+                    ...state.tmpPredicate,
+                    params: newParams
+                }
+            }
+        },
+        removeFromPredicate: (state, { payload }) => {
+            return {
+                ...state,
+                tmpPredicate: {
+                    ...state.tmpPredicate,
+                    params: state.tmpPredicate.params.substring(0, state.tmpPredicate.params.length - 1)
                 }
             }
         },
@@ -313,6 +347,8 @@ export const {
     addPredicateToRegularDiscount,
     setPredicateTypeToTmpPredicate,
     setParamsToTmpPredicate,
+    addParamsToTmpPredicate,
+    removeFromPredicate,
     setComposoreToTmpPredicate,
     clearTmpPredicate,
     clearDiscountError,
