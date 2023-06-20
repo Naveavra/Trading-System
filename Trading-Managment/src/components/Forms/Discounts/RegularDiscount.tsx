@@ -2,7 +2,7 @@ import { Dialog, Box, Grid, Typography, Button, TextField } from "@mui/material"
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../../redux/store";
-import { addPredicateToRegularDiscount, addRegularDiscount, addRegularDiscountToSource, cleanRegularDiscount, clearTmpPredicate, setCategoryToRegularDiscount, setComposoreToTmpPredicate, setDiscountTypeToRegularDiscount, setParamsToTmpPredicate, setpercentageToRegularDiscount, setPredicateTypeToTmpPredicate, setProductIdToRegularDiscount, setSourceForPredicate, setSourceToRegularDiscount } from "../../../reducers/discountSlice";
+import { addParamsToTmpPredicate, addPredicateToRegularDiscount, addRegularDiscount, addRegularDiscountToSource, cleanRegularDiscount, clearTmpPredicate, removeFromPredicate, setCategoryToRegularDiscount, setComposoreToTmpPredicate, setDiscountTypeToRegularDiscount, setParamsToTmpPredicate, setpercentageToRegularDiscount, setPredicateTypeToTmpPredicate, setProductIdToRegularDiscount, setSourceForPredicate, setSourceToRegularDiscount } from "../../../reducers/discountSlice";
 import { Composore, PredicateType } from "../../../types/systemTypes/Discount";
 
 interface props {
@@ -30,6 +30,7 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
     const predicates = useAppSelector((state: RootState) => state.discount?.currentRegularDiscount.predicates);
     const tmpPredicate = useAppSelector((state) => state.discount.tmpPredicate);
 
+    const [secParam, setSecParam] = useState(false);
     const [sorce, setSorce] = useState('');
     const [description, setDescription] = useState('');
     const handleOnClose = useCallback(() => {
@@ -118,19 +119,26 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
     }
     const handleOnPredicatePrice = () => {
         setSecondType('Price');
+        setSecParam(false);
         firstType === 'Min' ? dispatch(setPredicateTypeToTmpPredicate(PredicateType.MinPrice)) : dispatch(setPredicateTypeToTmpPredicate(PredicateType.MaxPrice));
     }
     const handleOnPredicateItem = () => {
         setSecondType('Item');
+        setSecParam(false);
         firstType === 'Min' ? dispatch(setPredicateTypeToTmpPredicate(PredicateType.MinNumOfItem)) : dispatch(setPredicateTypeToTmpPredicate(PredicateType.MaxNumOfItem));
     }
     const handleOnPredicateCategory = () => {
         setSecondType('Category');
+        setSecParam(false);
         firstType === 'Min' ? dispatch(setPredicateTypeToTmpPredicate(PredicateType.MinNumFromCategory)) : dispatch(setPredicateTypeToTmpPredicate(PredicateType.MaxNumFromCategory));
     }
     const setParamsToPredicate = (input: string) => {
         console.log(input);
+        setSecParam(true);
         dispatch(setParamsToTmpPredicate(input));
+    }
+    const addParamsToPredicate = (input: string) => {
+        dispatch(addParamsToTmpPredicate(input));
     }
     const handleAddComposore = () => {
         setLast(true);
@@ -146,6 +154,10 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
     const handleXor = () => {
         setThirdType('Xor');
         dispatch(setComposoreToTmpPredicate(Composore.XOR));
+    }
+    const handleNull = () => {
+        setThirdType('Null');
+        dispatch(setComposoreToTmpPredicate(Composore.NULL));
     }
     const handleOnSubmitPredicate = () => {
         setFirstType('');
@@ -367,30 +379,60 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
                     : null
                 }
                 {secondType === 'Item' ?
-                    <Grid item xs={12}>
-                        <TextField
-                            required
-                            id="outlined-required"
-                            label="enter product id"
-                            onChange={(e) => { setParamsToPredicate(e.target.value) }}
-                        />
-                    </Grid> : null}
+                    <>
+                        <Grid item xs={12}>
+                            <TextField
+                                required
+                                id="outlined-required"
+                                label="enter product id"
+                                onChange={(e) => { setParamsToPredicate(e.target.value) }}
+                            />
+                        </Grid>
+                        {secParam ?
+                            <Grid item xs={12} sx={{ mt: 2 }}>
+                                <TextField
+                                    required
+                                    id="outlined-required"
+                                    label="enter amount"
+                                    onChange={(e) => { addParamsToPredicate(e.target.value) }}
+                                />
+                            </Grid> : null}
+                    </> : null}
                 {secondType === 'Category' ?
-                    <Grid item xs={12}>
-                        <TextField
-                            required
-                            id="outlined-required"
-                            label="enter category"
-                            onChange={(e) => { setParamsToPredicate(e.target.value) }}
-                        />
-                    </Grid> : null}
+                    <>
+
+                        <Grid item xs={12}>
+                            <TextField
+                                required
+                                id="outlined-required"
+                                label="enter category"
+                                onChange={(e) => { setParamsToPredicate(e.target.value) }}
+                            />
+                        </Grid>
+                        {secParam ?
+                            <Grid item xs={12} sx={{ mt: 2 }}>
+                                <TextField
+                                    required
+                                    id="outlined-required"
+                                    label="enter amount"
+                                    onChange={(e) => { addParamsToPredicate(e.target.value) }}
+                                />
+                            </Grid> : null}
+                    </>
+
+                    : null}
                 {secondType === 'Price' ?
                     <Grid item xs={12}>
                         <TextField
                             required
                             id="outlined-required"
                             label="enter price"
-                            onChange={(e) => { setParamsToPredicate(e.target.value) }}
+                            onChange={(e) => {
+                                debugger;
+                                setParamsToPredicate(e.target.value);
+                                addParamsToPredicate('');
+                                dispatch(removeFromPredicate(''));
+                            }}
                         />
                     </Grid> : null}
                 {last ?
@@ -425,6 +467,16 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
                                 color={thirdType === 'Xor' ? 'success' : 'primary'}
                             >
                                 Xor
+                            </Button>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2, marginRight: 2, marginLeft: 2 }}
+                                onClick={handleNull}
+                                color={thirdType === 'Null' ? 'success' : 'primary'}
+                            >
+                                Null
                             </Button>
                         </Box>
                     </>

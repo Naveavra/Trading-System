@@ -28,6 +28,7 @@ export enum Composore {
     AND = "And",
     OR = "Or",
     XOR = "Xor",
+    NULL = "Null",
 }
 export enum DiscountType {
     Product = "Product",
