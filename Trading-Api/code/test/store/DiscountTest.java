@@ -19,6 +19,7 @@ import domain.store.storeManagement.Store;
 import domain.store.storeManagement.StoreController;
 import domain.user.Member;
 import domain.user.ShoppingCart;
+import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
@@ -47,10 +48,12 @@ public class DiscountTest {
     Inventory inv2;
     Member creator;
     Member worker;
+    JSONObject content = new JSONObject();
 
     @BeforeEach
     void setUp() throws Exception{
         Dao.setForTests(true);
+        content.put("description","");
         creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
         worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2002");
         AtomicInteger inventoryIds1 = new AtomicInteger();
@@ -99,14 +102,14 @@ public class DiscountTest {
         predicates.add(p1);
         //Discounts
         DiscountDataObject d1 = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Store,0,"",predicates);
-        s1.addDiscount(d1,"");
+        s1.addDiscount(d1,content.toString());
     }
 
     void categoryDiscountSetup(){
         DiscountDataObject d1 = new DiscountDataObject(50,AbstractDiscount.discountTypes.Category,0,Yellow,new ArrayList<>());
-        s1.addDiscount(d1,"");
+        s1.addDiscount(d1,content.toString());
         DiscountDataObject d2 = new DiscountDataObject(50,AbstractDiscount.discountTypes.Category,0,Bananas,new ArrayList<>());
-        s2.addDiscount(d2,"");
+        s2.addDiscount(d2,content.toString());
     }
 
     void itemDiscountSetup(){
@@ -118,15 +121,15 @@ public class DiscountTest {
         predicates.add(p2);
 
         DiscountDataObject d1 = new DiscountDataObject(percentage,AbstractDiscount.discountTypes.Product,s1Product1ID,"",new ArrayList<>());
-        s1.addDiscount(d1,"");
+        s1.addDiscount(d1,content.toString());
 
         DiscountDataObject d2 = new DiscountDataObject(percentage,AbstractDiscount.discountTypes.Product,s2Product2ID,"",predicates);
-        s2.addDiscount(d2,"");
+        s2.addDiscount(d2,content.toString());
 
         PredicateDataObject p1 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumFromCategory,minNumFromCategoryParams,And);
         predicates.add(p1);
         DiscountDataObject d3 = new DiscountDataObject(percentage,AbstractDiscount.discountTypes.Product,s2Product1ID,"",predicates);
-        s2.addDiscount(d3,"");
+        s2.addDiscount(d3,content.toString());
     }
 
     void composeDiscountsSetup() throws Exception {
@@ -230,7 +233,8 @@ public class DiscountTest {
         int prod3Quantity = 1;
         PredicateDataObject predicate = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinPrice,minPriceParams,null);
         DiscountDataObject discount = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Product,s1Product1ID,"",new ArrayList<>(Arrays.asList(predicate)));
-        s1.addDiscount(discount,"");
+
+        s1.addDiscount(discount,content.toString());
         ShoppingCart cart = new ShoppingCart();
         //added 2 bananas, 20 before discount
         cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(), inv1.getProduct(s1Product1ID),prod1InitialQuantity),prod1InitialQuantity);
@@ -343,7 +347,7 @@ public class DiscountTest {
         PredicateDataObject pred1 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinPrice,minPriceParams, null);
         PredicateDataObject pred2 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,minNumOfItemParams,And);
         DiscountDataObject dis = new DiscountDataObject(percentage, AbstractDiscount.discountTypes.Category,0,Bananas,new ArrayList<>(Arrays.asList(pred1,pred2)));
-        s1.addDiscount(dis,"");
+        s1.addDiscount(dis,content.toString());
 
         ShoppingCart cart = new ShoppingCart();
         cart.changeQuantityInCart(s1.getStoreId(),new ProductInfo(s1.getStoreId(),inv1.getProduct(s1Product1ID),prod1InitialQuantity),prod1InitialQuantity); //20
