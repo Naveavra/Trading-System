@@ -1,8 +1,10 @@
 package domain.states;
 
 import database.daos.Dao;
+import database.daos.SubscriberDao;
 import domain.store.storeManagement.Store;
 import jakarta.persistence.Entity;
+import org.hibernate.Session;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
@@ -44,13 +46,11 @@ public class StoreCreator extends UserState {
         actions.add(Action.closeStore);
         actions.add(Action.reopenStore);
 
-        for(Action a : actions)
-            Dao.save(new Permission(userId, storeId, a));
         permissions.addActions(actions);
     }
 
     @Override
-    protected void getPermissionsFromDb() {
+    protected void getPermissionsFromDb() throws Exception{
         getPermissionsHelp();
     }
 }

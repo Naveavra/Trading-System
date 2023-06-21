@@ -8,9 +8,11 @@ import database.dtos.ReceiptDto;
 import domain.store.storeManagement.Store;
 import domain.user.*;
 import jakarta.persistence.*;
+import org.hibernate.Session;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "receipts")
@@ -34,9 +36,11 @@ public class Receipt extends Information implements DbEntity {
         this.orderId = orderId;
         this.products = products;
         this.totalPrice = totalPrice;
+    }
+
+    public void saveReceiptProducts(Session session) throws Exception{
         for(ProductInfo productInfo : products.getContent())
-            Dao.save(new ReceiptDto(orderId, productInfo.storeId, productInfo.id, productInfo.getQuantity()));
-        SubscriberDao.saveReceipt(this);
+            Dao.save(new ReceiptDto(orderId, productInfo.storeId, productInfo.id, productInfo.getQuantity()), session);
     }
 
     public Member getMember(){
@@ -69,7 +73,7 @@ public class Receipt extends Information implements DbEntity {
     }
 
     @Override
-    public void initialParams() {
+    public void initialParams() throws Exception{
         getMemberFromDb();
         List<? extends DbEntity> prods = Dao.getListById(ReceiptDto.class, orderId,
                 "ReceiptDto", "orderId");
@@ -85,7 +89,7 @@ public class Receipt extends Information implements DbEntity {
         }
     }
 
-    public void getMemberFromDb(){
+    public void getMemberFromDb() throws Exception{
         if(member == null)
             member = SubscriberDao.getMember(memberId);
     }

@@ -41,9 +41,9 @@ class StoreTest {
         worker2 = new Member(4, "eli2@gmail.com", "123Aaa", "24/02/2002");
         store = new Store(0, "candy shop", creator);
         List<String> categories = new ArrayList<>();
-        store.addNewProduct("gum", "gumigun", new AtomicInteger(0), 10, 3, categories);
+        store.addNewProduct("gum", "gumigun", new AtomicInteger(0), 10, 3, categories, null);
         store.getInventory().getProduct(0).replaceQuantity(10);
-        store.addNewProduct("coke", "diet", new AtomicInteger(1), 10, 3, categories);
+        store.addNewProduct("coke", "diet", new AtomicInteger(1), 10, 3, categories, null);
         store.getInventory().getProduct(1).replaceQuantity(10);
         store.appointUser(creator.getId(), worker, new StoreManager(worker.getId(), worker.getName(), null));
         store.appointUser(worker.getId(), worker2, new StoreManager(worker2.getId(), worker2.getName(), null));
@@ -69,8 +69,8 @@ class StoreTest {
                 store.getStoreId(), 4);
         StoreReview reviewB = new StoreReview(1, "shitty store", member, orderB_Id,
                 store.getStoreId(), 2);
-        store.addReview(orderA_Id, review);
-        store.addReview(orderB_Id, reviewB);
+        store.addReview(orderA_Id, review, null);
+        store.addReview(orderB_Id, reviewB, null);
         double rating = store.getStoreRating();
         int expectedRating = 3; //the rating supposed to be the average number of all ratings
         assertEquals(expectedRating, rating, "failed to get store rating");
@@ -82,7 +82,7 @@ class StoreTest {
             int invalidOrderId = 3;
             StoreReview review = new StoreReview(1, "great store", member, invalidOrderId,
                     store.getStoreId(), 5);
-            store.addReview(invalidOrderId, review);
+            store.addReview(invalidOrderId, review, null);
         });
         String expectedMessage = "order doesnt exist";
         String actualMessage = exception.getMessage();
@@ -104,7 +104,7 @@ class StoreTest {
         Set<Integer> set = new HashSet<>();
         set.add(worker.getId());
         set.add(worker2.getId());
-        Set<Integer> firedUsers = store.fireUser(worker.getId());
+        Set<Integer> firedUsers = store.fireUser(worker.getId(), null);
         assertEquals(set,firedUsers, "we fired user 1 and he appointed user 2 so he to should be fired");
     }
 
@@ -129,7 +129,7 @@ class StoreTest {
         Basket basket = new Basket(store.getStoreId());
         basket.addProductToCart(p, 5);
         basket.addProductToCart(p2, 5);
-        store.makeOrder(basket);
+        store.makeOrder(basket, null);
         int expectedQuantity = 5; //original quantity before purchasing was 10 we bought 5 10-5=5
         assertEquals(expectedQuantity, store.getInventory().getProduct(p.id).quantity, "total was 10 user bought 5");
         assertEquals(expectedQuantity, store.getInventory().getProduct(p2.id).quantity, "total was 10 user bought 5");
@@ -141,7 +141,7 @@ class StoreTest {
         int originalQuantity = 10;
         basket.addProductToCart(p, 5);
         basket.addProductToCart(p2, 11);
-        assertFalse(store.makeOrder(basket), "store quantity is 10, user wanted 11");
+        assertFalse(store.makeOrder(basket, null), "store quantity is 10, user wanted 11");
         assertEquals(originalQuantity, store.getInventory().getQuantity(p2.getId()), "the order failed so the quantity" +
                 "should remain the same");
     }
@@ -152,10 +152,10 @@ class StoreTest {
         basket.addProductToCart(p, 5);
         basket.addProductToCart(p2, 9);
         //store.createOrder(basket);
-        store.makeOrder(basket);
+        store.makeOrder(basket, null);
         Basket basket2 = new Basket(store.getStoreId());
         basket2.addProductToCart(p2, 2);
-        assertFalse(store.makeOrder(basket2), "store quantity is 1, user wanted 3");
+        assertFalse(store.makeOrder(basket2, null), "store quantity is 1, user wanted 3");
     }
 
     @Test
@@ -166,7 +166,7 @@ class StoreTest {
         p3.id = 2;
         basket.addProductToCart(p3, 11);
         Exception exception = assertThrows(Exception.class, () -> {
-            store.makeOrder(basket);
+            store.makeOrder(basket, null);
         });
         String expectedMessage = "Product not found, Id: 2";
         String actualMessage = exception.getMessage();
@@ -179,8 +179,8 @@ class StoreTest {
                 store.getStoreId(), 5);
         StoreReview reviewB = new StoreReview(1, "shitty store", member,
                 orderB_Id, store.getStoreId(), 0);
-        store.addReview(orderA_Id, review);
-        store.addReview(orderB_Id, reviewB);
+        store.addReview(orderA_Id, review, null);
+        store.addReview(orderB_Id, reviewB, null);
         ArrayList<String> actualMessages = store.checkMessages();
         ArrayList<String> expectedMessages = new ArrayList<>();
         expectedMessages.add("great store");

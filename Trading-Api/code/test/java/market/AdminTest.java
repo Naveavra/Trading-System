@@ -26,9 +26,13 @@ class AdminTest {
 
     @Test
     void addAdmin() {
-        int size = market.getAdminSize();
-        market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
-        assertEquals(size+1, market.getAdminSize());
+        try {
+            int size = market.getAdminSize();
+            market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
+            assertEquals(size+1, market.getAdminSize());
+        }catch (Exception e){
+            assert false;
+        }
     }
 
     @Test
@@ -50,11 +54,15 @@ class AdminTest {
     }
     @Test
     void removeAdmin() {
-        int size = market.getAdminSize();
-        market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
-        int adminId2 = market.login("ziv@gmail.com", "456Bbb").getValue().getUserId();
-        market.removeAdmin(adminId2, token);
-        assertEquals(size, market.getAdminSize());
+        try {
+            int size = market.getAdminSize();
+            market.addAdmin(adminId, token, "ziv@gmail.com", "456Bbb");
+            int adminId2 = market.login("ziv@gmail.com", "456Bbb").getValue().getUserId();
+            market.removeAdmin(adminId2, token);
+            assertEquals(size, market.getAdminSize());
+        }catch (Exception e){
+            assert false;
+        }
     }
 
     @Test

@@ -25,6 +25,7 @@ import domain.user.Member;
 import domain.user.ShoppingCart;
 import domain.user.User;
 import jakarta.persistence.*;
+import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.mockito.internal.matchers.Or;
@@ -104,7 +105,6 @@ public class Store extends Information implements DbEntity {
         discounts = new ArrayList<>();
         bids = new ArrayList<>();
         bidIds = new AtomicInteger();
-        Dao.save(this);
         appHistory = new AppHistory(storeId, creatorNode);
         appointments = new ArrayList<>();
         this.inventory = new Inventory(storeId);
@@ -131,7 +131,6 @@ public class Store extends Information implements DbEntity {
         this.imgUrl = imgUrl;
         bidIds = new AtomicInteger();
         bids = new ArrayList<>();
-        Dao.save(this);
         appHistory = new AppHistory(storeId, creatorNode);
         appointments = new ArrayList<>();
         this.inventory = new Inventory(storeId);
@@ -164,9 +163,10 @@ public class Store extends Information implements DbEntity {
             return sum / storeReviews.size();
     }
 
-    public int addQuestion(Question q)
+    public int addQuestion(Question q, Session session) throws Exception
     {
         questions.put(q.getMessageId(), q);
+        MessageDao.saveMessage(q, session);
         return creatorId;
     }
 
@@ -184,40 +184,40 @@ public class Store extends Information implements DbEntity {
         return ans;
     }
 
-    public void answerQuestion(int messageID, String answer) throws Exception {
+    public void answerQuestion(int messageID, String answer, Session session) throws Exception {
         Question msg = questions.get(messageID);
         if(msg != null) {
-            msg.sendFeedback(answer);
+            msg.sendFeedback(answer, session);
         }
         else
             throw new Exception("the id given does not belong to any question that was sent to store");
     }
 
-    public synchronized void addDiscount(DiscountDataObject discountData,String content){
+    public synchronized void addDiscount(DiscountDataObject discountData, String content, Session session) throws Exception{
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
             dis.setContent(content);
             dis.setDescription(new JSONObject(content).get("description").toString());
             discounts.add(dis);
             //TODO: check if need to add here to db
-            Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
+            Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()), session);
         }
     }
-    public synchronized void addDiscount(CompositeDataObject discountData,String content) throws Exception {
+    public synchronized void addDiscount(CompositeDataObject discountData,String content, Session session) throws Exception {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
             dis.setDescription(content);
             dis.setContent(content);
             discounts.add(dis);
-            StoreDao.saveDiscount(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()));
+            StoreDao.saveDiscount(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()), session);
         }
     }
 
-    public int addProductReview(ProductReview m) throws Exception
+    public int addProductReview(ProductReview m, Session session) throws Exception
     {
         if (storeOrders.containsKey(m.getOrderId()))
         {
-            inventory.addProductReview(m);
+            inventory.addProductReview(m, session);
             return creatorId;
         }
         else
@@ -264,24 +264,31 @@ public class Store extends Information implements DbEntity {
         this.storeDescription = storeDescription;
     }
 
-    public void addAppointment(Appointment appointment) {
+    public void addAppointment(Appointment appointment, Session session) throws Exception{
         if(!appointment.getApproved())
             appointments.add(appointment);
+        else
+            StoreDao.removeAppointment(storeId, appointment.getChildId(), appointment.getChildName(), session);
     }
 
-    public void answerAppointment(String userName, String fatherName, String childName, String ans) throws Exception{
+    public void answerAppointment(String userName, String fatherName, String childName, String ans, Session session) throws Exception{
         Appointment app = null;
         for(Appointment appointment : appointments)
             if (appointment.getFatherName().equals(fatherName) && appointment.getChildName().equals(childName))
                 app = appointment;
         if(app != null) {
             if (ans.equals("true")) {
-                app.approve(userName);
-                if (app.getApproved())
+                app.approve(userName, session);
+                if (app.getApproved()) {
                     appointments.remove(app);
+                    StoreDao.removeAppointment(storeId, app.getChildId(), app.getChildName(), session);
+                }
             } else if (ans.equals("false")) {
-                if (app.canDeny(userName))
+                if (app.canDeny(userName)) {
                     appointments.remove(app);
+                    StoreDao.removeAppointment(storeId, app.getChildId(), app.getChildName(), session);
+                }
+
             }
         }
     }
@@ -294,10 +301,11 @@ public class Store extends Information implements DbEntity {
         appHistory.addNode(userinchargeid, node);
         //Member father = appHistory.getNode(userinchargeid).getData().getFirst();
     }
-    public int addReview(int orderId, StoreReview review) throws Exception {
+    public int addReview(int orderId, StoreReview review, Session session) throws Exception {
         if (storeOrders.containsKey(orderId))
         {
             storeReviews.put(review.getMessageId(), review);
+            MessageDao.saveMessage(review, session);
             return creatorId;
         }
         throw new Exception("order doesnt exist");
@@ -332,18 +340,17 @@ public class Store extends Information implements DbEntity {
      * @return set aff all the other users who lost their role in our store
      * @throws Exception if the action isn't valid will throw exception
      */
-    public Set<Integer> fireUser(int joblessuser) throws Exception
-    {
+    public Set<Integer> fireUser(int joblessuser, Session session) throws Exception {
         String joblessName = appHistory.getNode(joblessuser).getData().getFirst().getName();
         Set<Integer> ans = new HashSet<>(appHistory.removeChild(joblessuser));
         appointments.removeIf(app -> app.getFatherId() == joblessuser || app.getChildId() == joblessuser);
         for(Appointment app : appointments)
             if(app.containsInApprove(joblessName))
-                app.removeApprover(joblessName);
+                app.removeApprover(joblessName, session);
         for(Bid bid: bids)
             if(bid.containsInApprove(joblessName))
-                bid.removeApprover(joblessName);
-        StoreDao.removeAppointment(storeId, joblessuser, joblessName);
+                bid.removeApprover(joblessName, session);
+        StoreDao.removeAppointment(storeId, joblessuser, joblessName, session);
         return ans;
     }
 
@@ -360,47 +367,26 @@ public class Store extends Information implements DbEntity {
      * @param quantity
      */
     public synchronized Product addNewProduct(String name, String description, AtomicInteger pid, int price,
-                                              int quantity, List<String> categories) throws Exception {
-        return inventory.addProduct(name, description, pid,price,quantity, categories);
+                                              int quantity, List<String> categories, Session session) throws Exception {
+        return inventory.addProduct(name, description, pid,price,quantity, categories, session);
     }
 
     public synchronized Product addNewProduct(String name, String description, AtomicInteger pid, int price,
-                                              int quantity, String img, List<String> categories) throws Exception {
-        return inventory.addProduct(name, description, pid,price,quantity, img, categories);
+                                              int quantity, String img, List<String> categories, Session session) throws Exception {
+        return inventory.addProduct(name, description, pid,price,quantity, img, categories, session);
     }
-    public synchronized Product addNewExistingProduct(Product p) throws Exception{
-        return inventory.addProduct(p);
+    public synchronized Product addNewExistingProduct(Product p, Session session) throws Exception{
+        return inventory.addProduct(p, session);
     }
     /**
      * adds the quantity to the product previous quantity
      * @param pid product quantity
      */
-    public void setProductQuantity(int pid, int quantity) throws Exception
+    public void setProductQuantity(int pid, int quantity, Session session) throws Exception
     {
-        inventory.addQuantity(pid, quantity);
+        inventory.addQuantity(pid, quantity, session);
     }
 
-    /**
-     * this function meant for the store owner only to change description of product p
-     * @param pid product id
-     */
-    public void setDescription(int pid, String description) throws Exception {
-        if (inventory.getProduct(pid)!= null)
-        {
-            inventory.setDescription(pid, description);
-            return;
-        }
-        throw new Exception("product isn't available at this store");
-    }
-
-    /**
-     * this function meant for the store owner only to change the price of product p
-     * @param pid product id
-     * @param newPrice new price should be a positive integer
-     */
-    public void setPrice(int pid, int newPrice) throws Exception  {
-        inventory.setPrice(pid, newPrice);
-    }
 
 
     public int getQuantityOfProduct(int pid) throws Exception {
@@ -464,7 +450,7 @@ public class Store extends Information implements DbEntity {
      * purchasing confirmed so this function adjust the quantity in the store inventory
      * @return true if success else false
      */
-    public boolean makeOrder(Basket basket) throws Exception{
+    public boolean makeOrder(Basket basket, Session session) throws Exception{
         for (ProductInfo product : basket.getContent())
         {
             Product p = inventory.getProduct(product.id);
@@ -472,7 +458,7 @@ public class Store extends Information implements DbEntity {
             {
                 return false;
             }
-            inventory.getProduct(product.id).setQuantity(product.quantity * (-1));
+            inventory.getProduct(product.id).setQuantity(product.quantity * (-1), session);
         }
         return true;
     }
@@ -531,7 +517,11 @@ public class Store extends Information implements DbEntity {
     }
 
     public List<ProductInfo> getProducts(){
-        return inventory.getProducts();
+        try {
+            return inventory.getProducts();
+        }catch (Exception e){
+            return new ArrayList<>();
+        }
     }
 
 //    public synchronized void setStorePolicy(String policy) throws Exception {
@@ -561,19 +551,19 @@ public class Store extends Information implements DbEntity {
         return questionsToAnswer;
     }
 
-    public void addToCategories(int productId, List<String> categories) throws Exception{
+    public void addToCategories(int productId, List<String> categories, Session session) throws Exception{
         for(String category: categories){
-            inventory.addToCategory(category,productId);
+            inventory.addToCategory(category,productId, session);
         }
     }
 
-    public void removeProduct(int productId) throws Exception{
-        inventory.removeProduct(productId);
+    public void removeProduct(int productId, Session session) throws Exception{
+        inventory.removeProduct(productId, session);
     }
 
     public void updateProduct(int productId, List<String> categories, String name, String description,
-                              int price, int quantity, String img) throws Exception {
-        inventory.updateProduct(productId,categories,name,description,price,quantity, img);
+                              int price, int quantity, String img, Session session) throws Exception {
+        inventory.updateProduct(productId,categories,name,description,price,quantity, img, session);
     }
 
 
@@ -645,14 +635,14 @@ public class Store extends Information implements DbEntity {
     }
 
 
-    public void setStoreAttributes(String name, String description, String img) {
+    public void setStoreAttributes(String name, String description, String img, Session session) throws Exception{
         if(!description.equals("null"))
             setStoreDescription(description);
         if(!name.equals("null"))
             changeName(name);
         if(!img.equals("null"))
             changeImg(img);
-        Dao.save(this);
+        Dao.save(this, session);
     }
 
     //sets the bid flag on a product to true; meaning that potential costumers can now bid on the product.
@@ -661,23 +651,23 @@ public class Store extends Information implements DbEntity {
 //    }
 
 
-    public List<String> placeBid(Member user, int prodId, double price,int quantity) throws Exception {
+    public List<String> placeBid(Member user, int prodId, double price,int quantity, Session session) throws Exception {
         for(Bid bid : this.bids){
             if(bid.getUser().getId() == user.getId() && bid.getProduct().getID() == prodId)
                 throw new Exception("Cannot place a bid on the same item more than once.");
         }
         Bid b = new Bid(bidIds.getAndIncrement(),user,storeId,inventory.getProduct(prodId),price,quantity,
-                (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct));
+                (ArrayList<String>) appHistory.getStoreWorkersWithPermission(Action.updateProduct), session);
         bids.add(b);
         user.addBid(b);
         return b.getApprovers();
     }
 
-    public Bid answerBid(int bidId,String userName, int prodId, boolean ans) throws Exception {
+    public Bid answerBid(int bidId,String userName, int prodId, boolean ans, Session session) throws Exception {
         for(Bid bid : this.bids){
             if(bid.getBidId() == bidId && bid.isPending()){
                 if(ans){
-                    bid.approveBid(userName);
+                    bid.approveBid(userName, session);
                     if(bid.isApproved()){
                         return bid;
                     }
@@ -691,10 +681,10 @@ public class Store extends Information implements DbEntity {
         return null;
     }
 
-    public List<String> counterBid(int bidId, double counterOffer, String userName) throws Exception {
+    public List<String> counterBid(int bidId, double counterOffer, String userName, Session session) throws Exception {
         for(Bid bid : this.bids){
             if(bid.getBidId() == bidId){
-                bid.counterBid(counterOffer,userName);
+                bid.counterBid(counterOffer,userName, session);
                 List<String> ans = new ArrayList<>(bid.getApprovers());
                 ans.add(bid.getUser().getName());
                 return ans;
@@ -713,7 +703,7 @@ public class Store extends Information implements DbEntity {
         throw new Exception("Bid doesnt exist "+bidId);
     }
 
-    public void addPurchasePolicy(String data,String content) throws Exception {
+    public void addPurchasePolicy(String data,String content, Session session) throws Exception {
         PurchasePolicyFactory factory = new PurchasePolicyFactory(policyIds,storeId);
         JSONObject request = new JSONObject(data);
         String description = request.getString("description");
@@ -741,7 +731,8 @@ public class Store extends Information implements DbEntity {
             policy.setContent(content);
             purchasePolicies.add(policy);
             //TODO: need to check if is ok by nave/miki
-            Dao.save(new ConstraintDto(storeId, policy.getId(), policy.getContent()));
+            if(session != null)
+                Dao.save(new ConstraintDto(storeId, policy.getId(), policy.getContent()), session);
             return;
         }
         throw new Exception("Something went wrong when creating the policy, please contact us if the problem persists.\nYours truly, the developers A-team");
@@ -790,7 +781,7 @@ public class Store extends Information implements DbEntity {
 
     //database
     @Override
-    public void initialParams() {
+    public void initialParams() throws Exception{
         getCreatorFromDb();
         getAppHistoryFromDb();
         getInventoryFromDb();
@@ -802,36 +793,30 @@ public class Store extends Information implements DbEntity {
         getBidsFromDb();
         getConstraintsFromDb();
         getDiscountsFromDb();
-
-//        storeOrders = new ConcurrentHashMap<>();
-//        bids = new ArrayList<>();
-//        purchasePolicies = new ArrayList<>();
-//        discounts = new ArrayList<>();
-//        discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
     }
 
 
-    private void getCreatorFromDb(){
+    private void getCreatorFromDb() throws Exception{
         if(creator == null){
             creator = SubscriberDao.getMember(creatorId);
         }
     }
 
-    private void getAppHistoryFromDb(){
+    private void getAppHistoryFromDb() throws Exception{
         if(appHistory == null)
             appHistory = StoreDao.getAppHistory(storeId, creatorId);
         if(appointments == null)
             appointments = StoreDao.getAppointments(storeId);
     }
 
-    private void getInventoryFromDb(){
+    private void getInventoryFromDb() throws Exception{
         if(inventory == null){
             inventory = new Inventory(storeId);
             inventory.initialParams();
         }
     }
 
-    private void getStoreReviewsFromDb(){
+    private void getStoreReviewsFromDb() throws Exception{
         if(storeReviews == null){
             storeReviews = new ConcurrentHashMap<>();
             List<StoreReview> storeReviewsDto = MessageDao.getStoreReviews(storeId);
@@ -840,7 +825,7 @@ public class Store extends Information implements DbEntity {
         }
     }
 
-    private void getQuestionsFromDb() {
+    private void getQuestionsFromDb() throws Exception{
         if(questions == null){
             questions = new ConcurrentHashMap<>();
             List<Question> storeQuestions = MessageDao.getQuestions(storeId);
@@ -849,7 +834,7 @@ public class Store extends Information implements DbEntity {
         }
     }
 
-    private void getOrdersFromDb() {
+    private void getOrdersFromDb() throws Exception{
         if(storeOrders == null){
             storeOrders = new ConcurrentHashMap<>();
             List<Order> orders = StoreDao.getOrders(storeId);
@@ -858,19 +843,19 @@ public class Store extends Information implements DbEntity {
         }
     }
 
-    private void getBidsFromDb() {
+    private void getBidsFromDb() throws Exception{
         if(bids == null){
             bids = (ArrayList<Bid>) StoreDao.getBids(storeId);
         }
     }
 
-    private void getConstraintsFromDb() {
+    private void getConstraintsFromDb() throws Exception{
         if(purchasePolicies == null) {
             purchasePolicies = new ArrayList<>();
             List<ConstraintDto> constraintDtos = StoreDao.getConstraints(storeId);
             for (ConstraintDto constraintDto : constraintDtos) {
                 try {
-                    parsePurchasePolicy(constraintDto.getContent());
+                    parsePurchasePolicy(constraintDto.getContent(), null);
                 } catch (Exception ignored) {
                 }
             }
@@ -878,7 +863,7 @@ public class Store extends Information implements DbEntity {
 
     }
 
-    private void getDiscountsFromDb() {
+    private void getDiscountsFromDb() throws Exception{
         if(discounts == null){
             discounts = new ArrayList<>();
             discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
@@ -888,14 +873,14 @@ public class Store extends Information implements DbEntity {
         }
     }
 
-    public void addCompositeDiscount(JSONObject req) throws Exception {
+    public void addCompositeDiscount(JSONObject req, Session session) throws Exception {
         CompositeDataObject dis = discountFactory.parseCompositeDiscount(req);
-        addDiscount(dis,req.get("description").toString());
+        addDiscount(dis,req.get("description").toString(), session);
     }
-    public void parsePurchasePolicy(String content) throws Exception {
+    public void parsePurchasePolicy(String content, Session session) throws Exception {
         JSONObject obj = new JSONObject(content);
         String purchasePolicy = obj.get("purchasePolicy").toString();
-        addPurchasePolicy(purchasePolicy,content);
+        addPurchasePolicy(purchasePolicy,content, session);
     }
     public void parseDiscounts(String content){
         discountFactory.parse(content,discounts);
@@ -908,16 +893,16 @@ public class Store extends Information implements DbEntity {
         throw new Exception("the id given does not belong to any bid in store");
     }
 
-    public void removeConstraint(int constraintId){
+    public void removeConstraint(int constraintId, Session session) throws Exception{
 
 
-        StoreDao.removeConstraint(storeId, constraintId);
+        StoreDao.removeConstraint(storeId, constraintId, session);
     }
 
-    public void removeDiscount(int discountId){
+    public void removeDiscount(int discountId, Session session) throws Exception{
 
 
-        StoreDao.removeDiscount(storeId, discountId);
+        StoreDao.removeDiscount(storeId, discountId, session);
 
     }
 

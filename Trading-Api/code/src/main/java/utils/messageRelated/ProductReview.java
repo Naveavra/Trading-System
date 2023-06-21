@@ -20,7 +20,6 @@ public class ProductReview extends StoreReview{
         super(messageId, content, reviewer, orderId, storeId, rating);
         this.opcode = NotificationOpcode.GET_STORE_DATA;
         this.productId = productId;
-        MessageDao.saveMessage(this);
     }
 
     @Override

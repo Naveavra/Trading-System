@@ -7,6 +7,7 @@ import database.dtos.Appointment;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import jakarta.persistence.*;
+import org.hibernate.Session;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
 import utils.stateRelated.Action;
@@ -79,59 +80,59 @@ public abstract class UserState extends Information implements DbEntity {
         return permissions.checkAvailablePermission(a);
     }
 
-    public void addAction(Action a) throws Exception{
+    public void addAction(Action a, Session session) throws Exception{
         throw new Exception("cannot add action to role: " + role);
     }
 
-    public void removeAction(Action a) throws Exception{
+    public void removeAction(Action a, Session session) throws Exception{
         throw new Exception("cannot remove action to role: " + role);
     }
 
-    public List<String> appointManager(Member appointed) throws Exception{
+    public List<String> appointManager(Member appointed, Session session) throws Exception{
         checkPermission(Action.appointManager);
         List<String> approvers = new ArrayList<>(store.getAppHistory().getStoreWorkersWithPermission(Action.appointManager));
         store.canAppointUser(userId, appointed, Role.Manager);
-        Appointment appointment = new Appointment(store, userId, userName, appointed, Role.Manager, approvers);
-        store.addAppointment(appointment);
-        Dao.save(appointment);
+        Appointment appointment = new Appointment(store, userId, userName, appointed, Role.Manager, approvers, session);
+        store.addAppointment(appointment, session);
+        Dao.save(appointment, session);
         return approvers;
     }
 
-    public Set<Integer> fireManager(int appointedId) throws Exception{
+    public Set<Integer> fireManager(int appointedId, Session session) throws Exception{
         if(userId == appointedId)
-            return store.fireUser(appointedId);
+            return store.fireUser(appointedId, session);
         checkPermission(Action.fireManager);
-        return store.fireUser(appointedId);
+        return store.fireUser(appointedId, session);
     }
 
-    public List<String> appointOwner(Member appointed) throws Exception{
+    public List<String> appointOwner(Member appointed, Session session) throws Exception{
         checkPermission(Action.appointOwner);
         store.canAppointUser(userId, appointed, Role.Owner);
         List<String> approvers = new ArrayList<>(store.getAppHistory().getStoreWorkersWithPermission(Action.appointOwner));
-        Appointment appointment = new Appointment(store, userId, userName, appointed, Role.Owner, approvers);
-        store.addAppointment(appointment);
-        Dao.save(appointment);
+        Appointment appointment = new Appointment(store, userId, userName, appointed, Role.Owner, approvers, session);
+        Dao.save(appointment, session);
+        store.addAppointment(appointment, session);
         return approvers;
     }
 
-    public Set<Integer> fireOwner(int appointedId) throws Exception{
+    public Set<Integer> fireOwner(int appointedId, Session session) throws Exception{
         if(userId == appointedId)
-            return store.fireUser(appointedId);
+            return store.fireUser(appointedId, session);
         checkPermission(Action.fireOwner);
-        return store.fireUser(appointedId);
+        return store.fireUser(appointedId, session);
     }
 
-    public Set<Integer> closeStore() throws Exception{
+    public Set<Integer> closeStore(Session session) throws Exception{
         checkPermission(Action.closeStore);
         Set<Integer> ans = store.closeStoreTemporary(userId);
-        Dao.save(store);
+        Dao.save(store, session);
         return ans;
     }
 
-    public Set<Integer> reOpenStore() throws Exception{
+    public Set<Integer> reOpenStore(Session session) throws Exception{
         checkPermission(Action.reopenStore);
         Set<Integer> ans = store.reopenStore(userId);
-        Dao.save(store);
+        Dao.save(store, session);
         return ans;
     }
 
@@ -151,6 +152,11 @@ public abstract class UserState extends Information implements DbEntity {
         return this.userName;
     }
 
+    public void saveStatePermissions(Session session) throws Exception{
+        for(Action a : permissions.getActions())
+            Dao.save(new Permission(userId, storeId, a), session);
+    }
+
     public JSONObject toJson(){
         JSONObject json = new JSONObject();
         json.put("userId", userId);
@@ -163,20 +169,20 @@ public abstract class UserState extends Information implements DbEntity {
     //database
 
     @Override
-    public void initialParams(){
+    public void initialParams() throws Exception{
         getStoreFromDb();
         getPermissionsFromDb();
     }
 
-    protected void getStoreFromDb(){
+    protected void getStoreFromDb() throws Exception{
         if(store == null){
             store = StoreDao.getStore(storeId);
         }
     }
 
-    protected abstract void getPermissionsFromDb();
+    protected abstract void getPermissionsFromDb() throws Exception;
 
-    protected void getPermissionsHelp(){
+    protected void getPermissionsHelp() throws Exception{
         if(permissions == null) {
             permissions = new Permissions();
             List<? extends DbEntity> permissionsDto = Dao.getListByCompositeKey(Permission.class, userId, storeId,
