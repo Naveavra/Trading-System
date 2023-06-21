@@ -29,11 +29,11 @@ public class PredicateFactory {
                 return new DiscountPricePredicate(Integer.parseInt(params),type,storeId);
             }
             case MaxNumOfItem, MinNumOfItem ->{
-                List<String> realParams = Arrays.asList(params.split(" "));
+                List<String> realParams = Arrays.asList(params.split(","));
                 return new DiscountItemPredicate(Integer.parseInt(realParams.get(0)),Integer.parseInt(realParams.get(1)),type,storeId);
             }
             case MaxNumFromCategory,MinNumFromCategory -> {
-                List<String> rp = Arrays.asList(params.split(" "));
+                List<String> rp = Arrays.asList(params.split(","));
                 return new DiscountCategoryPredicate(rp.get(0),Integer.parseInt(rp.get(1)),type,op, storeId);
             }
         }

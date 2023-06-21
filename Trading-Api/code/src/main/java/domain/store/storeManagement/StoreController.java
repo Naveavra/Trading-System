@@ -394,13 +394,15 @@ public class StoreController {
     public ArrayList<PredicateDataObject> parsePredicateData(ArrayList<String> predData){
         ArrayList<PredicateDataObject> predicates = new ArrayList<>();
         for(String data : predData){
-            JSONObject dataJson = new JSONObject(data);
-            String predTypeStr = dataJson.getString("predType");
-            DiscountPredicate.PredicateTypes predType = DiscountPredicate.PredicateTypes.valueOf(predTypeStr);
-            String params = dataJson.getString("params");
-            String composureStr = dataJson.getString("composore");
-            DiscountPredicate.composore composore = DiscountPredicate.composore.valueOf(composureStr);
-            predicates.add(new PredicateDataObject(predType,params,composore));
+            if(!Objects.equals(data, "")) {
+                JSONObject dataJson = new JSONObject(data);
+                String predTypeStr = dataJson.getString("predType");
+                DiscountPredicate.PredicateTypes predType = DiscountPredicate.PredicateTypes.valueOf(predTypeStr);
+                String params = dataJson.getString("params");
+                String composureStr = dataJson.getString("composore");
+                DiscountPredicate.composore composore = DiscountPredicate.composore.valueOf(composureStr);
+                predicates.add(new PredicateDataObject(predType, params, composore));
+            }
         }
         return predicates;
     }

@@ -206,7 +206,7 @@ public class Store extends Information implements DbEntity {
     public synchronized void addDiscount(CompositeDataObject discountData,String content, Session session) throws Exception {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
-            dis.setDescription(content);
+            dis.setDescription(new JSONObject(content).get("description").toString());
             dis.setContent(content);
             discounts.add(dis);
             StoreDao.saveDiscount(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()), session);
@@ -875,7 +875,7 @@ public class Store extends Information implements DbEntity {
 
     public void addCompositeDiscount(JSONObject req, Session session) throws Exception {
         CompositeDataObject dis = discountFactory.parseCompositeDiscount(req);
-        addDiscount(dis,req.get("description").toString(), session);
+        addDiscount(dis,req.toString(), session);
     }
     public void parsePurchasePolicy(String content, Session session) throws Exception {
         JSONObject obj = new JSONObject(content);
@@ -893,17 +893,25 @@ public class Store extends Information implements DbEntity {
         throw new Exception("the id given does not belong to any bid in store");
     }
 
-    public void removeConstraint(int constraintId, Session session) throws Exception{
-
-
-        StoreDao.removeConstraint(storeId, constraintId, session);
+    public void removeConstraint(int constraintId, Session session) throws Exception {
+        for(PurchasePolicy policy: purchasePolicies){
+            if(policy.getId() == constraintId) {
+                purchasePolicies.remove(policy);
+                StoreDao.removeConstraint(storeId, constraintId, session);
+            }
+        }
+        throw new Exception("the id given does not belong to any policy in store");
     }
 
-    public void removeDiscount(int discountId, Session session) throws Exception{
-
-
-        StoreDao.removeDiscount(storeId, discountId, session);
-
+    public void removeDiscount(int discountId, Session session) throws Exception {
+        for(Discount dis: discounts){
+            if(dis.getDiscountID() == discountId) {
+                discounts.remove(dis);
+                StoreDao.removeDiscount(storeId, discountId, session);
+                return;
+            }
+        }
+        throw new Exception("Discount ID doesn't exist Homeie");
     }
 
 //    public void clientAcceptCounter(int bidId) {

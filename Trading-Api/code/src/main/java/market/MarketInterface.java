@@ -25,7 +25,6 @@ public interface MarketInterface {
     Response<String> removeCart(int userId);
 
 
-    //TODO: will change when miki adds all changes
     public Response showFilterOptions();
     public Response filterBy(HashMap<String,String> filterOptions);
 
@@ -154,8 +153,9 @@ public interface MarketInterface {
     public Response clientAcceptCounter(String token, int bidId, int storeId);
 
     public Response addCompositeDiscount(String token, String body) throws Exception;
+    public Response<String> removeDiscount(String token,int userId, int storeId, int discountId) throws Exception;
 
-    Response<String> answerAppointment(int userId, String token, int storeId, String fatherName, String childName, String ans);
+        Response<String> answerAppointment(int userId, String token, int storeId, String fatherName, String childName, String ans);
 }
 
 
