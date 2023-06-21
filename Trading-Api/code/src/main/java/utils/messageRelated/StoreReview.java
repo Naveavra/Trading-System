@@ -27,7 +27,6 @@ public class StoreReview extends Message{
         this.orderId = orderId;
         this.storeId = storeId;
         this.rating = rating;
-        MessageDao.saveMessage(this);
     }
     @Override
     public JSONObject toJson() {

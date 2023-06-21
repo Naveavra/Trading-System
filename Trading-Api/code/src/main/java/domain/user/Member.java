@@ -2,12 +2,15 @@ package domain.user;
 
 import database.daos.Dao;
 import database.DbEntity;
+import database.daos.MessageDao;
 import database.daos.SubscriberDao;
 import database.dtos.CartDto;
 import domain.states.StoreCreator;
 import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import jakarta.persistence.*;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import utils.infoRelated.LoginInformation;
 import utils.infoRelated.ProductInfo;
 import utils.infoRelated.Receipt;
@@ -41,7 +44,6 @@ public class Member extends Subscriber implements User{
     public Member(int id, String email, String password, String birthday) {
         super(id, email, password);
         this.birthday = birthday;
-        SubscriberDao.saveSubscriber(this);
         roles = new ArrayList<>();
         purchaseHistory = new PurchaseHistory(id);
         cart = new ShoppingCart();
@@ -58,19 +60,19 @@ public class Member extends Subscriber implements User{
         isConnected = false;
     }
 
-    public void changeRoleInStore(UserState userState, Store store) throws Exception{
+    public void changeRoleInStore(UserState userState, Store store, Session session) throws Exception{
         int storeId = store.getStoreId();
         UserState state;
         try {
             state = getRole(storeId);
         }catch (Exception e){
-            SubscriberDao.saveRole(userState);
+            SubscriberDao.saveRole(userState, session);
             roles.add(userState);
             return;
         }
         if (state.getRole() == userState.getRole())
             throw new Exception("the member already has this role in this store");
-        SubscriberDao.saveRole(userState);
+        SubscriberDao.saveRole(userState, session);
         roles.add(userState);
     }
     public String getBirthday(){return birthday;}
@@ -83,27 +85,24 @@ public class Member extends Subscriber implements User{
     }
     private void setNewEmail(String newEmail){
         email = newEmail;
-        SubscriberDao.saveSubscriber(this);
     }
 
     private void setNewBirthday(String newBirthday){
         this.birthday = newBirthday;
-        SubscriberDao.saveSubscriber(this);
     }
 
     public void setMemberPassword(String oldPassword, String newPassword) throws Exception {
         if(password.equals(oldPassword)){
             password = newPassword;
-            SubscriberDao.saveSubscriber(this);
         }
         else
             throw new Exception("wrong password entered, can't change to a new password");
     }
 
 
-    public void addProductToCart(int storeId, ProductInfo product, int quantity) throws Exception{
+    public void addProductToCart(int storeId, ProductInfo product, int quantity, Session session) throws Exception{
         cart.addProductToCart(storeId, product, quantity);
-        Dao.save(new CartDto(id, storeId, product.id, quantity));
+        Dao.save(new CartDto(id, storeId, product.id, quantity), session);
     }
     public void emptyCart(){
         cart.emptyCart();
@@ -114,33 +113,36 @@ public class Member extends Subscriber implements User{
         return StringChecks.calculateAge(birthday);
     }
 
-    public void removeProductFromCart(int storeId, int productId) throws Exception{
+    public void removeProductFromCart(int storeId, int productId, Session session) throws Exception{
         cart.removeProductFromCart(storeId, productId);
-        SubscriberDao.removeCartProduct(id, storeId, productId);
+        SubscriberDao.removeCartProduct(id, storeId, productId, session);
     }
 
-    public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
+    public void changeQuantityInCart(int storeId, ProductInfo product, int change, Session session) throws Exception{
         cart.changeQuantityInCart(storeId, product, change);
         if(cart.getBasket(storeId).hasProduct(product.id))
-            Dao.save(new CartDto(id, storeId, product.id, cart.getBasket(storeId).getProduct(product.getId()).getQuantity()));
+            Dao.save(new CartDto(id, storeId, product.id,
+                    cart.getBasket(storeId).getProduct(product.getId()).getQuantity()), session);
         else
-            SubscriberDao.removeCartProduct(id, storeId, product.id);
+            SubscriberDao.removeCartProduct(id, storeId, product.id, session);
     }
 
     public List<ProductInfo> getCartContent() {
         return cart.getContent();
     }
 
-    public void purchaseMade(Receipt receipt){
+    public void purchaseMade(Receipt receipt, Session session) throws Exception{
         receipt.setMember(this);
         purchaseHistory.addPurchaseMade(receipt);
-        SubscriberDao.removeCart(id);
+        SubscriberDao.saveReceipt(receipt, session);
+        SubscriberDao.removeCart(id, session);
         cart.emptyCart();
     }
 
-    public void openStore(Store store) {
+    public void openStore(Store store, Session session) throws Exception{
         UserState creator = new StoreCreator(id, email, store);
-        SubscriberDao.saveRole(creator);
+        creator.saveStatePermissions(session);
+        SubscriberDao.saveRole(creator, session);
         roles.add(creator);
     }
 
@@ -213,38 +215,38 @@ public class Member extends Subscriber implements User{
         return purchaseHistory;
     }
 
-    public List<String> appointToManager(Member appointed, int storeId) throws Exception {
+    public List<String> appointToManager(Member appointed, int storeId, Session session) throws Exception {
         UserState state = getActiveRole(storeId);
-        return state.appointManager(appointed);
+        return state.appointManager(appointed, session);
     }
 
-    public Set<Integer> fireManager(int appointedId, int storeId) throws Exception{
+    public Set<Integer> fireManager(int appointedId, int storeId, Session session) throws Exception{
         UserState state = getActiveRole(storeId);
-        return state.fireManager(appointedId);
+        return state.fireManager(appointedId, session);
     }
-    public List<String> appointToOwner(Member appointed, int storeId) throws Exception {
+    public List<String> appointToOwner(Member appointed, int storeId, Session session) throws Exception {
         UserState state = getActiveRole(storeId);
-        return state.appointOwner(appointed);
+        return state.appointOwner(appointed, session);
     }
-    public Set<Integer> fireOwner(int appointedId, int storeId) throws Exception{
+    public Set<Integer> fireOwner(int appointedId, int storeId, Session session) throws Exception{
         UserState state = getActiveRole(storeId);
-        return state.fireOwner(appointedId);
+        return state.fireOwner(appointedId, session);
     }
 
-    public void removeRoleInStore(int storeId) throws Exception{
+    public void removeRoleInStore(int storeId, Session session) throws Exception{
         UserState state = getRole(storeId);
-        SubscriberDao.removeRole(state.getUserId(), state.getStoreId());
+        SubscriberDao.removeRole(state.getUserId(), state.getStoreId(), session);
         roles.remove(state);
     }
 
-    public void addAction(Action a, int storeId) throws Exception {
+    public void addAction(Action a, int storeId, Session session) throws Exception {
         UserState state = getActiveRole(storeId);
-        state.addAction(a);
+        state.addAction(a, session);
     }
 
-    public void removeAction(Action a, int storeId) throws Exception {
+    public void removeAction(Action a, int storeId, Session session) throws Exception {
         UserState state = getActiveRole(storeId);
-        state.removeAction(a);
+        state.removeAction(a, session);
     }
 
     public void changeToActive(int storeId) throws Exception{
@@ -257,14 +259,14 @@ public class Member extends Subscriber implements User{
         state.setIsActive(false);
     }
 
-    public Set<Integer> closeStore(int storeId) throws Exception {
+    public Set<Integer> closeStore(int storeId, Session session) throws Exception {
         UserState state = getActiveRole(storeId);
-        return state.closeStore();
+        return state.closeStore(session);
     }
 
-    public Set<Integer> reOpenStore(int storeId) throws Exception {
+    public Set<Integer> reOpenStore(int storeId, Session session) throws Exception {
         UserState state = getInActiveRole(storeId);
-        return state.reOpenStore();
+        return state.reOpenStore(session);
     }
 
     public Set<Integer> getWorkerIds(int storeId) throws Exception {
@@ -366,7 +368,7 @@ public class Member extends Subscriber implements User{
     //database
 
     @Override
-    public void initialParams(){
+    public void initialParams() throws Exception{
         initialNotificationsFromDb();
         getCartFromDb();
         getPurchaseHistoryFromDb();
@@ -375,17 +377,19 @@ public class Member extends Subscriber implements User{
     }
 
 
-    public void getCartFromDb(){
-        if(cart == null)
+    public void getCartFromDb() throws Exception{
+        if(cart == null) {
             cart = SubscriberDao.getCart(id);
+        }
     }
 
-    public void getStatesFromDb(){
-        if(roles == null)
+    public void getStatesFromDb() throws Exception{
+        if(roles == null) {
             roles = SubscriberDao.getRoles(id);
+        }
     }
 
-    public void getPurchaseHistoryFromDb(){
+    public void getPurchaseHistoryFromDb() throws Exception{
         if(purchaseHistory == null)
             purchaseHistory =  SubscriberDao.getReceipts(id);
     }

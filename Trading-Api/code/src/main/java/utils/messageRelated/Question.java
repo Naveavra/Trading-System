@@ -4,6 +4,7 @@ import database.daos.MessageDao;
 import domain.user.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import org.hibernate.Session;
 import org.json.JSONObject;
 
 
@@ -21,15 +22,14 @@ public class Question extends Message{
         super(messageId, NotificationOpcode.GET_STORE_DATA, content, reviewer);
         this.storeId = storeId;
         this.gotFeedback = false;
-        MessageDao.saveMessage(this);
     }
 
-    public void sendFeedback(String feedback) throws Exception{
+    public void sendFeedback(String feedback, Session session) throws Exception{
         if(!gotFeedback) {
             Notification notification = new Notification(NotificationOpcode.GET_STORE_DATA_AND_COMPLAINS, feedback);
-            sender.addNotification(notification);
+            sender.addNotification(notification, session);
             gotFeedback = true;
-            MessageDao.saveMessage(this);
+            MessageDao.saveMessage(this, session);
         }
         else throw new Exception("the complaint already got an answer");
 

@@ -4,6 +4,7 @@ import database.daos.Dao;
 import database.DbEntity;
 import database.daos.StoreDao;
 import jakarta.persistence.*;
+import org.hibernate.Session;
 import utils.infoRelated.ProductInfo;
 import utils.messageRelated.ProductReview;
 
@@ -59,7 +60,6 @@ public class Product implements DbEntity{
         categories = new ArrayList<>();
         this.imgUrl = imgUrl;
         reviews = new ArrayList<>();
-        StoreDao.saveProduct(this);
     }
 
     public void changeImg(String imgUrl){
@@ -79,10 +79,10 @@ public class Product implements DbEntity{
      * adds the quantity given (amount) to the current quantity.
      * @param amount int, to add
      */
-    public void setQuantity(int amount) throws Exception{
+    public void setQuantity(int amount, Session session) throws Exception{
         if(quantity + amount>=0){
             quantity += amount;
-            StoreDao.saveProduct(this);
+            StoreDao.saveProduct(this, session);
         }else {
             throw new Exception("Invalid Quantity: New quantity for product <= 0.");
         }
@@ -90,7 +90,6 @@ public class Product implements DbEntity{
     public void replaceQuantity(int newQuantity) throws Exception{
         if(newQuantity>0){
             quantity = newQuantity;
-            StoreDao.saveProduct(this);
         }else {
             throw new Exception("Invalid Quantity: New quantity for product <= 0.");
         }
@@ -173,12 +172,12 @@ public class Product implements DbEntity{
     public List<ProductReview> getReviews(){return reviews;}
 
     @Override
-    public void initialParams() {
+    public void initialParams() throws Exception {
         getReviewsFromDb();
         getCategoriesFromDb();
     }
 
-    private void getReviewsFromDb(){
+    private void getReviewsFromDb() throws Exception{
         if(reviews == null){
             reviews = new ArrayList<>();
             List<? extends DbEntity> productReviewsDto = Dao.getListByCompositeKey(ProductReview.class, storeId, productId,

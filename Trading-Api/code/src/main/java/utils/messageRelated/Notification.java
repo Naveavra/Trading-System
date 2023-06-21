@@ -5,6 +5,7 @@ import database.DbEntity;
 import database.daos.Dao;
 import domain.user.Subscriber;
 import jakarta.persistence.*;
+import org.hibernate.Session;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
 
@@ -25,7 +26,6 @@ public class Notification extends Information implements DbEntity{
     public Notification(NotificationOpcode opcode, String notification){
         this.opcode =  opcode;
         this.notification =  notification;
-        Dao.save(this);
     }
 
     public String getNotification(){
@@ -70,6 +70,6 @@ public class Notification extends Information implements DbEntity{
     }
 
     @Override
-    public void initialParams() {
+    public void initialParams() throws Exception{
     }
 }

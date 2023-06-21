@@ -33,7 +33,7 @@ class GuestTest {
     @Test
     void addProductToCart_success() {
         try {
-            guest.addProductToCart(1, p, 100);
+            guest.addProductToCart(1, p, 100, null);
             ShoppingCart cart = guest.getShoppingCart();
             assertTrue(cart.getBasket(1) != null);
             Basket products = cart.getBasket(1);
@@ -45,7 +45,7 @@ class GuestTest {
     @Test
     void addProductToCart_fail() {
         try {
-            guest.addProductToCart(1, p, -100);
+            guest.addProductToCart(1, p, -100, null);
             assertTrue(false);
         }catch (Exception e){
             assertTrue(true);
@@ -55,8 +55,8 @@ class GuestTest {
     @Test
     void removeProductFromCart_success() {
         try{
-            guest.addProductToCart(1, p, 100);
-            guest.removeProductFromCart(1,0);
+            guest.addProductToCart(1, p, 100,null);
+            guest.removeProductFromCart(1,0,null);
             ShoppingCart cart = guest.getShoppingCart();
             assertTrue(cart.getBasket(1)==null);
         }catch (Exception e){
@@ -66,7 +66,7 @@ class GuestTest {
     @Test
     void removeProductFromCart_fail() {
         try{
-            guest.removeProductFromCart(0,0);
+            guest.removeProductFromCart(0,0,null);
             assertTrue(false);
         }catch (Exception e){
             assertTrue(true);
@@ -75,8 +75,8 @@ class GuestTest {
     @Test
     void changeQuantityInCart_success() {
         try{
-            guest.addProductToCart(1, p, 100);
-            guest.changeQuantityInCart(1,p,10);
+            guest.addProductToCart(1, p, 100,null);
+            guest.changeQuantityInCart(1,p,10,null);
             ShoppingCart cart = guest.getShoppingCart();
             assertTrue(cart.getBasket(1)!=null);
             assertTrue(cart.getBasket(1).getProduct(0).quantity==110);
@@ -87,7 +87,7 @@ class GuestTest {
     @Test
     void changeQuantityInCart_fail() {
         try{
-            guest.addProductToCart(0,p,-10);
+            guest.addProductToCart(0,p,-10,null);
             assertFalse(true);
         }catch (Exception e){
             assertTrue(true);
@@ -97,7 +97,7 @@ class GuestTest {
     @Test
     void getCartContent_success() {
         try{
-            guest.addProductToCart(1, p, 100);
+            guest.addProductToCart(1, p, 100,null);
             ShoppingCart cart = guest.getShoppingCart();
             assertTrue(cart.getBasket(1)!=null);
             assertTrue(cart.getBasket(1).getProduct(0).quantity==100);
@@ -108,7 +108,7 @@ class GuestTest {
     @Test
     void getCartContent_fail() {
         try{
-            guest.addProductToCart(1, p, 100);
+            guest.addProductToCart(1, p, 100,null);
             ShoppingCart cart = guest.getShoppingCart();
             assertFalse(cart.getBasket(2)!=null);
         }catch (Exception e){
@@ -120,7 +120,7 @@ class GuestTest {
     @Test
     void emptyCart_success() {
         try{
-            guest.addProductToCart(1, p, 100);
+            guest.addProductToCart(1, p, 100,null);
             guest.emptyCart();
             ShoppingCart cart = guest.getShoppingCart();
             assertFalse(cart.getBasket(1)!=null);
@@ -131,7 +131,7 @@ class GuestTest {
     @Test
     void emptyCart_fail() {
         try{
-            guest.addProductToCart(1, p, 100);
+            guest.addProductToCart(1, p, 100,null);
             guest.emptyCart();
             ShoppingCart cart = guest.getShoppingCart();
             assertFalse(cart.getBasket(1)!=null);

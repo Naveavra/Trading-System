@@ -3,6 +3,7 @@ package domain.user;
 import database.DbEntity;
 import database.daos.SubscriberDao;
 import jakarta.persistence.*;
+import org.hibernate.Session;
 import utils.infoRelated.LoginInformation;
 import utils.messageRelated.Notification;
 import utils.stateRelated.Action;
@@ -74,11 +75,11 @@ public abstract class Subscriber implements DbEntity{
         throw new Exception("wrong password");
     }
 
-    public synchronized void addNotification(Notification notification){
+    public synchronized void addNotification(Notification notification, Session session) throws Exception{
         notification.setSubId(id);
         boolean got = notifications.offer(notification);
         if(got)
-            SubscriberDao.saveNotification(notification);
+            SubscriberDao.saveNotification(notification, session);
     }
 
     public List<Notification> displayNotifications(){
@@ -87,11 +88,11 @@ public abstract class Subscriber implements DbEntity{
         return display;
     }
 
-    public Notification getNotification() throws InterruptedException {
+    public Notification getNotification(Session session) throws Exception {
         synchronized (notifications) {
             Notification n = notifications.take();
             if(isConnected) {
-                SubscriberDao.removeNotification(n.getId());
+                SubscriberDao.removeNotification(n.getId(), session);
                 return n;
             }else{
                 notifications.offer(n);
@@ -100,12 +101,12 @@ public abstract class Subscriber implements DbEntity{
         }
     }
 
-    public void initialNotificationsFromDb(){
+    public void initialNotificationsFromDb() throws Exception{
         if(notifications == null) {
             notifications = new LinkedBlockingQueue<>();
             List<Notification> notifics = SubscriberDao.getNotifications(id);
             for (Notification n : notifics)
-                addNotification(n);
+                notifications.offer(n);
         }
     }
 

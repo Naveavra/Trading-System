@@ -27,14 +27,14 @@ public class PurchasePolicyTests {
     private StoreController storeCtrl = new StoreController();
     private AtomicInteger pids = new AtomicInteger();
     private AtomicInteger policyIds = new AtomicInteger();
-    Member creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
-    Member worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2015");
-    Store store = storeCtrl.createNewStore(creator,"Some Random Description");
-    int storeId = store.getStoreId();
+    Member creator;
+    Member worker;
+    Store store;
+    int storeId;
     Product tomato;
     Product vodka;
     Product icecream;
-    PurchasePolicyFactory factory = new PurchasePolicyFactory(policyIds,storeId);
+    PurchasePolicyFactory factory;
     boolean flag = true;
 
     public PurchasePolicyTests(){
@@ -43,9 +43,15 @@ public class PurchasePolicyTests {
 
     void setUp() throws Exception {
         // Adding Products
-        store.addNewProduct("Tomatoes","Red Juicy vegetable-like fruits",pids,50,50,new ArrayList<String>(List.of("fruits"))); //pid = 0
-        store.addNewProduct("Vodka","Russian's nectar of the gods",pids,30,50,new ArrayList<>(List.of("alcohol"))); //pid = 1
-        store.addNewProduct("Ice-Cream","My Own Weakness",pids,6,50,new ArrayList<>(List.of("icecream"))); //pid = 2
+        Dao.setForTests(true);
+        creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
+        worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2015");
+        store = storeCtrl.createNewStore(creator,"Some Random Description", null);
+        storeId = store.getStoreId();
+        factory = new PurchasePolicyFactory(policyIds,storeId);
+        store.addNewProduct("Tomatoes","Red Juicy vegetable-like fruits",pids,50,50,new ArrayList<String>(List.of("fruits")), null); //pid = 0
+        store.addNewProduct("Vodka","Russian's nectar of the gods",pids,30,50,new ArrayList<>(List.of("alcohol")), null); //pid = 1
+        store.addNewProduct("Ice-Cream","My Own Weakness",pids,6,50,new ArrayList<>(List.of("icecream")), null); //pid = 2
 
         tomato = store.getInventory().getProduct(0);
         vodka = store.getInventory().getProduct(1);
@@ -70,7 +76,7 @@ public class PurchasePolicyTests {
             cart.changeQuantityInCart(storeId, new ProductInfo(storeId, tomato, 6), 6);
             // Creating an order without a policy
             Order or = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or);
+            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or, null);
             assertTrue(creatorIds.size() > 0);
             // Creating an order with a policy
             int[] nullVal = null;
@@ -78,7 +84,7 @@ public class PurchasePolicyTests {
                     "", 5, nullVal, nullVal, null, null, type);
             store.getPurchasePolicies().add(factory.createPolicy(dataObj));
 //            or = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            creatorIds = storeCtrl.purchaseProducts(cart, or);
+            creatorIds = storeCtrl.purchaseProducts(cart, or, null);
             assertNull(creatorIds);
             store.removePolicy(policyId);
         }catch (Exception e){
@@ -99,13 +105,13 @@ public class PurchasePolicyTests {
             cart.changeQuantityInCart(storeId, new ProductInfo(storeId, vodka, 6), 6);
             // Creating an order without a policy
             Order or = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or);
+            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or, null);
             assertTrue(creatorIds.size() > 0);
             int[] nullVal = null;
             PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyId,storeId,"",limiter,-1,ageLimit,
                     "alcohol",-1,nullVal,nullVal,null,null,type);
             store.getPurchasePolicies().add(factory.createPolicy(dataObj));
-            creatorIds =storeCtrl.purchaseProducts(cart,or);
+            creatorIds =storeCtrl.purchaseProducts(cart,or, null);
             assertNull(creatorIds);
             store.removePolicy(policyId);
         }catch (Exception e){
@@ -125,13 +131,13 @@ public class PurchasePolicyTests {
             cart.changeQuantityInCart(storeId, new ProductInfo(storeId, vodka, 6), 6);
             // Creating an order without a policy
             Order or = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or);
+            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or, null);
             assertTrue(creatorIds.size() > 0);
             int[] nullVal = null;
             PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyId,storeId,"",limiter,-1,-1,
                     "alcohol",-1,nullVal,timeLimit,null,null,type);
             store.getPurchasePolicies().add(factory.createPolicy(dataObj));
-            creatorIds =storeCtrl.purchaseProducts(cart,or);
+            creatorIds =storeCtrl.purchaseProducts(cart,or, null);
             assertNull(creatorIds);
             store.removePolicy(policyId);
         }catch (Exception e){
@@ -151,14 +157,14 @@ public class PurchasePolicyTests {
             cart.changeQuantityInCart(storeId, new ProductInfo(storeId, vodka, 6), 6);
             // Creating an order without a policy
             Order or = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or);
+            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or, null);
             assertTrue(creatorIds.size() > 0);
             // Creating an order with policy fail
             int[] nullVal = null;
             PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyId,storeId,"",limiter,-1,-1,
                     "alcohol",-1,dateLimit,nullVal,null,null,type);
             store.getPurchasePolicies().add(factory.createPolicy(dataObj));
-            creatorIds =storeCtrl.purchaseProducts(cart,or);
+            creatorIds =storeCtrl.purchaseProducts(cart,or, null);
             assertNull(creatorIds);
             store.removePolicy(policyId);
         }catch (Exception e){
@@ -180,14 +186,14 @@ public class PurchasePolicyTests {
             cart.changeQuantityInCart(storeId, new ProductInfo(storeId, vodka, 6), 6);
             // Creating an order without a policy
             Order or = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or);
+            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or, null);
             assertTrue(creatorIds.size() > 0);
             // Creating an order with policy fail
             int[] nullVal = null;
             PurchasePolicyDataObject dataObj = new PurchasePolicyDataObject(policyId,storeId,"",limiter1,-1,-1,
                     "alcohol",-1,dateLimitToday,nullVal,null,null,type);
             store.getPurchasePolicies().add(factory.createPolicy(dataObj));
-            creatorIds =storeCtrl.purchaseProducts(cart,or);
+            creatorIds =storeCtrl.purchaseProducts(cart,or, null);
             assertNull(creatorIds);
             store.removePolicy(0);
 //            store.removePolicy(1);
@@ -195,7 +201,7 @@ public class PurchasePolicyTests {
             dataObj = new PurchasePolicyDataObject(policyId,storeId,"",limiter1,-1,-1,
                     "alcohol",-1,dateLimitTommorow,nullVal,null,null,type);
             store.getPurchasePolicies().add(factory.createPolicy(dataObj));
-            creatorIds =storeCtrl.purchaseProducts(cart,or);
+            creatorIds =storeCtrl.purchaseProducts(cart,or, null);
             assertTrue(creatorIds.size()>0);
             store.removePolicy(policyId);
         }catch (Exception e){
@@ -217,7 +223,7 @@ public class PurchasePolicyTests {
             cart.changeQuantityInCart(storeId, new ProductInfo(storeId, tomato, 5), 5);
             // Creating an order without a policy
             Order or1 = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or1);
+            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or1, null);
             assertTrue(creatorIds.size() > 0);
             // Creating an order with a policy fail
             int[] nullVal = null;
@@ -227,12 +233,12 @@ public class PurchasePolicyTests {
                     "", 2, nullVal, nullVal, dataObj, PurchasePolicy.policyComposeTypes.PolicyAnd, type);
             store.getPurchasePolicies().add(factory.createPolicy(dataObj2));
 //            or = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            creatorIds = storeCtrl.purchaseProducts(cart, or1);
+            creatorIds = storeCtrl.purchaseProducts(cart, or1, null);
             assertNull(creatorIds);
             // Creating an order with a policy success
             cart.changeQuantityInCart(storeId,new ProductInfo(storeId,vodka,2),2);
             Order or2 = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
-            creatorIds = storeCtrl.purchaseProducts(cart,or2);
+            creatorIds = storeCtrl.purchaseProducts(cart,or2, null);
             assertTrue(creatorIds.size()>0);
             store.removePolicy(policyId1);
             store.removePolicy(policyId2);
@@ -257,7 +263,7 @@ public class PurchasePolicyTests {
             cart.changeQuantityInCart(storeId, new ProductInfo(storeId, vodka, 6), 6);
             // Creating an order without a policy
             Order or = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or);
+            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or, null);
             assertTrue(creatorIds.size() > 0);
             // Creating an order with a policy
             int[] nullVal = null;
@@ -266,7 +272,7 @@ public class PurchasePolicyTests {
             PurchasePolicyDataObject dataObj2 = new PurchasePolicyDataObject(policyId,storeId,"",exactLimiter,-1,-1,
                     "alcohol",-1,holidayDate,nullVal,dataObj, PurchasePolicy.policyComposeTypes.PolicyOr,type);
             store.getPurchasePolicies().add(factory.createPolicy(dataObj2));
-            creatorIds =storeCtrl.purchaseProducts(cart,or);
+            creatorIds =storeCtrl.purchaseProducts(cart,or, null);
             assertNull(creatorIds);
             store.removePolicy(policyId);
         }catch (Exception e){
@@ -288,7 +294,7 @@ public class PurchasePolicyTests {
             cart.changeQuantityInCart(storeId, new ProductInfo(storeId, tomato, 5), 5);
             // Creating an order without a policy
             Order or = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or);
+            Set<Integer> creatorIds = storeCtrl.purchaseProducts(cart, or, null);
             assertTrue(creatorIds.size() > 0);
             // Creating an order with a policy fail
             int[] nullVal = null;
@@ -298,12 +304,12 @@ public class PurchasePolicyTests {
                     "", 5, nullVal, nullVal, dataObj2, PurchasePolicy.policyComposeTypes.PolicyConditioning,type);
             store.getPurchasePolicies().add(factory.createPolicy(dataObj));
 //            or = new OrderController().createNewOrder(worker, cart, storeCtrl.calculatePrice(cart));
-            creatorIds = storeCtrl.purchaseProducts(cart, or);
+            creatorIds = storeCtrl.purchaseProducts(cart, or, null);
             assertNull(creatorIds);
             // Creating an order with policy success
             cart.changeQuantityInCart(storeId,new ProductInfo(storeId,vodka,1),1);
             or = new OrderController().createNewOrder(worker,cart,storeCtrl.calculatePrice(cart));
-            creatorIds = storeCtrl.purchaseProducts(cart,or);
+            creatorIds = storeCtrl.purchaseProducts(cart,or, null);
             assertTrue(creatorIds.size()>0);
         }catch (Exception e){
             fail(e.getMessage());

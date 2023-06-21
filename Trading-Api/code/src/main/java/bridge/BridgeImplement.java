@@ -278,7 +278,7 @@ public class BridgeImplement implements Bridge {
     @Override
     public boolean closeStore(int user, int store) {
         try {
-            String res = market.changeStoreActive(user, store, "false");
+            String res = market.changeStoreActive(user, store, "false", null);
             return true;
         }catch (Exception e){
             return false;
@@ -288,7 +288,7 @@ public class BridgeImplement implements Bridge {
     @Override
     public int reopenStore(int user, int store) {
         try {
-            String res = market.changeStoreActive(user, store, "true");
+            String res = market.changeStoreActive(user, store, "true", null);
             return 1;
         }catch (Exception e){
             return -1;

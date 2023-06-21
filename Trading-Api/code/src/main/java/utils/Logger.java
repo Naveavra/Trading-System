@@ -10,10 +10,12 @@ public class Logger{
     private static Logger instance;
     private List<Event> eventMap;
     
-    private Logger() {
+    private Logger(){
         eventMap = new LinkedList<>();
-        List<? extends DbEntity> events = LoggerDao.getLogs();
-        eventMap.addAll((List<Event>) events);
+        try {
+            List<? extends DbEntity> events = LoggerDao.getLogs();
+            eventMap.addAll((List<Event>) events);
+        }catch (Exception ignored){}
     }
     
     public static synchronized Logger getInstance() {
