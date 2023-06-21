@@ -310,9 +310,9 @@ public class MarketController {
         s.addPurchasePolicy(purchasePolicy,content, session);
     }
 
-    public void deletePurchaseConstraint(int storeId, int purchasePolicyId) throws Exception {
+    public void deletePurchaseConstraint(int storeId, int purchasePolicyId, Session session) throws Exception {
         Store s = storectrl.getActiveStore(storeId);
-        s.removeConstraint(purchasePolicyId);
+        s.removeConstraint(purchasePolicyId, session);
     }
 
     public Pair<Receipt, Set<Integer>> purchaseBid(User user, int storeId, int prodId, double price, int quantity, Session session) throws Exception {
@@ -355,9 +355,9 @@ public class MarketController {
         s.addCompositeDiscount(req, session);
     }
 
-    public void removeDiscount(int storeId, int discountId) throws Exception {
+    public void removeDiscount(int storeId, int discountId, Session session) throws Exception {
         Store s = storectrl.getActiveStore(storeId);
-        s.removeDiscount(discountId);
+        s.removeDiscount(discountId, session);
     }
 
 //    public Set<Integer> clientAcceptCounter(int bidId, int storeId) throws Exception {

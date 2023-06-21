@@ -55,14 +55,14 @@ public class Market implements MarketInterface {
         userAuth = new UserAuth();
 
         try {
-            proxyPayment = new ProxyPayment(payment);
+            proxyPayment = new ProxyPayment(new ESConfig());
         } catch (Exception e) {
             System.out.println("Error with the connection to the external payment service: " + e.getMessage());
             System.exit(-1);
         }
 
         try {
-            proxySupplier = new ProxySupplier(supply);
+            proxySupplier = new ProxySupplier(new ESConfig());
         } catch (Exception e) {
             System.out.println("Error with the connection to the external supplier service: " + e.getMessage());
             System.exit(-1);
@@ -1491,7 +1491,7 @@ public class Market implements MarketInterface {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.addPurchaseConstraint, storeId);
-            marketController.deletePurchaseConstraint(userId, storeId, purchasePolicyId);
+            marketController.deletePurchaseConstraint(storeId, purchasePolicyId, session);
             addNotification(userId, NotificationOpcode.GET_STORE_DATA, "null", session);
             return logAndRes(Event.LogStatus.Success, "Member deleted shopping constraint " + userId + " has successfully entered",
                     StringChecks.curDayString(), userController.getUserName(userId),
@@ -1516,10 +1516,10 @@ public class Market implements MarketInterface {
     }
 
     public Response removeDiscount(String token, int userId, int storeId, int discountId) {
-        try {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             userAuth.checkUser(userId, token);
-            marketController.removeDiscount(storeId, discountId);
-            addNotification(userId,NotificationOpcode.GET_STORE_DATA,"null");
+            marketController.removeDiscount(storeId, discountId, session);
+            addNotification(userId,NotificationOpcode.GET_STORE_DATA,"null", session);
             return logAndRes(Event.LogStatus.Success,"User removed a discount successfully, userId: "+userId,
                     StringChecks.curDayString(),userController.getUserName(userId),
                     discountId,null,null);
