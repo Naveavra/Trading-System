@@ -1,6 +1,7 @@
 package domain.user;
 
 import database.daos.Dao;
+import org.hibernate.Session;
 import utils.infoRelated.Receipt;
 
 import java.util.ArrayList;
@@ -18,8 +19,7 @@ public class PurchaseHistory{
         purchaseHistory = new HashMap<>();
     }
 
-    public void addPurchaseMade(Receipt receipt){
-        Dao.save(receipt);
+    public void addPurchaseMade(Receipt receipt) throws Exception{
         purchaseHistory.put(receipt.getOrderId(), receipt);
     }
 

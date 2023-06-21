@@ -2,6 +2,7 @@ package market;
 
 import domain.store.storeManagement.Store;
 import domain.user.PurchaseHistory;
+import org.hibernate.Session;
 import org.json.JSONObject;
 import service.ExternalService.Payment.PaymentAdapter;
 import utils.infoRelated.Information;
@@ -63,7 +64,7 @@ public interface MarketInterface {
 
     public Response changeStoreInfo(int userId, String token, int storeId, String name, String description, String img,
                                     String isActive);
-    public String changeStoreAttributes(int userId, int storeId, String name, String description, String img) throws Exception;
+    public String changeStoreAttributes(int userId, int storeId, String name, String description, String img, Session session) throws Exception;
 //    public Response changePurchasePolicy(int userId, String token, int storeId, String policy);
     //public Response addDiscountPolicy(int userId, String token, int storeId, String policy);
     public Response addPurchaseConstraint(int userId, String token, int storeId, String constraint);
@@ -91,7 +92,7 @@ public interface MarketInterface {
     public Response getAppointments(int userId, String token, int storeId);
 
     //store creator methods
-    public String changeStoreActive(int userId, int storeId, String isActive) throws Exception;
+    public String changeStoreActive(int userId, int storeId, String isActive, Session session) throws Exception;
 
     public Response closeStorePermanently(int adminId, String token, int storeId);
 

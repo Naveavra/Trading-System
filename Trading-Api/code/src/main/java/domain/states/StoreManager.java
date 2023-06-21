@@ -1,10 +1,12 @@
 package domain.states;
 
 
+import database.DbEntity;
 import database.daos.Dao;
 import domain.store.storeManagement.Store;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
+import org.hibernate.Session;
 import utils.stateRelated.Action;
 import utils.stateRelated.Role;
 
@@ -58,8 +60,6 @@ public class StoreManager extends UserState {
         actions.add(Action.seeStoreOrders);
         actions.add(Action.checkWorkersStatus);
 
-        for(Action a : actions)
-            Dao.save(new Permission(userId, storeId, a));
         permissions.addActions(actions);
 
 
@@ -80,10 +80,10 @@ public class StoreManager extends UserState {
     }
 
     @Override
-    public void addAction(Action a) throws Exception{
+    public void addAction(Action a, Session session) throws Exception{
         if (!checkPermission(a)) {
             if (checkHasAvailableAction(a)) {
-                Dao.save(new Permission(userId, storeId, a));
+                Dao.save(new Permission(userId, storeId, a), session);
                 permissions.addAction(a);
             }
             else
@@ -94,17 +94,28 @@ public class StoreManager extends UserState {
     }
 
     @Override
-    public void removeAction(Action a) throws Exception{
+    public void removeAction(Action a, Session session) throws Exception{
         if (checkPermission(a)) {
             permissions.removeAction(a);
-            Dao.removeIf("Permission", String.format("permission = '%s'", a.toString()));
+            Dao.removeIf("Permission", String.format("permission = '%s'", a.toString()), session);
         }
         else
             throw new Exception("the manager does not have this action");
     }
 
     @Override
-    protected void getPermissionsFromDb() {
+    protected void getPermissionsHelp() throws Exception{
+        if(permissions == null) {
+            permissions = new Permissions();
+            List<? extends DbEntity> permissionsDto = Dao.getListByCompositeKey(Permission.class, userId, storeId,
+                    "Permission", "userId", "storeId");
+            for (Permission p : (List<Permission>) permissionsDto)
+                permissions.addAction(p.getPermission());
+        }
+    }
+
+    @Override
+    protected void getPermissionsFromDb() throws Exception{
         getPermissionsHelp();
         for(Action a : addedActions)
             if(!permissions.checkPermission(a))

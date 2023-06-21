@@ -8,6 +8,7 @@ import domain.store.storeManagement.Bid;
 import domain.store.storeManagement.Store;
 import domain.user.Basket;
 import domain.user.ShoppingCart;
+import org.hibernate.Session;
 import org.mockito.internal.matchers.Or;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
@@ -36,11 +37,11 @@ public class StoreDao {
     private static Set<Integer> discounts = new HashSet<>();
     private static HashMap<Integer, HashMap<Integer, Order>> storeOrderMap = new HashMap<>();
     private static Set<Integer> storeOrders = new HashSet<>();
-    public static void saveStore(Store s){
-        Dao.save(s);
+    public static void saveStore(Store s, Session session) throws Exception{
+        Dao.save(s, session);
     }
 
-    public static Store getStore(int storeId){
+    public static Store getStore(int storeId) throws Exception{
         if(storesMap.containsKey(storeId))
             return storesMap.get(storeId);
         Store s = (Store) Dao.getById(Store.class, storeId);
@@ -51,7 +52,7 @@ public class StoreDao {
         return s;
     }
 
-    public static Store getStore(String  storeName){
+    public static Store getStore(String  storeName) throws Exception{
         for(Store s : storesMap.values())
             if(s.getName().equals(storeName))
                 return s;
@@ -63,7 +64,7 @@ public class StoreDao {
         return s;
     }
 
-    public static List<Store> getAllStores() {
+    public static List<Store> getAllStores() throws Exception{
         if (!stores) {
             List<? extends DbEntity> storesDto = Dao.getAllInTable("Store");
             for(Store s : (List<Store>) storesDto)
@@ -76,22 +77,22 @@ public class StoreDao {
         return new ArrayList<>(storesMap.values());
     }
 
-    public static void removeStore(int storeId){
-        Dao.removeIf("Store", String.format("storeId = %d", storeId));
-        removeProducts(storeId);
-        removeAppointments(storeId);
-        MessageDao.removeStoreMessages(storeId);
-        removeBids(storeId);
-        removeConstraints(storeId);
-        removeDiscounts(storeId);
-        storesMap.remove(storeId);
+    public static void removeStore(int storeId, Session session) throws Exception{
+        Dao.removeIf("Store", String.format("storeId = %d", storeId), session);
+        removeProducts(storeId, session);
+        removeAppointments(storeId, session);
+        MessageDao.removeStoreMessages(storeId, session);
+        removeBids(storeId, session);
+        removeConstraints(storeId, session);
+        removeDiscounts(storeId, session);
+        storesMap.remove(storeId, session);
     }
 
-    public static void saveProduct(Product p){
-        Dao.save(p);
+    public static void saveProduct(Product p, Session session) throws Exception{
+        Dao.save(p, session);
     }
 
-    public static Product getProduct(int storeId, int productId){
+    public static Product getProduct(int storeId, int productId) throws Exception{
         if(productsMap.containsKey(storeId))
             if(productsMap.get(storeId).containsKey(productId))
                 return productsMap.get(storeId).get(productId);
@@ -106,7 +107,7 @@ public class StoreDao {
         return p;
     }
 
-    public static Product getProduct(int storeId, String productName){
+    public static Product getProduct(int storeId, String productName) throws Exception{
         if(productsMap.containsKey(storeId))
             for(Product p : productsMap.get(storeId).values())
                 if(p.getName().equals(productName))
@@ -122,11 +123,12 @@ public class StoreDao {
         return p;
     }
 
-    public static List<Product> getProducts(int storeId){
+    public static List<Product> getProducts(int storeId) throws Exception{
         if(!products.contains(storeId)){
             if(!productsMap.containsKey(storeId))
                 productsMap.put(storeId, new HashMap<>());
-            List<? extends DbEntity> productsDto = Dao.getListById(Product.class, storeId, "Product", "storeId");
+            List<? extends DbEntity> productsDto = Dao.getListById(Product.class, storeId, "Product",
+                    "storeId");
             for(Product p : (List<Product>) productsDto)
                 if(!productsMap.get(storeId).containsKey(p.productId)) {
                     productsMap.get(storeId).put(p.productId, p);
@@ -137,11 +139,11 @@ public class StoreDao {
         return new ArrayList<>(productsMap.get(storeId).values());
     }
 
-    public static void removeProduct(int storeId, int productId){
-        Dao.removeIf("Product", String.format("storeId = %d AND productId = %d", storeId, productId));
+    public static void removeProduct(int storeId, int productId, Session session) throws Exception{
+        Dao.removeIf("Product", String.format("storeId = %d AND productId = %d", storeId, productId), session);
         if(productsMap.containsKey(storeId))
             productsMap.get(storeId).remove(productId);
-        Dao.removeIf("CategoryDto", String.format("storeId = %d AND productId = %d", storeId, productId));
+        Dao.removeIf("CategoryDto", String.format("storeId = %d AND productId = %d", storeId, productId), session);
         if(categoryMap.containsKey(storeId)) {
             HashMap<String, Set<Integer>> set = categoryMap.get(storeId);
             for(Set<Integer> prodcts : set.values())
@@ -149,22 +151,22 @@ public class StoreDao {
         }
     }
 
-    public static void removeProducts(int storeId) {
-        Dao.removeIf("Product", String.format("storeId = %d", storeId));
+    public static void removeProducts(int storeId, Session session) throws Exception{
+        Dao.removeIf("Product", String.format("storeId = %d", storeId), session);
         products.remove(storeId);
         productsMap.remove(storeId);
-        Dao.removeIf("CategoryDto", String.format("storeId = %d", storeId));
+        Dao.removeIf("CategoryDto", String.format("storeId = %d", storeId), session);
         categories.remove(storeId);
         categoryMap.remove(storeId);
     }
 
     //categories
 
-    public static void saveCategory(CategoryDto categoryDto){
-        Dao.save(categoryDto);
+    public static void saveCategory(CategoryDto categoryDto, Session session) throws Exception{
+        Dao.save(categoryDto, session);
     }
 
-    public static List<Integer> getCategoryProducts(int storeId, String categoryName){
+    public static List<Integer> getCategoryProducts(int storeId, String categoryName) throws Exception{
         if(categories.containsKey(storeId))
             if(categories.get(storeId).contains(categoryName))
                 return new ArrayList<>(categoryMap.get(storeId).get(categoryName));
@@ -186,7 +188,7 @@ public class StoreDao {
         return new ArrayList<>(categoryMap.get(storeId).get(categoryName));
     }
 
-    public static HashMap<String, Set<Integer>> getAllCategories(int storeId){
+    public static HashMap<String, Set<Integer>> getAllCategories(int storeId) throws Exception{
         if(!allCategories.contains(storeId)){
 
             if(!categoryMap.containsKey(storeId))
@@ -205,11 +207,11 @@ public class StoreDao {
     }
 
     //appointments
-    public static void saveAppointment(Appointment appointment){
-        Dao.save(appointment);
+    public static void saveAppointment(Appointment appointment, Session session) throws Exception{
+        Dao.save(appointment, session);
     }
 
-    public static AppHistory.Node getNode(int storeId, int userId, int creatorId){
+    public static AppHistory.Node getNode(int storeId, int userId, int creatorId) throws Exception{
         if(appMap.containsKey(storeId))
             if (appMap.get(storeId).getNode(userId) != null)
                 return appMap.get(storeId).getNode(userId);
@@ -217,19 +219,17 @@ public class StoreDao {
                 "AppointmentDto", "storeId", "fatherId");
         if(!appMap.containsKey(storeId))
             appMap.put(storeId, new AppHistory(storeId, new Pair<>(SubscriberDao.getMember(creatorId), SubscriberDao.getRole(creatorId, storeId))));
-        try {
-            appMap.get(storeId).addNode(creatorId, new Pair<>(SubscriberDao.getMember(userId), SubscriberDao.getRole(userId, storeId)));
-            for (Appointment appointment : (List<Appointment>) appointmentsDto)
-                if(!appMap.get(storeId).isChild(appointment.getFatherId(), appointment.getChildId())) {
-                    appointment.initialParams();
-                    appMap.get(storeId).addNode(userId, new Pair<>(SubscriberDao.getMember(appointment.getChildId()),
-                            SubscriberDao.getRole(appointment.getChildId(), storeId)));
-                }
-        }catch (Exception ignored){}
+        appMap.get(storeId).addNode(creatorId, new Pair<>(SubscriberDao.getMember(userId), SubscriberDao.getRole(userId, storeId)));
+        for (Appointment appointment : (List<Appointment>) appointmentsDto)
+            if(!appMap.get(storeId).isChild(appointment.getFatherId(), appointment.getChildId())) {
+                appointment.initialParams();
+                appMap.get(storeId).addNode(userId, new Pair<>(SubscriberDao.getMember(appointment.getChildId()),
+                        SubscriberDao.getRole(appointment.getChildId(), storeId)));
+            }
         return appMap.get(storeId).getNode(userId);
     }
 
-    public static AppHistory getAppHistory(int storeId, int creatorId){
+    public static AppHistory getAppHistory(int storeId, int creatorId) throws Exception{
         if(!app.contains(storeId)){
             if(!appMap.containsKey(storeId))
                 appMap.put(storeId, new AppHistory(storeId, new Pair<>(SubscriberDao.getMember(creatorId),
@@ -242,11 +242,9 @@ public class StoreDao {
                 int id = fathers.remove(0);
                 for(Appointment appointment : (List<Appointment>) appointmentsDto)
                     if(appointment.getFatherId() == id) {
-                        try {
-                            appointment.initialParams();
-                            appMap.get(storeId).addNode(id, new Pair<>(SubscriberDao.getMember(appointment.getChildId()),
-                                    SubscriberDao.getRole(appointment.getChildId(), storeId)));
-                        }catch (Exception ignored){}
+                        appointment.initialParams();
+                        appMap.get(storeId).addNode(id, new Pair<>(SubscriberDao.getMember(appointment.getChildId()),
+                                SubscriberDao.getRole(appointment.getChildId(), storeId)));
                     }
             }
             app.add(storeId);
@@ -254,7 +252,7 @@ public class StoreDao {
         return appMap.get(storeId);
     }
 
-    public static Appointment getAppointment(int storeId, String childName){
+    public static Appointment getAppointment(int storeId, String childName) throws Exception{
         if(!appointmentMap.containsKey(storeId))
             appointmentMap.put(storeId, new HashMap<>());
 
@@ -269,7 +267,7 @@ public class StoreDao {
         }
         return appointment;
     }
-    public static List<Appointment> getAppointments(int storeId) {
+    public static List<Appointment> getAppointments(int storeId) throws Exception{
         if(!appointmentMap.containsKey(storeId))
             appointmentMap.put(storeId, new HashMap<>());
         if(!appointments.contains(storeId)){
@@ -283,34 +281,32 @@ public class StoreDao {
         return new ArrayList<>(appointmentMap.get(storeId).values());
     }
 
-    public static void removeAppointment(int storeId, int childId, String childName){
+    public static void removeAppointment(int storeId, int childId, String childName, Session session) throws Exception{
         Dao.removeIf("Appointment", String.format("storeId = %d AND childName = '%s' ",
-                storeId, childName));
+                storeId, childName), session);
         Dao.removeIf("Appointment", String.format("storeId = %d AND fatherName = '%s' ",
-                storeId, childName));
-        Dao.removeIf("AppApproved", String.format("storeId = %d AND childId = %d", storeId, childId));
-        Dao.removeIf("AppApproved", String.format("storeId = %d AND fatherId = %d", storeId, childId));
+                storeId, childName), session);
+        Dao.removeIf("AppApproved", String.format("storeId = %d AND childId = %d", storeId, childId), session);
+        Dao.removeIf("AppApproved", String.format("storeId = %d AND fatherId = %d", storeId, childId), session);
         if(appMap.containsKey(storeId)) {
-            try {
-                appMap.get(storeId).removeChild(childId);
-            }catch (Exception ignored){}
+            appMap.get(storeId).removeChild(childId);
         }
     }
 
-    public static void removeAppointments(int storeId) {
-        Dao.removeIf("Appointment", String.format("storeId = %d", storeId));
-        Dao.removeIf("AppApproved", String.format("storeId = %d", storeId));
+    public static void removeAppointments(int storeId, Session session) throws Exception{
+        Dao.removeIf("Appointment", String.format("storeId = %d", storeId), session);
+        Dao.removeIf("AppApproved", String.format("storeId = %d", storeId), session);
         app.remove(storeId);
         appMap.remove(storeId);
     }
 
 
     //bids
-    public static void saveBid(Bid bid){
-        Dao.save(bid);
+    public static void saveBid(Bid bid, Session session) throws Exception{
+        Dao.save(bid, session);
     }
 
-    public static Bid getBid(int storeId, int bidId){
+    public static Bid getBid(int storeId, int bidId) throws Exception{
         if(!bidMap.containsKey(storeId))
             bidMap.put(storeId, new HashMap<>());
 
@@ -326,13 +322,14 @@ public class StoreDao {
         return bid;
     }
 
-    public static List<Bid> getBids(int storeId){
+    public static List<Bid> getBids(int storeId) throws Exception{
         if(!bids.contains(storeId)){
 
             if(!bidMap.containsKey(storeId))
                 bidMap.put(storeId, new HashMap<>());
 
-            List<? extends DbEntity> bidsDto = Dao.getByParamList(Bid.class, "Bid", String.format("storeId = %d", storeId));
+            List<? extends DbEntity> bidsDto = Dao.getByParamList(Bid.class, "Bid",
+                    String.format("storeId = %d", storeId));
             for(Bid b : (List<Bid>) bidsDto) {
 
                 if (bidMap.get(storeId).containsKey(b.getBidId())) {
@@ -345,27 +342,27 @@ public class StoreDao {
         return new ArrayList<>(bidMap.get(storeId).values());
     }
 
-    public static void removeBid(int storeId, int bidId){
-        Dao.removeIf("Bid", String.format("bidId = %d AND storeId = %d", bidId, storeId));
-        Dao.removeIf("ApproverDto", String.format("storeId = %d AND bidId = %d", storeId, bidId));
+    public static void removeBid(int storeId, int bidId, Session session) throws Exception{
+        Dao.removeIf("Bid", String.format("bidId = %d AND storeId = %d", bidId, storeId), session);
+        Dao.removeIf("ApproverDto", String.format("storeId = %d AND bidId = %d", storeId, bidId), session);
         if(bidMap.containsKey(storeId))
             bidMap.get(storeId).remove(bidId);
     }
 
-    public static void removeBids(int storeId){
-        Dao.removeIf("Bid", String.format("storeId = %d", storeId));
-        Dao.removeIf("ApproverDto", String.format("storeId = %d", storeId));
+    public static void removeBids(int storeId, Session session) throws Exception{
+        Dao.removeIf("Bid", String.format("storeId = %d", storeId), session);
+        Dao.removeIf("ApproverDto", String.format("storeId = %d", storeId), session);
         bids.remove(storeId);
         bidMap.remove(storeId);
     }
 
 
     //purchaseConstraints
-    public static void saveConstraint(ConstraintDto constraintDto){
-        Dao.save(constraintDto);
+    public static void saveConstraint(ConstraintDto constraintDto, Session session) throws Exception{
+        Dao.save(constraintDto, session);
     }
 
-    public static ConstraintDto getConstraint(int storeId, int constraintId){
+    public static ConstraintDto getConstraint(int storeId, int constraintId) throws Exception{
         if(!constraintMap.containsKey(storeId))
             constraintMap.put(storeId, new HashMap<>());
         if(constraintMap.containsKey(storeId))
@@ -377,11 +374,12 @@ public class StoreDao {
             constraintMap.get(storeId).put(constraintId, constraintDto);
         return constraintDto;
     }
-    public static List<ConstraintDto> getConstraints(int storeId){
+    public static List<ConstraintDto> getConstraints(int storeId) throws Exception{
         if(!constraintMap.containsKey(storeId))
             constraintMap.put(storeId, new HashMap<>());
         if(!constraints.contains(storeId)){
-            List<? extends DbEntity> constraintDtos = Dao.getListById(ConstraintDto.class, storeId, "ConstraintDto", "storeId");
+            List<? extends DbEntity> constraintDtos = Dao.getListById(ConstraintDto.class, storeId, "ConstraintDto",
+                    "storeId");
             for(ConstraintDto constraintDto : (List<ConstraintDto>) constraintDtos)
                 if(!constraintMap.get(storeId).containsKey(constraintDto.getConstraintId()))
                     constraintMap.get(storeId).put(constraintDto.getConstraintId(), constraintDto);
@@ -390,23 +388,23 @@ public class StoreDao {
         return new ArrayList<>(constraintMap.get(storeId).values());
     }
 
-    public static void removeConstraint(int storeId, int constraintId){
-        Dao.removeIf("ConstraintDto", String.format("storeId = %d AND constraintId = %d", storeId, constraintId));
+    public static void removeConstraint(int storeId, int constraintId, Session session) throws Exception{
+        Dao.removeIf("ConstraintDto", String.format("storeId = %d AND constraintId = %d", storeId, constraintId), session);
         if(constraintMap.containsKey(storeId))
             constraintMap.get(storeId).remove(constraintId);
     }
 
-    public static void removeConstraints(int storeId){
-        Dao.removeIf("ConstraintDto", String.format("storeId = %d", storeId));
+    public static void removeConstraints(int storeId, Session session) throws Exception{
+        Dao.removeIf("ConstraintDto", String.format("storeId = %d", storeId), session);
         constraintMap.remove(storeId);
     }
 
     //discounts
-    public static void saveDiscount(DiscountDto discountDto){
-        Dao.save(discountDto);
+    public static void saveDiscount(DiscountDto discountDto, Session session) throws Exception{
+        Dao.save(discountDto, session);
     }
 
-    public static DiscountDto getDiscount(int storeId, int discountId){
+    public static DiscountDto getDiscount(int storeId, int discountId) throws Exception{
         if(!discountsMap.containsKey(storeId))
             discountsMap.put(storeId, new HashMap<>());
         if(discountsMap.get(storeId).containsKey(discountId))
@@ -419,11 +417,12 @@ public class StoreDao {
         return discountDto;
     }
 
-    public static List<DiscountDto> getDiscounts(int storeId){
+    public static List<DiscountDto> getDiscounts(int storeId) throws Exception{
         if(!discountsMap.containsKey(storeId))
             discountsMap.put(storeId, new HashMap<>());
         if(discounts.contains(storeId)){
-            List<? extends DbEntity> discountDtos = Dao.getListById(DiscountDto.class, storeId, "DiscountDto", "storeId");
+            List<? extends DbEntity> discountDtos = Dao.getListById(DiscountDto.class, storeId, "DiscountDto",
+                    "storeId");
             for(DiscountDto dto : (List<DiscountDto>) discountDtos)
                 if(!discountsMap.get(storeId).containsKey(dto.getDiscountId()))
                     discountsMap.get(storeId).put(dto.getDiscountId(), dto);
@@ -432,20 +431,20 @@ public class StoreDao {
         return new ArrayList<>(discountsMap.get(storeId).values());
     }
 
-    public static void removeDiscount(int storeId, int discountId){
-        Dao.removeIf("DiscountDto", String.format("discountId = %d AND storeId = %d", discountId, storeId));
+    public static void removeDiscount(int storeId, int discountId, Session session) throws Exception{
+        Dao.removeIf("DiscountDto", String.format("discountId = %d AND storeId = %d", discountId, storeId), session);
         if(discountsMap.containsKey(storeId))
             discountsMap.get(storeId).remove(discountId);
     }
 
-    public static void removeDiscounts(int storeId){
-        Dao.removeIf("DiscountDto", String.format("storeId = %d", storeId));
+    public static void removeDiscounts(int storeId, Session session) throws Exception{
+        Dao.removeIf("DiscountDto", String.format("storeId = %d", storeId), session);
         discountsMap.remove(storeId);
     }
 
 
     //storeOrders
-    public static Order getStoreOrder(int storeId, int orderId){
+    public static Order getStoreOrder(int storeId, int orderId) throws Exception{
         if(!storeOrderMap.containsKey(storeId))
             storeOrderMap.put(storeId, new HashMap<>());
 
@@ -458,9 +457,7 @@ public class StoreDao {
             ShoppingCart cart = new ShoppingCart();
             if(receipt.getCart().hasStore(storeId)) {
                 for (ProductInfo p : receipt.getCart().getBasket(storeId).getContent()) {
-                    try {
-                        cart.addProductToCart(storeId, p, p.getQuantity());
-                    }catch (Exception ignored){}
+                    cart.addProductToCart(storeId, p, p.getQuantity());
                 }
                 order = new Order(receipt.getMember().getId(), receipt.getMember(), cart);
                 storeOrderMap.get(storeId).put(orderId, order);
@@ -470,21 +467,20 @@ public class StoreDao {
     }
 
 
-    public static List<Order> getOrders(int storeId){
+    public static List<Order> getOrders(int storeId) throws Exception{
         if(!storeOrderMap.containsKey(storeId))
             storeOrderMap.put(storeId, new HashMap<>());
         if(!storeOrders.contains(storeId)) {
-            List<? extends DbEntity> receipts = Dao.getListById(ReceiptDto.class, storeId, "ReceiptDto", "storeId");
+            List<? extends DbEntity> receipts = Dao.getListById(ReceiptDto.class, storeId, "ReceiptDto",
+                    "storeId");
             HashMap<Integer, ShoppingCart> newOrders = new HashMap<>();
             for(ReceiptDto receiptDto : (List<ReceiptDto>) receipts){
                 if(!storeOrderMap.get(storeId).containsKey(receiptDto.getOrderId())){
                     if(!newOrders.containsKey(receiptDto.getOrderId()))
                         newOrders.put(receiptDto.getOrderId(), new ShoppingCart());
-                    try {
-                        newOrders.get(receiptDto.getOrderId()).addProductToCart(receiptDto.getStoreId(),
-                                getProduct(receiptDto.getStoreId(), receiptDto.getProductId()).getProductInfo(),
-                                receiptDto.getQuantity());
-                    }catch (Exception ignored){}
+                    newOrders.get(receiptDto.getOrderId()).addProductToCart(receiptDto.getStoreId(),
+                            getProduct(receiptDto.getStoreId(), receiptDto.getProductId()).getProductInfo(),
+                            receiptDto.getQuantity());
                 }
             }
 

@@ -24,7 +24,6 @@ public class Permission implements DbEntity {
         this.userId = userId;
         this.storeId = storeId;
         this.permission = permission;
-        Dao.save(this);
     }
 
 

@@ -5,6 +5,7 @@ import domain.user.Subscriber;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import org.hibernate.Session;
 import service.MarketController;
 import service.UserController;
 import utils.Pair;
@@ -34,14 +35,14 @@ public class Admin extends Subscriber {
         marketController = controllers.getSecond();
     }
 
-    public void closeStorePermanently(int storeId, int creatId) throws Exception {
-        Set<Integer> userIds = marketController.closeStorePermanently(storeId);
+    public void closeStorePermanently(int storeId, int creatId, Session session) throws Exception {
+        Set<Integer> userIds = marketController.closeStorePermanently(storeId, session);
         for(int userId : userIds){
             if(creatId != userId) {
                 String notify = "the store: " + storeId + " has been permanently closed";
                 Notification notification = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA, notify);
-                userController.addNotification(userId, notification);
-                userController.removeStoreRole(userId, storeId);
+                userController.addNotification(userId, notification, session);
+                userController.removeStoreRole(userId, storeId, session);
             }
         }
     }
@@ -52,10 +53,10 @@ public class Admin extends Subscriber {
         return pass.equals(this.password);
     }
 
-    public void cancelMembership(int userToRemove) throws Exception{
-        List<Integer> storeIds = userController.cancelMembership(userToRemove);
+    public void cancelMembership(int userToRemove, Session session) throws Exception{
+        List<Integer> storeIds = userController.cancelMembership(userToRemove, session);
         for(int storeId : storeIds)
-            closeStorePermanently(storeId, userToRemove);
+            closeStorePermanently(storeId, userToRemove, session);
     }
 
     public void setControllers(){
@@ -75,12 +76,12 @@ public class Admin extends Subscriber {
     public void checkPermission(Action action, int storeId) throws Exception {
     }
 
-    public void saveAdmin() {
-        Dao.save(this);
+    public void saveAdmin(Session session) throws Exception {
+        Dao.save(this, session);
     }
 
     @Override
-    public void initialParams() {
+    public void initialParams() throws Exception {
         initialNotificationsFromDb();
     }
 }

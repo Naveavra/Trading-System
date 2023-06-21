@@ -2,6 +2,7 @@ package database.dtos;
 
 import database.DbEntity;
 import jakarta.persistence.*;
+import org.hibernate.Session;
 
 @Entity @Table(name = "carts")
 public class CartDto implements DbEntity {
@@ -57,6 +58,6 @@ public class CartDto implements DbEntity {
     }
 
     @Override
-    public void initialParams() {
+    public void initialParams() throws Exception{
     }
 }

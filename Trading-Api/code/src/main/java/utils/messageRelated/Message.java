@@ -71,10 +71,10 @@ public abstract class Message extends Information implements DbEntity {
     }
 
     @Override
-    public void initialParams(){
+    public void initialParams() throws Exception{
         getSenderFromDb();
     }
-    protected void getSenderFromDb(){
+    protected void getSenderFromDb() throws Exception{
         if(sender == null)
             sender = SubscriberDao.getMember(senderId);
     }

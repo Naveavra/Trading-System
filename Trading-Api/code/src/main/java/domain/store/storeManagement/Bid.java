@@ -8,6 +8,7 @@ import database.dtos.ApproverDto;
 import domain.store.product.Product;
 import domain.user.Member;
 import jakarta.persistence.*;
+import org.hibernate.Session;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
 
@@ -40,7 +41,8 @@ public class Bid extends Information implements DbEntity{
 
     public Bid(){
     }
-    public Bid(int id,Member user, int storeId, Product p, double offer, int quantity, ArrayList<String> approvers){
+    public Bid(int id,Member user, int storeId, Product p, double offer, int quantity, ArrayList<String> approvers,
+               Session session) throws Exception {
         this.bidId = id;
         this.offer = offer;
         this.quantity = quantity;
@@ -54,17 +56,17 @@ public class Bid extends Information implements DbEntity{
         this.approvers = new HashMap<>();
         for(String manager : approvers) {
             this.approvers.put(manager, false);
-            Dao.save(new ApproverDto(bidId, storeId, manager, false));
+            Dao.save(new ApproverDto(bidId, storeId, manager, false), session);
         }
         counterOffer = "";
-        StoreDao.saveBid(this);
+        StoreDao.saveBid(this, session);
     }
-    public void approveBid(String userName) throws Exception {
+    public void approveBid(String userName, Session session) throws Exception {
         if(approvers.get(userName)){
             throw new Exception(userName + " already approved this bid");
         }
         approvers.put(userName, true);
-        Dao.save(new ApproverDto(bidId, storeId, userName, approvers.get(userName)));
+        Dao.save(new ApproverDto(bidId, storeId, userName, approvers.get(userName)), session);
         if(allApproved())
             this.approved = status.Approved;
     }
@@ -77,14 +79,14 @@ public class Bid extends Information implements DbEntity{
     public void clientAcceptCounter() {
         approved = status.Pending;
     }
-    public void counterBid(double offer,String userName) throws Exception {
+    public void counterBid(double offer,String userName, Session session) throws Exception {
         if(Objects.equals(counterOffer, "")) {
             counterOffer = userName;
             this.offer = offer;
             this.approved = status.Counter;
             approvers.replaceAll((n, v) -> false);
             for(String name : approvers.keySet())
-                Dao.save(new ApproverDto(bidId, storeId, name, false));
+                Dao.save(new ApproverDto(bidId, storeId, name, false), session);
             return;
         }
         throw new Exception("Cannot counter bid twice");
@@ -132,9 +134,9 @@ public class Bid extends Information implements DbEntity{
     }
 
     public status getState(){return this.approved;}
-    public void setStatus(status status) {
+    public void setStatus(status status, Session session) throws Exception{
         this.approved = status;
-        StoreDao.saveBid(this);
+        StoreDao.saveBid(this, session);
     }
 
     public String getBidTime() {
@@ -148,9 +150,9 @@ public class Bid extends Information implements DbEntity{
         return false;
     }
 
-    public void removeApprover(String name) {
+    public void removeApprover(String name, Session session) throws Exception{
         approvers.remove(name);
-        Dao.removeIf("ApproverDto", String.format("storeId = %d AND manager = '%s' ", storeId, name));
+        Dao.removeIf("ApproverDto", String.format("storeId = %d AND manager = '%s' ", storeId, name), session);
     }
 
 
@@ -201,24 +203,24 @@ public class Bid extends Information implements DbEntity{
     }
 
     @Override
-    public void initialParams() {
+    public void initialParams()throws Exception {
         getProductFromDb();
         getUserFromDb();
         getApproversFromDb();
 
     }
 
-    private void getProductFromDb(){
+    private void getProductFromDb()throws Exception{
         if(product == null)
             product = StoreDao.getProduct(storeId, productId);
     }
 
-    private void getUserFromDb(){
+    private void getUserFromDb() throws Exception{
         if(user == null)
             user = SubscriberDao.getMember(userId);
     }
 
-    private void getApproversFromDb(){
+    private void getApproversFromDb() throws Exception{
         if(approvers == null){
             approvers = new HashMap<>();
             List<? extends  DbEntity> approversDto = Dao.getByParamList(ApproverDto.class, "ApproverDto",

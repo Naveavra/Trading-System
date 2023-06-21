@@ -10,6 +10,7 @@ import domain.states.UserState;
 import domain.store.storeManagement.Store;
 import domain.user.Member;
 import jakarta.persistence.*;
+import org.hibernate.Session;
 import org.json.JSONObject;
 import utils.infoRelated.Information;
 import utils.messageRelated.Notification;
@@ -44,7 +45,7 @@ public class Appointment extends Information implements DbEntity {
 
     public Appointment() {
     }
-    public Appointment(Store store, int fatherId, String fatherName, Member child, Role role, List<String> appointers) {
+    public Appointment(Store store, int fatherId, String fatherName, Member child, Role role, List<String> appointers, Session session) throws Exception{
         this.store = store;
         this.storeId = store.getStoreId();
         this.fatherId = fatherId;
@@ -54,14 +55,14 @@ public class Appointment extends Information implements DbEntity {
         this.role = role;
         approved = false;
         this.approvers = new HashMap<>();
-        Dao.save(new AppApproved(storeId, fatherId, getChildId(), fatherName, true));
+        Dao.save(new AppApproved(storeId, fatherId, getChildId(), fatherName, true), session);
         approvers.put(fatherName, true);
         for(String name: appointers)
             if(!name.equals(fatherName)) {
-                Dao.save(new AppApproved(storeId, fatherId, getChildId(), name, false));
+                Dao.save(new AppApproved(storeId, fatherId, getChildId(), name, false), session);
                 approvers.put(name, false);
             }
-        checkAllApproved();
+        checkAllApproved(session);
     }
 
     public int getStoreId() {
@@ -99,16 +100,16 @@ public class Appointment extends Information implements DbEntity {
         return approved;
     }
 
-    public void approve(String name) throws Exception {
+    public void approve(String name, Session session) throws Exception {
         if(approved)
             throw new Exception("the appointment was already approved");
         if(!approvers.containsKey(name))
             throw new Exception("the name isn't allowed to approve this appointment");
         if(approvers.get(name))
             throw new Exception("the user already approved this appointment");
-        Dao.save(new AppApproved(storeId, fatherId, getChildId(), name, true));
+        Dao.save(new AppApproved(storeId, fatherId, getChildId(), name, true), session);
         approvers.put(name, true);
-        checkAllApproved();
+        checkAllApproved(session);
     }
 
     public boolean canDeny(String name) throws Exception{
@@ -118,7 +119,7 @@ public class Appointment extends Information implements DbEntity {
             return false;
         return true;
     }
-    public void checkAllApproved() {
+    public void checkAllApproved(Session session) throws Exception{
         boolean ans = true;
         for(boolean approved : approvers.values())
             ans = ans && approved;
@@ -129,11 +130,13 @@ public class Appointment extends Information implements DbEntity {
                     state = new StoreManager(getChildId(), childName, store);
                 else if (role == Role.Owner)
                     state = new StoreOwner(getChildId(), childName, store);
+                if(state != null)
+                    state.saveStatePermissions(session);
                 store.appointUser(fatherId, child, state);
-                child.changeRoleInStore(state, store);
+                child.changeRoleInStore(state, store, session);
                 Notification notify = new Notification(NotificationOpcode.GET_CLIENT_DATA_AND_STORE_DATA,
                         String.format("you have been appointed to %s in store: %d", role.toString(), storeId));
-                child.addNotification(notify);
+                child.addNotification(notify, session);
                 approved = true;
             }catch (Exception ignored){}
         }
@@ -146,9 +149,9 @@ public class Appointment extends Information implements DbEntity {
         return false;
     }
 
-    public void removeApprover(String name) {
+    public void removeApprover(String name, Session session) throws Exception{
         approvers.remove(name);
-        Dao.removeIf("AppApproved", String.format("storeId = %d AND approverName = '%s' ", storeId, name));
+        Dao.removeIf("AppApproved", String.format("storeId = %d AND approverName = '%s' ", storeId, name), session);
     }
     public List<String> getApprovedNames() {
         List<String> ans = new ArrayList<>();
@@ -179,23 +182,23 @@ public class Appointment extends Information implements DbEntity {
     }
 
     @Override
-    public void initialParams() {
+    public void initialParams()throws Exception{
         getStoreFromDb();
         getChildFromDb();
         getApproversFromDb();
     }
 
-    private void getStoreFromDb(){
+    private void getStoreFromDb() throws Exception{
         if(store == null)
             store = StoreDao.getStore(storeId);
     }
 
-    private void getChildFromDb(){
+    private void getChildFromDb() throws Exception{
         if(child == null)
             child = SubscriberDao.getMember(childName);
     }
 
-    private void getApproversFromDb(){
+    private void getApproversFromDb() throws Exception{
         if(approvers == null) {
             approvers = new HashMap<>();
             List<? extends DbEntity> approversDb = Dao.getByParamList(AppApproved.class, "AppApproved",

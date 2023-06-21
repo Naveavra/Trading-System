@@ -2,6 +2,7 @@ package database.daos;
 
 import database.DbEntity;
 import domain.store.storeManagement.Store;
+import org.hibernate.Session;
 import utils.messageRelated.*;
 
 import java.util.*;
@@ -18,12 +19,12 @@ public class MessageDao {
     private static Set<Integer> questions = new HashSet<>();
 
 
-    public static void saveMessage(Message m){
-        Dao.save(m);
+    public static void saveMessage(Message m, Session session) throws Exception{
+        Dao.save(m, session);
     }
 
 
-    public static Complaint getComplaint(int messageId){
+    public static Complaint getComplaint(int messageId) throws Exception{
         if(complaintMap.containsKey(messageId))
             return complaintMap.get(messageId);
         Complaint complaint = (Complaint) Dao.getById(Complaint.class, messageId);
@@ -34,7 +35,7 @@ public class MessageDao {
         return complaint;
     }
 
-    public static List<Complaint> getComplaints(){
+    public static List<Complaint> getComplaints() throws Exception{
         if(!complaints) {
             List<? extends DbEntity> complaintsDto = Dao.getAllInTable("Complaint");
             for (Complaint complaint : (List<Complaint>) complaintsDto)
@@ -47,12 +48,12 @@ public class MessageDao {
         return new ArrayList<>(complaintMap.values());
     }
 
-    public static void removeComplaint(int messageId){
-        Dao.removeIf("Complaint", String.format("messageId = %d", messageId));
+    public static void removeComplaint(int messageId, Session session) throws Exception{
+        Dao.removeIf("Complaint", String.format("messageId = %d", messageId), session);
         complaintMap.remove(messageId);
     }
 
-    public static StoreReview getStoreReview(int storeId, int messageId){
+    public static StoreReview getStoreReview(int storeId, int messageId) throws Exception{
         if(storeReviewMap.containsKey(storeId))
             if(storeReviewMap.get(storeId).containsKey(messageId))
                 return storeReviewMap.get(storeId).get(messageId);
@@ -67,7 +68,7 @@ public class MessageDao {
         return review;
     }
 
-    public static List<StoreReview> getStoreReviews(int storeId){
+    public static List<StoreReview> getStoreReviews(int storeId) throws Exception{
         if(!storeReviews.contains(storeId)) {
             if (!storeReviewMap.containsKey(storeId))
                 storeReviewMap.put(storeId, new HashMap<>());
@@ -84,13 +85,13 @@ public class MessageDao {
         return new ArrayList<>(storeReviewMap.get(storeId).values());
     }
 
-    public static void removeStoreReview(int storeId, int messageId){
-        Dao.removeIf("StoreReview", String.format("messageId = %d", messageId));
+    public static void removeStoreReview(int storeId, int messageId, Session session) throws Exception{
+        Dao.removeIf("StoreReview", String.format("messageId = %d", messageId), session);
         if(storeReviewMap.containsKey(storeId))
             storeReviewMap.get(storeId).remove(messageId);
     }
 
-    public static ProductReview getProductReview(int storeId, int productId, int messageId){
+    public static ProductReview getProductReview(int storeId, int productId, int messageId) throws Exception{
         if(productReviewMap.containsKey(storeId))
             if(productReviewMap.get(storeId).containsKey(productId))
                 if(productReviewMap.get(storeId).get(productId).containsKey(messageId))
@@ -109,7 +110,7 @@ public class MessageDao {
         return review;
     }
 
-    public static List<ProductReview> getProductReviews(int storeId, int productId){
+    public static List<ProductReview> getProductReviews(int storeId, int productId) throws Exception{
         if(!productReviews.containsKey(storeId))
             productReviews.put(storeId, new HashSet<>());
 
@@ -132,8 +133,8 @@ public class MessageDao {
         return new ArrayList<>(productReviewMap.get(storeId).get(productId).values());
     }
 
-    public static void removeProductReview(int storeId, int productId, int messageId){
-        Dao.removeIf("ProductReview", String.format("messageId = %d", messageId));
+    public static void removeProductReview(int storeId, int productId, int messageId, Session session) throws Exception{
+        Dao.removeIf("ProductReview", String.format("messageId = %d", messageId), session);
 
         if(!productReviewMap.containsKey(storeId))
             productReviewMap.put(storeId, new HashMap<>());
@@ -143,7 +144,7 @@ public class MessageDao {
 
     }
 
-    public static Question getQuestion(int storeId, int messageId){
+    public static Question getQuestion(int storeId, int messageId) throws Exception{
         if(questionMap.containsKey(storeId))
             if(questionMap.get(storeId).containsKey(messageId))
                 questionMap.get(storeId).get(messageId);
@@ -158,11 +159,12 @@ public class MessageDao {
         return question;
     }
 
-    public static List<Question> getQuestions(int storeId){
+    public static List<Question> getQuestions(int storeId) throws Exception{
         if(!questions.contains(storeId)) {
             if(!questionMap.containsKey(storeId))
                 questionMap.put(storeId, new HashMap<>());
-            List<? extends DbEntity> questionDto = Dao.getListById(Question.class, storeId, "Question", "storeId");
+            List<? extends DbEntity> questionDto = Dao.getListById(Question.class, storeId, "Question",
+                    "storeId");
             for (Question question : (List<Question>) questionDto)
                 if(!questionMap.get(storeId).containsKey(question.getMessageId())) {
                     questionMap.get(storeId).put(question.getMessageId(), question);
@@ -174,25 +176,25 @@ public class MessageDao {
         return new ArrayList<>(questionMap.get(storeId).values());
     }
 
-    public static void removeQuestion(int messageId){
-        Dao.removeIf("Question", String.format("messageId = %d", messageId));
+    public static void removeQuestion(int messageId, Session session) throws Exception{
+        Dao.removeIf("Question", String.format("messageId = %d", messageId), session);
         questionMap.remove(messageId);
     }
 
-    public static void removeStoreMessages(int storeId) {
-        Dao.removeIf("StoreReview", String.format("storeId = %d", storeId));
+    public static void removeStoreMessages(int storeId, Session session) throws Exception{
+        Dao.removeIf("StoreReview", String.format("storeId = %d", storeId), session);
         storeReviews.remove(storeId);
         storeReviewMap.remove(storeId);
-        Dao.removeIf("ProductReview", String.format("storeId = %d", storeId));
+        Dao.removeIf("ProductReview", String.format("storeId = %d", storeId), session);
         productReviews.remove(storeId);
         productReviewMap.remove(storeId);
-        Dao.removeIf("Question", String.format("storeId = %d", storeId));
+        Dao.removeIf("Question", String.format("storeId = %d", storeId), session);
         questions.remove(storeId);
         questionMap.remove(storeId);
     }
 
-    public static void removeMemberMessage(int userId) {
-        Dao.removeIf("StoreReview", String.format("senderId = %d", userId));
+    public static void removeMemberMessage(int userId, Session session) throws Exception{
+        Dao.removeIf("StoreReview", String.format("senderId = %d", userId), session);
         List<StoreReview> removeSReview = new ArrayList<>();
         for(HashMap<Integer, StoreReview> reviews : storeReviewMap.values())
             for(StoreReview review : reviews.values())
@@ -202,7 +204,7 @@ public class MessageDao {
             storeReviewMap.get(review.getStoreId()).remove(review.getMessageId());
 
         List<ProductReview> removePReview = new ArrayList<>();
-        Dao.removeIf("ProductReview", String.format("senderId = %d", userId));
+        Dao.removeIf("ProductReview", String.format("senderId = %d", userId), session);
         for(HashMap<Integer, HashMap<Integer, ProductReview>> tmp : productReviewMap.values())
             for(HashMap<Integer, ProductReview> reviews : tmp.values())
                 for(ProductReview review : reviews.values())
@@ -212,7 +214,7 @@ public class MessageDao {
             productReviewMap.get(review.getStoreId()).get(review.getProductId()).remove(review.getMessageId());
 
         List<Question> removeQ = new ArrayList<>();
-        Dao.removeIf("Question", String.format("senderId = %d", userId));
+        Dao.removeIf("Question", String.format("senderId = %d", userId), session);
         for(HashMap<Integer, Question> questions : questionMap.values())
             for(Question question : questions.values())
                 if(question.getSenderId() == userId)

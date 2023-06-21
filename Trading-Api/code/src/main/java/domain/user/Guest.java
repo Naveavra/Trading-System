@@ -1,6 +1,7 @@
 package domain.user;
 
 import domain.store.product.Product;
+import org.hibernate.Session;
 import org.json.JSONObject;
 import utils.Pair;
 import utils.infoRelated.ProductInfo;
@@ -31,16 +32,16 @@ public class Guest implements User{
         return id;
     }
 
-    public void addProductToCart(int storeId, ProductInfo product, int quantity) throws Exception{
+    public void addProductToCart(int storeId, ProductInfo product, int quantity, Session session) throws Exception{
             cart.addProductToCart(storeId, product, quantity);
     }
 
 
-    public void removeProductFromCart(int storeId, int productId) throws Exception{
+    public void removeProductFromCart(int storeId, int productId, Session session) throws Exception{
         cart.removeProductFromCart(storeId, productId);
     }
 
-    public void changeQuantityInCart(int storeId, ProductInfo product, int change) throws Exception{
+    public void changeQuantityInCart(int storeId, ProductInfo product, int change, Session session) throws Exception{
         cart.changeQuantityInCart(storeId, product, change);
     }
 
@@ -57,7 +58,7 @@ public class Guest implements User{
         return "guest" + id;
     }
 
-    public void purchaseMade(Receipt receipt){
+    public void purchaseMade(Receipt receipt, Session session){
         emptyCart();
     }
 
