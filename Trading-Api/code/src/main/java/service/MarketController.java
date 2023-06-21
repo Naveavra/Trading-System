@@ -258,7 +258,7 @@ public class MarketController {
         storectrl.checkProductInStore(storeId, productId);
     }
 
-    public void changeRegularDiscount(int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst,String content, Session session) throws Exception {
+    public void changeRegularDiscount(int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<JSONObject> predicatesLst,String content,Session session) throws Exception {
         storectrl.changeRegularDiscount(storeId, prodId, percentage, discountType,
                 discountedCategory, predicatesLst,content, session);
     }

@@ -134,7 +134,7 @@ public interface MarketInterface {
 
     Response<List<? extends Information>> getComplaints(int userId, String token);
 
-    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<String> predicatesLst,String content);
+    public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType, String discountedCategory, List<JSONObject> predicatesLst,String content);
 
     public Response placeBid(String token, int userId, int storeId, int prodId, double price,int quantity);
 

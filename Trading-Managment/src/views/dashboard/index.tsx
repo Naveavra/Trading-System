@@ -123,7 +123,6 @@ const DashboardPage: React.FC = () => {
         try {
             if (token != "" && userName != 'guest' && !left) {
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
-                debugger;
                 if (response.payload != null) {
                     hashMap[response.payload?.opcode ?? 0]();
                 }
@@ -139,6 +138,7 @@ const DashboardPage: React.FC = () => {
         dispatch(getStoresInfo());
         dispatch(getProducts());
         dispatch(getCart({ userId: userId }));
+
         // Stop the ping interval when the user leaves the app
         //---------------------notifications---------------------
 

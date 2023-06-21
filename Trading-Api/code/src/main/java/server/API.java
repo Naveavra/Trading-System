@@ -421,7 +421,7 @@ public class API {
     }
     public Pair<Boolean, JSONObject> changeRegularDiscount(int userId, String token, int storeId, int prodId,
                                                            int percentage, String discountType, String discountedCategory,
-                                                           List<String> predicatesLst,String content) {
+                                                           List<JSONObject> predicatesLst,String content) {
         Response<String> res = market.changeRegularDiscount(userId, token, storeId, prodId, percentage, discountType,
                 discountedCategory, predicatesLst,content);
         return fromResToPair(res);

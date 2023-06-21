@@ -334,9 +334,8 @@ public class UserController {
         Member appointed = getMember(appointedEmail);
         List<String> creators = owner.appointToOwner(appointed, storeId, session);
         for(String creator : creators)
-            addNotification(creator, new Notification(NotificationOpcode.GET_STORE_DATA,
-                    "a new owner appointment was added to store: " + storeId), session);
-
+            addNotification(creator, new Notification(NotificationOpcode.GET_STORE_DATA, "a new owner appointment was added to store: " + storeId),session);
+        addNotification(appointed.getId(), new Notification(NotificationOpcode.GET_CLIENT_DATA, "null"),session);
     }
 
 

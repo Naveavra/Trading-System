@@ -1,5 +1,6 @@
 package server;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import server.Config.ConfigParser;
 import server.Config.ConnectionDetails;
@@ -599,13 +600,14 @@ public class Server {
             String discountType = request.get("discountType").toString();
             int prodId = Integer.parseInt(request.get("prodId").toString());
             String discountedCategory = request.get("discountedCategory").toString();
-            String predicates = request.get("predicates").toString();
+           // String predicates = request.get("predicates").toString();
             String content = req.body();
             JSONObject predicatesJson = new JSONObject(request.get("predicates"));
-            List<String> predicatesLst =null;
-            if (!predicates.equals("null")) {
-                String[] arr = predicates.substring(1, predicates.length() - 1).split(",");
-                predicatesLst =new ArrayList<>(Arrays.asList(arr));
+            JSONArray predicates = request.getJSONArray("predicates");
+            List<JSONObject> predicatesLst =new ArrayList<>();
+            for (int i = 0; i < predicates.length(); i++) {
+                JSONObject pred = predicates.getJSONObject(i);
+                predicatesLst.add(pred);
             }
 
             toSparkRes(res, api.changeRegularDiscount(userId, token, storeId, prodId, percentage, discountType,

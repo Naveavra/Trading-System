@@ -1090,7 +1090,7 @@ public class Market implements MarketInterface {
 
     @Override
     public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType,
-                                          String discountedCategory, List<String> predicatesLst,String content) {
+                                          String discountedCategory, List<JSONObject> predicatesLst,String content) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.deleteDiscountPolicy, storeId);
