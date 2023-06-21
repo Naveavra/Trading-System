@@ -38,6 +38,19 @@ public class API {
         }
     }
 
+    private Pair<Boolean, JSONObject> fromResToPairPurchase(Response<Receipt> res) {
+        JSONObject json = new JSONObject();
+        if(res.errorOccurred())
+        {
+            json.put("errorMsg", res.getErrorMessage());
+            return new Pair<>(false, json);
+        }
+        else {
+            json.put("value", "purchased cart successfully");
+            return new Pair<>(true, json);
+        }
+    }
+
     public Pair<Boolean, JSONObject> fromResToPairInfo(Response<? extends Information> res){
         JSONObject json = new JSONObject();
         if(res.errorOccurred())
@@ -123,7 +136,7 @@ public class API {
 
     public Pair<Boolean, JSONObject> makePurchase(int userId , JSONObject payment, JSONObject supplier){
         Response<Receipt> res = market.makePurchase(userId, payment, supplier);
-        return fromResToPairInfo(res);
+        return fromResToPairPurchase(res);
     }
 
 
@@ -472,7 +485,7 @@ public class API {
     }
     public Pair<Boolean, JSONObject> purchaseBid(String token, int userId, int storeId, int bidId, JSONObject paymentDetails, JSONObject supplierDetails) {
         Response<Receipt> res = market.purchaseBid(token, userId, storeId, bidId, paymentDetails, supplierDetails);
-        return fromResToPair(res);
+        return fromResToPairPurchase(res);
     }
     public Pair<Boolean, JSONObject> clientAcceptCounter(String token, int bidId, int storeId) {
         Response<String> res = market.clientAcceptCounter(token, bidId, storeId);

@@ -135,6 +135,7 @@ public class Member extends Subscriber implements User{
         receipt.setMember(this);
         purchaseHistory.addPurchaseMade(receipt);
         SubscriberDao.saveReceipt(receipt, session);
+        receipt.saveReceiptProducts(session);
         SubscriberDao.removeCart(id, session);
         cart.emptyCart();
     }
