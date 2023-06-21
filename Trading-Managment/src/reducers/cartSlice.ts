@@ -122,12 +122,13 @@ const { reducer: cartReducer, actions: cartActions } = createSlice({
         });
         builder.addCase(getCart.fulfilled, (state, { payload }) => {
             state.isLoading = false;
-            console.log("cart!!!", payload);
             state.responseData = payload;
         });
         builder.addCase(getCart.rejected, (state, { payload }) => {
             state.isLoading = false;
-            state.error = state.error ? (state.error + payload?.message.data ?? "error during getCart") : payload?.message.data ?? "error during getCart";
+            if (payload?.message.data != 'the id given does not belong to any member') {
+                state.error = state.error ? (state.error + payload?.message.data ?? "error during getCart") : payload?.message.data ?? "error during getCart";
+            }
         });
         //patchcart
         builder.addCase(patchCart.pending, (state) => {

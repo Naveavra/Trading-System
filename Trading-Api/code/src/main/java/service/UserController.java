@@ -329,7 +329,7 @@ public class UserController {
         List<String> creators = owner.appointToOwner(appointed, storeId);
         for(String creator : creators)
             addNotification(creator, new Notification(NotificationOpcode.GET_STORE_DATA, "a new owner appointment was added to store: " + storeId));
-
+        addNotification(appointed.getId(), new Notification(NotificationOpcode.GET_CLIENT_DATA, "null"));
     }
 
 

@@ -1,15 +1,15 @@
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "../../../../redux/store";
 
-import { getNotifications } from "../../../../reducers/authSlice";
+import { getClientData, getNotifications, resetAuth } from "../../../../reducers/authSlice";
 import Bar2 from "../../../../components/Bars/Navbar/NavBar2";
 import { Box, CardContent, Typography, Card, Divider } from "@mui/material";
 import ProductCard from "../../../../components/ProductInStore/Card";
 import axios from "axios";
 import { clearProductError, clearProductMsg, clearProductsError, getProducts } from "../../../../reducers/productsSlice";
-import { clearStoreError, clearStoresResponse, getStoresInfo } from "../../../../reducers/storesSlice";
+import { clearStoreError, clearStoresResponse, getStore, getStoresInfo } from "../../../../reducers/storesSlice";
 import { Action } from "../../../../types/systemTypes/Action";
 
 import React from "react";
@@ -18,15 +18,19 @@ import ErrorAlert from "../../../../components/Alerts/error";
 import { clearBidError, clearBidMsg } from "../../../../reducers/bidSlice";
 import { clearDiscountError, clearDiscountMsg } from "../../../../reducers/discountSlice";
 import { clearShopRuleError, clearShopRuleMessage } from "../../../../reducers/ShoppingRules";
+import { getComplaints, removeUser } from "../../../../reducers/adminSlice";
+import { getCart } from "../../../../reducers/cartSlice";
 
 
 const Superior: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
+    const token = useAppSelector((state) => state.auth.token);
     const userId = useAppSelector((state) => state.auth.userId);
     const store = useAppSelector((state) => state.store.storeState.watchedStore);
     const actions = useAppSelector((state) => state);
+    const [left, setLeft] = useState(false);
 
     const userName = useAppSelector(state => state.auth.userName);
     const privateName = userName.split('@')[0];
@@ -67,16 +71,90 @@ const Superior: React.FC = () => {
         }
     }
 
+    // useEffect(() => {
+    //     const pingInterval = setInterval(sendPing, PING_INTERVAL);
+
+    //     dispatch(getStoresInfo());
+    //     dispatch(getProducts());
+    //     // Stop the ping interval when the user leaves the app
+    //     return () => {
+    //         clearInterval(pingInterval)
+    //     };
+    // }, []);
+    interface NumberToVoidFunctionMap {
+        [key: number]: () => void;
+    }
+
+    const hashMap: NumberToVoidFunctionMap = {
+        0: () => {
+            debugger;
+            dispatch(getClientData({ userId: userId }));
+            fetchNotification();
+        },
+        1: () => {
+            debugger;
+            dispatch(getStore({ userId: userId, storeId: storeId }));
+            fetchNotification();
+        },
+        2: () => {
+            // handleAdmin();
+            fetchNotification();
+        },
+        3: () => {
+            dispatch(getComplaints(userId));
+            fetchNotification();
+        },
+        4: () => {
+            setLeft(true);
+            dispatch(removeUser(userName));
+            dispatch(resetAuth());
+            navigate('/auth/login');
+        },
+        5: () => {
+            debugger;
+            dispatch(getClientData({ userId: userId }));
+            dispatch(getStore({ userId: userId, storeId: storeId }));
+            fetchNotification();
+        },
+        6: () => {
+            dispatch(getClientData({ userId: userId }));
+            dispatch(getComplaints(userId));
+            fetchNotification();
+        },
+        7: () => {
+            dispatch(getStore({ userId: userId, storeId: storeId }));
+            dispatch(getComplaints(userId));
+            fetchNotification();
+        },
+    };
+    const fetchNotification = async () => {
+        try {
+            if (token != "" && userName != 'guest' && !left) {
+                const response = await dispatch(getNotifications({ userId: userId, token: token }));
+                debugger;
+                if (response.payload != null) {
+                    hashMap[response.payload?.opcode ?? 0]();
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching notification:', error);
+        }
+    };
     useEffect(() => {
+        // Call the sendPing function every 2 seconds
         const pingInterval = setInterval(sendPing, PING_INTERVAL);
 
         dispatch(getStoresInfo());
         dispatch(getProducts());
+        dispatch(getCart({ userId: userId }));
         // Stop the ping interval when the user leaves the app
+        //---------------------notifications---------------------
+
+        fetchNotification();
         return () => {
             clearInterval(pingInterval)
         };
-    }, []);
+    }, [userId, dispatch, token, userName, storeId])
 
     return (<>
         <Bar2 headLine={`hello ${privateName} , wellcome to `} />
@@ -110,9 +188,9 @@ const Superior: React.FC = () => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
                             store shopping rules:
                         </Typography >
-                        {store.purchasePolicies?.map((shopRule) => {
+                        {store.purchasePolicies?.map((shopRule, index) => {
                             return (
-                                <Typography variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 10, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
+                                <Typography key={index} variant="h6" component="div" sx={{ flexGrow: 1, margin: 'center', ml: 10, mt: 2, alignItems: 'center', justifContent: 'center', fontFamily: 'sans-serif' }}>
                                     {shopRule.content}
                                 </Typography >
                             )

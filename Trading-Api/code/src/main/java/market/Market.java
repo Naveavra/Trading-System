@@ -1085,12 +1085,13 @@ public class Market implements MarketInterface {
 
     @Override
     public Response changeRegularDiscount(int userId, String token, int storeId, int prodId, int percentage, String discountType,
-                                          String discountedCategory, List<String> predicatesLst,String content) {
+                                          String discountedCategory, List<JSONObject> predicatesLst,String content) {
         try {
             userAuth.checkUser(userId, token);
             userController.checkPermission(userId, Action.deleteDiscountPolicy, storeId);
             marketController.changeRegularDiscount(storeId, prodId, percentage, discountType,
                     discountedCategory, predicatesLst,content);
+            addNotification(userId,NotificationOpcode.GET_STORE_DATA,"null");
             return logAndRes(Event.LogStatus.Success, "user changed discount successfully",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "user changed discount policy", null, null);
