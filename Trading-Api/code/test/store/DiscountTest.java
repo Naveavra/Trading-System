@@ -1,5 +1,7 @@
 package store;
 
+import data.StoreInfo;
+import data.UserInfo;
 import database.daos.Dao;
 import domain.store.discount.AbstractDiscount;
 import domain.store.discount.DiscountFactory;
@@ -19,14 +21,18 @@ import domain.store.storeManagement.Store;
 import domain.store.storeManagement.StoreController;
 import domain.user.Member;
 import domain.user.ShoppingCart;
+import market.Admin;
+import market.Market;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
+import utils.Response;
 import utils.infoRelated.ProductInfo;
 import utils.orderRelated.Order;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 

@@ -61,6 +61,7 @@ public class Inventory{
         if(getProductByName(name)==null){
             int id = prod_id.getAndIncrement();
             p = new Product(storeId, id, name, description, img, price, quantity);
+            StoreDao.saveProduct(p, session);
             productList.put(id,p);
             addToCategories(id, categories, session);
         }

@@ -206,7 +206,9 @@ public class Store extends Information implements DbEntity {
     public synchronized void addDiscount(CompositeDataObject discountData,String content, Session session) throws Exception {
         Discount dis = discountFactory.createDiscount(discountData);
         if(dis!=null && !discounts.contains(dis)){
-            dis.setDescription(new JSONObject(content).get("description").toString());
+            if(!Objects.equals(content, "")){
+                dis.setDescription(new JSONObject(content).get("description").toString());
+            }
             dis.setContent(content);
             discounts.add(dis);
             StoreDao.saveDiscount(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()), session);

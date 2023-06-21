@@ -55,8 +55,6 @@ public class MarketController {
         }
         order.setStatus(Status.submitted);
         Receipt receipt = new Receipt(order.getOrderId(), shoppingCart, order.getTotalPrice());
-        SubscriberDao.saveReceipt(receipt, session);
-        receipt.saveReceiptProducts(session);
         Pair<Receipt, Set<Integer>> ans = new Pair<>(receipt, creatorIds);
         return ans;
     }
@@ -324,8 +322,6 @@ public class MarketController {
         Set<Integer> creatorIds = storectrl.purchaseProductsBid(sc,or, session);
         or.setStatus(Status.submitted);
         Receipt receipt = new Receipt(or.getOrderId(),sc,or.getTotalPrice());
-        SubscriberDao.saveReceipt(receipt, session);
-        receipt.saveReceiptProducts(session);
         Pair<Receipt,Set<Integer>> res = new Pair<>(receipt,creatorIds);
         return res;
     }

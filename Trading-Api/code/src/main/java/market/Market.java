@@ -55,14 +55,14 @@ public class Market implements MarketInterface {
         userAuth = new UserAuth();
 
         try {
-            proxyPayment = new ProxyPayment(new ESConfig());
+            proxyPayment = new ProxyPayment(payment);
         } catch (Exception e) {
             System.out.println("Error with the connection to the external payment service: " + e.getMessage());
             System.exit(-1);
         }
 
         try {
-            proxySupplier = new ProxySupplier(new ESConfig());
+            proxySupplier = new ProxySupplier(supply);
         } catch (Exception e) {
             System.out.println("Error with the connection to the external supplier service: " + e.getMessage());
             System.exit(-1);
@@ -140,7 +140,7 @@ public class Market implements MarketInterface {
 
     @Override
     public Response<String> register(String email, String pass, String birthday) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession())  {
             String hashedPassword = userAuth.hashPassword(email, pass);
             userController.register(email, pass, hashedPassword, birthday, session);
             marketInfo.addRegisteredCount();
@@ -186,7 +186,7 @@ public class Market implements MarketInterface {
 
     @Override
     public Response<String> sendNotification(int userId, String token, NotificationOpcode opcode, String receiverEmail, String notify) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             userAuth.checkUser(userId, token);
             String senderEmail = userController.getUserEmail(userId);
             Notification notification = new Notification(opcode, notify + ". from " + senderEmail);
@@ -240,7 +240,7 @@ public class Market implements MarketInterface {
 
     @Override
     public Response<String> addProductToCart(int userId, int storeId, int productId, int quantity) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             marketController.checkProductInStore(storeId, productId);
             userController.addProductToCart(userId, storeId, marketController.getProductInformation(storeId, productId), quantity, session);
             String productName = marketController.getProductName(storeId, productId);
@@ -259,7 +259,7 @@ public class Market implements MarketInterface {
 
     @Override
     public Response<String> removeProductFromCart(int userId, int storeId, int productId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             userController.removeProductFromCart(userId, storeId, productId, session);
             String productName = marketController.getProductName(storeId, productId);
             if(!userController.isGuest(userId))
@@ -276,7 +276,7 @@ public class Market implements MarketInterface {
 
     @Override
     public Response<String> changeQuantityInCart(int userId, int storeId, int productId, int change) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             userController.changeQuantityInCart(userId, storeId, marketController.getProductInformation(storeId, productId), change, session);
             String productName = marketController.getProductName(storeId, productId);
             if(!userController.isGuest(userId))
@@ -306,7 +306,7 @@ public class Market implements MarketInterface {
 
     @Override
     public Response<String> removeCart(int userId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             userController.removeCart(userId);
             if(!userController.isGuest(userId))
                 addNotification(userId, NotificationOpcode.GET_CLIENT_DATA, "null", session);
@@ -329,7 +329,7 @@ public class Market implements MarketInterface {
 
     @Override
     public synchronized Response<Receipt> purchaseBid(String token, int userId, int storeId, int bidId, JSONObject paymentDetails, JSONObject supplierDetails) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             userAuth.checkUser(userId, token);
             Bid bid = marketController.getBid(storeId, bidId);
             proxyPayment.makePurchase(paymentDetails, getStorePaymentDetails(storeId), bid.getOffer());
@@ -337,7 +337,8 @@ public class Market implements MarketInterface {
             Pair<Receipt, Set<Integer>> ans = marketController.purchaseBid(userController.getUser(userId), storeId,
                     bid.getProductId(), bid.getOffer(), bid.getQuantity(), session);
             bid.setStatus(Bid.status.Completed, session);
-            addNotification(userId, NotificationOpcode.GET_CLIENT_DATA, "null", session);
+            if(userController.isGuest(userId))
+                addNotification(userId, NotificationOpcode.GET_CLIENT_DATA, "null", session);
             return getReceiptResponse(userId, ans, session);
         } catch (Exception e) {
             return logAndRes(Event.LogStatus.Fail, "user cant make purchase " + e.getMessage(),
@@ -348,7 +349,7 @@ public class Market implements MarketInterface {
 
     @Override
     public Response clientAcceptCounter(String token, int bidId, int storeId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession();) {
             userAuth.checkUser(marketController.getBidClient(bidId, storeId), token);
             List<String> creators = marketController.getBidApprovers(bidId, storeId);
             marketController.clientAcceptCounter(bidId, storeId);
@@ -365,9 +366,9 @@ public class Market implements MarketInterface {
     }
 
     @Override
-    public Response addCompositeDiscount(String token, String body) throws Exception {
+    public Response addCompositeDiscount(String token, String body){
         int userId = -1;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             JSONObject request = new JSONObject(body);
             userId = Integer.parseInt(request.get("userId").toString());
             userAuth.checkUser(userId, token);
@@ -392,12 +393,12 @@ public class Market implements MarketInterface {
         marketInfo.addPurchaseCount();
         return logAndRes(Event.LogStatus.Success, "user made purchase",
                 StringChecks.curDayString(), userController.getUserName(userId),
-                "success make purchase , u can see the receipt in the personal area", null, null);
+                receipt, null, null);
     }
 
     @Override
     public synchronized Response<Receipt> makePurchase(int userId, JSONObject payment, JSONObject supplier) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             ShoppingCart cart = new ShoppingCart(userController.getUserCart(userId));
             int totalPrice = marketController.calculatePrice(cart);
             proxyPayment.makePurchase(payment, getStorePaymentDetails(cart), totalPrice);
