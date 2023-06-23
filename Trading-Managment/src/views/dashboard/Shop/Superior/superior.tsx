@@ -56,31 +56,6 @@ const Superior: React.FC = () => {
     const shopRuleMessage = useAppSelector((state) => state.shoppingRule.message);
     const shopRuleError = useAppSelector((state) => state.shoppingRule.error);
 
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-
-    const sendPing = () => {
-        if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(response => {
-                    // Do something with the response if necessary
-                })
-                .catch(error => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
-        }
-    }
-
-    // useEffect(() => {
-    //     const pingInterval = setInterval(sendPing, PING_INTERVAL);
-
-    //     dispatch(getStoresInfo());
-    //     dispatch(getProducts());
-    //     // Stop the ping interval when the user leaves the app
-    //     return () => {
-    //         clearInterval(pingInterval)
-    //     };
-    // }, []);
     interface NumberToVoidFunctionMap {
         [key: number]: () => void;
     }
@@ -141,19 +116,13 @@ const Superior: React.FC = () => {
         }
     };
     useEffect(() => {
-        // Call the sendPing function every 2 seconds
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
 
-        dispatch(getStoresInfo());
         dispatch(getProducts());
         dispatch(getCart({ userId: userId }));
         // Stop the ping interval when the user leaves the app
         //---------------------notifications---------------------
 
         fetchNotification();
-        return () => {
-            clearInterval(pingInterval)
-        };
     }, [userId, dispatch, token, userName, storeId])
 
     return (<>

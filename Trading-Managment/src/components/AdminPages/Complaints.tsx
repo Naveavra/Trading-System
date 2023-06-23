@@ -27,20 +27,6 @@ const Complaints = () => {
         }
     });
 
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-
-    const sendPing = () => {
-        if (user != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: user })
-                .then(() => {
-                    // Do something with the response if necessary
-                })
-                .catch(() => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
-        }
-    }
 
     const handleEditClick = (id: GridRowId) => () => {
         //todo implement 
@@ -54,15 +40,8 @@ const Complaints = () => {
     };
 
     useEffect(() => {
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
         dispath(getComplaints(user));
-
-        // Stop the ping interval when the user leaves the app
-        return () => {
-            clearInterval(pingInterval)
-        };
-
-    }, [dispath, user]);
+    }, [dispath]);
     const columns: GridColDef[] = useMemo(() => {
         return [
             { field: 'id', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },

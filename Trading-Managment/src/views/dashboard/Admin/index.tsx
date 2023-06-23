@@ -92,15 +92,9 @@ const Admin = () => {
     useEffect(() => {
         dispatch(getLogger(userId));
         dispatch(getStoresInfo());
-        // Call the sendPing function every 2 seconds
-        //const pingInterval = setInterval(sendPing, PING_INTERVAL);
-
         //---------------------notifications---------------------
 
         fetchNotification();
-        return () => {
-            //clearInterval(pingInterval)
-        };
     }, [userId, dispatch])
 
     //log table

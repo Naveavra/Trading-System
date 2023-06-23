@@ -25,38 +25,6 @@ const DashboardFrame: React.FC = () => {
     const userName = useAppSelector((state) => state.auth.userName);
     const token = useAppSelector((state) => state.auth.token);
     const products = useAppSelector((state) => state.product.responseData) ?? [];
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    const PING_INTERVAL2 = 5000;
-    // Send a ping to the server
-    const sendPing = () => {
-        if (userId != 0) {
-            // axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-            //     .then(response => {
-            //         // Do something with the response if necessary
-            //     })
-            //     .catch(error => {
-            //         // Handle the error if necessary
-            //     });
-            console.log("frame");
-            dispatch(ping(userId));
-        }
-    }
-    // const getC = () => {
-    //     if (token != "") {
-    //         dispatch(getNotifications({ userId: userId, token: token }));
-    //     }
-    // }
-    useEffect(() => {
-        // Call the sendPing function every 2 seconds
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        //const pingInterval2 = setInterval(getC, PING_INTERVAL2);
-        // Stop the ping interval when the user leaves the app
-        return () => {
-            clearInterval(pingInterval)
-            //clearInterval(pingInterval2)
-        };
-
-    }, [])
 
     const handleSet = (text: string) => {
         setText(text);

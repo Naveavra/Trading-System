@@ -20,29 +20,7 @@ const OrderPage = () => {
     const error = useAppSelector((state) => state.store.storeState.error);
     const message = useAppSelector((state) => state.store.storeState.responseData);
 
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
-    const sendPing = () => {
-        if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(() => {
-                    // Do something with the response if necessary
-                })
-                .catch(() => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
-        }
-    }
-    useEffect(() => {
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
-
-        // Stop the ping interval when the user leaves the app
-        return () => {
-            clearInterval(pingInterval)
-        };
-
-    }, [dispatch, userId]);
     return (
         <>
             <Bar3 headLine={"this is youre order"} />
@@ -58,7 +36,7 @@ const OrderPage = () => {
             {error ? <ErrorAlert message={error} onClose={() => { dispatch(clearStoreError({})) }} /> : null}
             <h2>Products in Order</h2>
             <Box sx={{ ml: 2 }} display="flex" alignItems="center">
-                {order.products?.map((product) => (
+                {order.productsInStores?.map((product) => (
                     <Card sx={{ ml: 2, mr: 2, width: 250 }}>
                         <CardMedia
                             sx={{ height: 140 }}

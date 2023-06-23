@@ -55,7 +55,10 @@ const BuyCart: React.FC<props> = ({ personal }) => {
         else {
             navigate('/dashboard/cart');
             dispatch(getCart({ userId: userId }));
-            dispatch(getClientData({ userId: userId }));
+            if (userName != 'guest') {
+                dispatch(getClientData({ userId: userId }));
+            }
+            dispatch(getCart({ userId: userId }));
         }
     }, []);
     //storeid, userid, price, quantity

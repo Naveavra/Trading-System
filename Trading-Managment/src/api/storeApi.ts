@@ -13,6 +13,7 @@ export const storeApi =
 
     getStore: (params: GetStoresParams): Promise<ApiResponse<Store>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/getStore`, params)),
+
     getProducts: (params: GetStoreProducts): Promise<ApiResponseListData<Product>> =>
         apiErrorHandlerWrapper(noAuthApiClient.get(`api/stores/${params.storeId}/products`, { params: params })),
 

@@ -6,7 +6,6 @@ import AlertDialog from '../../components/Dialog/AlertDialog';
 import { clearAuthError, getClientData, getNotifications, resetAuth } from '../../reducers/authSlice';
 import CartLogo from '../../components/Loaders/cartLoader';
 import { clearStoresError, clearStoresResponse, getStore, getStoresInfo } from '../../reducers/storesSlice';
-import axios from 'axios';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { clearProductsError, getProducts } from '../../reducers/productsSlice';
 import { Box, Divider, Slider, SliderThumb, Typography, styled } from '@mui/material';
@@ -61,21 +60,6 @@ const DashboardPage: React.FC = () => {
         dispatch(getMarketStatus(userId));
     }
 
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-
-    // Send a ping to the server
-    const sendPing = () => {
-        if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(response => {
-                    // Do something with the response if necessary
-                })
-                .catch(error => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
-        }
-    }
     interface NumberToVoidFunctionMap {
         [key: number]: () => void;
     }
@@ -123,8 +107,9 @@ const DashboardPage: React.FC = () => {
         try {
             if (token != "" && userName != 'guest' && !left) {
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
+                debugger;
                 if (response.payload != null) {
-                    hashMap[response.payload?.opcode ?? 0]();
+                    hashMap[response.payload?.opcode]();
                 }
             }
         } catch (error) {
@@ -132,20 +117,19 @@ const DashboardPage: React.FC = () => {
         }
     };
     useEffect(() => {
-        // Call the sendPing function every 2 seconds
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
-
         dispatch(getStoresInfo());
         dispatch(getProducts());
-        dispatch(getCart({ userId: userId }));
+        if (userId != 0) {
+            dispatch(getCart({ userId: userId }));
+        }
+        if (userName != 'guest' && userId != 0) {
+            dispatch(getClientData({ userId: userId }));
+        }
 
         // Stop the ping interval when the user leaves the app
         //---------------------notifications---------------------
 
         fetchNotification();
-        return () => {
-            clearInterval(pingInterval)
-        };
     }, [userId, dispatch, token, userName, storeId])
     const handleSet = (text: string) => {
         setText(text);

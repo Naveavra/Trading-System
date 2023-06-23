@@ -23,7 +23,7 @@ export const authApi = {
     getNotifications: (credentials: getUserNotifications): Promise<ApiResponse<MyNotification>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/auth/notifications`, { userId: credentials.userId, token: credentials.token })),
     getClient: (credentials: getUserData): Promise<ApiResponse<getClientResponseData>> =>
-        apiErrorHandlerWrapper(getApiClient().post('api/auth/getClient', { userId: credentials.userId })),
+        apiErrorHandlerWrapper(getApiClient().post('api/auth/getClient', { userId: credentials.userId }, { headers: { 'Content-Type': 'x-www-form-urlencoded' } })),
 
     sendMessage: (credentials: messageParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/auth/notifications/msg', credentials)),
