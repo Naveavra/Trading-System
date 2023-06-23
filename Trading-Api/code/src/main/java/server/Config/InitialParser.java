@@ -92,7 +92,7 @@ public class InitialParser {
                     int adminId = params.getInt("adminId");
                     String newAdminEmail = params.getString("email");
                     String passwordAdmin = params.getString("password");
-                    Server.api.addAdmin(adminId, token,newAdminEmail,passwordAdmin);
+                    Server.api.addAdmin(0, token,newAdminEmail,passwordAdmin);
                     break;
                 case "ADD_ITEM_TO_STORE":
                     List<String> categories = new ArrayList<>();

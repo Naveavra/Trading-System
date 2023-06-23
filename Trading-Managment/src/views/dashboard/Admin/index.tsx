@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Bar4 from "../../../components/Bars/Navbar/NavBar4";
 import { adminResign, clearAdminError, clearAdminMsg, getComplaints, getLogger, getMarketStatus } from "../../../reducers/adminSlice";
 import PasswordIcon from '@mui/icons-material/Password';
-import { getClientData, getNotifications, resetAuth } from "../../../reducers/authSlice";
+import { getClientData, getNotifications, resetAuth, setTrue } from "../../../reducers/authSlice";
 import CancelIcon from '@mui/icons-material/Cancel';
 import { reset } from "../../../reducers/discountSlice";
 import ErrorAlert from "../../../components/Alerts/error";
@@ -28,6 +28,7 @@ const Admin = () => {
     const name = userName.split('@')[0];
     const msg = useAppSelector((state) => state.admin.msg);
     const error = useAppSelector((state) => state.admin.error);
+    const first = useAppSelector((state) => state.auth.first);
 
     const logs = useAppSelector((state) => state.admin.logRecords) ?? [{ userName: "", id: 0, content: "", status: "" }];
     const systemStatus = useAppSelector((state) => state.admin.status);
@@ -93,8 +94,10 @@ const Admin = () => {
         dispatch(getLogger(userId));
         dispatch(getStoresInfo());
         //---------------------notifications---------------------
-
-        fetchNotification();
+        if (!first) {
+            fetchNotification();
+            dispatch(setTrue());
+        }
     }, [userId, dispatch])
 
     //log table

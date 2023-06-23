@@ -675,7 +675,11 @@ public class Store extends Information implements DbEntity {
                     }
                     return null;
                 }
-                bid.declineBid();
+               if(bid.declineBid()){
+                   bids.remove(bid);
+                   StoreDao.removeBid(storeId, bidId, session);
+                   return bid;
+               }
                 //eli needs to send message to the user that placed the bid
                 return null;
             }

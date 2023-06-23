@@ -42,7 +42,7 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
 
     const onProductChoose = (event: SelectChangeEvent) => {
         setFirstProductName(event.target.value);
-        setParamsToPredicate(inventory.find((product) => product.name === event.target.value)?.productId.toString() ?? '');
+        setProduct(inventory.find((product) => product.name === event.target.value)?.productId.toString() ?? '');
     }
     const onSecondProductChoose = (event: SelectChangeEvent) => {
         setSecondProductName(event.target.value);
@@ -153,6 +153,9 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
         console.log(input);
         setSecParam(true);
         dispatch(setParamsToTmpPredicate(input));
+    }
+    const setProduct = (input: string) => {
+        dispatch(setProductIdToRegularDiscount(parseInt(input ?? '0')));
     }
     const addParamsToPredicate = (input: string) => {
         dispatch(addParamsToTmpPredicate(input));

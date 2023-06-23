@@ -18,10 +18,13 @@ export const LoginForm = () => {
     const form = useForm<LoginFormValues>();
     const navigate = useNavigate();
     const userId = useAppSelector((state: RootState) => state.auth.userId);
+    const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
 
     const handleOnSubmit = form.handleSubmit(() => {
         setDefaultChecked(form.getValues().rememberMe);
-        dispatch(login(form.getValues()));
+        dispatch(login(form.getValues())).then((res) => {
+            // fetchNotification();
+        });
         //client.send(JSON.stringify({ "type": "LOGIN", "email": "ziv", "password": '123' }));
     });
     const handleOnRegster = () => {
@@ -35,6 +38,64 @@ export const LoginForm = () => {
         navigate('/dashboard');
     };
 
+
+
+    //notify
+    // interface NumberToVoidFunctionMap {
+    //     [key: number]: () => void;
+    // }
+
+    // const hashMap: NumberToVoidFunctionMap = {
+    //     0: () => {
+    //         dispatch(getClientData({ userId: userId }));
+    //         fetchNotification();
+    //     },
+    //     1: () => {
+    //         dispatch(getStore({ userId: userId, storeId: storeId }));
+    //         fetchNotification();
+    //     },
+    //     2: () => {
+    //         handleAdmin();
+    //         fetchNotification();
+    //     },
+    //     3: () => {
+    //         dispatch(getComplaints(userId));
+    //         fetchNotification();
+    //     },
+    //     4: () => {
+    //         setLeft(true);
+    //         dispatch(removeUser(userName));
+    //         dispatch(resetAuth());
+    //         navigate('/auth/login');
+    //     },
+    //     5: () => {
+    //         dispatch(getClientData({ userId: userId }));
+    //         dispatch(getStore({ userId: userId, storeId: storeId }));
+    //         fetchNotification();
+    //     },
+    //     6: () => {
+    //         dispatch(getClientData({ userId: userId }));
+    //         dispatch(getComplaints(userId));
+    //         fetchNotification();
+    //     },
+    //     7: () => {
+    //         dispatch(getStore({ userId: userId, storeId: storeId }));
+    //         dispatch(getComplaints(userId));
+    //         fetchNotification();
+    //     },
+    // };
+    // const fetchNotification = async () => {
+    //     try {
+    //         if (token != "" && userName != 'guest' && !left) {
+    //             const response = await dispatch(getNotifications({ userId: userId, token: token }));
+    //             if (response.payload != null) {
+    //                 hashMap[response.payload?.opcode]();
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching notification:', error);
+    //     }
+    // };
     return (
 
         <Grid

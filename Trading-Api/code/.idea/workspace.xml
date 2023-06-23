@@ -5,22 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="79166231-5183-48cd-aa32-d917f62fcc4e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/purchase/CategoryPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/purchase/CategoryPolicy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/api/cartApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/api/cartApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/api/productsApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/api/productsApi.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Config/InitialParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Config/InitialParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/api/storeApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/api/storeApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/AdminPages/Complaints.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/AdminPages/Complaints.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/AddEditProductForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/AddEditProductForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/AddEditStore.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/AddEditStore.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/RegularDiscount.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/RegularDiscount.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/PersonalPages/OrderPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/PersonalPages/OrderPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/ProductInStore/Card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/ProductInStore/Card.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/storePages/StoreOrders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/storePages/StoreOrders.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Shop/Superior/superior.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Shop/Superior/superior.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Shop/Visitor/visitor.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Shop/Visitor/visitor.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,6 +27,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../.." value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -166,12 +162,23 @@
       <updated>1687297804151</updated>
       <workItem from="1687297805510" duration="19223000" />
       <workItem from="1687371797954" duration="4342000" />
-      <workItem from="1687505958049" duration="4499000" />
+      <workItem from="1687505958049" duration="8671000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -202,11 +209,6 @@
           <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java</url>
-          <line>744</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
           <line>730</line>
           <option name="timeStamp" value="22" />
@@ -225,6 +227,11 @@
           <url>file://$PROJECT_DIR$/src/main/java/domain/store/purchase/PurchasePolicy.java</url>
           <line>32</line>
           <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>166</line>
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
