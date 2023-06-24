@@ -19,7 +19,7 @@ const ComplaintPage = () => {
     const complaint = conmplaints.find((complaint) => complaint.complaintId == complaintId);
 
     const userId = useAppSelector((state) => state.auth.userId)
-    const isLoading = useAppSelector((state) => state.auth.isLoading);
+    const isLoading = useAppSelector((state) => state.admin.isLoading);
     const error = useAppSelector((state) => state.auth.error);
 
     //maybe take it from params

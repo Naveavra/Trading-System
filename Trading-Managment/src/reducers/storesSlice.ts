@@ -296,6 +296,10 @@ const { reducer: storesReducer, actions: storesActions } = createSlice({
             state.storeState.isLoading = false;
             state.storeState.watchedStore = payload;
         });
+        builder.addCase(getStore.rejected, (state, { payload }) => {
+            state.storeState.isLoading = false;
+            //todo : fix opcode in notification  state.storeState.error = state.storeState.error ? (state.storeState.error + payload?.message.data ?? "error during getStore") : payload?.message.data ?? "error during getStore";
+        });
         //appointManager
         builder.addCase(appointManager.rejected, (state, { payload }) => {
             state.storeState.isLoading = false;
