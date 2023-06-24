@@ -2,12 +2,12 @@ package database.daos;
 
 import database.DbEntity;
 import database.HibernateUtil;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.query.Query;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Dao {
@@ -197,6 +197,28 @@ public class Dao {
                 throw new Exception("updating rows in db failed");
             }
         }
+    }
+
+    public static int getMaxId(String entityName, String column){
+        if(!forTests) {
+            Transaction transaction = null;
+            try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+                transaction = session.beginTransaction();
+                String sql = String.format("SELECT max(this.%s) FROM %s this", column, entityName);
+                Query q = session.createQuery(sql);
+                Integer max = (Integer)q.uniqueResult();
+                transaction.commit();
+                if(max == null)
+                    return 0;
+                else
+                    return max+1;
+            }catch (Exception e){
+                if(transaction != null)
+                    transaction.rollback();
+                return -1;
+            }
+        }
+        return 0;
     }
 
     public static boolean getForTests(){

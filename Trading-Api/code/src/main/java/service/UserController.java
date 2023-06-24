@@ -33,8 +33,8 @@ public class UserController {
     private ConcurrentHashMap<Integer, Complaint> complaints; //complaintId,message
 
     public UserController(){
-        ids = new AtomicInteger(2);
-        messageIds = new AtomicInteger(0);
+        ids = new AtomicInteger(SubscriberDao.getMaxId());
+        messageIds = new AtomicInteger(MessageDao.getMaxId());
         guestList = new ConcurrentHashMap<>();
         memberList = new ConcurrentHashMap<>();
         admins = new ConcurrentHashMap<>();

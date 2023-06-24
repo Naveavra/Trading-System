@@ -34,7 +34,6 @@ public class ConfigParser {
     private ConfigParser(String configFilePath) {
         this.configFilePath = configFilePath;
         jsonConfig = loadJsonConfig();
-        initSettings();
     }
 
     /**
@@ -59,11 +58,9 @@ public class ConfigParser {
      */
     public static ConfigParser getInstance() {
         if (instance == null) {
-            String configFilePath = "../../config.json";
+            String configFilePath = "../../config1.json";
             System.out.println(configFilePath);
             instance = new ConfigParser(configFilePath);
-            HibernateUtil.createDrop = true;
-
         }
         return instance;
     }
@@ -94,11 +91,11 @@ public class ConfigParser {
     /**
      * Initializes all the settings from the loaded JSON config.
      */
-    private void initSettings() {
+    public void initSettings() {
         try {
+            initDBSettings();
             initAdminSettings();
             initServerSettings();
-            initDBSettings();
             supplyConfig = initESConfigSettings("Supply");
             paymentConfig = initESConfigSettings("Payment");
         }
@@ -185,6 +182,8 @@ public class ConfigParser {
         DBSetting.put(Environment.SHOW_SQL, showSQL);
         DBSetting.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, sessionContextClass);
         DBSetting.put(Environment.HBM2DDL_AUTO, hbm2ddlAuto);
+
+        HibernateUtil.setSettings();
     }
 
     /**

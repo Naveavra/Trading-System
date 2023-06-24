@@ -1,6 +1,7 @@
 package database.daos;
 
 import database.DbEntity;
+import database.HibernateUtil;
 import domain.store.storeManagement.Store;
 import org.hibernate.Session;
 import utils.messageRelated.*;
@@ -23,7 +24,9 @@ public class MessageDao {
         Dao.save(m, session);
     }
 
-
+    public static int getMaxId(){
+        return Dao.getMaxId("Message", "messageId");
+    }
     public static Complaint getComplaint(int messageId) throws Exception{
         if(complaintMap.containsKey(messageId))
             return complaintMap.get(messageId);

@@ -104,12 +104,12 @@ public class Store extends Information implements DbEntity {
         this.isActive = true;
         discounts = new ArrayList<>();
         bids = new ArrayList<>();
-        bidIds = new AtomicInteger();
+        bidIds = new AtomicInteger(StoreDao.getMaxBidId());
         appHistory = new AppHistory(storeId, creatorNode);
         appointments = new ArrayList<>();
         this.inventory = new Inventory(storeId);
         discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
-        policyIds = new AtomicInteger();
+        policyIds = new AtomicInteger(StoreDao.getMaxConstraintId());
 
     }
 
@@ -129,13 +129,13 @@ public class Store extends Information implements DbEntity {
         discounts = new ArrayList<>();
         this.storeName = storeName;
         this.imgUrl = imgUrl;
-        bidIds = new AtomicInteger();
+        bidIds = new AtomicInteger(StoreDao.getMaxBidId());
         bids = new ArrayList<>();
         appHistory = new AppHistory(storeId, creatorNode);
         appointments = new ArrayList<>();
         this.inventory = new Inventory(storeId);
         discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
-        policyIds = new AtomicInteger();
+        policyIds = new AtomicInteger(StoreDao.getMaxConstraintId());
 
     }
 
@@ -244,7 +244,7 @@ public class Store extends Information implements DbEntity {
         List<OrderInfo> orderInfos = new LinkedList<>();
         for(int orderId : storeOrders.keySet()){
             Order order = storeOrders.get(orderId);
-            OrderInfo orderInfo = new OrderInfo(orderId, order.getUser().getId(), order.getShoppingCart(), order.getTotalPrice());
+            OrderInfo orderInfo = new OrderInfo(orderId, order.getUserId(), order.getShoppingCart(), order.getTotalPrice());
             orderInfos.add(orderInfo);
         }
         return orderInfos;
@@ -269,8 +269,9 @@ public class Store extends Information implements DbEntity {
     public void addAppointment(Appointment appointment, Session session) throws Exception{
         if(!appointment.getApproved())
             appointments.add(appointment);
-        else
+        else {
             StoreDao.removeAppointment(storeId, appointment.getChildId(), appointment.getChildName(), session);
+        }
     }
 
     public void answerAppointment(String userName, String fatherName, String childName, String ans, Session session) throws Exception{
@@ -301,7 +302,6 @@ public class Store extends Information implements DbEntity {
     public void appointUser(int userinchargeid, Member newUser, UserState role) throws Exception {
         Pair<Member, UserState> node = new Pair<>(newUser, role);
         appHistory.addNode(userinchargeid, node);
-        //Member father = appHistory.getNode(userinchargeid).getData().getFirst();
     }
     public int addReview(int orderId, StoreReview review, Session session) throws Exception {
         if (storeOrders.containsKey(orderId))
@@ -323,7 +323,7 @@ public class Store extends Information implements DbEntity {
                 {
                     newCart.addProductToCart(storeId, p, p.quantity);
                 }
-                Order order = new Order(orderId, user, cart);
+                Order order = new Order(orderId, user, newCart);
                 storeOrders.put(orderId, order);
             }
         }
@@ -852,6 +852,7 @@ public class Store extends Information implements DbEntity {
     private void getBidsFromDb() throws Exception{
         if(bids == null){
             bids = (ArrayList<Bid>) StoreDao.getBids(storeId);
+            bidIds = new AtomicInteger(StoreDao.getMaxBidId());
         }
     }
 
@@ -859,11 +860,9 @@ public class Store extends Information implements DbEntity {
         if(purchasePolicies == null) {
             purchasePolicies = new ArrayList<>();
             List<ConstraintDto> constraintDtos = StoreDao.getConstraints(storeId);
+            policyIds = new AtomicInteger(StoreDao.getMaxConstraintId());
             for (ConstraintDto constraintDto : constraintDtos) {
-                try {
                     parsePurchasePolicy(constraintDto.getContent(), null);
-                } catch (Exception ignored) {
-                }
             }
         }
 

@@ -1,5 +1,6 @@
 package domain.store.order;
 
+import database.daos.StoreDao;
 import domain.user.User;
 import utils.infoRelated.ProductInfo;
 import domain.user.ShoppingCart;
@@ -20,7 +21,7 @@ public class OrderController {
     
     public OrderController(){
         orders = new ConcurrentHashMap<Integer,Order>();
-        orderID = new AtomicInteger();
+        orderID = new AtomicInteger(StoreDao.getMaxOrderId());
     }
     
     public synchronized Order createNewOrder(User user, ShoppingCart products, double totalPrice) throws Exception {

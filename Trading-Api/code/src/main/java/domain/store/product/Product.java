@@ -186,9 +186,9 @@ public class Product implements DbEntity{
         }
     }
 
-    private void getCategoriesFromDb(){
+    private void getCategoriesFromDb() throws Exception{
         if(categories == null){
-            categories = new ArrayList<>();
+            categories = StoreDao.getProductCategories(storeId, productId);
         }
     }
 }

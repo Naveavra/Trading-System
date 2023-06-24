@@ -5,14 +5,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="79166231-5183-48cd-aa32-d917f62fcc4e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__antlr_antlr_2_7_7.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_activation_javax_activation_api_1_2_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_persistence_javax_persistence_api_2_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_xml_bind_jaxb_api_2_3_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_core_5_6_15_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_entitymanager_5_6_15_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_jandex_2_4_2_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_spec_javax_transaction_jboss_transaction_api_1_2_spec_1_1_1_Final.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Bid.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/Dao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/Dao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/MessageDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/MessageDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/SubscriberDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/SubscriberDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/discount/DiscountFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/discount/DiscountFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/order/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/order/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Config/InitialParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Config/InitialParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/api/storeApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/api/storeApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/RegularDiscount.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/components/Forms/Discounts/RegularDiscount.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Shop/Superior/superior.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/Shop/Superior/superior.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Trading-Managment/src/views/dashboard/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Receipt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Receipt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/orderRelated/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/orderRelated/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/work1.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,19 +72,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/bench/Desktop/סדנא/Trading-System/Trading-Api/code&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/bench/Desktop/סדנא/Trading-System/Trading-Api/code",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.Server">
     <configuration name="Server" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="server.Server" />
@@ -127,6 +151,16 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="UserControllerTest.checkCriteria" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="UserControllerTest" />
+      <option name="METHOD_NAME" value="checkCriteria" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <option name="TEST_OBJECT" value="directory" />
@@ -138,6 +172,7 @@
     <list>
       <item itemvalue="Application.Server" />
       <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailablePSCartAndBuy" />
+      <item itemvalue="JUnit.UserControllerTest.checkCriteria" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
       <item itemvalue="JUnit.AdminTest.testNotAdminTryAddAdmin" />
       <item itemvalue="JUnit.GuestTest.testPurchaseCartNoAtSameTime" />
@@ -145,6 +180,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.UserControllerTest.checkCriteria" />
         <item itemvalue="JUnit.test in work1" />
         <item itemvalue="JUnit.AcceptanceTests in work1" />
         <item itemvalue="JUnit.GuestTest.testPurchaseCartNoAtSameTime" />
@@ -185,7 +221,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>612</line>
+          <line>615</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -205,23 +241,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>427</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>730</line>
+          <line>733</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>725</line>
+          <line>728</line>
           <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
-          <line>167</line>
-          <option name="timeStamp" value="24" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/domain/store/purchase/PurchasePolicy.java</url>
@@ -229,11 +255,79 @@
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/utils/messageRelated/Question.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
+          <line>210</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java</url>
+          <line>272</line>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java</url>
+          <line>660</line>
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/states/UserState.java</url>
+          <line>91</line>
+          <option name="timeStamp" value="60" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java</url>
+          <line>112</line>
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
+          <line>235</line>
+          <option name="timeStamp" value="73" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
-          <line>166</line>
-          <option name="timeStamp" value="26" />
+          <line>94</line>
+          <option name="timeStamp" value="75" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>423</line>
+          <option name="timeStamp" value="77" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>435</line>
+          <option name="timeStamp" value="78" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>209</line>
+          <option name="timeStamp" value="79" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>219</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/market/Admin.java</url>
+          <line>54</line>
+          <option name="timeStamp" value="82" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="((AppHistory)this).root" custom="domain.store.storeManagement.AppHistory" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/code$Server.ic" NAME="Server Coverage Results" MODIFIED="1687599837649" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

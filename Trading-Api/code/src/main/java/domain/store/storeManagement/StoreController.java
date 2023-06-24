@@ -31,11 +31,12 @@ public class StoreController {
 
     public ConcurrentHashMap<Integer, Store> storeList; //storeid, Store
     private AtomicInteger storeIds;
-    AtomicInteger productIDs = new AtomicInteger(0);
+    AtomicInteger productIDs;
     ConcurrentHashMap<Integer, Product> products; //for fast access
 
     public StoreController() {
-        storeIds = new AtomicInteger(0);
+        storeIds = new AtomicInteger(StoreDao.getMaxStoreId());
+        productIDs = new AtomicInteger(StoreDao.getMaxProductId());
         storeList = new ConcurrentHashMap<>();
         products = new ConcurrentHashMap<>();
     }
@@ -429,12 +430,10 @@ public class StoreController {
 
     //database
     public void getStoresFromDb()throws Exception{
-        if(storeList == null) {
-            storeList = new ConcurrentHashMap<>();
             List<Store> stores = StoreDao.getAllStores();
             for (Store s : stores)
-                storeList.put(s.getStoreId(), s);
-        }
+                if(!storeList.containsKey(s.getStoreId()))
+                    storeList.put(s.getStoreId(), s);
     }
 
     public Set<Integer> getStoreCreatorsOwners(int storeId) throws Exception {
