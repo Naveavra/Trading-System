@@ -34,6 +34,7 @@ interface AuthState {
     purchaseHistory: Order[];
     whatchedOrder: Order;
     bids: Bid[];
+    first: boolean;
 }
 const reducrName = 'auth';
 const initialState: AuthState = {
@@ -64,7 +65,8 @@ const initialState: AuthState = {
     opcode: 0,
     purchaseHistory: [],
     whatchedOrder: emptyOrder,
-    bids: []
+    bids: [],
+    first: false
 };
 const cleanState: AuthState = {
     token: '',
@@ -88,7 +90,8 @@ const cleanState: AuthState = {
     opcode: 0,
     purchaseHistory: [],
     whatchedOrder: emptyOrder,
-    bids: []
+    bids: [],
+    first: false
 };
 
 export const login = createAsyncThunk<
@@ -243,6 +246,9 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         resetAuth: (state) => {
             // state = cleanState;
             return cleanState;
+        },
+        setTrue: (state) => {
+            state.first = true;
         }
 
     },
@@ -436,5 +442,5 @@ const { reducer: authReducer, actions: authActions } = createSlice({
     }
 });
 // Action creators are generated for each case reducer function
-export const { clearAuthError, clearAuthMsg, resetAuth, clearNotifications, setWatchedOrder } = authActions;
+export const { clearAuthError, clearAuthMsg, resetAuth, clearNotifications, setWatchedOrder, setTrue } = authActions;
 export default authReducer;

@@ -3,10 +3,9 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
 import AlertDialog from '../../components/Dialog/AlertDialog';
-import { clearAuthError, getClientData, getNotifications, resetAuth } from '../../reducers/authSlice';
+import { clearAuthError, getClientData, getNotifications, resetAuth, setTrue } from '../../reducers/authSlice';
 import CartLogo from '../../components/Loaders/cartLoader';
 import { clearStoresError, clearStoresResponse, getStore, getStoresInfo } from '../../reducers/storesSlice';
-import axios from 'axios';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { clearProductsError, getProducts } from '../../reducers/productsSlice';
 import { Box, Divider, Slider, SliderThumb, Typography, styled } from '@mui/material';
@@ -18,6 +17,8 @@ import Products from '../../components/Product/Products';
 import { getCart } from '../../reducers/cartSlice';
 import SuccessAlert from '../../components/Alerts/success';
 import { getComplaints, getLogger, getMarketStatus, removeUser } from '../../reducers/adminSlice';
+import ErrorAlert from '../../components/Alerts/error';
+import { clearBidMsg, clearBidError } from '../../reducers/bidSlice';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -34,6 +35,7 @@ const DashboardPage: React.FC = () => {
     const error = useAppSelector((state) => state.auth.error);
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
+    const first = useAppSelector((state) => state.auth.first);
 
 
 
@@ -52,6 +54,8 @@ const DashboardPage: React.FC = () => {
     };
     // const cart = useAppSelector((state) => state.cart.responseData);
     // const numProductsIncart = cart?.reduce((acc, item) => acc + item.quantity, 0) ?? 0;
+    const bidMsg = useAppSelector((state) => state.bid.message);
+    const bidError = useAppSelector((state) => state.bid.error);
 
     //success alerts
     const openStoreAlert = useAppSelector((state) => state.store.storeState.responseData);
@@ -61,21 +65,6 @@ const DashboardPage: React.FC = () => {
         dispatch(getMarketStatus(userId));
     }
 
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-
-    // Send a ping to the server
-    const sendPing = () => {
-        if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(response => {
-                    // Do something with the response if necessary
-                })
-                .catch(error => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
-        }
-    }
     interface NumberToVoidFunctionMap {
         [key: number]: () => void;
     }
@@ -124,28 +113,31 @@ const DashboardPage: React.FC = () => {
             if (token != "" && userName != 'guest' && !left) {
                 const response = await dispatch(getNotifications({ userId: userId, token: token }));
                 if (response.payload != null) {
-                    hashMap[response.payload?.opcode ?? 0]();
+                    hashMap[response.payload?.opcode]();
                 }
             }
         } catch (error) {
             console.error('Error fetching notification:', error);
         }
     };
-    useEffect(() => {
-        // Call the sendPing function every 2 seconds
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
 
+    useEffect(() => {
         dispatch(getStoresInfo());
         dispatch(getProducts());
-        dispatch(getCart({ userId: userId }));
-
+        if (userId != 0) {
+            dispatch(getCart({ userId: userId }));
+        }
+        if (userName != 'guest' && userId != 0) {
+            dispatch(getClientData({ userId: userId }));
+        }
+        if (!first) {
+            fetchNotification();
+            dispatch(setTrue());
+        }
         // Stop the ping interval when the user leaves the app
         //---------------------notifications---------------------
 
-        fetchNotification();
-        return () => {
-            clearInterval(pingInterval)
-        };
+        //   fetchNotification();
     }, [userId, dispatch, token, userName, storeId])
     const handleSet = (text: string) => {
         setText(text);
@@ -165,6 +157,8 @@ const DashboardPage: React.FC = () => {
                                 <SearchBar text={text} set={handleSet} />
                                 <Divider sx={{ marginTop: 1 }} />
                                 {openStoreAlert ? <SuccessAlert message={openStoreAlert} onClose={() => { dispatch(clearStoresResponse({})) }} /> : null}
+                                {bidMsg ? <SuccessAlert message={bidMsg} onClose={() => { dispatch(clearBidMsg()) }} /> : null}
+                                {bidError ? <ErrorAlert message={bidError} onClose={() => { dispatch(clearBidError()) }} /> : null}
                                 <ShopsBar />
                                 <Divider />
                                 {/* <Categories /> */}
@@ -222,6 +216,7 @@ const DashboardPage: React.FC = () => {
 
     )
 };
+
 const AirbnbSlider = styled(Slider)(({ theme }) => ({
     color: '#3a8589',
     height: 3,

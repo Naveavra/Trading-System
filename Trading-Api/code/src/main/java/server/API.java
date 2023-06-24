@@ -46,7 +46,7 @@ public class API {
             return new Pair<>(false, json);
         }
         else {
-            json.put("value", "purchased cart successfully");
+            json.put("value", "purchased cart successfully with total price: " + res.getValue().getTotalPrice());
             return new Pair<>(true, json);
         }
     }

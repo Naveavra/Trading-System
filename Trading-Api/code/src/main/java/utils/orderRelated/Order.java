@@ -42,6 +42,11 @@ public class Order {
     public synchronized User getUser() {
         return user;
     }
+    public synchronized int getUserId(){
+        if(user != null)
+            return user.getId();
+        return -1;
+    }
     public synchronized List<ProductInfo> getProductsInStores() {
         return productsInStores.getContent();
     }

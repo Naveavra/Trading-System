@@ -34,6 +34,13 @@ public class SubscriberDao {
         Dao.save(s, session);
     }
 
+    public static int getMaxId(){
+        int max = Dao.getMaxId("Subscriber", "id");
+        if(max == 0)
+            return 2;
+        return max;
+    }
+
     public static Member getMember(int id) throws Exception{
         if(membersMap.containsKey(id))
             return membersMap.get(id);
@@ -286,9 +293,9 @@ public class SubscriberDao {
     public static Receipt getReceipt(int orderId) throws Exception{
         Receipt receipt = (Receipt) Dao.getById(Receipt.class, orderId);
         if(receipt!= null) {
-            if(!purchasesMap.containsKey(receipt.getMember().getId()))
-                purchasesMap.put(receipt.getMember().getId(), new PurchaseHistory(receipt.getMember().getId()));
-            purchasesMap.get(receipt.getMember().getId()).addPurchaseMade(receipt);
+            if(!purchasesMap.containsKey(receipt.getMemberId()))
+                purchasesMap.put(receipt.getMemberId(), new PurchaseHistory(receipt.getMemberId()));
+            purchasesMap.get(receipt.getMemberId()).addPurchaseMade(receipt);
             receipt.initialParams();
         }
         return receipt;

@@ -99,6 +99,18 @@ const Personal = () => {
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                         quantity:  {order.productsInStores?.length}
                                     </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        products : 
+                                    </Typography>
+                                    {
+                                        order.productsInStores?.map((productInStore, index) => {
+                                            return (
+                                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom key={index}>
+                                                    {productInStore.name}
+                                                </Typography>
+                                            )
+                                        })
+                                    }
                                 </CardContent>
                                 <CardActions>
                                     <IconButton onClick={() => handleClickOrder(order.orderId)}>

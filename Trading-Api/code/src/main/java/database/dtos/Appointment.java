@@ -85,6 +85,7 @@ public class Appointment extends Information implements DbEntity {
     }
 
 
+    public Member getChild(){return child;}
     public int getChildId(){
         return child.getId();
     }
@@ -119,7 +120,7 @@ public class Appointment extends Information implements DbEntity {
             return false;
         return true;
     }
-    public void checkAllApproved(Session session) throws Exception{
+    public void checkAllApproved(Session session){
         boolean ans = true;
         for(boolean approved : approvers.values())
             ans = ans && approved;

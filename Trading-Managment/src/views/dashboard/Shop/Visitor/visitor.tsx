@@ -19,12 +19,10 @@ import React from "react";
 const Visitor: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const userId = useAppSelector((state) => state.auth.userId);
     const store = useAppSelector((state) => state.store.storeState.wahtchedStoreInfo);
     const products = useAppSelector((state) => state.product.responseData);
 
     const ourProducts = products?.filter((product) => product.storeId === store.storeId);
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
     const storeError = useAppSelector((state) => state.store.storeState.error);
     const storeMessage = useAppSelector((state) => state.store.storeState.responseData);
@@ -49,27 +47,9 @@ const Visitor: React.FC = () => {
         setStoreRating(newValue as number[]);
     };
 
-    const sendPing = () => {
-        if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(response => {
-                    // Do something with the response if necessary
-                })
-                .catch(error => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
-        }
-    }
-
     useEffect(() => {
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
         dispatch(getStoresInfo());
         dispatch(getProducts());
-        // Stop the ping interval when the user leaves the app
-        return () => {
-            clearInterval(pingInterval)
-        };
     }, [dispatch]);
     return (
         <>

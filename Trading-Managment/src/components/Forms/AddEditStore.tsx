@@ -4,12 +4,11 @@ import { useForm } from "react-hook-form";
 import { clearProductError } from "../../reducers/productsSlice";
 import { storeFormValues } from "../../types/formsTypes";
 import AlertDialog from "../Dialog/AlertDialog";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
 import { postStore, patchStore, getStore } from "../../reducers/storesSlice";
 import { Action } from "../../types/systemTypes/Action";
-import axios from "axios";
 import { getClientData } from "../../reducers/authSlice";
 
 interface storeProps {
@@ -58,30 +57,6 @@ const AddEditStore: React.FC<storeProps> = ({ mode }) => {
         dispatch(getStore({ userId: userId, storeId: store_id }));
     }, []);
 
-
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    // Send a ping to the server
-    const sendPing = () => {
-        if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(response => {
-                    // Do something with the response if necessary
-                })
-                .catch(error => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
-        }
-    }
-    useEffect(() => {
-        // Call the sendPing function every 2 seconds
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        // Stop the ping interval when the user leaves the app
-        return () => {
-            clearInterval(pingInterval)
-        };
-
-    }, [])
 
     return (
         <>

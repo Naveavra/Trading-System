@@ -18,12 +18,10 @@ const EditMyProfileForm = () => {
     const form = useForm<editProfileFormValues>();
 
     const userId = useAppSelector((state) => state.auth.userId);
-    const token = useAppSelector((state) => state.auth.token);
     const error = useAppSelector((state) => state.auth.error);
     const isLoading = useAppSelector((state) => state.product.isLoading)
     const [emailError, setEmailError] = useState("");
 
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
 
     const monthToInt = new Map<string, string>([
         ['Jan', '01'],
@@ -52,11 +50,6 @@ const EditMyProfileForm = () => {
         // navigate(-1);
     }, []);
 
-    const sendPing = () => {
-        if (userId != 0) {
-            dispatch(ping(userId));
-        }
-    }
     const getDtae = (day: string, month: string, year: string): string => {
         return `${day}/${monthToInt.get(month)}/${year}`;
     }
@@ -68,15 +61,7 @@ const EditMyProfileForm = () => {
         }
 
     }
-    useEffect(() => {
-        // Call the sendPing function every 2 seconds
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        // Stop the ping interval when the user leaves the app
-        return () => {
-            clearInterval(pingInterval)
-        };
 
-    }, [])
     const validateEmail = (email: string): void => {
         const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (!emailRegex.test(email)) {

@@ -69,6 +69,11 @@ const ProductCard: React.FC<CardProps> = ({ item, canDelete, canEdit }) => {
                         price for unit : {item.price}$
                     </Typography>
                 </Box>
+                <Box width={'100%'} height={40} display={'flex'}>
+                    <Typography gutterBottom variant="h5" component="div">
+                        amount in store : {item.quantity}
+                    </Typography>
+                </Box>
                 <Box>
                     {item.categories?.map((category, index) => {
                         return (

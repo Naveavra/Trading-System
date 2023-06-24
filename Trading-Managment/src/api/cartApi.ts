@@ -8,7 +8,7 @@ import { apiErrorHandlerWrapper } from "./util";
 export const cartApi =
 {
     getCart: (params: GetCartParams): Promise<ApiResponseListData<Product>> =>
-        apiErrorHandlerWrapper(noAuthApiClient.post(`api/cart/${params.userId}`, params)),
+        apiErrorHandlerWrapper(noAuthApiClient.post(`api/cart/${params.userId}`, params, { headers: { 'Content-Type': 'x-www-form-urlencoded' } })),
 
     patchCart: (params: PatchCartParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(noAuthApiClient.patch(`api/cart/${params.userId}`, params)),

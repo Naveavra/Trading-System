@@ -24,8 +24,12 @@ import java.util.logging.Level;
 
 public class HibernateUtil {
     private static SessionFactory sessionFactory;
-    private static Properties settings = ConfigParser.getInstance().getDBSetting();
+    private static Properties settings;
     public static boolean createDrop = false;
+
+    public static void setSettings(){
+        settings = ConfigParser.getInstance().getDBSetting();
+    }
     public static SessionFactory getSessionFactory(){
         if(sessionFactory == null){
             try{

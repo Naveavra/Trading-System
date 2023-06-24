@@ -5,16 +5,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="79166231-5183-48cd-aa32-d917f62fcc4e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/test/NewTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__antlr_antlr_2_7_7.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_activation_javax_activation_api_1_2_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_persistence_javax_persistence_api_2_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_xml_bind_jaxb_api_2_3_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_core_5_6_15_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_entitymanager_5_6_15_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_jandex_2_4_2_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_spec_javax_transaction_jboss_transaction_api_1_2_spec_1_1_1_Final.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/HibernateUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/Dao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/Dao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/MessageDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/MessageDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/StoreDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/daos/SubscriberDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/daos/SubscriberDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/discount/DiscountFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/discount/DiscountFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/order/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/order/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/product/Product.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/user/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/market/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Admin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/market/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/market/Market.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/API.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/MarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/MarketController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/store/DiscountTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/store/DiscountTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../initial2.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../initial2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Config/ConfigParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Receipt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/infoRelated/Receipt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/orderRelated/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/orderRelated/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/UserControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/work1.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +50,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../.." value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -50,6 +76,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "last_opened_file_path": "C:/Users/bench/Desktop/סדנא/Trading-System/Trading-Api/code",
     "node.js.detected.package.eslint": "true",
@@ -124,6 +151,16 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="UserControllerTest.checkCriteria" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="work1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="UserControllerTest" />
+      <option name="METHOD_NAME" value="checkCriteria" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test in work1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="work1" />
       <option name="TEST_OBJECT" value="directory" />
@@ -135,6 +172,7 @@
     <list>
       <item itemvalue="Application.Server" />
       <item itemvalue="JUnit.MemberTest.testPurchaseFromUnAvailablePSCartAndBuy" />
+      <item itemvalue="JUnit.UserControllerTest.checkCriteria" />
       <item itemvalue="JUnit.AcceptanceTests in work1" />
       <item itemvalue="JUnit.AdminTest.testNotAdminTryAddAdmin" />
       <item itemvalue="JUnit.GuestTest.testPurchaseCartNoAtSameTime" />
@@ -142,6 +180,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.UserControllerTest.checkCriteria" />
         <item itemvalue="JUnit.test in work1" />
         <item itemvalue="JUnit.AcceptanceTests in work1" />
         <item itemvalue="JUnit.GuestTest.testPurchaseCartNoAtSameTime" />
@@ -158,18 +197,31 @@
       <option name="presentableId" value="Default" />
       <updated>1687297804151</updated>
       <workItem from="1687297805510" duration="19223000" />
+      <workItem from="1687371797954" duration="4342000" />
+      <workItem from="1687505958049" duration="8671000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>612</line>
+          <line>615</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -189,40 +241,93 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>161</line>
-          <option name="timeStamp" value="10" />
+          <line>733</line>
+          <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>165</line>
-          <option name="timeStamp" value="11" />
+          <line>728</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/purchase/PurchasePolicy.java</url>
+          <line>32</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/utils/messageRelated/Question.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>402</line>
-          <option name="timeStamp" value="12" />
+          <line>210</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java</url>
+          <line>272</line>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/Store.java</url>
+          <line>660</line>
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/states/UserState.java</url>
+          <line>91</line>
+          <option name="timeStamp" value="60" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/database/dtos/Appointment.java</url>
+          <line>112</line>
+          <option name="timeStamp" value="62" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>405</line>
-          <option name="timeStamp" value="13" />
+          <line>235</line>
+          <option name="timeStamp" value="73" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>197</line>
-          <option name="timeStamp" value="14" />
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>94</line>
+          <option name="timeStamp" value="75" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/server/Server.java</url>
-          <line>202</line>
-          <option name="timeStamp" value="15" />
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>423</line>
+          <option name="timeStamp" value="77" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/market/Market.java</url>
-          <line>401</line>
-          <option name="timeStamp" value="18" />
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>435</line>
+          <option name="timeStamp" value="78" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>209</line>
+          <option name="timeStamp" value="79" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/domain/store/storeManagement/StoreController.java</url>
+          <line>219</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/market/Admin.java</url>
+          <line>54</line>
+          <option name="timeStamp" value="82" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="((AppHistory)this).root" custom="domain.store.storeManagement.AppHistory" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/code$Server.ic" NAME="Server Coverage Results" MODIFIED="1687599837649" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

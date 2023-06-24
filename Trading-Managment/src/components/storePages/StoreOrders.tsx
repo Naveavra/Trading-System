@@ -24,20 +24,6 @@ const orders = () => {
             price: order.totalPrice,
         }
     });
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-
-    const sendPing = () => {
-        if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(() => {
-                    // Do something with the response if necessary
-                })
-                .catch(() => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
-        }
-    }
 
     const handleEditClick = (id: GridRowId) => () => {
         //todo implement 
@@ -51,15 +37,9 @@ const orders = () => {
     };
 
     useEffect(() => {
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
-
         dispatch(getStoresInfo());
         dispatch(getProducts());
-        // Stop the ping interval when the user leaves the app
-        return () => {
-            clearInterval(pingInterval)
-        };
-    }, []);
+    }, [dispatch]);
     const columns: GridColDef[] = React.useMemo(() => {
         return [
             { field: 'id', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },

@@ -1,9 +1,10 @@
-import { Dialog, Box, Grid, Typography, Button, TextField } from "@mui/material";
+import { Dialog, Box, Grid, Typography, Button, TextField, SelectChangeEvent } from "@mui/material";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../../../redux/store";
 import { addParamsToTmpPredicate, addPredicateToRegularDiscount, addRegularDiscount, addRegularDiscountToSource, cleanRegularDiscount, clearTmpPredicate, removeFromPredicate, setCategoryToRegularDiscount, setComposoreToTmpPredicate, setDiscountTypeToRegularDiscount, setParamsToTmpPredicate, setpercentageToRegularDiscount, setPredicateTypeToTmpPredicate, setProductIdToRegularDiscount, setSourceForPredicate, setSourceToRegularDiscount } from "../../../reducers/discountSlice";
 import { Composore, PredicateType } from "../../../types/systemTypes/Discount";
+import SelectAutoWidth from "../../Selectors/AutoWidth";
 
 interface props {
     tree: boolean;
@@ -33,6 +34,22 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
     const [secParam, setSecParam] = useState(false);
     const [sorce, setSorce] = useState('');
     const [description, setDescription] = useState('');
+
+    const inventory = useAppSelector((state) => state.store.storeState.watchedStore.inventory);
+    const products_names = inventory.map((product) => product.name);
+    const [firstProductName, setFirstProductName] = useState('');
+    const [secondProductName, setSecondProductName] = useState('');
+
+    const onProductChoose = (event: SelectChangeEvent) => {
+        setFirstProductName(event.target.value);
+        setProduct(inventory.find((product) => product.name === event.target.value)?.productId.toString() ?? '');
+    }
+    const onSecondProductChoose = (event: SelectChangeEvent) => {
+        setSecondProductName(event.target.value);
+        setParamsToPredicate(inventory.find((product) => product.name === event.target.value)?.productId.toString() ?? '');
+    }
+
+
     const handleOnClose = useCallback(() => {
         navigate(-1);
         //dispatch(getStore({ userId: userId, storeId: storeId }));
@@ -136,6 +153,9 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
         console.log(input);
         setSecParam(true);
         dispatch(setParamsToTmpPredicate(input));
+    }
+    const setProduct = (input: string) => {
+        dispatch(setProductIdToRegularDiscount(parseInt(input ?? '0')));
     }
     const addParamsToPredicate = (input: string) => {
         dispatch(addParamsToTmpPredicate(input));
@@ -271,13 +291,16 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
                 </Box>
                 {error === '' && type != '' && type === 'Product' ?
                     <>
-                        <Grid item xs={12}>
+                        {/* <Grid item xs={12}>
                             <TextField
                                 required
                                 id="outlined-required"
                                 label="enter product id"
                                 onChange={(e) => { handleSetProductId(e.target.value) }}
                             />
+                        </Grid> */}
+                        <Grid item xs={12}>
+                            <SelectAutoWidth label={"products in store"} values={products_names} labels={products_names} value={firstProductName} handleChange={onProductChoose} />
                         </Grid>
                     </>
                     : null
@@ -380,13 +403,16 @@ const regularDiscount: React.FC<props> = ({ tree }) => {
                 }
                 {secondType === 'Item' ?
                     <>
-                        <Grid item xs={12}>
+                        {/* <Grid item xs={12}>
                             <TextField
                                 required
                                 id="outlined-required"
                                 label="enter product id"
                                 onChange={(e) => { setParamsToPredicate(e.target.value) }}
                             />
+                        </Grid> */}
+                        <Grid item xs={12}>
+                            <SelectAutoWidth label={"products in store"} values={products_names} labels={products_names} value={secondProductName} handleChange={onSecondProductChoose} />
                         </Grid>
                         {secParam ?
                             <Grid item xs={12} sx={{ mt: 2 }}>

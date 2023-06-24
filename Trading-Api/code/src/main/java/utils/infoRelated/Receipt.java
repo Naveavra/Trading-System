@@ -22,7 +22,6 @@ public class Receipt extends Information implements DbEntity {
     private int orderId;
     @Transient
     private Member member;
-
     private int memberId;
     @Transient
     private ShoppingCart products; // a hashmap from storeId to hashmap from productId to quantity
@@ -46,6 +45,7 @@ public class Receipt extends Information implements DbEntity {
     public Member getMember(){
         return member;
     }
+    public int getMemberId(){return memberId;}
     public void setMember(Member member){
         this.member = member;
         this.memberId = member.getId();
@@ -53,7 +53,6 @@ public class Receipt extends Information implements DbEntity {
     public int getOrderId(){
         return orderId;
     }
-
     public double getTotalPrice(){return totalPrice;}
 
     public ShoppingCart getCart(){

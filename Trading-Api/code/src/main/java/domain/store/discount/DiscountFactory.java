@@ -1,6 +1,7 @@
 package domain.store.discount;
 
 import com.google.protobuf.Internal;
+import database.daos.StoreDao;
 import domain.store.discount.compositeDiscountTypes.LogicalDiscountComposite;
 import domain.store.discount.compositeDiscountTypes.NumericDiscountComposite;
 import domain.store.discount.discountDataObjects.CompositeDataObject;
@@ -26,7 +27,7 @@ public class DiscountFactory {
     private GetCategoriesOperation getCategoryOp;
     public DiscountFactory(int storeID, GetProductOperation getProdOp, GetCategoriesOperation getCategoryOp){
         this.storeID = storeID;
-        discountIds = new AtomicInteger();
+        discountIds = new AtomicInteger(StoreDao.getMaxDiscountId());
         this.getProdOp = getProdOp;
         this.getCategoryOp = getCategoryOp;
     }

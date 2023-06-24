@@ -7,7 +7,9 @@ import domain.store.storeManagement.AppHistory;
 import domain.store.storeManagement.Bid;
 import domain.store.storeManagement.Store;
 import domain.user.Basket;
+import domain.user.Member;
 import domain.user.ShoppingCart;
+import domain.user.User;
 import org.hibernate.Session;
 import org.mockito.internal.matchers.Or;
 import utils.Pair;
@@ -37,8 +39,16 @@ public class StoreDao {
     private static Set<Integer> discounts = new HashSet<>();
     private static HashMap<Integer, HashMap<Integer, Order>> storeOrderMap = new HashMap<>();
     private static Set<Integer> storeOrders = new HashSet<>();
+
+
+
+    //stores
     public static void saveStore(Store s, Session session) throws Exception{
         Dao.save(s, session);
+    }
+
+    public static int getMaxStoreId(){
+        return Dao.getMaxId("Store", "storeId");
     }
 
     public static Store getStore(int storeId) throws Exception{
@@ -85,11 +95,15 @@ public class StoreDao {
         removeBids(storeId, session);
         removeConstraints(storeId, session);
         removeDiscounts(storeId, session);
-        storesMap.remove(storeId, session);
+        storesMap.remove(storeId);
     }
 
     public static void saveProduct(Product p, Session session) throws Exception{
         Dao.save(p, session);
+    }
+
+    public static int getMaxProductId(){
+        return Dao.getMaxId("Product", "productId");
     }
 
     public static Product getProduct(int storeId, int productId) throws Exception{
@@ -164,6 +178,21 @@ public class StoreDao {
 
     public static void saveCategory(CategoryDto categoryDto, Session session) throws Exception{
         Dao.save(categoryDto, session);
+    }
+
+    public static List<String> getProductCategories(int storeId, int productId) throws Exception{
+        List<String> ans = new ArrayList<>();
+        if(!categoryMap.containsKey(storeId))
+            categoryMap.put(storeId, new HashMap<>());
+        List<? extends DbEntity> categoryDtos = Dao.getByParamList(CategoryDto.class, "CategoryDto",
+                String.format("storeId = %d AND productId = %d ", storeId, productId));
+        for(CategoryDto categoryDto : (List<CategoryDto>) categoryDtos) {
+            if (!categoryMap.get(storeId).containsKey(categoryDto.getCategoryName()))
+                categoryMap.get(storeId).put(categoryDto.getCategoryName(), new HashSet<>());
+            categoryMap.get(storeId).get(categoryDto.getCategoryName()).add(productId);
+            ans.add(categoryDto.getCategoryName());
+        }
+        return ans;
     }
 
     public static List<Integer> getCategoryProducts(int storeId, String categoryName) throws Exception{
@@ -289,7 +318,8 @@ public class StoreDao {
         Dao.removeIf("AppApproved", String.format("storeId = %d AND childId = %d", storeId, childId), session);
         Dao.removeIf("AppApproved", String.format("storeId = %d AND fatherId = %d", storeId, childId), session);
         if(appMap.containsKey(storeId)) {
-            appMap.get(storeId).removeChild(childId);
+            if(appMap.get(storeId).getNode(childId) != null)
+                appMap.get(storeId).removeChild(childId);
         }
     }
 
@@ -304,6 +334,10 @@ public class StoreDao {
     //bids
     public static void saveBid(Bid bid, Session session) throws Exception{
         Dao.save(bid, session);
+    }
+
+    public static int getMaxBidId(){
+        return Dao.getMaxId("Bid", "bidId");
     }
 
     public static Bid getBid(int storeId, int bidId) throws Exception{
@@ -362,6 +396,10 @@ public class StoreDao {
         Dao.save(constraintDto, session);
     }
 
+    public static int getMaxConstraintId(){
+        return Dao.getMaxId("ConstraintDto", "constraintId");
+    }
+
     public static ConstraintDto getConstraint(int storeId, int constraintId) throws Exception{
         if(!constraintMap.containsKey(storeId))
             constraintMap.put(storeId, new HashMap<>());
@@ -404,6 +442,10 @@ public class StoreDao {
         Dao.save(discountDto, session);
     }
 
+    public static int getMaxDiscountId(){
+        return Dao.getMaxId("DiscountDto", "discountId");
+    }
+
     public static DiscountDto getDiscount(int storeId, int discountId) throws Exception{
         if(!discountsMap.containsKey(storeId))
             discountsMap.put(storeId, new HashMap<>());
@@ -420,7 +462,7 @@ public class StoreDao {
     public static List<DiscountDto> getDiscounts(int storeId) throws Exception{
         if(!discountsMap.containsKey(storeId))
             discountsMap.put(storeId, new HashMap<>());
-        if(discounts.contains(storeId)){
+        if(!discounts.contains(storeId)){
             List<? extends DbEntity> discountDtos = Dao.getListById(DiscountDto.class, storeId, "DiscountDto",
                     "storeId");
             for(DiscountDto dto : (List<DiscountDto>) discountDtos)
@@ -444,6 +486,10 @@ public class StoreDao {
 
 
     //storeOrders
+    public static int getMaxOrderId(){
+        return Dao.getMaxId("Receipt", "orderId");
+    }
+
     public static Order getStoreOrder(int storeId, int orderId) throws Exception{
         if(!storeOrderMap.containsKey(storeId))
             storeOrderMap.put(storeId, new HashMap<>());
@@ -459,7 +505,7 @@ public class StoreDao {
                 for (ProductInfo p : receipt.getCart().getBasket(storeId).getContent()) {
                     cart.addProductToCart(storeId, p, p.getQuantity());
                 }
-                order = new Order(receipt.getMember().getId(), receipt.getMember(), cart);
+                order = new Order(receipt.getOrderId(), receipt.getMember(), cart);
                 storeOrderMap.get(storeId).put(orderId, order);
             }
         }
@@ -476,8 +522,9 @@ public class StoreDao {
             HashMap<Integer, ShoppingCart> newOrders = new HashMap<>();
             for(ReceiptDto receiptDto : (List<ReceiptDto>) receipts){
                 if(!storeOrderMap.get(storeId).containsKey(receiptDto.getOrderId())){
-                    if(!newOrders.containsKey(receiptDto.getOrderId()))
+                    if(!newOrders.containsKey(receiptDto.getOrderId())) {
                         newOrders.put(receiptDto.getOrderId(), new ShoppingCart());
+                    }
                     newOrders.get(receiptDto.getOrderId()).addProductToCart(receiptDto.getStoreId(),
                             getProduct(receiptDto.getStoreId(), receiptDto.getProductId()).getProductInfo(),
                             receiptDto.getQuantity());
@@ -485,7 +532,10 @@ public class StoreDao {
             }
 
             for(int orderId : newOrders.keySet()){
-                Order order = new Order(orderId, null, newOrders.get(orderId));
+                Receipt receipt = SubscriberDao.getReceipt(orderId);
+                Member member = SubscriberDao.getMember(receipt.getMemberId());
+                Order order = new Order(orderId,member, newOrders.get(orderId));
+                order.setTotalPrice(receipt.getTotalPrice());
                 storeOrderMap.get(storeId).put(orderId, order);
             }
             storeOrders.add(storeId);

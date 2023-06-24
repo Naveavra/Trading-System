@@ -56,104 +56,73 @@ const Superior: React.FC = () => {
     const shopRuleMessage = useAppSelector((state) => state.shoppingRule.message);
     const shopRuleError = useAppSelector((state) => state.shoppingRule.error);
 
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-
-    const sendPing = () => {
-        if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(response => {
-                    // Do something with the response if necessary
-                })
-                .catch(error => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
-        }
-    }
-
-    // useEffect(() => {
-    //     const pingInterval = setInterval(sendPing, PING_INTERVAL);
-
-    //     dispatch(getStoresInfo());
-    //     dispatch(getProducts());
-    //     // Stop the ping interval when the user leaves the app
-    //     return () => {
-    //         clearInterval(pingInterval)
-    //     };
-    // }, []);
     interface NumberToVoidFunctionMap {
         [key: number]: () => void;
     }
 
-    const hashMap: NumberToVoidFunctionMap = {
-        0: () => {
-            debugger;
-            dispatch(getClientData({ userId: userId }));
-            fetchNotification();
-        },
-        1: () => {
-            debugger;
-            dispatch(getStore({ userId: userId, storeId: storeId }));
-            fetchNotification();
-        },
-        2: () => {
-            // handleAdmin();
-            fetchNotification();
-        },
-        3: () => {
-            dispatch(getComplaints(userId));
-            fetchNotification();
-        },
-        4: () => {
-            setLeft(true);
-            dispatch(removeUser(userName));
-            dispatch(resetAuth());
-            navigate('/auth/login');
-        },
-        5: () => {
-            debugger;
-            dispatch(getClientData({ userId: userId }));
-            dispatch(getStore({ userId: userId, storeId: storeId }));
-            fetchNotification();
-        },
-        6: () => {
-            dispatch(getClientData({ userId: userId }));
-            dispatch(getComplaints(userId));
-            fetchNotification();
-        },
-        7: () => {
-            dispatch(getStore({ userId: userId, storeId: storeId }));
-            dispatch(getComplaints(userId));
-            fetchNotification();
-        },
-    };
-    const fetchNotification = async () => {
-        try {
-            if (token != "" && userName != 'guest' && !left) {
-                const response = await dispatch(getNotifications({ userId: userId, token: token }));
-                debugger;
-                if (response.payload != null) {
-                    hashMap[response.payload?.opcode ?? 0]();
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching notification:', error);
-        }
-    };
+    // const hashMap: NumberToVoidFunctionMap = {
+    //     0: () => {
+    //         debugger;
+    //         dispatch(getClientData({ userId: userId }));
+    //         fetchNotification();
+    //     },
+    //     1: () => {
+    //         debugger;
+    //         dispatch(getStore({ userId: userId, storeId: storeId }));
+    //         fetchNotification();
+    //     },
+    //     2: () => {
+    //         // handleAdmin();
+    //         fetchNotification();
+    //     },
+    //     3: () => {
+    //         dispatch(getComplaints(userId));
+    //         fetchNotification();
+    //     },
+    //     4: () => {
+    //         setLeft(true);
+    //         dispatch(removeUser(userName));
+    //         dispatch(resetAuth());
+    //         navigate('/auth/login');
+    //     },
+    //     5: () => {
+    //         debugger;
+    //         dispatch(getClientData({ userId: userId }));
+    //         dispatch(getStore({ userId: userId, storeId: storeId }));
+    //         fetchNotification();
+    //     },
+    //     6: () => {
+    //         dispatch(getClientData({ userId: userId }));
+    //         dispatch(getComplaints(userId));
+    //         fetchNotification();
+    //     },
+    //     7: () => {
+    //         dispatch(getStore({ userId: userId, storeId: storeId }));
+    //         dispatch(getComplaints(userId));
+    //         fetchNotification();
+    //     },
+    // };
+    // const fetchNotification = async () => {
+    //     try {
+    //         if (token != "" && userName != 'guest' && !left) {
+    //             const response = await dispatch(getNotifications({ userId: userId, token: token }));
+    //             debugger;
+    //             if (response.payload != null) {
+    //                 hashMap[response.payload?.opcode ?? 0]();
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching notification:', error);
+    //     }
+    // };
     useEffect(() => {
-        // Call the sendPing function every 2 seconds
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
 
-        dispatch(getStoresInfo());
         dispatch(getProducts());
         dispatch(getCart({ userId: userId }));
         // Stop the ping interval when the user leaves the app
         //---------------------notifications---------------------
 
-        fetchNotification();
-        return () => {
-            clearInterval(pingInterval)
-        };
+        //   fetchNotification();
     }, [userId, dispatch, token, userName, storeId])
 
     return (<>

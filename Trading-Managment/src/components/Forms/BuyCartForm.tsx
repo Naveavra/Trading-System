@@ -26,6 +26,7 @@ const BuyCart: React.FC<props> = ({ personal }) => {
     const [payment, setPayment] = useState('');
     const [supplier, setSupplier] = useState('');
 
+    const userName = useAppSelector((state: RootState) => state.auth.userName);
     const isLoading = useAppSelector((state: RootState) => state.store.isLoading);
     const error = useAppSelector((state: RootState) => state.store.error);
 
@@ -55,7 +56,10 @@ const BuyCart: React.FC<props> = ({ personal }) => {
         else {
             navigate('/dashboard/cart');
             dispatch(getCart({ userId: userId }));
-            dispatch(getClientData({ userId: userId }));
+            if (userName != 'guest') {
+                dispatch(getClientData({ userId: userId }));
+            }
+            dispatch(getCart({ userId: userId }));
         }
     }, []);
     //storeid, userid, price, quantity
@@ -67,7 +71,9 @@ const BuyCart: React.FC<props> = ({ personal }) => {
             dispatch(buyProductInBid({ userId: userId, storeId: bid.storeId, bidId: bid.bidId, details: form.getValues() }))
         }
         else {
-            dispatch(buyCart(form.getValues()));
+            dispatch(buyCart(form.getValues())).then(() => {
+                dispatch(getCart({ userId: userId }));
+            });
         }
         handleOnClose();
     }

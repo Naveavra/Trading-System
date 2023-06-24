@@ -70,11 +70,13 @@ public class Bid extends Information implements DbEntity{
         if(allApproved())
             this.approved = status.Approved;
     }
-    public void declineBid() throws Exception {
+    public boolean declineBid() throws Exception {
         if(isApproved()){
-            throw new Exception("Cannot decline a bid that was already approved.");
+            //throw new Exception("Cannot decline a bid that was already approved.");
+            return false;
         }
         approved = status.Declined;
+        return true;
     }
     public void clientAcceptCounter() {
         approved = status.Pending;

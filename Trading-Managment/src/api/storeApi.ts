@@ -9,10 +9,11 @@ import { apiErrorHandlerWrapper } from "./util";
 export const storeApi =
 {
     getStoresInfo: (): Promise<ApiResponseListData<StoreInfo>> =>
-        apiErrorHandlerWrapper(noAuthApiClient.get('api/stores/info')),
+        apiErrorHandlerWrapper(noAuthApiClient.get('api/stores/info', { headers: { 'Content-Type': 'application/json' } })),
 
     getStore: (params: GetStoresParams): Promise<ApiResponse<Store>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/getStore`, params)),
+
     getProducts: (params: GetStoreProducts): Promise<ApiResponseListData<Product>> =>
         apiErrorHandlerWrapper(noAuthApiClient.get(`api/stores/${params.storeId}/products`, { params: params })),
 

@@ -3,10 +3,10 @@ import { Dialog, Box, Grid, Typography, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { changePasswordFormValues } from "../../types/formsTypes";
 import AlertDialog from "../Dialog/AlertDialog";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import { changePassword, clearAuthError, getClientData } from "../../reducers/authSlice";
 
 
@@ -63,29 +63,7 @@ const ChangePassword = () => {
             }
         }
     }
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    // Send a ping to the server
-    const sendPing = () => {
-        if (userId != 0) {
-            axios.post('http://localhost:4567/api/auth/ping', { userId: userId })
-                .then(response => {
-                    // Do something with the response if necessary
-                })
-                .catch(error => {
-                    // Handle the error if necessary
-                });
-            // dispatch(ping(userId));
-        }
-    }
-    useEffect(() => {
-        // Call the sendPing function every 2 seconds
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        // Stop the ping interval when the user leaves the app
-        return () => {
-            clearInterval(pingInterval)
-        };
 
-    }, [])
 
     return (
         <>

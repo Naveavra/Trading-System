@@ -1,5 +1,6 @@
 package server;
 
+import database.HibernateUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import server.Config.ConfigParser;
@@ -68,6 +69,7 @@ public class Server {
             String configPath = args[0];
             System.out.println("Start the system with config file...");
             configs = ConfigParser.getInstance(configPath);
+            configs.initSettings();
             initServer();
             api = new API(configs);
         }
@@ -79,7 +81,8 @@ public class Server {
             String initialPath = args[1];
             System.out.println("load initial file...");
             initialConfigs = InitialParser.getInstance(initialPath);
-
+            HibernateUtil.createDrop = true;
+            configs.initSettings();
             initialConfigs.initUseCases();
             initServer();
         }
@@ -377,10 +380,10 @@ public class Server {
             int storeId = Integer.parseInt(request.get("storeId").toString());
             int productId = Integer.parseInt(request.get("productId").toString());
             String catStr = request.get("category").toString();
-            List<String> categories =null;
+            List<String> categories = new ArrayList<>();
             if (!catStr.equals("null")) {
-                String[] arr = catStr.substring(1, catStr.length() - 1).split(",");
-                categories =new ArrayList<>(Arrays.asList(arr));
+                String[] arr = catStr.split(",");
+                categories = new ArrayList<>(Arrays.asList(arr));
             }
             String name = request.get("name").toString();
             String description = request.get("description").toString();

@@ -991,7 +991,7 @@ public class Market implements MarketInterface {
             userAuth.checkUser(userId, token);
             String hashedPass = userAuth.hashPassword(email, pass);
             userController.addAdmin(userId, email, hashedPass, pass, session);
-            addNotification(userId, NotificationOpcode.GET_ADMIN_DATA, "null", session);
+            //addNotification(userId, NotificationOpcode.GET_ADMIN_DATA, "null", session);
             return logAndRes(Event.LogStatus.Success, "admin added new admin successfully",
                     StringChecks.curDayString(), "admin" + userId,
                     "admin added new admin successfully", null, null);

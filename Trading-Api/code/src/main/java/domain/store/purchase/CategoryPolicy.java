@@ -30,11 +30,11 @@ public class CategoryPolicy extends PurchasePolicy{
     }
 
     public boolean handleMax(int numFromCategory){
-        return numFromCategory >= amount;
+        return numFromCategory <= amount;
     }
 
     public boolean handleMin(int numFromCategory){
-        return numFromCategory <= amount;
+        return numFromCategory >= amount;
     }
 
 

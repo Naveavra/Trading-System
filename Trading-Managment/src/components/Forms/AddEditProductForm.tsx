@@ -26,14 +26,11 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
 
     const required = (() => { return mode === 'add' ? true : false })();
     const userId = useAppSelector((state) => state.auth.userId);
-    const token = useAppSelector((state) => state.auth.token);
+
     const productId = params?.productId;
     const error = useAppSelector((state) => state.store.storeState.error);
     const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
     const isLoading = useAppSelector((state) => state.product.isLoading)
-
-    const PING_INTERVAL = 10000; // 10 seconds in milliseconds
-    // Send a ping to the server
 
 
 
@@ -63,20 +60,6 @@ const AddEditProductForm: React.FC<Props> = ({ mode }) => {
         dispatch(getProducts());
     }, []);
 
-    const sendPing = () => {
-        if (userId != 0) {
-            dispatch(ping(userId));
-        }
-    }
-    useEffect(() => {
-        // Call the sendPing function every 2 seconds
-        const pingInterval = setInterval(sendPing, PING_INTERVAL);
-        // Stop the ping interval when the user leaves the app
-        return () => {
-            clearInterval(pingInterval)
-        };
-
-    }, [])
     return (
         <>
             <Dialog onClose={handleOnClose} open={true}>
