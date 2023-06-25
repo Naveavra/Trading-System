@@ -26,6 +26,7 @@ const Personal = () => {
     const orders = useAppSelector((state) => state.auth.purchaseHistory);
     const bids = useAppSelector((state) => state.auth.bids);
     console.log(bids);
+    console.log("orders", orders);
 
     const userMessage = useAppSelector((state) => state.auth.message);
     const userError = useAppSelector((state) => state.auth.error);
@@ -97,17 +98,22 @@ const Personal = () => {
                                         price:  {order.totalPrice}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        quantity:  {order.productsInStores?.length}
+                                        quantity:  {order.products?.length}
                                     </Typography>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        products : 
+                                        products :
                                     </Typography>
                                     {
-                                        order.productsInStores?.map((productInStore, index) => {
+                                        order.products?.map((productInStore, index) => {
                                             return (
-                                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom key={index}>
-                                                    {productInStore.name}
-                                                </Typography>
+                                                <>
+                                                    <Typography sx={{ fontSize: 14, ml: 2 }} gutterBottom key={index % order.products?.length}>
+                                                        name : {productInStore.name}
+                                                    </Typography>
+                                                    <Typography sx={{ fontSize: 14, ml: 2 }} color="text.secondary" gutterBottom key={(index + 1) % order.products?.length}>
+                                                        price : {productInStore.price}
+                                                    </Typography>
+                                                </>
                                             )
                                         })
                                     }

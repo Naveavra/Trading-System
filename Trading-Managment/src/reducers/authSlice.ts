@@ -335,6 +335,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.isAdmin = false;
             state.isLogoutLoading = false;
             state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during logout") : payload?.message.data ?? "error during logout";
+            state.first = false
         });
         //guest enter
         builder.addCase(guestEnter.pending, (state) => {

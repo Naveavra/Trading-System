@@ -25,7 +25,7 @@ const MakeBid: React.FC<MakeBidProps> = ({ opcode }) => {
     const params = useParams();
 
     const userId = useAppSelector((state) => state.auth.userId)
-    const isLoading = useAppSelector((state) => state.auth.isLoading);
+    const isLoading = useAppSelector((state) => state.store.storeState.isLoading);
     const error = useAppSelector((state) => state.auth.error);
 
     const storeId = parseInt(params.storeId ?? '0');

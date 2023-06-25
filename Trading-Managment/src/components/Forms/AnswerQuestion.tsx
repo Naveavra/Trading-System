@@ -6,7 +6,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { answerQuestionFormValues } from "../../types/formsTypes";
 import AlertDialog from "../Dialog/AlertDialog";
-import { answerComplaint, getComplaints } from "../../reducers/adminSlice";
 import { answerQuestion, clearStoreError, getStore } from "../../reducers/storesSlice";
 
 const AnswerQuestion = () => {
@@ -16,7 +15,7 @@ const AnswerQuestion = () => {
 
 
     const userId = useAppSelector((state) => state.auth.userId)
-    const isLoading = useAppSelector((state) => state.auth.isLoading);
+    const isLoading = useAppSelector((state) => state.store.storeState.isLoading);
     const error = useAppSelector((state) => state.auth.error);
 
     const storeId = useAppSelector((state) => state.store.storeState.watchedStore.storeId);
