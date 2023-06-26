@@ -303,8 +303,10 @@ public class StoreDao {
             List<? extends DbEntity> appointmentsDto = Dao.getListById(Appointment.class, storeId,
                     "Appointment", "storeId");
             for(Appointment appointment : (List<Appointment>) appointmentsDto)
-                if(!appointmentMap.get(storeId).containsKey(appointment.getChildName()))
+                if(!appointmentMap.get(storeId).containsKey(appointment.getChildName())) {
+                    appointment.initialParams();
                     appointmentMap.get(storeId).put(appointment.getChildName(), appointment);
+                }
             appointments.add(storeId);
         }
         return new ArrayList<>(appointmentMap.get(storeId).values());
@@ -356,17 +358,33 @@ public class StoreDao {
         return bid;
     }
 
+    public static List<Bid> getBidsOfUser(int userId) throws Exception{
+        List<Bid> ans = new ArrayList<>();
+        List<? extends DbEntity> bidsDto = Dao.getByParamList(Bid.class, "Bid",
+                String.format("userId = %d", userId));
+        for(Bid b : (List<Bid>)bidsDto){
+            if(!bidMap.containsKey(b.getStoreId()))
+                bidMap.put(b.getStoreId(), new HashMap<>());
+            if(!bidMap.get(b.getStoreId()).containsKey(b.getBidId())) {
+                bidMap.get(b.getStoreId()).put(b.getBidId(), b);
+                b.initialParams();
+                ans.add(b);
+            }
+            else
+                ans.add(bidMap.get(b.getStoreId()).get(b.getBidId()));
+        }
+        return ans;
+    }
+
     public static List<Bid> getBids(int storeId) throws Exception{
         if(!bids.contains(storeId)){
-
             if(!bidMap.containsKey(storeId))
                 bidMap.put(storeId, new HashMap<>());
 
             List<? extends DbEntity> bidsDto = Dao.getByParamList(Bid.class, "Bid",
                     String.format("storeId = %d", storeId));
             for(Bid b : (List<Bid>) bidsDto) {
-
-                if (bidMap.get(storeId).containsKey(b.getBidId())) {
+                if (!bidMap.get(storeId).containsKey(b.getBidId())) {
                     bidMap.get(storeId).put(b.getBidId(), b);
                     b.initialParams();
                 }

@@ -11,11 +11,13 @@ public class ConstraintDto implements DbEntity {
     @Id
     private int storeId;
     private String content;
+    private String description;
     public ConstraintDto(){}
-    public ConstraintDto(int storeId, int constraintId, String content){
+    public ConstraintDto(int storeId, int constraintId, String content, String description){
         this.storeId = storeId;
         this.constraintId = constraintId;
         this.content = content;
+        this.description = description;
     }
 
     public String getContent() {
@@ -44,5 +46,13 @@ public class ConstraintDto implements DbEntity {
 
     @Override
     public void initialParams() {
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -83,5 +83,9 @@ public abstract class AbstractDiscountComposite  extends Discount {
         this.description=desc;
     }
 
+    public void setDiscountID(int discountID){
+        this.discountID = discountID;
+    }
+
 
 }

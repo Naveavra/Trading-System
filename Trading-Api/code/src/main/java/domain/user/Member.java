@@ -3,6 +3,7 @@ package domain.user;
 import database.daos.Dao;
 import database.DbEntity;
 import database.daos.MessageDao;
+import database.daos.StoreDao;
 import database.daos.SubscriberDao;
 import database.dtos.CartDto;
 import domain.states.StoreCreator;
@@ -374,7 +375,7 @@ public class Member extends Subscriber implements User{
         getCartFromDb();
         getPurchaseHistoryFromDb();
         getStatesFromDb();
-        bids = new ArrayList<>();
+        getBidsFromDb();
     }
 
 
@@ -393,5 +394,10 @@ public class Member extends Subscriber implements User{
     public void getPurchaseHistoryFromDb() throws Exception{
         if(purchaseHistory == null)
             purchaseHistory =  SubscriberDao.getReceipts(id);
+    }
+
+    private void getBidsFromDb() throws Exception{
+        if(bids == null)
+            bids = StoreDao.getBidsOfUser(id);
     }
 }

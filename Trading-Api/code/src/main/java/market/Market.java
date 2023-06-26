@@ -1186,7 +1186,7 @@ public class Market implements MarketInterface {
             for(String name : ans)
                 userController.addNotification(name, new Notification(NotificationOpcode.GET_STORE_DATA,
                         "a counter bid was placed in store: " + storeId + " for bid: " + bidId), session);
-            addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "a counter bid was placed in store: " + storeId + " for bid: " + bidId, session);
+            addNotification(clientId, NotificationOpcode.GET_CLIENT_DATA, "your bid has been countered for store: " + storeId + " for bid: " + bidId, session);
             return logAndRes(Event.LogStatus.Success, "u answer with counter bid",
                     StringChecks.curDayString(), userController.getUserName(userId),
                     "u answer with counter bid", null, null);

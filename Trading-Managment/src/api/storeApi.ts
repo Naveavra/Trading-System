@@ -53,7 +53,7 @@ export const storeApi =
         apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/questions/write`, params)),
 
     writeReviewOnProduct: (params: WriteReviewOnProductParams): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().post(`api/stores/products/reviews/write`, params)),
+        apiErrorHandlerWrapper(getApiClient().post(`api/stores/reviewOnProduct`, params)),
 
     answerOnWaitingAppointment: (params: WaitingAppointmentParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post(`api/stores/${params.storeId}/appointments/answer`, params)),

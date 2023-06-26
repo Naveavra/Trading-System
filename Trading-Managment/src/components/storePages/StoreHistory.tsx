@@ -18,6 +18,7 @@ const StoreHistory = () => {
             <Box sx={{ display: "flex", width: '100%', mb: 2 }}>
                 {
                     orders?.map((order, index) => {
+                        console.log(order)
                         return (
                             <Card sx={{ width: 350, mt: 5, ml: 3 }} key={index}>
                                 <CardContent>
@@ -44,10 +45,6 @@ const StoreHistory = () => {
                                             </>
                                         )
                                     })}
-
-                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        total price: {order.totalPrice}
-                                    </Typography>
 
                                 </CardContent>
                                 <CardActions>

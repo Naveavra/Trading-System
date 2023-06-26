@@ -315,6 +315,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(logout.fulfilled, (state, { payload }) => {
             state.isLogoutLoading = false;
+            state.first = false;
             state.token = "";
             state.userId = 0;
             state.userName = '';

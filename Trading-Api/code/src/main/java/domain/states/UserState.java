@@ -93,8 +93,8 @@ public abstract class UserState extends Information implements DbEntity {
         List<String> approvers = new ArrayList<>(store.getAppHistory().getStoreWorkersWithPermission(Action.appointManager));
         store.canAppointUser(userId, appointed, Role.Manager);
         Appointment appointment = new Appointment(store, userId, userName, appointed, Role.Manager, approvers, session);
-        store.addAppointment(appointment, session);
         Dao.save(appointment, session);
+        store.addAppointment(appointment, session);
         return approvers;
     }
 

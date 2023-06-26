@@ -3,6 +3,7 @@ package bridge;
 import data.*;
 import data.ProductInfo;
 import data.StoreInfo;
+import database.HibernateUtil;
 import domain.user.PurchaseHistory;
 import market.Admin;
 import market.Market;
@@ -25,6 +26,7 @@ public class BridgeImplement implements Bridge {
 
     public BridgeImplement() {
         mainAdmin = new Admin(1, "admin@gmail.com", "admin1A");
+        HibernateUtil.setSettings();
         market = new Market(mainAdmin);
     }
 
@@ -32,6 +34,8 @@ public class BridgeImplement implements Bridge {
     public boolean initTradingSystem() {
         //mainAdmin = new Admin(1, "admin@gmail.com", "admin1A");
         ConfigParser cp = ConfigParser.getInstance("..\\..\\config.json");
+        cp.initSettings();
+        HibernateUtil.setSettings();
         this.market = new Market(mainAdmin, cp.getPaymentConfig(), cp.getSupplyConfig());
         token = market.addTokenForTests();
         return true;

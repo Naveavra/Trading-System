@@ -78,9 +78,11 @@ public class MessageDao {
 
             List<? extends DbEntity> reviewsDto = Dao.getListById(StoreReview.class, storeId, "StoreReview", "storeId");
             for (StoreReview review : (List<StoreReview>) reviewsDto) {
-                if(!storeReviewMap.get(storeId).containsKey(review.getMessageId())) {
-                    storeReviewMap.get(storeId).put(review.getMessageId(), review);
-                    review.initialParams();
+                if(!(review instanceof ProductReview)) {
+                    if (!storeReviewMap.get(storeId).containsKey(review.getMessageId())) {
+                        storeReviewMap.get(storeId).put(review.getMessageId(), review);
+                        review.initialParams();
+                    }
                 }
             }
             storeReviews.add(storeId);

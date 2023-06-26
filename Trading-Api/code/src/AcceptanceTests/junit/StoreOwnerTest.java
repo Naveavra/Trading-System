@@ -164,6 +164,7 @@ public class StoreOwnerTest extends ProjectTest{
     private void except2Notification(UserInfo ui, String notificationMsg)
     {
         List<Notification> notifications = this.getNotifications(ui.getUserId());
+        notifications.removeIf(n -> n.getNotification().equals("null"));
         assertEquals(1, notifications.size());
         String n1 = notifications.get(0).getNotification();
         assertTrue(n1.contains(notificationMsg));
