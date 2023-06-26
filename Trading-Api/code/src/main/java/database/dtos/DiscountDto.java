@@ -12,11 +12,13 @@ public class DiscountDto implements DbEntity {
     @Id
     private int storeId;
     private String content;
+    private String description;
     public DiscountDto(){}
-    public DiscountDto(int storeId, int discountId, String content){
+    public DiscountDto(int storeId, int discountId, String content, String description){
         this.storeId =storeId;
         this.discountId = discountId;
         this.content = content;
+        this.description = description;
     }
 
     public String getContent() {
@@ -45,5 +47,13 @@ public class DiscountDto implements DbEntity {
 
     @Override
     public void initialParams() {
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -65,7 +65,7 @@ public abstract class Message extends Information implements DbEntity {
         json.put("messageId", getMessageId());
         json.put("opcode", opcode.ordinal());
         json.put("content", getContent());
-        json.put("userId", sender.getId());
+        json.put("userId", senderId);
         json.put("seen", getSeen());
         return json;
     }

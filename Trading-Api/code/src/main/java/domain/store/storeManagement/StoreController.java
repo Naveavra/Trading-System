@@ -180,7 +180,7 @@ public class StoreController {
         for (Basket b : shoppingCart.getBaskets()) {
             Store store = getStore(b.getStoreId());
             if (!(store.makeOrder(b, session))) {
-                return null;
+                throw new Exception("the order cannot be made");
             }
             storeOwnersIDS.add(store.getCreator());
             store.addOrder(shoppingCart, order.getOrderId(), order.getUser());
@@ -207,7 +207,8 @@ public class StoreController {
             return storeList.get(storeId);
         Store s = StoreDao.getStore(storeId);
         if(s != null) {
-            storeList.put(s.getStoreId(), s);
+            if(!storeList.containsKey(s.getStoreId()))
+                storeList.put(s.getStoreId(), s);
             return s;
         }
         throw new Exception("the storeId given does not belong to any store in the system");
@@ -421,7 +422,8 @@ public class StoreController {
                 return s.getStoreId();
         Store s = StoreDao.getStore(storeName);
         if(s != null) {
-            storeList.put(s.getStoreId(), s);
+            if(!storeList.containsKey(s.getStoreId()))
+                storeList.put(s.getStoreId(), s);
             return s.getStoreId();
         }
         throw new Exception("the name does not belong to any store");

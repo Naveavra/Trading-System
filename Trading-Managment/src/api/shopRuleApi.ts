@@ -7,5 +7,5 @@ export const shoppingRuleApi = {
     postShoppingRule: (params: PostShoppingRuleParams): Promise<ApiResponse<string>> =>
         apiErrorHandlerWrapper(getApiClient().post('api/shoppingRule', params)),
     deleteShoppingRule: (params: deleteShoppingRuleParams): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().delete('api/shoppingRule', { params: params })),
+        apiErrorHandlerWrapper(getApiClient().post('api/shoppingRule/delete', params )),
 }

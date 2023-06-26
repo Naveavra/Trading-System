@@ -131,8 +131,8 @@ public class DiscountTest {
     }
 
     void itemDiscountSetup(){
-        String minNumOfItemPredParams = "1 1";
-        String minNumFromCategoryParams = "Yellow 5";
+        String minNumOfItemPredParams = "1,1";
+        String minNumFromCategoryParams = "Yellow,5";
         double percentage = 50;
         ArrayList<PredicateDataObject> predicates = new ArrayList<>();
         PredicateDataObject p2 = new PredicateDataObject(DiscountPredicate.PredicateTypes.MinNumOfItem,minNumOfItemPredParams, null);
@@ -302,8 +302,8 @@ public class DiscountTest {
     //לחמניות וגם לפחות 2 כיכרות לחם "
     @Test
     public void andLogicalCompositeTest() throws Exception{
-        String minNumOfItemParams1 = "0 5";
-        String minNumOfItemParams2 = "2 2";
+        String minNumOfItemParams1 = "0,5";
+        String minNumOfItemParams2 = "2,2";
         int percentage = 10;
         int prod1QuantityInitial = 4;
         int prod1AddedQuantity = 1;
@@ -335,8 +335,8 @@ public class DiscountTest {
     //יוגורטים ".
     @Test
     public void orLogicalCompositeTest() throws Exception{
-        String minNumOfItemParams1 = "0 3";
-        String minNumOfItemParams2 = "1 2";
+        String minNumOfItemParams1 = "0,3";
+        String minNumOfItemParams2 = "1,2";
         int percentage = 10;
         int quantity = 2;
         int addedQuantity = 1;
@@ -366,7 +366,7 @@ public class DiscountTest {
     @Test
     public void predComposeTest() throws Exception {
         String minPriceParams = "100";
-        String minNumOfItemParams = "0 3";
+        String minNumOfItemParams = "0,3";
         int percentage = 10;
         int prod1InitialQuantity = 2;
         int prod1AdditionalQuantity = 1;

@@ -228,6 +228,8 @@ public class ConfigParser {
      * @return The properties containing the database settings.
      */
     public Properties getDBSetting() {
+        if(DBSetting == null)
+            initDBSettings();
         return DBSetting;
     }
 

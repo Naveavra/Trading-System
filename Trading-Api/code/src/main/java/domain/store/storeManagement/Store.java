@@ -200,7 +200,7 @@ public class Store extends Information implements DbEntity {
             dis.setDescription(new JSONObject(content).get("description").toString());
             discounts.add(dis);
             //TODO: check if need to add here to db
-            Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()), session);
+            Dao.save(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent(), dis.getDescription()), session);
         }
     }
     public synchronized void addDiscount(CompositeDataObject discountData,String content, Session session) throws Exception {
@@ -211,7 +211,7 @@ public class Store extends Information implements DbEntity {
             }
             dis.setContent(content);
             discounts.add(dis);
-            StoreDao.saveDiscount(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent()), session);
+            StoreDao.saveDiscount(new DiscountDto(storeId, dis.getDiscountID(), dis.getContent(), dis.getDescription()), session);
         }
     }
 
@@ -269,9 +269,6 @@ public class Store extends Information implements DbEntity {
     public void addAppointment(Appointment appointment, Session session) throws Exception{
         if(!appointment.getApproved())
             appointments.add(appointment);
-        else {
-            StoreDao.removeAppointment(storeId, appointment.getChildId(), appointment.getChildName(), session);
-        }
     }
 
     public void answerAppointment(String userName, String fatherName, String childName, String ans, Session session) throws Exception{
@@ -282,10 +279,6 @@ public class Store extends Information implements DbEntity {
         if(app != null) {
             if (ans.equals("true")) {
                 app.approve(userName, session);
-                if (app.getApproved()) {
-                    appointments.remove(app);
-                    StoreDao.removeAppointment(storeId, app.getChildId(), app.getChildName(), session);
-                }
             } else if (ans.equals("false")) {
                 if (app.canDeny(userName)) {
                     appointments.remove(app);
@@ -655,7 +648,7 @@ public class Store extends Information implements DbEntity {
 
     public List<String> placeBid(Member user, int prodId, double price,int quantity, Session session) throws Exception {
         for(Bid bid : this.bids){
-            if(bid.getUser().getId() == user.getId() && bid.getProduct().getID() == prodId)
+            if(bid.getUser().getId() == user.getId() && bid.getProduct().getID() == prodId && bid.getState() != Bid.status.Completed)
                 throw new Exception("Cannot place a bid on the same item more than once.");
         }
         Bid b = new Bid(bidIds.getAndIncrement(),user,storeId,inventory.getProduct(prodId),price,quantity,
@@ -738,7 +731,7 @@ public class Store extends Information implements DbEntity {
             purchasePolicies.add(policy);
             //TODO: need to check if is ok by nave/miki
             if(session != null)
-                Dao.save(new ConstraintDto(storeId, policy.getId(), policy.getContent()), session);
+                Dao.save(new ConstraintDto(storeId, policy.getId(), policy.getContent(), description), session);
             return;
         }
         throw new Exception("Something went wrong when creating the policy, please contact us if the problem persists.\nYours truly, the developers A-team");
@@ -863,9 +856,9 @@ public class Store extends Information implements DbEntity {
             policyIds = new AtomicInteger(StoreDao.getMaxConstraintId());
             for (ConstraintDto constraintDto : constraintDtos) {
                     parsePurchasePolicy(constraintDto.getContent(), null);
+                    purchasePolicies.get(purchasePolicies.size()-1).policyID = constraintDto.getConstraintId();
             }
         }
-
     }
 
     private void getDiscountsFromDb() throws Exception{
@@ -873,8 +866,11 @@ public class Store extends Information implements DbEntity {
             discounts = new ArrayList<>();
             discountFactory = new DiscountFactory(storeId,inventory::getProduct,inventory::getProductCategories);
             List<DiscountDto> discountDtos = StoreDao.getDiscounts(storeId);
-            for(DiscountDto discountDto : discountDtos)
+            for(DiscountDto discountDto : discountDtos){
                 parseDiscounts(discountDto.getContent());
+                discounts.get(discounts.size()-1).setDiscountID(discountDto.getDiscountId());
+                discounts.get(discounts.size()-1).setDescription(discountDto.getDescription());
+            }
         }
     }
 
@@ -901,11 +897,10 @@ public class Store extends Information implements DbEntity {
     public void removeConstraint(int constraintId, Session session) throws Exception {
         for(PurchasePolicy policy: purchasePolicies){
             if(policy.getId() == constraintId) {
-                purchasePolicies.remove(policy);
                 StoreDao.removeConstraint(storeId, constraintId, session);
             }
         }
-        throw new Exception("the id given does not belong to any policy in store");
+        purchasePolicies.removeIf(policy -> policy.getId() == constraintId);
     }
 
     public void removeDiscount(int discountId, Session session) throws Exception {

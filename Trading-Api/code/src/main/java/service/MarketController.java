@@ -118,8 +118,9 @@ public class MarketController {
     public Store getStore(int storeId) throws Exception {
         return storectrl.getStore(storeId);
     }
-    public List<StoreInfo> getStoresInformation(){
+    public List<StoreInfo> getStoresInformation() throws Exception{
         List<StoreInfo> stores = new ArrayList<>();
+        storectrl.getStoresFromDb();
         for(Store s:storectrl.storeList.values()){
             if(s.isActive())
                 stores.add(s.getStoreInformation());

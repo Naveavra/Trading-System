@@ -97,6 +97,9 @@ public abstract class AbstractDiscount extends Discount{
     public String getDiscountedCategory() {
         return discountedCategory;
     }
+    public void setDiscountID(int discountID){
+        this.discountID = discountID;
+    }
 
 
 

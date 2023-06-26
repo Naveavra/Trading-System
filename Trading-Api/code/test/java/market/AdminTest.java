@@ -1,5 +1,6 @@
 package market;
 
+import database.HibernateUtil;
 import database.daos.Dao;
 import domain.store.storeManagement.Store;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ class AdminTest {
 
     @BeforeEach
     void setUp() {
+        HibernateUtil.setSettings();
         Dao.setForTests(true);
         Admin a = new Admin(1, "eli@gmail.com", "123Aaa");
         market = new Market(a);

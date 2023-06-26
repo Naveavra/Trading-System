@@ -86,6 +86,7 @@ public class Bid extends Information implements DbEntity{
             counterOffer = userName;
             this.offer = offer;
             this.approved = status.Counter;
+            StoreDao.saveBid(this, session);
             approvers.replaceAll((n, v) -> false);
             for(String name : approvers.keySet())
                 Dao.save(new ApproverDto(bidId, storeId, name, false), session);

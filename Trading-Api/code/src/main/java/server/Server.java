@@ -499,12 +499,12 @@ public class Server {
             return res.body();
         });
 
-        post("api/stores/:storeName/:productId/reviews/write", (req, res) -> {
+        post("api/stores/reviewOnProduct", (req, res) -> {
             JSONObject request = new JSONObject(req.body());
             int userId = Integer.parseInt((request.get("userId").toString()));
             String token = req.headers("Authorization");
             int orderId = Integer.parseInt(request.get("orderId").toString());
-            int storeId = Integer.parseInt(request.get("storeName").toString());
+            int storeId = Integer.parseInt(request.get("storeId").toString());
             int productId = Integer.parseInt(request.get("productId").toString());
             String content = request.get("content").toString();
             int rating = Integer.parseInt(request.get("rating").toString());
@@ -626,7 +626,7 @@ public class Server {
             return res.body();
         });
 
-        delete("api/discounts",(req,res)->{
+        post("api/discounts/delete",(req,res)->{
            JSONObject request = new JSONObject(req.body());
            int userId = Integer.parseInt(request.get("userId").toString());
            int storeId = Integer.parseInt(request.get("storeId").toString());
@@ -734,7 +734,7 @@ public class Server {
            toSparkRes(res, api.addShoppingRule(token, storeId, userId, purchasePolicy,req.body()));
            return res.body();
         });
-        delete("api/shoppingRule", (req, res) ->{
+        post("api/shoppingRule/delete", (req, res) ->{
             JSONObject request = new JSONObject(req.body());
             String token = req.headers("Authorization");
             int storeId = Integer.parseInt(request.get("storeId").toString());

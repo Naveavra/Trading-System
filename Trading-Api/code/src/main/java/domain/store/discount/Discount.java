@@ -33,6 +33,8 @@ public abstract class Discount extends Information {
     public abstract void setContent(String content);
     public abstract void setDescription(String desc);
     public abstract String getDescription();
+
+    public abstract void setDiscountID(int discountID);
     @Override
     public JSONObject toJson(){
         JSONObject res = new JSONObject();

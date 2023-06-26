@@ -18,5 +18,5 @@ export const discountApi = {
         apiErrorHandlerWrapper(getApiClient().post(`api/discounts/composite`, discount)),
 
     deleteDiscount: (discount: deleteDiscountParams): Promise<ApiResponse<string>> =>
-        apiErrorHandlerWrapper(getApiClient().delete(`api/discounts`, { params: discount }))
+        apiErrorHandlerWrapper(getApiClient().post(`api/discounts/delete`, discount))
 }

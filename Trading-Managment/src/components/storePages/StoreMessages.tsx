@@ -29,8 +29,7 @@ const StoreMessages = () => {
     const canAnswer = Actions?.includes(Action.answerMessage);
     const qestions = useAppSelector((state) => state.store.storeState.watchedStore.questions).map((qestion) => {
         return {
-            id: qestion.questionId,
-            messageId: qestion.messageId,
+            id: qestion.messageId,
             userId: qestion.userId,
             content: qestion.content,
             gotFeedback: qestion.gotFeedback,
@@ -40,8 +39,7 @@ const StoreMessages = () => {
 
     const reviews = useAppSelector((state) => state.store.storeState.watchedStore.reviews).map((review) => {
         return {
-            id: review.storeReviewId,
-            messageId: review.messageId,
+            id: review.messageId,
             userId: review.userId,
             orderId: review.orderId,
             content: review.content,
@@ -66,8 +64,6 @@ const StoreMessages = () => {
     const columns: GridColDef[] = useMemo(() => {
         return [
             { field: 'id', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },
-
-            { field: 'messageId', headerName: 'message Id', width: 150, editable: false, align: 'center', headerAlign: 'center' },
 
             { field: 'userId', headerName: 'user Id', width: 150, editable: false, align: 'center', headerAlign: 'center' },
 
@@ -117,8 +113,6 @@ const StoreMessages = () => {
     const reviewsColumns: GridColDef[] = useMemo(() => {
         return [
             { field: 'id', headerName: 'ID', width: 50, editable: false, align: 'center', headerAlign: 'center' },
-
-            { field: 'messageId', headerName: 'message Id', width: 150, editable: false, align: 'center', headerAlign: 'center' },
 
             { field: 'userId', headerName: 'user Id', width: 150, editable: false, align: 'center', headerAlign: 'center' },
 
