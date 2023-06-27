@@ -19,6 +19,7 @@ import SuccessAlert from '../../components/Alerts/success';
 import { getComplaints, getLogger, getMarketStatus, removeUser } from '../../reducers/adminSlice';
 import ErrorAlert from '../../components/Alerts/error';
 import { clearBidMsg, clearBidError } from '../../reducers/bidSlice';
+import { setFetchNotify } from '../../reducers/configSlice';
 
 const DashboardPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -35,9 +36,8 @@ const DashboardPage: React.FC = () => {
     const error = useAppSelector((state) => state.auth.error);
     const shopError = useAppSelector((state) => state.store.error);
     const productError = useAppSelector((state) => state.product.error);
-    const first = useAppSelector((state) => state.auth.first);
 
-
+    const fetch = useAppSelector((state) => state.config.fetchNotify);
 
     const [price, setPrice] = React.useState<number[]>([0, 10000]);
     const [productRating, setProductRating] = React.useState<number[]>([0, 5]);
@@ -130,9 +130,9 @@ const DashboardPage: React.FC = () => {
         if (userName != 'guest' && userId != 0) {
             dispatch(getClientData({ userId: userId }));
         }
-        if (!first) {
+        if (!fetch) {
             fetchNotification();
-            dispatch(setTrue());
+            dispatch(setFetchNotify(true));
         }
         // Stop the ping interval when the user leaves the app
         //---------------------notifications---------------------
