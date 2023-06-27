@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PurchasePolicyTests {
-    private StoreController storeCtrl = new StoreController();
+    private StoreController storeCtrl;
     private AtomicInteger pids = new AtomicInteger();
     private AtomicInteger policyIds = new AtomicInteger();
     Member creator;
@@ -41,9 +41,14 @@ public class PurchasePolicyTests {
         Dao.setForTests(true);
     }
 
+    @BeforeEach
+    void setForTests(){
+        Dao.setForTests(true);
+    }
     void setUp() throws Exception {
         // Adding Products
         Dao.setForTests(true);
+        storeCtrl = new StoreController();
         creator = new Member(2, "eli@gmail.com", "123Aaa", "24/02/2002");
         worker = new Member(3, "eli1@gmail.com", "123Aaa", "24/02/2015");
         store = storeCtrl.createNewStore(creator,"Some Random Description", null);
