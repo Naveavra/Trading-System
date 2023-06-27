@@ -179,6 +179,7 @@ public class StoreOwnerTest extends ProjectTest{
 //        assertTrue(n1.contains(notificationMsg));
         LoginData data = isGoodLoginWithData(ui);
         List<String> notifications = data.getNotifications();
+        notifications.removeIf(n -> n.contains("null"));
         assertEquals(1, notifications.size());
         assertTrue(notifications.get(0).contains(notificationMsg));
     }

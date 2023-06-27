@@ -77,9 +77,8 @@ public abstract class Subscriber implements DbEntity{
 
     public synchronized void addNotification(Notification notification, Session session) throws Exception{
         notification.setSubId(id);
-        boolean got = notifications.offer(notification);
-        if(got)
-            SubscriberDao.saveNotification(notification, session);
+        SubscriberDao.saveNotification(notification, session);
+        notifications.offer(notification);
     }
 
     public List<Notification> displayNotifications(){
