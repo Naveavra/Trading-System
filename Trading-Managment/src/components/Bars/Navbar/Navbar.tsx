@@ -18,6 +18,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import MessageIcon from '@mui/icons-material/Message';
 import GavelIcon from '@mui/icons-material/Gavel';
+import { setFetchNotify } from "../../../reducers/configSlice";
 interface Props {
     headLine: string;
 }
@@ -50,6 +51,7 @@ const Bar: React.FC<Props> = ({ headLine }) => {
 
     const handleLogout = async () => {
         await dispatch(logout(userId));
+        //todo : decied yes or no dispatch(setFetchNotify(false));
         navigate('/auth/login');
     };
     const handleChooseStore = (storeNumber: number) => () => {
@@ -63,8 +65,6 @@ const Bar: React.FC<Props> = ({ headLine }) => {
     const handleConfirm = (event: React.ChangeEvent<HTMLInputElement>, idx: number): void => {
         console.log(`confirm message ${idx}`);
     }
-    useEffect(() => {
-    }, [notification, numProductsIncart, cart])
 
     return (
         <>
@@ -123,9 +123,11 @@ const Bar: React.FC<Props> = ({ headLine }) => {
                                     <span>{numProductsIncart}</span>
                                 </div>
                             </IconButton>
-                            <IconButton onClick={() => navigate('/dashboard/sendMsg')}>
-                                <MessageIcon />
-                            </IconButton>
+                            {isLoggedIn &&
+                                <IconButton onClick={() => navigate('/dashboard/sendMsg')}>
+                                    <MessageIcon />
+                                </IconButton>
+                            }
                             <Dialog
                                 open={profileDialogOpen}
                                 onClose={() => {

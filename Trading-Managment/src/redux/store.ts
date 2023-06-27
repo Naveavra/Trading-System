@@ -12,6 +12,7 @@ import adminReducer from '../reducers/adminSlice';
 import paymentReducer from '../reducers/paymentSlice';
 import shoppingRuleReducer from '../reducers/ShoppingRules';
 import bidReducer from '../reducers/bidSlice';
+import configReducer from '../reducers/configSlice';
 
 
 const authPersistConfig = {
@@ -42,6 +43,7 @@ export const store = configureStore({
         payment: paymentReducer,
         shoppingRule: shoppingRuleReducer,
         bid: bidReducer,
+        config: configReducer,
 
     },
     middleware(getDefaultMiddleware) {

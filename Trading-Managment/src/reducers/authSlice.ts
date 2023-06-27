@@ -34,7 +34,6 @@ interface AuthState {
     purchaseHistory: Order[];
     whatchedOrder: Order;
     bids: Bid[];
-    first: boolean;
 }
 const reducrName = 'auth';
 const initialState: AuthState = {
@@ -66,7 +65,6 @@ const initialState: AuthState = {
     purchaseHistory: [],
     whatchedOrder: emptyOrder,
     bids: [],
-    first: false
 };
 const cleanState: AuthState = {
     token: '',
@@ -91,7 +89,6 @@ const cleanState: AuthState = {
     purchaseHistory: [],
     whatchedOrder: emptyOrder,
     bids: [],
-    first: false
 };
 
 export const login = createAsyncThunk<
@@ -247,10 +244,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             // state = cleanState;
             return cleanState;
         },
-        setTrue: (state) => {
-            state.first = true;
-        }
-
     },
     extraReducers: builder => {
         //login
@@ -315,7 +308,6 @@ const { reducer: authReducer, actions: authActions } = createSlice({
         });
         builder.addCase(logout.fulfilled, (state, { payload }) => {
             state.isLogoutLoading = false;
-            state.first = false;
             state.token = "";
             state.userId = 0;
             state.userName = '';
@@ -336,7 +328,7 @@ const { reducer: authReducer, actions: authActions } = createSlice({
             state.isAdmin = false;
             state.isLogoutLoading = false;
             state.error = state.error ? (state.error + ' , ' + payload?.message.data ?? "error during logout") : payload?.message.data ?? "error during logout";
-            state.first = false
+
         });
         //guest enter
         builder.addCase(guestEnter.pending, (state) => {
@@ -444,5 +436,5 @@ const { reducer: authReducer, actions: authActions } = createSlice({
     }
 });
 // Action creators are generated for each case reducer function
-export const { clearAuthError, clearAuthMsg, resetAuth, clearNotifications, setWatchedOrder, setTrue } = authActions;
+export const { clearAuthError, clearAuthMsg, resetAuth, clearNotifications, setWatchedOrder } = authActions;
 export default authReducer;
