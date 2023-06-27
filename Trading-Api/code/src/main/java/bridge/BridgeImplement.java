@@ -33,7 +33,7 @@ public class BridgeImplement implements Bridge {
     @Override
     public boolean initTradingSystem() {
         //mainAdmin = new Admin(1, "admin@gmail.com", "admin1A");
-        ConfigParser cp = ConfigParser.getInstance("..\\..\\config.json");
+        ConfigParser cp = ConfigParser.getInstance("..\\..\\config_default.json");
         cp.initSettings();
         HibernateUtil.setSettings();
         this.market = new Market(mainAdmin, cp.getPaymentConfig(), cp.getSupplyConfig());
